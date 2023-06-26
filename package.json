@@ -1,0 +1,21 @@
+{
+  "name": "wbs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tailwindcss -i ./src/input.css -o ./dist/style.css --watch",
+    "format": "prettier -- ./src/index.php --write",
+    "prettier": "prettier"
+  },
+  "author": "Jeffry James Paner",
+  "license": "MIT",
+  "devDependencies": {
+    "@prettier/plugin-php": "^0.19.5",
+    "@tailwindcss/forms": "^0.5.3",
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.3.0",
+    "tailwindcss": "^3.3.2",
+    "tailwindcss-font-inter": "^3.0.1"
+  }
+}
