@@ -1,3 +1,11 @@
 * {
 	/* outline: 1px solid red; */
 }
+
+::-ms-reveal {
+	display: none;
+}
+
+select option {
+	padding: 4px;
+}

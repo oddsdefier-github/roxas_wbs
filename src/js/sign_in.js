@@ -13,3 +13,9 @@ showHideToggle.addEventListener("click", () => {
     }
     console.log("Click")
 });
+
+
+let selectMenuOptions = document.querySelectorAll("select > option");
+selectMenuOptions.forEach(option => {
+    option.classList.add("py-5");
+});
