@@ -1,13 +1,13 @@
-const toggleButton = document.getElementById("toggle-button");
-const sidebar = document.getElementById("sidebar");
-const arrowRight = document.getElementById("arrow-right");
-const arrowLeft = document.getElementById("arrow-left");
-const arrowDown = document.getElementById("arrow-down");
-const arrowUp = document.getElementById("arrow-up");
-const tabMenu = document.getElementById("tab-menu");
-const tabSubMenu = document.getElementById("tab-submenu");
-const navContent = document.querySelector("nav > .nav-content");
-const mainContent = document.querySelector("main");
+let toggleButton = document.getElementById("toggle-button");
+let sidebar = document.getElementById("sidebar");
+let arrowRight = document.getElementById("arrow-right");
+let arrowLeft = document.getElementById("arrow-left");
+let arrowDown = document.getElementById("arrow-down");
+let arrowUp = document.getElementById("arrow-up");
+let tabMenu = document.getElementById("tab-menu");
+let tabSubMenu = document.getElementById("tab-submenu");
+let navContent = document.querySelector("nav > .nav-content");
+let mainContent = document.querySelector("main");
 
 toggleButton.addEventListener("click", () => {
     sidebar.classList.toggle("hidden");

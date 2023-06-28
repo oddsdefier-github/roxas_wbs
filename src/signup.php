@@ -46,29 +46,18 @@ include 'database.php';
 					<div>
 						<div class="grid gap-y-4">
 							<div>
+								<label class="mb-2 block text-sm text-gray-500">Designation</label>
+								<select class="w-full rounded border border-gray-300 bg-gray-50 px-3 py-3 text-sm focus:border-2 focus:border-indigo-500 focus:outline-none">
+									<option selected class="text-gray-600">Choose your Designation</option>
+									<option>Admin</option>
+									<option>Cashier</option>
+									<option>Meter Reader</option>
+								</select>
+							</div>
+							<div>
 								<label for="name" class="mb-2 block text-sm text-gray-500">Full Name</label>
 								<input type="text" name="admin_name" class="w-full rounded-sm border border-gray-300 px-3 py-2 focus:border-2 focus:border-indigo-500 focus:outline-none" />
 							</div>
-							<!-- <div>
-									<label class="mb-2 block text-sm text-gray-500">Address</label>
-									<select class="w-full rounded border border-gray-300 bg-gray-50 px-3 py-3 text-sm focus:border-2 focus:border-indigo-500 focus:outline-none">
-										<option selected class="text-gray-600">Choose your address</option>
-										<option>San Aquilino</option>
-										<option>Odiong</option>
-										<option>San Mariano</option>
-										<option>Victoria</option>
-										<option>Victoria</option>
-										<option>Victoria</option>
-										<option>Victoria</option>
-										<option>Victoria</option>
-										<option>Victoria</option>
-										<option>Victoria</option>
-										<option>Victoria</option>
-										<option>Victoria</option>
-										<option>Victoria</option>
-									</select>
-								</div> -->
-
 							<div>
 								<label for="name" class="mb-2 block text-sm text-gray-500">Email Address</label>
 								<input type="text" name="email" class="w-full rounded-sm border border-gray-300 focus:border-2 focus:border-indigo-500 focus:outline-none" />
