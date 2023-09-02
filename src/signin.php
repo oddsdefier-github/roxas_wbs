@@ -1,6 +1,5 @@
 <?php
 include 'database.php';
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,9 +12,6 @@ include 'database.php';
 	<link href="../dist/style.css" rel="stylesheet" />
 	<link href="../dist/helpers.css" rel="stylesheet" />
 	<script defer src="./js/sign_in.js"></script>
-	<style>
-		/* Add your custom styles here */
-	</style>
 </head>
 
 <body class="flex min-h-screen flex-col bg-gray-200 font-inter">
@@ -25,7 +21,7 @@ include 'database.php';
 			<div class="flex w-full items-center justify-center">
 				<img src="./assets/quality.png" alt="water-logo" class="aspect-square pointer-events-none w-14 select-none" />
 			</div>
-			<form action="signin.php" method="POST" class="w-full max-w-sm bg-white px-7 py-6 shadow-lg">
+			<form action="signin_process.php" method="POST" class="w-full max-w-sm bg-white px-7 py-6 shadow-lg">
 				<div class="my-5 text-center">
 					<h1 class="block text-3xl font-bold text-gray-800">Sign in</h1>
 					<p class="mt-3 text-sm text-gray-600">
@@ -62,6 +58,7 @@ include 'database.php';
 							</span>
 						</div>
 						<input type="submit" name="submit" value="Sign in" class="inline-flex items-center justify-center gap-2 rounded border border-transparent bg-primary-50 px-3 py-2 text-sm font-semibold text-white transition-all hover:bg-primary-100 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-offset-2">
+
 					</div>
 				</div>
 			</form>
@@ -70,22 +67,3 @@ include 'database.php';
 </body>
 
 </html>
-<?php
-if (isset($_POST["submit"])) {
-	$email = $_POST["email"];
-	$password = $_POST["password"];
-
-	$sql = "SELECT * FROM admin WHERE `email` = '$email'";
-	$result = mysqli_query($conn, $sql);
-	$rows = mysqli_fetch_assoc($result);
-	$email_db = $rows["email"];
-	$password_db = $rows["password"];
-
-	if ($email == $email_db && $password == $password_db) {
-		echo "<script>alert('Success')</script>";
-		header("Location: dashboard.php");
-	} else {
-		echo "<script>alert('Invalid Credentials')</script>";
-	}
-}
-?>

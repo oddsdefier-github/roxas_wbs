@@ -13,23 +13,9 @@ include 'database.php';
 	<link href="../dist/style.css" rel="stylesheet" />
 	<link href="../dist/helpers.css" rel="stylesheet" />
 	<script defer src="./js/sign_up.js"></script>
-	<style>
-		/* Add your custom styles here */
-	</style>
 </head>
 
 <body class="flex min-h-screen flex-col bg-primary-600 font-inter">
-	<!-- <header class="h-16">
-			<nav class="flex h-full items-center justify-between">
-				<div>Logo</div>
-				<div>
-					<a href=""></a>
-					<a href=""></a>
-					<a href=""></a>
-				</div>
-			</nav>
-		</header> -->
-
 	<main class="flex flex-1 items-center justify-center">
 		<div class="flex w-full max-w-sm flex-col gap-7">
 			<div class="flex w-full items-center justify-center">
@@ -107,24 +93,3 @@ include 'database.php';
 </body>
 
 </html>
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	if (isset($_POST["submit"])) {
-		$admin_name = $_POST["admin_name"];
-		$email = $_POST["email"];
-		$password = $_POST["password"];
-		$confirm_password = $_POST["confirm_password"];
-		var_dump($confirm_password);
-		if ($password == $confirm_password) {
-
-			try {
-				mysqli_query($conn, $sql);
-				echo "<script>alert('Admin Registration Successful!')</script>";
-			} catch (mysqli_sql_exception $e) {
-				echo "Exception occurred: " . $e->getMessage();
-			}
-		}
-	}
-}
-mysqli_close($conn);
-?>

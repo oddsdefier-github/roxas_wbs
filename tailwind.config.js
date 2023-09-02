@@ -4,7 +4,8 @@ module.exports = {
   mode: "jit",
   content: [
     "./src/**/*.{html,php,js}",
-    "./src/index.php"
+    "./src/index.php",
+    "./node_modules/flowbite/**/*.js"
   ],
   theme: {
     screens: {
@@ -41,7 +42,8 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
-    require('tailwindcss-font-inter')
+    require('tailwindcss-font-inter'),
+    require('flowbite/plugin')
   ],
 }
 

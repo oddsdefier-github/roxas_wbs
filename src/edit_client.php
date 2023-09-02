@@ -1,5 +1,6 @@
 <?php
-include('database.php');
+include './query/database.php';
+include './query/query_all.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -23,7 +24,9 @@ include('database.php');
         $new_household_size = $_POST["household_size"];
         $new_email = $_POST["email"];
         $new_phone_number = $_POST["phone_number"];
-        $edit_db = "UPDATE clients SET client_name = '$new_client_name', address = '$new_address', property_type = '$new_property_type', household_size = '$new_household_size', email = '$new_email', phone_number = '$new_phone_number' WHERE id = '$client_id'";
+
+        $edit_db = "UPDATE clients SET client_name = '$new_client_name', address = '$new_address', property_type = '$new_property_type', household_size = '$new_household_size', email = '$new_email', phone_number = '$new_phone_number' WHERE `client_id` = '$client_id'";
+
         if (mysqli_query($conn, $edit_db)) {
             echo "<script>alert('Record updated successfully.')</script>";
             header("Location: clients.php");
@@ -43,7 +46,7 @@ include('database.php');
     $phone_number = $rows["phone_number"];
     ?>
 
-    <form action="edit_client.php?id=<?php echo $client_id; ?>" method="POST">
+    <form action="edit_client.php?client_id=<?php echo $client_id; ?>" method="POST">
         <br>
         <div>
             <label for="client_id">Client Name:</label>
