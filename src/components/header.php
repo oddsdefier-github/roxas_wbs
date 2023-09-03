@@ -1,5 +1,11 @@
+<style>
+    .profile {
+        border-radius: 100%;
+    }
+</style>
+
 <header class="z-10">
-    <nav class="flex h-16 items-center justify-between border-b border-gray-200 px-5">
+    <nav class="flex h-16 items-center justify-between border-b border-gray-200 px-16">
         <div>
             <button id="toggle-button" class="appearance-none p-1 focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="h-5 w-5 stroke-gray-800" id="arrow-left">
@@ -10,16 +16,16 @@
                 </svg>
             </button>
         </div>
-        <div class="flex h-full items-center justify-center gap-5">
+        <div class="flex h-full items-center justify-center gap-3">
             <div class="mr-3 flex h-full items-center justify-center gap-3">
                 <div class="group flex h-full items-center justify-center hover:border-b-2 hover:border-primary-600">
-                    <a href="" class="font-medium group-hover:text-primary-600">About</a>
+                    <a href="" class="font-medium group-hover:text-primary-600">Admin</a>
                 </div>
-                <div class="group flex h-full items-center justify-center hover:border-b-2 hover:border-primary-600">
+                <!-- <div class="group flex h-full items-center justify-center hover:border-b-2 hover:border-primary-600">
                     <a href="index.html" class="font-medium group-hover:text-primary-600">Home</a>
-                </div>
+                </div> -->
             </div>
-            <a href="signin.html" class="rounded-md border-2 border-primary-100 px-4 py-2 font-semibold text-primary-100 hover:border-primary-600 hover:text-primary-600">Sign In</a>
+            <?php include 'profile.logo.php' ?>
         </div>
     </nav>
 </header>

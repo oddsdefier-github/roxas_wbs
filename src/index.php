@@ -30,7 +30,7 @@
 							<a href="" class="font-medium group-hover:text-primary-600">Profile</a>
 						</div>
 					</div>
-					<a href="signin.php" class="rounded-md border-2 border-primary-100 px-4 py-2 font-semibold text-primary-100 hover:border-primary-600 hover:text-primary-600">Sign In</a>
+					<a href="signin.php" class="rounded-md border-2 border-primary-500 px-4 py-2 font-semibold text-primary-500 hover:border-primary-600 hover:text-primary-600">Sign In</a>
 				</div>
 			</nav>
 		</header>

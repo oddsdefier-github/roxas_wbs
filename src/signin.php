@@ -1,5 +1,5 @@
 <?php
-include 'database.php';
+include './query/database.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,4 +1,5 @@
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    
     <?php include 'table_search.php' ?>
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead class="text-sm text-gray-700 uppercase bg-gray-100">
@@ -26,8 +27,9 @@
                 echo "<td>" . $rows["phone_number"] . "</td>";
                 echo "<td>" . $rows["reg_date"] . "</td>";
                 echo "<td>
-                        <a class=\"hover:stroke-blue-200\" href='./edit_client.php?client_id=" . $rows["client_id"] . "'><img src=\"./assets/edit.svg\" alt=\"svg\" /></a>
-                        <a class=\"delete hover:stroke-red-200\" href='delete_client.php?client_id=" . $rows["client_id"] . "'><img src=\"./assets/delete.svg\" alt=\"svg\" /></a>
+                    
+                        <button class=\"hover:stroke-blue-200\"><img src=\"./assets/edit.svg\" alt=\"svg\" /></button>
+                        <button class=\"hover:stroke-blue-200\"><img src=\"./assets/Delete.svg\" alt=\"svg\" /></button>
                     </td>";
 
 
@@ -39,3 +41,4 @@
         ?>
     </table>
 </div>
+
