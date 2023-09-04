@@ -14,4 +14,4 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// echo "<span style=\"color: green;\">Database connected!</span> <br>";
+echo "<span style=\"color: green;\">Database connected!</span> <br>";

@@ -11,7 +11,7 @@ include './query/database.php';
 	<title>Sign In</title>
 	<link href="../dist/style.css" rel="stylesheet" />
 	<link href="../dist/helpers.css" rel="stylesheet" />
-	<script defer src="./js/sign_in.js"></script>
+	<script defer src="../js/sign_in.js"></script>
 </head>
 
 <body class="flex min-h-screen flex-col bg-gray-200 font-inter">

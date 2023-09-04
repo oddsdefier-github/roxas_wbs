@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $admin_name = $row["admin_name"];
         if ($password == $pass_db) {
             echo "Welcome, " . $admin_name . "!";
-            header("Location: dashboard.php");
+            header("Location: ./admin/clients.php");
         } else {
             echo "Incorrect password.";
         }
