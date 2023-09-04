@@ -1,8 +1,9 @@
+<div class="profile-modal absolute h-screen w-screen grid place-items-center pointer-events-none">
+    <div id="imageModal" class="hidden items-center justify-center z-20">
 
-<div id="imageModal" class="hidden items-center justify-center z-20">
-
-    <div class="modal-content max-w-md mx-auto bg-white p-4 rounded-lg">
-        <img id="fullImage" alt="Full Image">
+        <div class="modal-content max-w-md mx-auto bg-white p-4 rounded-lg">
+            <img id="fullImage" alt="Full Image">
+        </div>
     </div>
 </div>
 <script src="../node_modules/jquery/dist/jquery.js"></script>

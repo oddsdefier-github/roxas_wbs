@@ -4,7 +4,9 @@ module.exports = {
   mode: "jit",
   content: [
     "./src/**/*.{html,php,js}",
-    "./src/index.php",
+    "./authentication/**/*.{html,php,js}",
+    "./admin/**/*.{html,php,js}",
+    "./index.php",
     "./node_modules/flowbite/**/*.js"
   ],
   theme: {
