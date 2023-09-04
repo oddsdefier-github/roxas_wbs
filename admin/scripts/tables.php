@@ -1,4 +1,4 @@
-<script src="../node_modules/jquery/dist/jquery.js"></script>
+<script src=".../node_modules/jquery/dist/jquery.js"></script>
 <script>
     $(document).ready(function() {
         $("table th").addClass("px-6 py-3");

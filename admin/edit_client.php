@@ -1,6 +1,6 @@
 <?php
-include './query/database.php';
-include './query/query_all.php';
+include './connection/database.php';
+include './connection/query_all.php';
 ?>
 <!DOCTYPE html>
 <html>

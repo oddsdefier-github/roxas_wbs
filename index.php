@@ -6,8 +6,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Home</title>
-	<link href="../dist/style.css" rel="stylesheet" />
-	<link href="../dist/helpers.css" rel="stylesheet" />
+	<link href="./dist/style.css" rel="stylesheet" />
+	<link href="./dist/helpers.css" rel="stylesheet" />
 </head>
 
 <body class="relative flex min-h-screen flex-col overflow-clip bg-gray-50 font-inter">
@@ -27,7 +27,7 @@
 							<a href="" class="font-medium group-hover:text-primary-600">Profile</a>
 						</div>
 					</div>
-					<a href="signin.php" class="rounded-md border-2 border-primary-500 px-4 py-2 font-semibold text-primary-500 hover:border-primary-600 hover:text-primary-600">Sign In</a>
+					<a href="./authentication/signin.php" class="rounded-md border-2 border-primary-500 px-4 py-2 font-semibold text-primary-500 hover:border-primary-600 hover:text-primary-600">Sign In</a>
 				</div>
 			</nav>
 		</header>
@@ -48,7 +48,7 @@
 							<p class="text-gray-400 text-lg">Track your customer's data at ease.</p>
 						</div>
 						<div class="my-auto flex cursor-pointer text-white">
-							<a href="signup.php" class="rounded-md bg-primary-600 px-4 py-3 font-medium hover:bg-primary-100 focus:ring-2 focus:ring-primary-50">Track Now!</a>
+							<a href="./authentication/signin.php" class="rounded-md bg-primary-600 px-4 py-3 font-medium hover:bg-primary-100 focus:ring-2 focus:ring-primary-50">Track Now!</a>
 						</div>
 					</div>
 				</div>

@@ -1,6 +1,6 @@
 <?php
-include '../query/database.php';
-include '../query/query_all.php';
+include './connection/database.php';
+include './connection/query_all.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,10 +9,8 @@ include '../query/query_all.php';
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-
-    <link href=".../dist/style.css" rel="stylesheet" />
-    <link href=".../dist/helpers.css" rel="stylesheet" />
+    <title>Clients</title>
+    <?php include './components/links.php' ?>
 </head>
 
 <body class="flex h-screen w-screen overflow-hidden font-inter">

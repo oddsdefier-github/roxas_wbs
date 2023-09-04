@@ -1,5 +1,7 @@
 <?php
-include './query/database.php';
+
+include 'connection/database.php';
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 

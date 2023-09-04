@@ -1,4 +1,4 @@
-<script src="../node_modules/jquery/dist/jquery.js"></script>
+<script src=".../node_modules/jquery/dist/jquery.js"></script>
 <script>
     $(document).ready(function() {
         $('#updateClientModal').hide()
