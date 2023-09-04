@@ -8,9 +8,6 @@
 	<title>Home</title>
 	<link href="../dist/style.css" rel="stylesheet" />
 	<link href="../dist/helpers.css" rel="stylesheet" />
-	<style>
-		/* Add your custom styles here */
-	</style>
 </head>
 
 <body class="relative flex min-h-screen flex-col overflow-clip bg-gray-50 font-inter">

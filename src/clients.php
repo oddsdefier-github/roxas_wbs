@@ -13,8 +13,8 @@ include './query/query_all.php';
     <?php include './components/links.php'; ?>
 </head>
 
-<body class="flex h-screen w-screen overflow-clip font-inter">
-    <div class="absolute h-screen w-screen grid place-items-center pointer-events-none">
+<body class="flex h-screen w-screen overflow-hidden font-inter">
+    <div class="profile-modal absolute h-screen w-screen grid place-items-center pointer-events-none">
         <?php include './components/profile_img_modal.php' ?>
     </div>
     <?php include './components/sidebar.php'; ?>
@@ -23,17 +23,54 @@ include './query/query_all.php';
         <main class="relative isolate flex flex-1 flex-col items-center justify-center overflow-auto mb-10">
             <div class="relative overflow-x-auto">
 
-                <?php include './components/clients_table.php' ?>
-                <div class="absolute top-0 left-0 right-0 inset-0">
-                    <?php include './components/update_client_modal.php' ?>
+                <div>
+                    <?php include './components/clients_table.php' ?>
                 </div>
             </div>
         </main>
     </section>
 
+    <style>
+        /* * {
+            outline: 1px dashed green;
+        } */
+
+        .client-update-modal-container {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            display: none;
+            top: 0;
+            left: 0;
+        }
+
+        .client-update-modal {
+            position: relative;
+            z-index: 1;
+        }
+
+        .client-update-modal::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+        }
+    </style>
+    <div id="updateClientModal" class="client-update-modal-container absolute top-0 left-0 grid place-items-center h-full w-full ">
+        <div class="client-update-modal">
+            <?php include './components/update_client_modal.php' ?>
+        </div>
+    </div>
+
     <?php include './scripts/toggle.php' ?>
     <?php include './scripts/tables.php' ?>
     <?php include './scripts/scripts.php' ?>
+    <?php include './scripts/modal.php' ?>
 
 </body>
 

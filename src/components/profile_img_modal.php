@@ -1,3 +1,4 @@
+
 <div id="imageModal" class="hidden items-center justify-center z-20">
 
     <div class="modal-content max-w-md mx-auto bg-white p-4 rounded-lg">

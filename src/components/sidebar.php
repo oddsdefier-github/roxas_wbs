@@ -1,4 +1,4 @@
-<aside class="z-10 flex min-h-screen cursor-pointer bg-primary-600 text-gray-50 text-sm">
+<aside class="z-10 flex min-h-screen cursor-pointer bg-primary-700 text-gray-50 text-sm">
     <div class="h-full w-60" id="sidebar">
         <div class="">
             <div class="grid h-16 grid-cols-4 border-b border-primary-50">
