@@ -1,6 +1,6 @@
 <div class="flex items-center border-l border-gray-400 px-5 gap-3">
     <div>
-        <h5 class="text-blue-600 font-medium text-sm">Rogene Vito</h5>
+        <h5 class="text-blue-600 font-medium text-sm"> <?php echo $_SESSION['admin_name']; ?></h5>
     </div>
     <div class="flex items-center ml-3">
         <div>
@@ -14,7 +14,7 @@
         <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
             <div class="px-4 py-3" role="none">
                 <p class="text-sm text-gray-900 dark:text-white" role="none">
-                    Rogene Vito
+                    <?php echo $_SESSION['admin_name']; ?>
                 </p>
                 <p class="text-xs font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                     capstone.com

@@ -26,4 +26,20 @@ if (isset($_POST['updateId'])) {
     echo json_encode($response);
 } else {
     echo json_encode(array('status' => 200, 'message' => 'Invalid or data not found'));
-}
+};
+
+
+if (isset($_POST['updateID'])) {
+    $requestID = $_POST['updateID'];
+    $clientName = $_POST['updateClientName'];
+    $clientAddress = $_POST['updateClientAddress'];
+    $clientEmail = $_POST['updateClientEmail'];
+    $clientPropertyType = $_POST['updatePropertyType'];
+    $clientPhoneNum = $_POST['updateClientPhoneNum'];
+
+    $sql = "UPDATE clients set client_name = '$clientName', address = '$clientAddress', email = '$clientEmail', property_type = '$clientPropertyType', phone_number = '$clientPhoneNum' WHERE id = '$requestID'";
+
+    $result = mysqli_query($conn, $sql);
+
+
+};

@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($selectedRole == $role_db) {
 
                 $_SESSION['loggedin'] = true;
-                $_SESSION['user_email'] = $email;
+                $_SESSION['admin_name'] = $admin_name;
                 $_SESSION['user_role'] = $role_db;
 
                 if ($role_db == "Admin") {
@@ -40,13 +40,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Location: ../meter_reader/index.php");
                 }
             } else {
-                echo "Role mismatch.";
+                echo '<script>alert("Role mismatch.");</script>';
+                echo '<script>window.location.href = "signin.php";</script>';
             }
         } else {
-            echo "Incorrect password or email.";
+            echo '<script>alert("Incorrect password or email.");</script>';
+            echo '<script>window.location.href = "signin.php";</script>';
         }
     } else {
-        echo "User not found.";
+        echo '<script>alert("User not found.");</script>';
+        echo '<script>window.location.href = "signin.php";</script>';
     }
 
     mysqli_stmt_close($stmt);

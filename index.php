@@ -48,7 +48,7 @@
 							<p class="text-gray-400 text-lg">Track your customer's data at ease.</p>
 						</div>
 						<div class="my-auto flex cursor-pointer text-white">
-							<a href="./authentication/signin.php" class="rounded-md bg-primary-600 px-4 py-3 font-medium hover:bg-primary-100 focus:ring-2 focus:ring-primary-50">Track Now!</a>
+							<a href="./authentication/signin.php" class="rounded-md bg-primary-700 px-4 py-3 font-medium hover:bg-primary-400 focus:ring-2 focus:ring-primary-50">Track Now!</a>
 						</div>
 					</div>
 				</div>

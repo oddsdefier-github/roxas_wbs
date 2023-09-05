@@ -1,0 +1,66 @@
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-sm text-gray-700 uppercase bg-gray-100">
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <th class="px-6 py-3">No.</th>
+                <th class="px-6 py-3">Client ID</th>
+                <th class="px-6 py-3">Name</th>
+                <th class="px-6 py-3">Address</th>
+                <th class="px-6 py-3">Property Type </th>
+                <th class="px-6 py-3">Email</th>
+                <th class="px-6 py-3">Phone Number</th>
+                <th class="px-6 py-3">Registration Date</th>
+                <th class="px-6 py-3">Action</th>
+            </tr>
+        </thead>
+
+        <?php
+        if (mysqli_num_rows($result) > 0) {
+            $number = 1;
+            while ($rows = mysqli_fetch_assoc($result)) {
+                $id = $rows['id'];
+                echo "<tr class='px-6 py-3'>";
+                echo "<td class='px-6 py-3'>" . $number . "</td>";
+                echo "<td class='px-6 py-3'>" . $rows["client_id"] . "</td>";
+                echo "<td class='px-6 py-3'>" . $rows["client_name"] . "</td>";
+                echo "<td class='px-6 py-3'>" . $rows["address"] . "</td>";
+                echo "<td class='px-6 py-3'>" . $rows["property_type"] . "</td>";
+                echo "<td class='px-6 py-3'>" . $rows["email"] . "</td>";
+                echo "<td class='px-6 py-3'>" . $rows["phone_number"] . "</td>";
+                echo "<td class='px-6 py-3'>" . $rows["reg_date"] . "</td>";
+                echo "<td class='flex items-center px-6 py-4 space-x-3'>
+                        <button onclick=\"updateClientDetails('$id')\" class=\"update hover:stroke-blue-200\"><img src=\"./assets/edit.svg\" alt=\"svg\" /></button>
+                        <button onclick=\"deleteClientDetails('$id')\" class=\"delete-client hover:stroke-blue-200\"><img src=\"./assets/Delete.svg\" alt=\"svg\" /></button>
+                    </td>";
+
+
+                echo "</tr>";
+                $number++;
+            }
+        } else {
+            echo "<tr><td colspan='8'>No data available.</td></tr>";
+        }
+        ?>
+    </table>
+
+
+
+    -----------------------------
+    
+    
+    
+        // Fetch client data asynchronously
+        // $.post("fetch_client_data.php", {
+        //     clientId: clientId
+        // }, function(responseData, status) {
+        //     let clientDetails = JSON.parse(responseData);
+        //     console.log(clientDetails);
+
+        //     let name = clientDetails.clientDetails.client_name;
+        //     let address = clientDetails.clientDetails.address;
+        //     let email = clientDetails.clientDetails.email;
+        //     let client_property_type = clientDetails.clientDetails.property_type;
+
+        //     $(document).ready(function() {
+        //         $("#client-details").text(name)
+        //     })
+        // });

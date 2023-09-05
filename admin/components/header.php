@@ -19,13 +19,13 @@
         <div class="flex h-full items-center justify-center gap-3">
             <div class="mr-3 flex h-full items-center justify-center gap-3">
                 <div class="group flex h-full items-center justify-center hover:border-b-2 hover:border-primary-600">
-                    <a href="" class="font-medium group-hover:text-primary-600">Admin</a>
+                    <a href="" class="font-medium group-hover:text-primary-600"><?php echo $_SESSION['user_role'] ?></a>
                 </div>
                 <!-- <div class="group flex h-full items-center justify-center hover:border-b-2 hover:border-primary-600">
                     <a href="index.html" class="font-medium group-hover:text-primary-600">Home</a>
                 </div> -->
             </div>
-            <?php include 'profile.logo.php' ?>
+            <?php include 'profile.php' ?>
         </div>
     </nav>
 </header>

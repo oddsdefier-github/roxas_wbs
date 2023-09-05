@@ -32,7 +32,7 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <form action="#">
+            <form action="#" id="update-client-form">
                 <div class="grid gap-4 mb-4 sm:grid-cols-2">
                     <div>
                         <label for="update_client_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
@@ -66,7 +66,7 @@
                 </div> -->
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <button onclick="updateClient()" id="confirm-client-update" type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                         Update
                     </button>
                     <button type="button" class="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
@@ -81,4 +81,3 @@
         </div>
     </div>
 </section>
-
