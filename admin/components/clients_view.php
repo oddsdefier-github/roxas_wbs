@@ -11,19 +11,19 @@
 
     })
 
-    function displayClientTable() {
-        let displayData = true;
+    function displayClientTable(page) {
         $.ajax({
             url: "display_table.php",
             type: 'post',
             data: {
-                displaySend: displayData
+                displaySend: page // Send the page number instead of a boolean
             },
             success: function(data, status) {
                 $("#displayClientDataTable").html(data);
             }
         });
     }
+
 
 
 

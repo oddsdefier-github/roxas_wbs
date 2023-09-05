@@ -42,10 +42,8 @@ if ($_SESSION['user_role'] != "Admin") {
         <?php include './components/alerts.php'; ?>
         <?php include './components/header.php' ?>
         <?php include './components/table_search.php' ?>
-        <main class="relative isolate flex flex-1 flex-col items-center justify-center overflow-auto mb-10">
-
+        <main class="relative isolate flex flex-1 flex-col items-center justify-start overflow-auto mb-10">
             <div class="relative overflow-x-auto">
-
                 <?php include './components/clients_view.php' ?>
             </div>
         </main>
