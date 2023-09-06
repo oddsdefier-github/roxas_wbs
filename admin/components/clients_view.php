@@ -228,7 +228,6 @@
 
         $("#update-client-form").on('submit', function(event) {
             event.preventDefault();
-
             $.ajax({
                 url: "process_update.php",
                 type: 'post',
