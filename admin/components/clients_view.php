@@ -227,6 +227,8 @@
                     displayClientTable();
                     $("#addClientModal").hide();
 
+                    $("#add-client-form")[0].reset();
+
                     toastSuccess.removeClass('hidden')
                     toastSuccessMessage.text("Client has been added.")
                     setTimeout(function() {
