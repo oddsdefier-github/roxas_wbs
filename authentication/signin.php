@@ -15,7 +15,7 @@ include 'connection/database.php';
 	<link href="../dist/helpers.css" rel="stylesheet" />
 </head>
 
-<body class="flex min-h-screen flex-col bg-gray-100 font-inter">
+<body class="flex min-h-screen flex-col bg-primary-100 font-inter">
 	<div class="absolute inset-x-0 -top-40 -z-40 transform-gpu overflow-hidden blur-3xl">
 		<div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[35deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
 	</div>
@@ -26,15 +26,11 @@ include 'connection/database.php';
 				<img src="./assets/quality.png" alt="water-logo" class="aspect-square pointer-events-none w-14 select-none" />
 			</div>
 			<form id="form-signin" class=" w-full max-w-sm bg-white px-7 py-6 shadow-xl rounded-md">
-				<div class="my-5 text-center">
-					<h1 class="block text-3xl font-bold text-gray-800" id="form-header">Sign in</h1>
+				<div class="my-5 text-left">
+					<h1 class="block text-2xl font-bold text-gray-800" id="form-header">Sign in</h1>
 					<p id="signin-message" class="text-sm font-medium text-red-500"></p>
-					<p class="mt-3 text-sm text-gray-600">
-						Already have an account?
-						<a class="font-medium text-blue-500 decoration-2 hover:underline" href="signup.php"> Sign up here </a>
-					</p>
 				</div>
-				<div>
+				<div class="my-4">
 					<div class="grid gap-y-4 my-2">
 						<div class="relative">
 							<select name="user_role" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" id="designation-select">
@@ -71,7 +67,12 @@ include 'connection/database.php';
 
 						<button id="submit-btn" type="submit" name="submit" class="inline-flex items-center justify-center gap-2 rounded border border-transparent bg-primary-500 px-3 py-2 text-sm font-semibold text-white transition-all hover:bg-primary-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-offset-2">Sign in </button>
 
+						<p class="text-sm text-gray-600">
+							Not registered?
+							<a class="font-medium text-blue-700 decoration-2 hover:underline" href="signup.php"> Create account </a>
+						</p>
 					</div>
+
 				</div>
 			</form>
 
@@ -255,7 +256,7 @@ include 'connection/database.php';
 
 								if (responseData.user_role === "Admin") {
 
-									signInMessage.text("Credentials valid.");
+									signInMessage.text(responseData.message);
 									signInMessage.removeClass("text-red-500");
 									signInMessage.addClass("text-green-500");
 
@@ -291,7 +292,7 @@ include 'connection/database.php';
 
 							} else {
 								console.log("User is not valid");
-								signInMessage.text("Credentials invalid.");
+								signInMessage.text(responseData.message);
 								formSignIn.addClass("border border-red-300");
 								formHeader.addClass("text-red-500");
 								formHeader.text("Can't Sign in!")

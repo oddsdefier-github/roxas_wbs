@@ -4,27 +4,51 @@
 </div>
 
 <script>
+    // let toastAlert = $("#toast-alerts");
+    let toastSuccess = $("#toast-success");
+    let toastDanger = $("#toast-danger");
+    let toastSuccessMessage = $("#toast-success-message");
+
+
+    let currentPage = localStorage.getItem("currentPage") || 1;
     $(document).ready(function() {
         displayClientTable();
         deleteClientRequest();
         fetchAddressData();
-
+        addClient();
+        displayClientTable(currentPage);
     })
 
-    function displayClientTable(page) {
+
+
+
+
+
+    function updateCurrentPage(page) {
+        currentPage = page;
+        localStorage.setItem("currentPage", currentPage);
+    }
+
+    function displayClientTable(page, query = "") {
         $.ajax({
             url: "display_table.php",
             type: 'post',
             data: {
-                displaySend: page // Send the page number instead of a boolean
+                displaySend: page,
+                query: query
             },
             success: function(data, status) {
                 $("#displayClientDataTable").html(data);
             }
         });
+        updateCurrentPage(page)
     }
 
 
+    $("#table-search").keyup(function() {
+        let query = $(this).val();
+        displayClientTable(1, query);
+    });
 
 
     function updateClientDetails(updateId) {
@@ -86,7 +110,6 @@
             clientId: delId
         }, function(responseData, status) {
             let clientDetails = JSON.parse(responseData);
-            console.log(clientDetails);
 
             let name = clientDetails.clientDetails.client_name;
             let address = clientDetails.clientDetails.address;
@@ -108,7 +131,6 @@
         function closeModal() {
             $deleteClientModal.hide();
         }
-
         $(".confirm-delete").click(function() {
             let delId = $('#hidden-delId').val();
             $.ajax({
@@ -122,9 +144,9 @@
                     closeModal();
                     displayClientTable();
 
-                    $("#delete-alerts-popup").removeClass('hidden')
+                    toastDanger.removeClass('hidden')
                     setTimeout(function() {
-                        $('#delete-alerts-popup').addClass('hidden');
+                        toastDanger.addClass('hidden');
                     }, 3000);
                 },
 
@@ -144,7 +166,6 @@
 
 
     function fetchAddressData() {
-        //Fetch DropDown address
         let fetchAddress = true;
         $.ajax({
             url: "fetch_address_data.php",
@@ -171,7 +192,6 @@
                 });
             }
         })
-        //Fetch DropDown address
     }
 
     function addClient() {
@@ -181,33 +201,44 @@
         let propertyTypeAdd = $("#add_property_type").val();
         let phoneNumAdd = $("#add_client_phone_num").val();
 
-        console.log(addressAdd)
+        function closeModal() {
+            $deleteClientModal.hide();
+        }
 
         $("#add_client_address").on('change', function() {
             addressAdd
         });
 
+        $("#add-client-form").on("submit", function(e) {
+            e.preventDefault();
 
-        $.ajax({
-            url: "add_client_req.php",
-            type: 'post',
-            data: {
-                clientAdd: clientNameAdd,
-                clientAddressAdd: addressAdd,
-                clientEmailAdd: emailAdd,
-                clientPropertyTypeAdd: propertyTypeAdd,
-                clientPhoneNumAdd: phoneNumAdd
-            },
-            success: function(data, status) {
+            $.ajax({
+                url: "add_client_req.php",
+                type: 'post',
+                data: {
+                    clientAdd: clientNameAdd,
+                    clientAddressAdd: addressAdd,
+                    clientEmailAdd: emailAdd,
+                    clientPropertyTypeAdd: propertyTypeAdd,
+                    clientPhoneNumAdd: phoneNumAdd
+                },
+                success: function(data, status) {
 
-                displayClientTable();
-                $("#add-client-form").reset()
+                    displayClientTable();
+                    $("#addClientModal").hide();
 
-            },
+                    toastSuccess.removeClass('hidden')
+                    toastSuccessMessage.text("Client has been added.")
+                    setTimeout(function() {
+                        toastSuccess.addClass('hidden');
+                    }, 2000);
 
-            error: function(xhr, status, error) {
-                console.log("Error: " + error);
-            }
+                },
+
+                error: function(xhr, status, error) {
+                    console.log("Error: " + error);
+                }
+            })
         })
 
     }
@@ -241,8 +272,16 @@
                 },
                 success: function(data, status) {
                     $('#updateClientModal').hide();
+
+
                     displayClientTable();
                     console.log("Updated");
+
+                    toastSuccess.removeClass('hidden')
+                    setTimeout(function() {
+                        toastSuccess.addClass('hidden');
+                    }, 2000);
+
                 },
                 error: function(xhr, status, error) {
                     console.log("Error: " + error);
