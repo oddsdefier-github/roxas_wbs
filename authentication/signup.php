@@ -24,7 +24,7 @@ include 'connection/database.php';
 			<div class="shadow-lg">
 				<form action="<?php htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="POST" class="w-full bg-white px-7 py-6">
 					<div class="my-5 text-center">
-						<h1 class="block text-3xl font-bold text-gray-800">Sign up</h1>
+						<h1 class="block text-3xl font-bold text-gray-800">Page Under Construction</h1>
 						<p class="mt-3 text-sm text-gray-600">
 							Don't have an account yet?
 							<a class="font-medium text-blue-500 decoration-2 hover:underline" href="signin.php"> Sign in here </a>

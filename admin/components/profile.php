@@ -7,7 +7,7 @@
             <button type="button" class="profile flex text-sm bg-gray-800 overflow-clip focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
                 <!-- <span class="sr-only">Open user menu</span> -->
                 <div class="overflow-clip w-8 h-8">
-                    <img id="thumbnail" src="https://scontent.fmnl33-1.fna.fbcdn.net/v/t39.30808-6/312263543_458029473098371_179352120336177521_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=1b51e3&_nc_eui2=AeF7gzCYQbb2-ppMo9-HeURweHkZDoqQuIV4eRkOipC4hbBCNVQa5rux899FIj91E9QOwEhK-RrEQ36VZPDo5ys-&_nc_ohc=5qc9EA0g-HEAX8CFIhB&_nc_ht=scontent.fmnl33-1.fna&oh=00_AfBvHe-n1GytyoxkcE18bN9_e9nvFfawtDVhw8jJItCqdQ&oe=64F9D35C" alt="user photo">
+                    <img id="thumbnail" src="https://en.meming.world/images/en/thumb/1/13/Thumbs_Up_Crying_Cat.jpg/300px-Thumbs_Up_Crying_Cat.jpg" alt="user photo">
                 </div>
             </button>
         </div>

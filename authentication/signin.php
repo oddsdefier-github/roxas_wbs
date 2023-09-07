@@ -15,16 +15,20 @@ include 'connection/database.php';
 	<link href="../dist/helpers.css" rel="stylesheet" />
 </head>
 
-<body class="flex min-h-screen flex-col bg-gray-200 font-inter">
-
+<body class="flex min-h-screen flex-col bg-gray-100 font-inter">
+	<div class="absolute inset-x-0 -top-40 -z-40 transform-gpu overflow-hidden blur-3xl">
+		<div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[35deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+	</div>
+	<?php include 'loader.php' ?>
 	<main class="flex flex-1 items-center justify-center">
 		<div class="flex w-full max-w-sm flex-col gap-7">
 			<div class="flex w-full items-center justify-center">
 				<img src="./assets/quality.png" alt="water-logo" class="aspect-square pointer-events-none w-14 select-none" />
 			</div>
-			<form id="form-signin" class=" w-full max-w-sm bg-white px-7 py-6 shadow-lg" action="#">
+			<form id="form-signin" class=" w-full max-w-sm bg-white px-7 py-6 shadow-xl rounded-md">
 				<div class="my-5 text-center">
-					<h1 class="block text-3xl font-bold text-gray-800">Sign in</h1>
+					<h1 class="block text-3xl font-bold text-gray-800" id="form-header">Sign in</h1>
+					<p id="signin-message" class="text-sm font-medium text-red-500"></p>
 					<p class="mt-3 text-sm text-gray-600">
 						Already have an account?
 						<a class="font-medium text-blue-500 decoration-2 hover:underline" href="signup.php"> Sign up here </a>
@@ -40,14 +44,6 @@ include 'connection/database.php';
 							</select>
 							<label class="absolute text-sm text-gray-500 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Designation</label>
 						</div>
-						<!-- <div class="relative">
-							<input type="text" name="email" placeholder=" " id="testemail" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" />
-							<label class="pointer-events-none absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 
-							peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Email Address</label>
-
-						</div> -->
-
-						<!-- sample -->
 						<div>
 							<div class="relative">
 								<input name="email" type="email" id="email" aria-describedby="success_message" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-indigo-500 border-gray-300 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
@@ -56,7 +52,7 @@ include 'connection/database.php';
 									<img id="check-icon" src="assets/check.svg" alt="check" class="hidden w-5 h-5">
 								</span>
 							</div>
-							<p id="success_message" class="hidden mt-2 text-xs text-green-600 dark:text-green-400"><span class="font-medium">Well done!</span> Email valid.</p>
+							<p id="success_message" class="hidden mt-2 text-xs text-green-600 dark:text-green-400"><span class="font-medium">Well done!</span> Email is valid.</p>
 							<p id="error_message" class="hidden mt-2 text-xs text-red-600 dark:text-red-400">Please avoid using <span class="font-medium">uppercase</span> letters!</p>
 						</div>
 
@@ -73,41 +69,46 @@ include 'connection/database.php';
 							<p id="error_message" class="hidden mt-2 text-xs text-red-600 dark:text-red-400">Please avoid using <span class="font-medium">uppercase</span> letters!</p> -->
 						</div>
 
+						<button id="submit-btn" type="submit" name="submit" class="inline-flex items-center justify-center gap-2 rounded border border-transparent bg-primary-500 px-3 py-2 text-sm font-semibold text-white transition-all hover:bg-primary-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-offset-2">Sign in </button>
 
-						<!-- <div class="relative">
-							<input type="password" name="password" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder="••••••••" />
-							<label class="pointer-events-none absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1" id="filled_success" aria-describedby="filled_success_help">Password</label>
-
-						</div> -->
-
-
-						<!-- <div>
-							<div class="relative">
-								<input type="text" aria-describedby="outlined_error_help" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer" placeholder=" " />
-								<label for="" class="absolute text-sm text-red-600 dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Outlined error</label>
-							</div>
-							<p id="outlined_error_help" class="mt-2 text-xs text-red-600 dark:text-red-400"><span class="font-medium">Oh, snapp!</span> Some error message.</p>
-						</div> -->
-
-						<!-- sample -->
-
-						<div class="text-sm text-gray-500">
-							Password Validation message area!
-						</div>
-
-						<button id="submit-btn" type="submit" class="inline-flex items-center justify-center gap-2 rounded border border-transparent bg-primary-500 px-3 py-2 text-sm font-semibold text-white transition-all hover:bg-primary-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-offset-2">Sign in </button>
-						<div class="text-sm text-red-500">
-							Sign in error messages!
-						</div>
 					</div>
 				</div>
 			</form>
 
 		</div>
+
 	</main>
+
+
 	<script src="../js/jquery.min.js"></script>
 
 	<script>
+		let loader = $(".loader");
+		let formSignIn = $("#form-signin");
+		let submitBtn = $("#submit-btn");
+
+		let formHeader = $("#form-header")
+		signInMessage = $("#signin-message");
+
+		let loadingMessage = $("#loading-message")
+
+
+		let successClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-green-600 appearance-none dark:text-white dark:border-green-500 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer";
+
+		let errorClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer";
+
+		let normalClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-indigo-500 border-gray-300 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer";
+
+
+		let successClassLabel = "absolute text-sm text-green-600 dark:text-green-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
+
+		let errorClassLabel = "absolute text-sm text-red-600 dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
+
+		let normalClassLabel = "absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
+
+
+
+
 		$(document).ready(function() {
 			let eyeIcon = $("#eye-icon")
 			let passInput = $("input[type='password']");
@@ -123,22 +124,7 @@ include 'connection/database.php';
 			});
 			$("select > option").addClass("py-5");
 		});
-	</script>
 
-	<script>
-		let submitBtn = $("#submit-btn");
-		let successClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-green-600 appearance-none dark:text-white dark:border-green-500 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer";
-
-		let errorClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer";
-
-		let normalClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-indigo-500 border-gray-300 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer";
-
-
-		let successClassLabel = "absolute text-sm text-green-600 dark:text-green-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
-
-		let errorClassLabel = "absolute text-sm text-red-600 dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
-
-		let normalClassLabel = "absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
 
 		function liveValidateEmail() {
 			$(document).ready(function() {
@@ -157,7 +143,6 @@ include 'connection/database.php';
 
 					for (let i = 0; i < inputValue.length; i++) {
 						let character = inputValue[i];
-						console.log(character)
 						if (
 							(character == "@") ||
 							(character == "_") ||
@@ -247,22 +232,76 @@ include 'connection/database.php';
 
 				$("#form-signin").on("submit", function(e) {
 					e.preventDefault();
-					console.log("submit");
-
 					let emailInput = $("#email").val();
 					let passInput = $("#password").val();
 
 					$.ajax({
-						url: "input_validate.php",
+						url: "signin_process.php",
 						type: "post",
 						data: {
 							emailSend: emailInput,
+							passSend: passInput,
+							designationSelectedSend: designationSelected
 						},
-						success: function(data, status) {
-							let responseData = JSON.parse(data);
-							console.log(responseData);
-						}
+						success: function(response) {
+							var responseData = JSON.parse(response);
+
+							console.log(responseData)
+
+							if (responseData.valid) {
+								console.log("User is valid");
+								console.log("Admin Name: " + responseData.admin_name);
+								console.log("User Role: " + responseData.user_role);
+
+								if (responseData.user_role === "Admin") {
+
+									signInMessage.text("Credentials valid.");
+									signInMessage.removeClass("text-red-500");
+									signInMessage.addClass("text-green-500");
+
+
+
+									formSignIn.removeClass("border border-red-300")
+									formSignIn.addClass("border border-green-300")
+
+									formHeader.removeClass("text-red-500");
+									formHeader.addClass("text-green-500");
+
+									formHeader.text("Signing in!")
+
+									loader.css({
+										'display': 'flex',
+										'flex-direction': 'column',
+										'justify-content': 'center',
+										'align-items': 'center'
+									});
+									loader.show()
+
+
+									setTimeout(function() {
+										loader.hide()
+										window.location.href = "../admin/index.php";
+									}, 1000)
+
+								} else if (responseData.user_role === "Cashier") {
+									window.location.href = "../cashier/index.php";
+								} else if (responseData.user_role === "Meter Reader") {
+									window.location.href = "../meter_reader/index.php";
+								} else {}
+
+							} else {
+								console.log("User is not valid");
+								signInMessage.text("Credentials invalid.");
+								formSignIn.addClass("border border-red-300");
+								formHeader.addClass("text-red-500");
+								formHeader.text("Can't Sign in!")
+							}
+						},
+						error: function(xhr, textStatus, errorThrown) {
+							console.error("Error:", errorThrown);
+						},
 					});
+
 				});
 			});
 
