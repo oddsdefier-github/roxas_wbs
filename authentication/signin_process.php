@@ -6,14 +6,24 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
     $designationSelectedSEND = $_POST['designationSelectedSend'];
 
 
-    if (empty($emailSEND) || empty($password) || empty($designationSelectedSEND)) {
+    if (empty($emailSEND) || empty($password)) {
+        $emptyFields = array();
+
+        if (empty($emailSEND)) {
+            $emptyFields[] = "Email";
+        }
+
+        if (empty($password)) {
+            $emptyFields[] = "Password";
+        }
         $response = array(
             "valid" => false,
-            "message" => "Please fill in all fields."
+            "message" => "Please fill in the following fields: " . implode(', ', $emptyFields),
+            "emptyFields" => $emptyFields
         );
     } else {
 
-        include 'connection/database.php';
+        include 'database/connection.php';
         $sql = "SELECT * FROM admin WHERE email = ?";
         $stmt = mysqli_prepare($conn, $sql);
 
@@ -44,7 +54,8 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
                 } else {
                     $response = array(
                         "valid" => false,
-                        "message" => "Incorrect password or email."
+                        "message" => "Incorrect password or email.",
+                        "emptyFields" => 0
                     );
                 }
             } else {

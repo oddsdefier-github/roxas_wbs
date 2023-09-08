@@ -1,6 +1,6 @@
 <?php
 
-include 'connection/database.php';
+include 'database/connection.php';
 
 ?>
 <!DOCTYPE html>
@@ -21,11 +21,15 @@ include 'connection/database.php';
 	</div>
 	<?php include 'loader.php' ?>
 	<main class="flex flex-1 items-center justify-center">
-		<div class="flex w-full max-w-sm flex-col gap-7">
+		<div class="flex w-full max-w-sm flex-col gap-5">
 			<div class="flex w-full items-center justify-center">
-				<img src="./assets/quality.png" alt="water-logo" class="aspect-square pointer-events-none w-14 select-none" />
+				<div id="logo"> <img src="./assets/quality.png" alt="water-logo" class="aspect-square pointer-events-none w-14 select-none" />
+				</div>
+				<div class="hidden absolute cursor-grab" id="cat">
+					<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><lottie-player src="https://lottie.host/8c2976a1-843f-4829-a62b-89f62d1c17b8/8HjjcW05ZO.json" background="transparent" speed="1" style="width: 300px; height: 300px" direction="1" mode="normal" loop autoplay hover></lottie-player>
+				</div>
 			</div>
-			<form id="form-signin" class=" w-full max-w-sm bg-white px-7 py-6 shadow-xl rounded-md">
+			<form id="form-signin" class=" w-full max-w-sm bg-white px-7 py-6 shadow-xl rounded-md transition-all duration-150">
 				<div class="my-5 text-left">
 					<h1 class="block text-2xl font-bold text-gray-800" id="form-header">Sign in</h1>
 					<p id="signin-message" class="text-sm font-medium text-red-500"></p>
@@ -42,25 +46,26 @@ include 'connection/database.php';
 						</div>
 						<div>
 							<div class="relative">
-								<input name="email" type="email" id="email" aria-describedby="success_message" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-indigo-500 border-gray-300 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
+								<input id="email" name="email" type="email" aria-describedby="success_message" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-indigo-500 border-gray-300 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
 								<label for="email" id="email_label" class="absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Email Address</label>
 								<span class="absolute top-0 right-0 px-3 h-full grid place-items-center">
 									<img id="check-icon" src="assets/check.svg" alt="check" class="hidden w-5 h-5">
 								</span>
 							</div>
-							<p id="success_message" class="hidden mt-2 text-xs text-green-600 dark:text-green-400"><span class="font-medium">Well done!</span> Email is valid.</p>
-							<p id="error_message" class="hidden mt-2 text-xs text-red-600 dark:text-red-400">Please avoid using <span class="font-medium">uppercase</span> letters!</p>
+							<p id="email_success" class="hidden mt-2 text-xs text-green-600 dark:text-green-400"><span class="font-medium">Correct: </span> Email is valid.</p>
+							<p id="email_error" class="hidden mt-2 text-xs text-red-600 dark:text-red-400"><span class="font-medium">Empty:</span> Please type your email.</p>
 						</div>
 
 						<div>
 							<div class="relative">
-								<input name="password" type="password" id="password" aria-describedby="success_message" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-indigo-500 border-gray-300 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
+								<input id="password" name="password" type="password" aria-describedby="success_message" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-indigo-500 border-gray-300 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
 								<label for="password" id="password_label" class="absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Password</label>
 
 								<span class="absolute top-0 right-0 px-3 h-full grid place-items-center">
 									<img id="eye-icon" src="assets/eye-close.svg" alt="eye-close" class="w-5 h-5">
 								</span>
 							</div>
+							<p id="pass_error" class="hidden mt-2 text-xs text-red-600 dark:text-red-400"><span class="font-medium">Empty: </span> Please type your password.</p>
 							<!-- <p id="success_message" class="hidden mt-2 text-xs text-green-600 dark:text-green-400"><span class="font-medium">Well done!</span> Looks Correct.</p>
 							<p id="error_message" class="hidden mt-2 text-xs text-red-600 dark:text-red-400">Please avoid using <span class="font-medium">uppercase</span> letters!</p> -->
 						</div>
@@ -84,35 +89,18 @@ include 'connection/database.php';
 	<script src="../js/jquery.min.js"></script>
 
 	<script>
-		let loader = $(".loader");
-		let formSignIn = $("#form-signin");
-		let submitBtn = $("#submit-btn");
-
-		let formHeader = $("#form-header")
-		signInMessage = $("#signin-message");
-
-		let loadingMessage = $("#loading-message")
-
-
-		let successClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-green-600 appearance-none dark:text-white dark:border-green-500 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer";
-
-		let errorClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer";
-
-		let normalClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-indigo-500 border-gray-300 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer";
-
-
-		let successClassLabel = "absolute text-sm text-green-600 dark:text-green-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
-
-		let errorClassLabel = "absolute text-sm text-red-600 dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
-
-		let normalClassLabel = "absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
-
-
-
-
 		$(document).ready(function() {
+
+			$("#logo").click(function() {
+				$("#cat").show()
+				$("#logo").hide()
+				console.log("click")
+			});
+			$("#cat").click(function() {
+				$("#logo").show()
+				$("#cat").hide()
+			});
 			let eyeIcon = $("#eye-icon")
-			let passInput = $("input[type='password']");
 
 			eyeIcon.on("click", function() {
 				if (passInput.attr("type") === "password") {
@@ -124,35 +112,98 @@ include 'connection/database.php';
 				}
 			});
 			$("select > option").addClass("py-5");
-		});
 
 
-		function liveValidateEmail() {
-			$(document).ready(function() {
-				let emailInput = $("#email");
-				let emailLabel = $("#email_label");
-				let successInput = $("#success_message");
-				let errorInput = $("#error_message");
-				let submitBtn = $("#submit_button");
+			let emailInput = $("#email");
+			let passInput = $("#password");
+			let emailLabel = $("#email_label");
+			let passLabel = $("#password_label");
+			let emailSuccess = $("#email_success");
+			let emailError = $("#email_error");
+			let passError = $("#pass_error");
+			let checkIcon = $("#check-icon");
 
-				emailInput.on("input", function() {
-					let inputValue = $(this).val().trim();
-					let specialCharRegex = /[^a-zA-Z0-9@_.-]/;
 
-					let uppercaseDetected = false;
-					let specialCharDetected = false;
+			let loader = $(".loader");
+			let formSignIn = $("#form-signin");
+			let submitBtn = $("#submit-btn");
 
-					for (let i = 0; i < inputValue.length; i++) {
-						let character = inputValue[i];
-						if (
-							(character == "@") ||
-							(character == "_") ||
-							(character == ".") ||
-							(!isNaN(Number(character))) ||
-							(character !== character.toUpperCase())
-						) {
+			let formHeader = $("#form-header")
+			let signInMessage = $("#signin-message");
 
-							if (inputValue !== '') {
+			let loadingMessage = $("#loading-message")
+
+
+			let successClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-green-600 appearance-none dark:text-white dark:border-green-500 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer";
+
+			let errorClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer";
+
+			let normalClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none dark:text-white dark:border-indigo-500 border-gray-300 dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:border-indigo-600 peer";
+
+
+			let successClassLabel = "absolute text-sm text-green-600 dark:text-green-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
+
+			let errorClassLabel = "absolute text-sm text-red-600 dark:text-red-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
+
+			let normalClassLabel = "absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
+
+
+
+			// function resetInput() {
+			// 	emailLabel.addClass(normalClassLabel);
+			// 	emailSuccess.hide();
+			// 	emailError.hide();
+			// 	checkIcon.hide();
+			// 	emailInput.val("")
+
+			// 	if (emailInput.hasClass(successClassInput) || emailLabel.hasClass(successClassInput)) {
+			// 		emailInput.removeClass(successClassInput);
+			// 		emailInput.addClass(normalClassInput);
+
+			// 		emailLabel.removeClass(successClassLabel);
+			// 		emailLabel.addClass(normalClassLabel);
+
+			// 	}
+			// 	if (emailInput.hasClass(errorClassInput) || emailLabel.hasClass(errorClassInput)) {
+			// 		emailInput.removeClass(errorClassInput);
+			// 		emailInput.addClass(normalClassInput);
+
+			// 		emailLabel.removeClass(errorClassLabel);
+
+			// 	}
+			// }
+
+			function refreshPage() {
+				location.reload();
+			}
+
+			function liveValidateEmail() {
+				$(document).ready(function() {
+					emailInput.on("input", function() {
+
+						let designationSelected = $("#designation-select").find(":selected").text();
+						$("#designation-select").on("change", function() {
+							designationSelected = $(this).find(":selected").text();
+							refreshPage();
+							emailInput.prop("disabled", false);
+						});
+
+						let inputValue = $(this).val().trim();
+						let specialCharRegex = /[^a-zA-Z0-9@_.-]/;
+
+						let uppercaseDetected = false;
+						let specialCharDetected = false;
+
+
+						if (inputValue !== '') {
+							const lastCharacter = inputValue[inputValue.length - 1];
+							if (
+								(lastCharacter == "@") ||
+								(lastCharacter == "_") ||
+								(lastCharacter == ".") ||
+								(!isNaN(Number(lastCharacter))) ||
+								(lastCharacter != lastCharacter.toUpperCase())
+							) {
 								$.ajax({
 									url: "input_validate.php",
 									type: "post",
@@ -161,71 +212,77 @@ include 'connection/database.php';
 									},
 									success: function(data, status) {
 										let response = JSON.parse(data);
-										let emailData = response.emailResponseData;
-										$.each(emailData, function(index, item) {
-											if (item === inputValue) {
-												if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
-													emailInput.removeClass(normalClassInput);
-													emailInput.addClass(successClassInput);
+										console.log(response)
 
-													emailLabel.removeClass(normalClassLabel);
-													emailLabel.addClass(successClassLabel);
 
-													successInput.show();
-													$("#check-icon").show();
-												}
-												emailInput.prop("disabled", true);
+										let email = response.emailData;
+										let designation = response.designationData;
+
+										console.log(email)
+
+										if (email === inputValue && designationSelected === designation) {
+											if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
+												emailInput.removeClass(normalClassInput);
+												emailInput.addClass(successClassInput);
+
+												emailLabel.removeClass(normalClassLabel);
+												emailLabel.addClass(successClassLabel);
+
+												emailSuccess.show();
+												checkIcon.show();
 											}
-										})
+											emailInput.prop("disabled", true);
+										}
 									}
 								})
+
+
+							} else {
+								uppercaseDetected = true;
+							}
+
+						}
+
+
+						if (specialCharRegex.test(inputValue)) {
+							specialCharDetected = true;
+						}
+
+						if (uppercaseDetected || specialCharDetected) {
+							submitBtn.prop("disabled", true);
+							if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
+								emailInput.removeClass(normalClassInput);
+								emailInput.addClass(errorClassInput);
+
+								emailLabel.removeClass(normalClassLabel);
+								emailLabel.addClass(errorClassLabel);
+
+								if (specialCharDetected) {
+									emailError.text("Invalid email: Contains special characters");
+								} else {
+									emailError.text("Invalid email: Contains uppercase letters");
+								}
+
+								emailError.show();
 							}
 						} else {
-							uppercaseDetected = true;
-							break;
-						}
+							submitBtn.prop("disabled", false);
+							if (emailInput.hasClass(errorClassInput) && emailLabel.hasClass(errorClassLabel)) {
+								emailInput.removeClass(errorClassInput);
+								emailInput.addClass(normalClassInput);
 
-					}
-					if (specialCharRegex.test(inputValue)) {
-						specialCharDetected = true;
-					}
+								emailLabel.removeClass(errorClassLabel);
+								emailLabel.addClass(normalClassLabel);
 
-					if (uppercaseDetected || specialCharDetected) {
-						submitBtn.prop("disabled", true);
-						if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
-							emailInput.removeClass(normalClassInput);
-							emailInput.addClass(errorClassInput);
-
-							emailLabel.removeClass(normalClassLabel);
-							emailLabel.addClass(errorClassLabel);
-
-							if (specialCharDetected) {
-								errorInput.text("Invalid email: Contains special characters");
-							} else {
-								errorInput.text("Invalid email: Contains uppercase letters");
+								emailError.hide();
 							}
-
-							errorInput.show();
 						}
-					} else {
-						submitBtn.prop("disabled", false);
-						if (emailInput.hasClass(errorClassInput) && emailLabel.hasClass(errorClassLabel)) {
-							emailInput.removeClass(errorClassInput);
-							emailInput.addClass(normalClassInput);
-
-							emailLabel.removeClass(errorClassLabel);
-							emailLabel.addClass(normalClassLabel);
-
-							errorInput.hide();
-						}
-					}
+					});
 				});
-			});
-		}
-		liveValidateEmail()
+			}
+			liveValidateEmail()
 
-		function signIn() {
-			$(document).ready(function() {
+			function signIn() {
 				let designationSelected = $("#designation-select").find(":selected").text();
 				$("#designation-select").on("change", function() {
 					designationSelected = $(this).find(":selected").text();
@@ -233,15 +290,15 @@ include 'connection/database.php';
 
 				$("#form-signin").on("submit", function(e) {
 					e.preventDefault();
-					let emailInput = $("#email").val();
-					let passInput = $("#password").val();
+					let emailInputVal = $("#email").val();
+					let passInputVal = $("#password").val();
 
 					$.ajax({
 						url: "signin_process.php",
 						type: "post",
 						data: {
-							emailSend: emailInput,
-							passSend: passInput,
+							emailSend: emailInputVal,
+							passSend: passInputVal,
 							designationSelectedSend: designationSelected
 						},
 						success: function(response) {
@@ -260,10 +317,8 @@ include 'connection/database.php';
 									signInMessage.removeClass("text-red-500");
 									signInMessage.addClass("text-green-500");
 
-
-
-									formSignIn.removeClass("border border-red-300")
-									formSignIn.addClass("border border-green-300")
+									formSignIn.removeClass("ring ring-red-200")
+									formSignIn.addClass("ring ring-green-200")
 
 									formHeader.removeClass("text-red-500");
 									formHeader.addClass("text-green-500");
@@ -275,10 +330,9 @@ include 'connection/database.php';
 										'flex-direction': 'column',
 										'justify-content': 'center',
 										'align-items': 'center'
+
 									});
 									loader.show()
-
-
 									setTimeout(function() {
 										loader.hide()
 										window.location.href = "../admin/index.php";
@@ -293,9 +347,66 @@ include 'connection/database.php';
 							} else {
 								console.log("User is not valid");
 								signInMessage.text(responseData.message);
-								formSignIn.addClass("border border-red-300");
+								formSignIn.addClass("ring ring-red-200");
 								formHeader.addClass("text-red-500");
 								formHeader.text("Can't Sign in!")
+								console.log(responseData.emptyFields.length)
+
+								if (responseData.emptyFields.length === 2) {
+									console.log("Both email and password are empty");
+
+									if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
+										emailInput.removeClass(normalClassInput);
+										emailInput.addClass(errorClassInput);
+
+										emailLabel.removeClass(normalClassLabel);
+										emailLabel.addClass(errorClassLabel);
+
+										emailError.show();
+
+									}
+									if (passInput.hasClass(normalClassInput) && passLabel.hasClass(normalClassLabel)) {
+										passInput.removeClass(normalClassInput);
+										passInput.addClass(errorClassInput);
+
+										passLabel.removeClass(normalClassLabel);
+										passLabel.addClass(errorClassLabel);
+
+										passError.show();
+									}
+
+
+
+								} else if (responseData.emptyFields[0] == "Email") {
+									console.log("email is empty")
+									submitBtn.prop("disabled", true);
+
+
+									if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
+										emailInput.removeClass(normalClassInput);
+										emailInput.addClass(errorClassInput);
+
+										emailLabel.removeClass(normalClassLabel);
+										emailLabel.addClass(errorClassLabel);
+
+										emailError.show();
+
+									}
+
+
+								} else if (responseData.emptyFields[0] == "Password") {
+
+									if (passInput.hasClass(normalClassInput) && passLabel.hasClass(normalClassLabel)) {
+										passInput.removeClass(normalClassInput);
+										passInput.addClass(errorClassInput);
+
+										passLabel.removeClass(normalClassLabel);
+										passLabel.addClass(errorClassLabel);
+
+										passError.show();
+									}
+
+								}
 							}
 						},
 						error: function(xhr, textStatus, errorThrown) {
@@ -303,11 +414,11 @@ include 'connection/database.php';
 						},
 					});
 
-				});
-			});
+				})
 
-		}
-		signIn()
+			}
+			signIn()
+		});
 	</script>
 </body>
 

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,6 +11,9 @@
 </head>
 
 <body class="relative flex min-h-screen flex-col overflow-clip bg-gray-50 font-inter">
+	<div class="absolute bottom-0 left-0 z-50">
+
+	</div>
 	<section class="flex min-h-screen flex-col items-center justify-center bg-gray-50" id="main-content">
 		<header class="container z-10">
 			<nav class="flex h-16 items-center justify-between border-b border-gray-200">
@@ -55,10 +57,12 @@
 				</div>
 			</div>
 		</main>
+
 	</section>
 	<div class="pointer-events-none absolute -bottom-20 -right-10 opacity-30">
 		<img src="./assets/refreshing.svg" alt="svg" />
 	</div>
+
 </body>
 
 </html>
