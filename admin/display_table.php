@@ -1,5 +1,5 @@
 <?php
-include './connection/database.php';
+include './database/connection.php';
 
 
 $recordsPerPage = 15;

@@ -1,14 +1,14 @@
+
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <div id="displayClientDataTable">
     </div>
 </div>
 
 <script>
-    // let toastAlert = $("#toast-alerts");
     let toastSuccess = $("#toast-success");
     let toastDanger = $("#toast-danger");
     let toastSuccessMessage = $("#toast-success-message");
-
+    let tableSearch = $("#table-search")
 
     let currentPage = localStorage.getItem("currentPage") || 1;
     $(document).ready(function() {
@@ -16,18 +16,8 @@
         deleteClientRequest();
         fetchAddressData();
         addClient();
-        displayClientTable(currentPage);
     })
 
-
-
-
-
-
-    function updateCurrentPage(page) {
-        currentPage = page;
-        localStorage.setItem("currentPage", currentPage);
-    }
 
     function displayClientTable(page, query = "") {
         $.ajax({
@@ -41,11 +31,10 @@
                 $("#displayClientDataTable").html(data);
             }
         });
-        updateCurrentPage(page)
     }
 
 
-    $("#table-search").keyup(function() {
+    tableSearch.keyup(function() {
         let query = $(this).val();
         displayClientTable(1, query);
     });

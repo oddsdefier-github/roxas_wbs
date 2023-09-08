@@ -1,3 +1,7 @@
+<?php
+include './database/connection.php';
+
+session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,6 +14,7 @@
 </head>
 
 <body class="flex h-screen w-screen overflow-clip font-inter">
+	<?php include './components/modal/modal.php'; ?>
 	<?php include './components/sidebar.php' ?>
 	<section class="flex min-h-screen grow flex-col" id="main-content">
 		<?php include './components/header.php' ?>
@@ -37,7 +42,12 @@
 	<div class="pointer-events-none absolute -bottom-20 -right-10 opacity-30">
 		<img src="./assets/refreshing.svg" alt="svg" />
 	</div>
-	<?php include './scripts/toggle.php' ?>
+
+	<script src="../js/jquery.min.js"></script>
+	<script src="../node_modules/flowbite/dist/flowbite.min.js"></script>
+
+	<script src="./js/sidebar.js"></script>
+	<script src="./js/popup.js"></script>
 </body>
 
 </html>

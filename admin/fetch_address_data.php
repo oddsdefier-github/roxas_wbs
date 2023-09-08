@@ -1,7 +1,7 @@
 <?php
-include './connection/database.php';
+include './database/connection.php';
 
-$sql = "SELECT * FROM address";
+$sql = "SELECT * FROM `address`";
 $result = mysqli_query($conn, $sql);
 
 $address_array = array();
