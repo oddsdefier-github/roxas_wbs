@@ -25,9 +25,9 @@ include 'database/connection.php';
 			<div class="flex w-full items-center justify-center">
 				<div id="logo"> <img src="./assets/quality.png" alt="water-logo" class="aspect-square pointer-events-none w-14 select-none" />
 				</div>
-				<div class="hidden absolute cursor-grab" id="cat">
+				<!-- <div class="hidden absolute cursor-grab" id="cat">
 					<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><lottie-player src="https://lottie.host/8c2976a1-843f-4829-a62b-89f62d1c17b8/8HjjcW05ZO.json" background="transparent" speed="1" style="width: 300px; height: 300px" direction="1" mode="normal" loop autoplay hover></lottie-player>
-				</div>
+				</div> -->
 			</div>
 			<form id="form-signin" class=" w-full max-w-sm bg-white px-7 py-6 shadow-xl rounded-md transition-all duration-150">
 				<div class="my-5 text-left">
@@ -113,15 +113,18 @@ include 'database/connection.php';
 	<script>
 		$(document).ready(function() {
 
-			$("#logo").click(function() {
-				$("#cat").show()
-				$("#logo").hide()
-				console.log("click")
-			});
-			$("#cat").click(function() {
-				$("#logo").show()
-				$("#cat").hide()
-			});
+			// $("#logo").click(function() {
+			// 	$("#cat").show()
+			// 	$("#logo").hide()
+			// 	console.log("click")
+			// });
+			// $("#cat").click(function() {
+			// 	$("#logo").show()
+			// 	$("#cat").hide()
+			// });
+
+
+
 			let eyeIcon = $("#eye-icon")
 
 			eyeIcon.on("click", function() {
