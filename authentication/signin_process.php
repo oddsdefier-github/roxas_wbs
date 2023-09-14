@@ -39,11 +39,18 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
                 $role_db = $row["designation"];
 
                 if ($password == $pass_db && $emailSEND == $email_db && $designationSelectedSEND == $role_db) {
+
                     session_start();
 
                     $_SESSION['loggedin'] = true;
                     $_SESSION['admin_name'] = $admin_name;
                     $_SESSION['user_role'] = $role_db;
+
+
+                    $activity = $admin_name . " ; Sign in";
+                    $sign_in_log = "INSERT INTO `logs` (`id`, `user_activity`, `user_role`, `user_name`, `datetime`) VALUES (NULL, '$activity', '$role_db', '$admin_name',current_timestamp());";
+                    $sign_in_result = mysqli_query($conn, $sign_in_log);
+
 
                     $response = array(
                         "valid" => true,

@@ -33,6 +33,7 @@ if ($_SESSION['user_role'] != "Admin") {
 
 <body class="flex h-screen w-screen overflow-hidden font-inter">
     <?php include './components/modal/modal.php'; ?>
+    <?php include './components/signout_loader.php'; ?>
     <?php include './components/sidebar.php'; ?>
 
     <section class="flex min-h-screen grow flex-col" id="main-content">

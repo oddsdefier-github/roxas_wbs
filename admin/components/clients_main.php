@@ -1,4 +1,3 @@
-
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <div id="displayClientDataTable">
     </div>
@@ -10,7 +9,6 @@
     let toastSuccessMessage = $("#toast-success-message");
     let tableSearch = $("#table-search")
 
-    let currentPage = localStorage.getItem("currentPage") || 1;
     $(document).ready(function() {
         displayClientTable();
         deleteClientRequest();
@@ -21,7 +19,7 @@
 
     function displayClientTable(page, query = "") {
         $.ajax({
-            url: "display_table.php",
+            url: "display_client_table.php",
             type: 'post',
             data: {
                 displaySend: page,
@@ -43,7 +41,7 @@
     function updateClientDetails(updateId) {
         $('#hidden-data').val(updateId);
 
-        $.post("process_update.php", {
+        $.post("update_client_req.php", {
             updateId: updateId
         }, function(data, status) {
             let dataRequest = JSON.parse(data);
@@ -213,6 +211,7 @@
                 },
                 success: function(data, status) {
 
+                    console.log(data)
                     displayClientTable();
                     $("#addClientModal").hide();
 
@@ -251,7 +250,7 @@
         $("#update-client-form").on('submit', function(event) {
             event.preventDefault();
             $.ajax({
-                url: "process_update.php",
+                url: "update_client_req.php",
                 type: 'post',
                 data: {
                     updateClientName: updateClientName,
@@ -271,7 +270,7 @@
                     toastSuccess.removeClass('hidden')
                     setTimeout(function() {
                         toastSuccess.addClass('hidden');
-                    }, 2000);
+                    }, 1500);
 
                 },
                 error: function(xhr, status, error) {
@@ -280,5 +279,35 @@
             });
         });
 
+    }
+
+    function signOut() {
+        $.ajax({
+            url: "signout.php",
+            type: "post",
+            success: function(data, status) {
+
+                console.log(JSON.parse(data))
+                console.log("SIGN OUT")
+
+                $('#signoutModal').hide();
+
+                let signOutLoading = $(".signout-loader");
+
+                signOutLoading.css({
+                    'display': 'flex',
+                    'flex-direction': 'column',
+                    'justify-content': 'center',
+                    'align-items': 'center'
+                })
+
+                signOutLoading.show();
+                setTimeout(function() {
+                    signOutLoading.hide()
+                    window.location.href = "../index.php";
+                }, 1000)
+
+            }
+        })
     }
 </script>

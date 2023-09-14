@@ -31,8 +31,10 @@ include 'database/connection.php';
 			</div>
 			<form id="form-signin" class=" w-full max-w-sm bg-white px-7 py-6 shadow-xl rounded-md transition-all duration-150">
 				<div class="my-5 text-left">
-					<h1 class="block text-2xl font-bold text-gray-800" id="form-header">Sign in</h1>
-					<p id="signin-message" class="text-sm font-medium text-red-500"></p>
+					<a href="./redirect_demo.php">
+						<h1 class="block text-2xl font-bold text-gray-800" id="form-header">Sign in</h1>
+						<p id="signin-message" class="text-sm font-medium text-red-500"></p>
+					</a>
 				</div>
 				<div class="my-4">
 					<div class="grid gap-y-4 my-2">
@@ -52,8 +54,23 @@ include 'database/connection.php';
 									<img id="check-icon" src="assets/check.svg" alt="check" class="hidden w-5 h-5">
 								</span>
 							</div>
-							<p id="email_success" class="hidden mt-2 text-xs text-green-600 dark:text-green-400"><span class="font-medium">Correct: </span> Email is valid.</p>
-							<p id="email_error" class="hidden mt-2 text-xs text-red-600 dark:text-red-400"><span class="font-medium">Empty:</span> Please type your email.</p>
+							<p id="email_success" class="hidden mt-2 text-xs text-green-600 dark:text-green-400">
+								<span class="flex justify-start items-center space-x-2">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+										<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+									</svg>
+
+									<span class="font-medium">Email input is valid.</span>
+								</span>
+							</p>
+							<p id="email_error" class="hidden mt-2 text-xs text-red-600 dark:text-red-400">
+								<span class="flex justify-start space-x-2 items-center">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+										<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+									</svg>
+									<span class="font-medium">Empty: Please type your email.</span>
+								</span>
+							</p>
 						</div>
 
 						<div>
@@ -65,9 +82,14 @@ include 'database/connection.php';
 									<img id="eye-icon" src="assets/eye-close.svg" alt="eye-close" class="w-5 h-5">
 								</span>
 							</div>
-							<p id="pass_error" class="hidden mt-2 text-xs text-red-600 dark:text-red-400"><span class="font-medium">Empty: </span> Please type your password.</p>
-							<!-- <p id="success_message" class="hidden mt-2 text-xs text-green-600 dark:text-green-400"><span class="font-medium">Well done!</span> Looks Correct.</p>
-							<p id="error_message" class="hidden mt-2 text-xs text-red-600 dark:text-red-400">Please avoid using <span class="font-medium">uppercase</span> letters!</p> -->
+							<p id="pass_error" class="hidden mt-2 text-xs text-red-600 dark:text-red-400">
+								<span class="flex justify-start space-x-2 items-center">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+										<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+									</svg>
+									<span class="font-medium">Empty: Please type your password.</span>
+								</span>
+							</p>
 						</div>
 
 						<button id="submit-btn" type="submit" name="submit" class="inline-flex items-center justify-center gap-2 rounded border border-transparent bg-primary-500 px-3 py-2 text-sm font-semibold text-white transition-all hover:bg-primary-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-offset-2">Sign in </button>
@@ -133,6 +155,10 @@ include 'database/connection.php';
 
 			let loadingMessage = $("#loading-message")
 
+			formSignIn.animate({
+				left: '250px'
+			});
+
 
 			let successClassInput = "block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-green-600 appearance-none dark:text-white dark:border-green-500 dark:focus:border-green-500 focus:outline-none focus:ring-0 focus:border-green-600 peer";
 
@@ -148,7 +174,23 @@ include 'database/connection.php';
 			let normalClassLabel = "absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
 
 
+			let errorEmailContainsSpecialChars = `
+			<span class="flex justify-start space-x-2 items-center">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+					<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+				</svg>
+				<span class="font-medium">Invalid email: Contains special characters.</span>
+			</span>
+			`;
 
+			let errorEmailContainsUpperCase = `
+			<span class="flex justify-start space-x-2 items-center">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+					<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+				</svg>
+				<span class="font-medium">Invalid email: Contains uppercase characters.</span>
+			</span>
+			`;
 			// function resetInput() {
 			// 	emailLabel.addClass(normalClassLabel);
 			// 	emailSuccess.hide();
@@ -258,12 +300,13 @@ include 'database/connection.php';
 								emailLabel.addClass(errorClassLabel);
 
 								if (specialCharDetected) {
-									emailError.text("Invalid email: Contains special characters");
+									emailError.html(errorEmailContainsSpecialChars)
 								} else {
-									emailError.text("Invalid email: Contains uppercase letters");
+									emailError.html(errorEmailContainsUpperCase)
 								}
 
 								emailError.show();
+								emailError.html(errorMessageIcon)
 							}
 						} else {
 							submitBtn.prop("disabled", false);
@@ -275,12 +318,28 @@ include 'database/connection.php';
 								emailLabel.addClass(normalClassLabel);
 
 								emailError.hide();
+
 							}
 						}
 					});
 				});
 			}
 			liveValidateEmail()
+
+			function liveValidatePass() {
+				passInput.on("input", function() {
+					if (passInput.hasClass(errorClassInput) && passLabel.hasClass(errorClassLabel)) {
+						passInput.removeClass(errorClassInput);
+						passInput.addClass(normalClassInput);
+
+						passLabel.removeClass(errorClassLabel);
+						passLabel.addClass(normalClassLabel);
+
+						passError.hide();
+					}
+				})
+			}
+			liveValidatePass()
 
 			function signIn() {
 				let designationSelected = $("#designation-select").find(":selected").text();
@@ -418,6 +477,9 @@ include 'database/connection.php';
 
 			}
 			signIn()
+
+
+
 		});
 	</script>
 </body>

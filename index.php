@@ -11,10 +11,13 @@
 </head>
 
 <body class="relative flex min-h-screen flex-col overflow-clip bg-gray-50 font-inter">
-	<div class="absolute bottom-0 left-0 z-50">
-
-	</div>
+	<style>
+		/* * {
+			outline: 1px solid red;
+		} */
+	</style>
 	<section class="flex min-h-screen flex-col items-center justify-center bg-gray-50" id="main-content">
+
 		<header class="container z-10">
 			<nav class="flex h-16 items-center justify-between border-b border-gray-200">
 				<div class="flex gap-3">
@@ -22,15 +25,15 @@
 					<h1 class="font-semibold text-gray-600 text-2xl">wbs.</h1>
 				</div>
 				<div class="flex h-full items-center justify-center gap-5">
-					<div class="mr-3 flex h-full items-center justify-center gap-3">
+					<!-- <div class="mr-3 flex h-full items-center justify-center gap-3">
 						<div class="group flex h-full items-center justify-center hover:border-b-2 hover:border-primary-600">
 							<a href="" class="font-medium group-hover:text-primary-600">About</a>
 						</div>
 						<div class="group flex h-full items-center justify-center hover:border-b-2 hover:border-primary-600">
 							<a href="" class="font-medium group-hover:text-primary-600">Profile</a>
 						</div>
-					</div>
-					<a href="./authentication/signin.php" class="rounded-md border-2 border-primary-500 px-4 py-2 font-semibold text-primary-500 hover:border-primary-600 hover:text-primary-600">Sign In</a>
+					</div> -->
+					<a href="./authentication/signin.php" class="rounded-md border-2 border-primary-400 px-4 py-2 font-semibold text-primary-400 hover:border-primary-600 hover:text-primary-600 text-sm">Sign In</a>
 				</div>
 			</nav>
 		</header>
@@ -59,9 +62,14 @@
 		</main>
 
 	</section>
-	<div class="pointer-events-none absolute -bottom-20 -right-10 opacity-30">
-		<img src="./assets/refreshing.svg" alt="svg" />
+	<div class="absolute w-screen h-screen z-50 pointer-events-none flex justify-start items-end">
+		<div class="max-w-sm absolute -bottom-16 -right-10">
+			<img src="./water-utility.png" alt="water-utility">
+		</div>
 	</div>
+	<!-- <div class="pointer-events-none absolute -bottom-20 -right-10 opacity-30">
+		<img src="./assets/refreshing.svg" alt="svg" />
+	</div> -->
 
 </body>
 
