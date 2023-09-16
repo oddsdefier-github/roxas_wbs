@@ -47,9 +47,9 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
                     $_SESSION['user_role'] = $role_db;
 
 
-                    $activity = $admin_name . " ; Sign in";
-                    $sign_in_log = "INSERT INTO `logs` (`id`, `user_activity`, `user_role`, `user_name`, `datetime`) VALUES (NULL, '$activity', '$role_db', '$admin_name',current_timestamp());";
-                    $sign_in_result = mysqli_query($conn, $sign_in_log);
+                    // $activity = $admin_name . " ; Sign in";
+                    // $sign_in_log = "INSERT INTO `logs` (`id`, `user_activity`, `user_role`, `user_name`, `datetime`) VALUES (NULL, '$activity', '$role_db', '$admin_name',current_timestamp());";
+                    // $sign_in_result = mysqli_query($conn, $sign_in_log);
 
 
                     $response = array(

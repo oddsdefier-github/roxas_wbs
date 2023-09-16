@@ -80,9 +80,9 @@ if (isset($_POST['updateID'])) {
 
                 $activity = $clientName . " ; " . $activity;
 
-                // Log the update activity
-                $update_log = "INSERT INTO `logs` (`id`, `user_activity`, `user_role`, `user_name`, `datetime`) VALUES (NULL, '$activity', '$role_db', '$admin_name', current_timestamp());";
-                $update_result = mysqli_query($conn, $update_log);
+                // // Log the update activity
+                // $update_log = "INSERT INTO `logs` (`id`, `user_activity`, `user_role`, `user_name`, `datetime`) VALUES (NULL, '$activity', '$role_db', '$admin_name', current_timestamp());";
+                // $update_result = mysqli_query($conn, $update_log);
 
                 if ($update_result) {
                     $response['success'] = true;

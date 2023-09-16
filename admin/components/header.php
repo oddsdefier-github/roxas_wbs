@@ -1,5 +1,5 @@
 <header class="z-10">
-    <nav class="flex h-16 items-center justify-between border-b border-zinc-100 px-16">
+    <nav class="flex h-16 items-center justify-between border-b border-zinc-100 px-10">
         <div>
             <button id="toggle-button" class="appearance-none p-1 focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="h-5 w-5 stroke-gray-800" id="arrow-left">

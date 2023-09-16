@@ -1,4 +1,4 @@
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div class="">
     <div id="displayClientDataTable">
     </div>
 </div>

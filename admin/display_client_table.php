@@ -22,11 +22,13 @@ $sql = "SELECT * FROM clients";
 $totalRecords = mysqli_num_rows(mysqli_query($conn, $sql));
 $totalPages = ceil($totalRecords / $recordsPerPage);
 
+$totalClients = '<div class="py-5">Total Clients: ' . $totalRecords . ' </div>';
+echo $totalClients;
 
 $table = '<table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-    <thead class="text-sm text-gray-700 uppercase bg-gray-100">
+    <thead class="text-sm text-gray-500 uppercase bg-gray-100">
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <th class="">No.&nbsp;&nbsp; <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span> </th>
+            <th class="px-6">No.</th>
             <th class="px-6 py-3">Client ID</th>
             <th class="px-6 py-3">Name</th>
             <th class="px-6 py-3">Address</th>
@@ -76,14 +78,14 @@ while ($rows = mysqli_fetch_assoc($result)) {
 
 
     $table .= '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-        <td class="text-center text-sm">' . $number . '</td>
+        <td class="px-6 py-3 text-sm">' . $number . '</td>
         <td class="px-6 py-3 text-sm">' . $client_id . '</td>
         <td class="px-6 py-3 text-sm">' . $client_name . '</td>
         <td class="px-6 py-3 text-sm">' . $client_address . '</td>
         <td class="px-6 py-3 text-sm">' . $client_property_type . '</td>
         <td class="px-6 py-3 text-sm">' . $client_email . '</td>
         <td class="px-6 py-3 text-sm">' . $client_phone_num . '</td>
-         <td class="px-6 py-3 text-sm text-gray-500 cursor-default">
+        <td class="px-6 py-3 text-sm text-gray-500 cursor-default">
             <span class="font-medium">
             '  . $readable_format . '
             </span>

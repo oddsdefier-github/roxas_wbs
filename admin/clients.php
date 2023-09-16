@@ -30,6 +30,11 @@ if ($_SESSION['user_role'] != "Admin") {
     <?php include './components/links.php'; ?>
 
 </head>
+<style>
+    /* main {
+        outline: 1px solid green;
+    } */
+</style>
 
 <body class="flex h-screen w-screen overflow-hidden font-inter">
     <?php include './components/modal/modal.php'; ?>
@@ -39,9 +44,10 @@ if ($_SESSION['user_role'] != "Admin") {
     <section class="flex min-h-screen grow flex-col" id="main-content">
         <?php include './components/alerts.php'; ?>
         <?php include './components/header.php'; ?>
+        <?php include './components/subheader.php'; ?>
         <?php include './components/table_search.php'; ?>
-        <main class="relative isolate flex flex-1 flex-col items-center justify-start overflow-auto mb-10">
-            <div class="relative overflow-x-auto">
+        <main class="relative flex flex-1 flex-col justify-start overflow-auto mb-10">
+            <div class="overflow-x-auto px-10">
                 <?php include './components/clients_main.php'; ?>
             </div>
         </main>

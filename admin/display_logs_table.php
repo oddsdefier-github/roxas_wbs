@@ -25,7 +25,7 @@ $totalPages = ceil($totalRecords / $recordsPerPage);
 
 
 $table = '<table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-    <thead class="text-sm text-gray-700 uppercase bg-gray-500 py-5">
+    <thead class="text-sm text-gray-500 uppercase bg-gray-500 py-5">
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <th class="px-1 py-3">No.&nbsp;&nbsp; <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span> </th>
             <th class="px-6 py-3">Activity</th>
