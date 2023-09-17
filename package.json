@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "flowbite": "^1.6.5",
+    "flowbite-datepicker": "^1.2.2",
     "jquery": "^3.7.1"
   }
 }

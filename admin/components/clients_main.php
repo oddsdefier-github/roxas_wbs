@@ -4,10 +4,12 @@
 </div>
 
 <script>
-    let toastSuccess = $("#toast-success");
-    let toastDanger = $("#toast-danger");
-    let toastSuccessMessage = $("#toast-success-message");
-    let tableSearch = $("#table-search")
+    const toastSuccess = $("#toast-success");
+    const toastDanger = $("#toast-danger");
+    const toastSuccessMessage = $("#toast-success-message");
+    const tableSearch = $("#table-search");
+    const recordsPerPageSelect = $("#recordsPerPage");
+
 
     $(document).ready(function() {
         displayClientTable();
@@ -16,14 +18,15 @@
         addClient();
     })
 
-
-    function displayClientTable(page, query = "") {
+    function displayClientTable(page, recordsPerPage = "10", query = "") {
         $.ajax({
             url: "display_client_table.php",
             type: 'post',
             data: {
                 displaySend: page,
-                query: query
+                query: query,
+                recordsPerPage: recordsPerPage,
+
             },
             success: function(data, status) {
                 $("#displayClientDataTable").html(data);
@@ -34,7 +37,13 @@
 
     tableSearch.keyup(function() {
         let query = $(this).val();
-        displayClientTable(1, query);
+        displayClientTable(1, "10", query);
+    });
+
+    recordsPerPageSelect.change(function() {
+        var selectedRecordsPerPage = $(this).val();
+        recordsPerPage = selectedRecordsPerPage;
+        displayClientTable(1, recordsPerPage, "");
     });
 
 

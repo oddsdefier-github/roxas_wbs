@@ -31,23 +31,30 @@ if ($_SESSION['user_role'] != "Admin") {
 
 </head>
 <style>
-    /* main {
+    /* * {
         outline: 1px solid green;
+    }
+
+    main>* div {
+        outline: 1px solid red;
     } */
 </style>
 
-<body class="flex h-screen w-screen overflow-hidden font-inter">
+<body class="flex h-screen w-screen overflow-hidden font-inter bg-gray-50">
     <?php include './components/modal/modal.php'; ?>
     <?php include './components/signout_loader.php'; ?>
     <?php include './components/sidebar.php'; ?>
 
-    <section class="flex min-h-screen grow flex-col" id="main-content">
+    <section class="flex min-h-screen grow flex-col bg-gray-100" id="main-content">
         <?php include './components/alerts.php'; ?>
         <?php include './components/header.php'; ?>
-        <?php include './components/subheader.php'; ?>
-        <?php include './components/table_search.php'; ?>
-        <main class="relative flex flex-1 flex-col justify-start overflow-auto mb-10">
-            <div class="overflow-x-auto px-10">
+        <div>
+            <?php include './components/subheader.php'; ?>
+            <?php include './components/table_search.php'; ?>
+        </div>
+        <main class="relative flex flex-1 flex-col justify-start px-10 overflow-auto">
+            <div class="flex flex-col gap-3 bg-white p-5 rounded-md shadow-md mb-10">
+                <?php include './components/clients_table_utilities.php'; ?>
                 <?php include './components/clients_main.php'; ?>
             </div>
         </main>
@@ -59,6 +66,7 @@ if ($_SESSION['user_role'] != "Admin") {
 
     <script src="../js/jquery.min.js"></script>
     <script src="../node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script src="../node_modules/flowbite/dist/datepicker.js"></script>
 
     <script src="./js/sidebar.js"></script>
     <script src="./js/popup.js"></script>
