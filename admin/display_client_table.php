@@ -1,25 +1,40 @@
 <?php
 include './database/connection.php';
 
-$recordsPerPage = isset($_POST["recordsPerPage"]) ? intval($_POST["recordsPerPage"]) : 12;
+$recordsPerPage = isset($_POST["recordsPerPage"]) ? intval($_POST["recordsPerPage"]) : 10;
 
 $page = isset($_POST["displaySend"]) ? $_POST["displaySend"] : 1;
 
 $offset = ($page - 1) * $recordsPerPage;
 
+$total_query = array();
 
 if (isset($_POST["query"]) && !empty($_POST["query"])) {
     $query = $_POST["query"];
     $sql = "SELECT * FROM clients WHERE client_name LIKE '%$query%' OR address LIKE '%$query%' ORDER BY reg_date DESC LIMIT $recordsPerPage OFFSET $offset";
+
+
+
+    $count_result = "SELECT * FROM clients WHERE client_name LIKE '%$query%' OR address LIKE '%$query%'";
+    $totalRecords = mysqli_num_rows(mysqli_query($conn, $count_result));
+    $totalPages = ceil($totalRecords / $recordsPerPage);
+
+    $total_query[] = $totalPages;
+
+    echo "TOTAL RECORDS: " . $totalRecords . "</br>";
+    echo "TOTAL PAGES: " . $totalPages;
 } else {
     $sql = "SELECT * FROM clients ORDER BY reg_date DESC LIMIT $recordsPerPage OFFSET $offset";
 }
 
 $result = mysqli_query($conn, $sql);
 
+
+$sql = "SELECT * from clients";
 $totalRecords = mysqli_num_rows(mysqli_query($conn, $sql));
 $totalPages = ceil($totalRecords / $recordsPerPage);
 
+$total_query[] = $totalPages;
 
 $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
     <thead class="text-xs text-gray-500 uppercase">
@@ -107,33 +122,38 @@ if ($number === 1) {
     echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
 } else {
     echo $table;
-    echo '<div class="flex gap-2 flex-col justify-center items-end mt-4 text-xs">';
-    echo '<div class="flex gap-2 justify-center mt-2">';
+    print_r($total_query);
 
+    if ($total_query[0] > 1) {
+        echo '<div class="flex gap-2 flex-col justify-center items-end mt-4 text-xs">';
+        echo '<div class="flex gap-2 justify-center mt-2">';
 
-    renderPaginationButton('<', $page, $totalPages);
+        renderPaginationButton('<<', $page, $totalPages);
+        renderPaginationButton('<', $page, $totalPages);
 
-    for ($i = 1; $i <= $totalPages; $i++) {
-        renderPaginationButton($i, $page, $totalPages);
+        renderPaginationButton('Current', $page, $totalPages);
+
+        renderPaginationButton('>', $page, $totalPages);
+        renderPaginationButton('>>', $page, $totalPages);
+
+        echo '</div>';
+        echo '</div>';
     }
-
-    renderPaginationButton('>', $page, $totalPages);
-
-    echo '</div>';
-    echo '</div>';
 }
-
-
 
 function renderPaginationButton($page, $currentPage, $totalPages)
 {
-    $activeClass = ($page == $currentPage) ? 'bg-indigo-500 text-white' : 'border border-gray-300 text-gray-600';
+    $recordsPerPage = intval($_POST["recordsPerPage"]);
 
     if ($page == '<' && $currentPage > 1) {
-        echo '<button class="px-3 py-2 ' . $activeClass . ' rounded" onclick="displayClientTable(' . ($currentPage - 1) . ')"> < </button>';
+        echo '<button class="px-3 py-2 border border-gray-300 text-gray-600 rounded" onclick="displayClientTable(' . ($currentPage - 1) . ', ' . $recordsPerPage . ')"> < </button>';
     } elseif ($page == '>' && $currentPage < $totalPages) {
-        echo '<button class="px-3 py-2 ' . $activeClass . ' rounded" onclick="displayClientTable(' . ($currentPage + 1) . ')"> > </button>';
-    } else {
-        echo '<button class="px-3 py-2 ' . $activeClass . ' rounded" onclick="displayClientTable(' . $page . ')"> ' . $page . ' </button>';
+        echo '<button class="px-3 py-2 border border-gray-300 text-gray-600 rounded" onclick="displayClientTable(' . ($currentPage + 1) . ' , ' . $recordsPerPage . ')"> > </button>';
+    } elseif ($page == '<<' && $currentPage > 1) {
+        echo '<button class="px-3 py-2  border border-gray-300 text-gray-600 rounded" onclick="displayClientTable(1, ' . $recordsPerPage . ')"> << </button>';
+    } elseif ($page == '>>' && $currentPage < $totalPages) {
+        echo '<button class="px-3 py-2 border border-gray-300 text-gray-600 rounded" onclick="displayClientTable(' . $totalPages . ', ' . $recordsPerPage . ')"> >> </button>';
+    } elseif ($page == 'Current') {
+        echo '<button class="px-3 py-2 bg-primary-500 text-white rounded font-medium"> ' . $currentPage . ' </button>';
     }
 }
