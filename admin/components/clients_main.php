@@ -10,12 +10,34 @@
     const tableSearch = $("#table-search");
     const recordsPerPageSelect = $("#recordsPerPage");
 
+    const searchType = $("#search-type");
+    const addressDropdown = $("#address-dropdown");
+    const searchInput = $("#search-input");
+    const clearInput = $("#clear-input");
 
     $(document).ready(function() {
         displayClientTable();
         deleteClientRequest();
         fetchAddressData();
         addClient();
+
+
+        addressDropdown.hide();
+
+        searchType.on("change", function() {
+            recordsPerPageSelect.show();
+            displayClientTable();
+            var selectedValue = $(this).val();
+
+            if (selectedValue === "address") {
+                addressDropdown.change();
+                addressDropdown.show();
+                searchInput.hide();
+            } else {
+                addressDropdown.hide();
+                searchInput.show();
+            }
+        });
     })
 
     function displayClientTable(page, recordsPerPage = "10", query = "") {
@@ -34,14 +56,38 @@
         });
     }
 
-
     tableSearch.keyup(function() {
         let query = $(this).val();
+
+        if (query.trim() === "") {
+            clearInput.hide();
+            $("#search-icon").show();
+            recordsPerPageSelect.show();
+        } else {
+            clearInput.show();
+            $("#search-icon").hide();
+            recordsPerPageSelect.hide();
+        }
         displayClientTable(1, "10", query);
     });
 
+    clearInput.click(function() {
+        recordsPerPageSelect.toggle();
+        tableSearch.val("");
+        clearInput.hide();
+        $("#search-icon").show();
+        displayClientTable(1, "10", "");
+    });
+
+    addressDropdown.change(function() {
+        recordsPerPageSelect.hide();
+        let query = $(this).find(":selected").text();
+        displayClientTable(1, "10", query);
+    });
+
+
     recordsPerPageSelect.change(function() {
-        var selectedRecordsPerPage = $(this).val();
+        let selectedRecordsPerPage = $(this).val();
         recordsPerPage = selectedRecordsPerPage;
         displayClientTable(1, recordsPerPage, "");
     });
@@ -172,19 +218,22 @@
             success: function(data, status) {
                 let dataRequest = JSON.parse(data)
                 let addressData = dataRequest.Address
-                let selectElement = $('#add_client_address');
+                $('.add_client_address').each(function() {
+                    let selectElement = $(this);
 
-                $.each(addressData, function(index, item) {
-                    let option = $('<option>', {
-                        value: item.id,
-                        text: item.barangay
+                    selectElement.empty();
 
+                    $.each(addressData, function(index, item) {
+                        let option = $('<option>', {
+                            value: item.id,
+                            text: item.barangay
+                        });
+
+                        if (index === 0) {
+                            option.prop('selected', true);
+                        }
+                        selectElement.append(option);
                     });
-
-                    if (index === 0) {
-                        option.prop('selected', true);
-                    }
-                    selectElement.append(option);
                 });
             }
         })
