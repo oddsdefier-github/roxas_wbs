@@ -31,11 +31,11 @@
         displayLogsTable(1, recordsPerPage);
     });
 
-    // filterLogsSelect.change(function() {
-    //     let selectedRecordsPerPage = $(this).val();
-    //     recordsPerPage = selectedRecordsPerPage;
-    //     displayLogsTable(1, recordsPerPage);
-    // });
+    filterLogsSelect.change(function() {
+        let selectedRecordsPerPage = $(this).val();
+        recordsPerPage = selectedRecordsPerPage;
+        displayLogsTable(1, recordsPerPage);
+    });
 
     function signOut() {
         $.ajax({
