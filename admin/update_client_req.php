@@ -41,8 +41,8 @@ if (isset($_POST['updateID'])) {
     $query_old_data = "SELECT * FROM clients WHERE id = '$requestID'";
     $query_old_data_result = mysqli_query($conn, $query_old_data);
 
-    $activity = "Updated ";
-
+    $update_description = "Updated ";
+    $field_changes = array();
 
     if ($row = mysqli_fetch_assoc($query_old_data_result)) {
         $old_client_name = $row['client_name'];
@@ -52,37 +52,56 @@ if (isset($_POST['updateID'])) {
         $old_client_phone_num = $row['phone_number'];
 
         if ($clientName != $old_client_name) {
-            $activity .= "client name";
+            $field_changes[] = "name: " . $old_client_name . " to " . $clientName;
         }
         if ($clientAddress != $old_client_address) {
-            $activity .= "client address";
+            $field_changes[] = "address: " . $old_client_address . " to " . $clientAddress;
         }
         if ($clientEmail != $old_client_email) {
-            $activity .= "client email";
+            $field_changes[] = "email: " . $old_client_email . " to " . $clientEmail;
         }
         if ($clientPropertyType != $old_client_property_type) {
-            $activity .= "client property type";
+            $field_changes[] = "property type: " . $old_client_property_type . " to " . $clientPropertyType;
         }
         if ($clientPhoneNum != $old_client_phone_num) {
-            $activity .= "phone number";
+            $field_changes[] = "phone number: " . $old_client_phone_num . " to " . $clientPhoneNum;
         }
 
-
         // Check if any fields were updated
-        if ($activity !== "Updated ") {
+        if (!empty($field_changes)) {
+            $update_description .= implode(", ", $field_changes);
+
             $sql = "UPDATE clients SET client_name = '$clientName', address = '$clientAddress', email = '$clientEmail', property_type = '$clientPropertyType', phone_number = '$clientPhoneNum' WHERE id = '$requestID'";
             $result = mysqli_query($conn, $sql);
 
             if ($result) {
                 session_start();
+
+                $currentDateTime = date("YmdHis");
+
                 $admin_name = $_SESSION['admin_name'];
                 $role_db = $_SESSION['user_role'];
 
-                $activity = $clientName . " ; " . $activity;
+                $name = explode(" ", $admin_name);
 
-                // // Log the update activity
-                // $update_log = "INSERT INTO `logs` (`id`, `user_activity`, `user_role`, `user_name`, `datetime`) VALUES (NULL, '$activity', '$role_db', '$admin_name', current_timestamp());";
-                // $update_result = mysqli_query($conn, $update_log);
+                $initials_name = "";
+                foreach ($name as $n) {
+                    $initials_name .= strtoupper(substr($n, 0, 1));
+                }
+
+                $role = $role_db[0];
+                $initials_role_db = strtoupper(substr($role, 0, 1));
+
+                $log_id = "U" . $initials_role_db . $initials_name . $currentDateTime;
+
+                $activity = "Update";
+                $description = $update_description;
+
+                $client = $_POST['updateID'];
+
+                $update_log = "INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `client_id`, `description`, `date`, `time`, `datetime`) VALUES (NULL, '$log_id', '$role_db', '$admin_name', '$activity', '$client', '$description', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);";
+
+                $result = mysqli_query($conn, $update_log);
 
                 if ($update_result) {
                     $response['success'] = true;

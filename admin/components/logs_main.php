@@ -1,21 +1,22 @@
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div class="">
     <div id="displayLogsDataTable">
 
     </div>
 </div>
 <script>
-    let tableSearch = $("#table-search")
+    const recordsPerPageSelect = $("#recordsPerPage");
+    const filterLogsSelect = $("#filter_logs");
     $(document).ready(function() {
         displayLogsTable();
     });
 
-    function displayLogsTable(page, query = "") {
+    function displayLogsTable(page, recordsPerPage = "10") {
         $.ajax({
             url: "display_logs_table.php",
             type: 'post',
             data: {
                 displaySend: page,
-                query: query
+                recordsPerPage: recordsPerPage
             },
             success: function(data, status) {
                 $("#displayLogsDataTable").html(data);
@@ -23,10 +24,18 @@
             }
         });
     }
-    tableSearch.keyup(function() {
-        let query = $(this).val();
-        displayLogsTable(1, query);
+
+    recordsPerPageSelect.change(function() {
+        let selectedRecordsPerPage = $(this).val();
+        recordsPerPage = selectedRecordsPerPage;
+        displayLogsTable(1, recordsPerPage);
     });
+
+    // filterLogsSelect.change(function() {
+    //     let selectedRecordsPerPage = $(this).val();
+    //     recordsPerPage = selectedRecordsPerPage;
+    //     displayLogsTable(1, recordsPerPage);
+    // });
 
     function signOut() {
         $.ajax({
@@ -57,5 +66,4 @@
             }
         })
     }
-
 </script>

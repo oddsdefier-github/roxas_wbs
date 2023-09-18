@@ -12,6 +12,10 @@ if (isset($_POST['deleteSend'])) {
         $client = $row['client_name'];
     }
 
+    $backup_client = "INSERT INTO clients_archive SELECT * FROM clients WHERE id = $uniqueId;";
+    $backup_result = mysqli_query($conn, $backup_client);
+
+
     $sql = "DELETE FROM clients WHERE id = ?";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $uniqueId);
@@ -20,12 +24,31 @@ if (isset($_POST['deleteSend'])) {
         echo "Record deleted successfully.";
         session_start();
 
+        $currentDateTime = date("YmdHis");
+
         $admin_name = $_SESSION['admin_name'];
         $role_db = $_SESSION['user_role'];
 
-        $activity = "Deleted " . $client;
-        $delete_client_log = "INSERT INTO `logs` (`id`, `user_activity`, `user_role`, `user_name`,`datetime`) VALUES (NULL, '$activity', '$role_db', '$admin_name',current_timestamp());";
-        $update_result = mysqli_query($conn, $delete_client_log);
+        $name = explode(" ", $admin_name);
+
+        $initials_name = "";
+        foreach ($name as $n) {
+            $initials_name .= strtoupper(substr($n, 0, 1));
+        }
+
+        $role = $role_db[0];
+        $initials_role_db = strtoupper(substr($role, 0, 1));
+
+        $log_id = "D" . $initials_role_db . $initials_name . $currentDateTime;
+
+        $activity = "Delete";
+        $description = $client . " has been deleted.";
+
+        $client = $_POST['deleteSend'];
+
+        $delete_log = "INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `client_id`, `description`, `date`, `time`, `datetime`) VALUES (NULL, '$log_id', '$role_db', '$admin_name', '$activity', '$client', '$description', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);";
+
+        $result = mysqli_query($conn, $delete_log);
     } else {
         echo "Error deleting record: " . mysqli_error($conn);
     }

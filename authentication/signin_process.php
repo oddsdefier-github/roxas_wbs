@@ -47,10 +47,29 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
                     $_SESSION['user_role'] = $role_db;
 
 
-                    // $activity = $admin_name . " ; Sign in";
-                    // $sign_in_log = "INSERT INTO `logs` (`id`, `user_activity`, `user_role`, `user_name`, `datetime`) VALUES (NULL, '$activity', '$role_db', '$admin_name',current_timestamp());";
-                    // $sign_in_result = mysqli_query($conn, $sign_in_log);
+                    $currentDateTime = date("YmdHis");
 
+                    $admin_name = $_SESSION['admin_name'];
+                    $role_db = $_SESSION['user_role'];
+
+                    $name = explode(" ", $admin_name);
+
+                    $initials_name = "";
+                    foreach ($name as $n) {
+                        $initials_name .= strtoupper(substr($n, 0, 1));
+                    }
+
+                    $role = $role_db[0];
+                    $initials_role_db = strtoupper(substr($role, 0, 1));
+
+                    $log_id = "SI" . $initials_role_db . $initials_name . $currentDateTime;
+
+                    $activity = "Sign in";
+                    $description = $admin_name . " has been signed in.";
+
+                    $sign_in_log = "INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `description`, `date`, `time`, `datetime`) VALUES (NULL, '$log_id', '$role_db', '$admin_name', '$activity', '$description', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);";
+
+                    $result = mysqli_query($conn, $sign_in_log);
 
                     $response = array(
                         "valid" => true,

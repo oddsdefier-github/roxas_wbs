@@ -1,40 +1,36 @@
 <?php
 include './database/connection.php';
 
-$recordsPerPage = isset($_POST["recordsPerPage"]) ? intval($_POST["recordsPerPage"]) : 10;
+
 
 $page = isset($_POST["displaySend"]) ? $_POST["displaySend"] : 1;
 
-$offset = ($page - 1) * $recordsPerPage;
-
-$total_query = array();
 
 if (isset($_POST["query"]) && !empty($_POST["query"])) {
+
     $query = $_POST["query"];
-    $sql = "SELECT * FROM clients WHERE client_name LIKE '%$query%' OR address LIKE '%$query%' ORDER BY reg_date DESC LIMIT $recordsPerPage OFFSET $offset";
-
-
+    $sql = "SELECT * FROM clients WHERE client_name LIKE '%$query%' OR address LIKE '%$query%' ORDER BY reg_date DESC";
 
     $count_result = "SELECT * FROM clients WHERE client_name LIKE '%$query%' OR address LIKE '%$query%'";
     $totalRecords = mysqli_num_rows(mysqli_query($conn, $count_result));
-    $totalPages = ceil($totalRecords / $recordsPerPage);
 
-    $total_query[] = $totalPages;
-
+    $recordsPerPage = $totalRecords;
     echo "TOTAL RECORDS: " . $totalRecords . "</br>";
-    echo "TOTAL PAGES: " . $totalPages;
+
+    $totalPages = 1;
+    $result = mysqli_query($conn, $sql);
+    
 } else {
+    $recordsPerPage = isset($_POST["recordsPerPage"]) ? intval($_POST["recordsPerPage"]) : 10;
+    $offset = ($page - 1) * $recordsPerPage;
     $sql = "SELECT * FROM clients ORDER BY reg_date DESC LIMIT $recordsPerPage OFFSET $offset";
+    $result = mysqli_query($conn, $sql);
+
+    $sql = "SELECT * from clients";
+    $totalRecords = mysqli_num_rows(mysqli_query($conn, $sql));
+    $totalPages = ceil($totalRecords / $recordsPerPage);
 }
 
-$result = mysqli_query($conn, $sql);
-
-
-$sql = "SELECT * from clients";
-$totalRecords = mysqli_num_rows(mysqli_query($conn, $sql));
-$totalPages = ceil($totalRecords / $recordsPerPage);
-
-$total_query[] = $totalPages;
 
 $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
     <thead class="text-xs text-gray-500 uppercase">
@@ -122,9 +118,8 @@ if ($number === 1) {
     echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
 } else {
     echo $table;
-    print_r($total_query);
 
-    if ($total_query[0] > 1) {
+    if ($totalPages > 1 && empty($_POST["query"])) {
         echo '<div class="flex gap-2 flex-col justify-center items-end mt-4 text-xs">';
         echo '<div class="flex gap-2 justify-center mt-2">';
 

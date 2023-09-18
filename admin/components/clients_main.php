@@ -83,6 +83,7 @@
         recordsPerPageSelect.hide();
         let query = $(this).find(":selected").text();
         displayClientTable(1, "10", query);
+        $(".pagination").hide()
     });
 
 
