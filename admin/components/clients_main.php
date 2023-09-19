@@ -182,6 +182,7 @@
                     deleteSend: delId,
                 },
                 success: function(data, status) {
+                    console.log(data)
                     closeModal();
                     displayClientTable();
 
@@ -333,10 +334,24 @@
                     displayClientTable();
                     console.log("Updated");
 
-                    toastSuccess.removeClass('hidden')
+                    // toastSuccess.removeClass('hidden')
+                    // setTimeout(function() {
+                    //     toastSuccess.addClass('hidden');
+                    // }, 1500);
+
+                    toastSuccess.addClass('visible');
+                    // const delMessage = JSON.parse(data)
+                    // $("#del-message").text(delMessage.del_client);
+
                     setTimeout(function() {
-                        toastSuccess.addClass('hidden');
-                    }, 1500);
+                        toastSuccess.removeClass('visible');
+                    }, 2000);
+
+                    $("#toast-success [aria-label='Close']").click(function() {
+                        toastSuccess.removeClass('visible');
+                    });
+
+
 
                 },
                 error: function(xhr, status, error) {

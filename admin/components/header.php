@@ -1,4 +1,4 @@
-<header class="z-10">
+<header>
     <nav class="flex h-16 items-center justify-between border-b border-zinc-100 px-10">
         <div>
             <button id="toggle-button" class="appearance-none p-1 focus:outline-none">

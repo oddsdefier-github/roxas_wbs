@@ -10,7 +10,16 @@
         opacity: 1;
     }
 
-    
+    #toast-success {
+        transform: translateY(100%);
+        opacity: 0;
+        transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease-in-out;
+    }
+
+    #toast-success.visible {
+        transform: translateY(0);
+        opacity: 1;
+    }
 </style>
 <div class=" absolute bottom-0 left-28 z-50" id="toast-danger">
     <div class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800" role="alert">
@@ -30,7 +39,7 @@
     </div>
 
 </div>
-<div class="hidden absolute bottom-0 left-28 z-50" id="toast-success">
+<div class="absolute bottom-0 left-28 z-50" id="toast-success">
     <div class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800" role="alert">
         <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200" id="toast-message">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
