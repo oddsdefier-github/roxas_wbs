@@ -45,7 +45,7 @@ if ($_SESSION['user_role'] != "Admin") {
     <?php include './components/signout_loader.php'; ?>
     <?php include './components/sidebar.php'; ?>
 
-    <section class="flex min-h-screen grow flex-col bg-gray-100" id="main-content">
+    <section class="flex min-h-screen grow flex-col bg-gray-100">
         <?php include './components/alerts.php'; ?>
         <?php include './components/header.php'; ?>
         <div>

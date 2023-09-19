@@ -139,24 +139,24 @@ include 'database/connection.php';
 			$("select > option").addClass("py-5");
 
 
-			let emailInput = $("#email");
-			let passInput = $("#password");
-			let emailLabel = $("#email_label");
-			let passLabel = $("#password_label");
-			let emailSuccess = $("#email_success");
-			let emailError = $("#email_error");
-			let passError = $("#pass_error");
-			let checkIcon = $("#check-icon");
+			const emailInput = $("#email");
+			const passInput = $("#password");
+			const emailLabel = $("#email_label");
+			const passLabel = $("#password_label");
+			const emailSuccess = $("#email_success");
+			const emailError = $("#email_error");
+			const passError = $("#pass_error");
+			const checkIcon = $("#check-icon");
 
 
-			let loader = $(".loader");
-			let formSignIn = $("#form-signin");
-			let submitBtn = $("#submit-btn");
+			const loader = $(".loader");
+			const formSignIn = $("#form-signin");
+			const submitBtn = $("#submit-btn");
 
-			let formHeader = $("#form-header")
-			let signInMessage = $("#signin-message");
+			const formHeader = $("#form-header")
+			const signInMessage = $("#signin-message");
 
-			let loadingMessage = $("#loading-message")
+			const loadingMessage = $("#loading-message")
 
 			formSignIn.animate({
 				left: '250px'
@@ -483,6 +483,15 @@ include 'database/connection.php';
 
 
 
+			$("#designation-select").on("change", function() {
+				if ($("#designation-select").find(":selected").text() === "Meter Reader") {
+					emailInput.val("rogenevito@gmail.com");
+					passInput.val("rogene123");
+				} else {
+					emailInput.val("test");
+					passInput.val("test");
+				}
+			});
 		});
 	</script>
 </body>

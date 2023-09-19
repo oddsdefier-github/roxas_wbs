@@ -10,13 +10,14 @@
         displayLogsTable();
     });
 
-    function displayLogsTable(page, recordsPerPage = "10") {
+    function displayLogsTable(page, recordsPerPage = "10", filterLogs = "") {
         $.ajax({
             url: "display_logs_table.php",
             type: 'post',
             data: {
                 displaySend: page,
-                recordsPerPage: recordsPerPage
+                recordsPerPage: recordsPerPage,
+                filterLogs: filterLogs
             },
             success: function(data, status) {
                 $("#displayLogsDataTable").html(data);
@@ -32,9 +33,8 @@
     });
 
     filterLogsSelect.change(function() {
-        let selectedRecordsPerPage = $(this).val();
-        recordsPerPage = selectedRecordsPerPage;
-        displayLogsTable(1, recordsPerPage);
+        let selectedFilter = $(this).val();
+        displayLogsTable(1, "10", selectedFilter);
     });
 
     function signOut() {

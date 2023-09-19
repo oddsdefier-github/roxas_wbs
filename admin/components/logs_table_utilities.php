@@ -1,16 +1,15 @@
 <div class="block">
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-end gap-3">
         <div class="flex gap-3">
-            <h1 class="text-xl font-bold text-gray-500">Logs</h1>
-            <!-- <div class="text-sm uppercase text-gray-400">
-                <select id="filter_logs" name="filter_logs" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2">
-                    <option value="all">ALL</option>
-                    <option value="update">UPDATE</option>
-                    <option value="delete">DELETE</option>
-                    <option value="sign_in">SIGN IN</option>
-                    <option value="sign_out">SIGN OUT</option>
+            <div class="text-sm uppercase text-gray-400">
+                <select id="filter_logs" name="filter_logs" class="w-fit bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2">
+                    <option value="">all</option>
+                    <option value="Update">update</option>
+                    <option value="Delete">delete</option>
+                    <option value="Sign in">sign in</option>
+                    <option value="Sign out">sign out</option>
                 </select>
-            </div> -->
+            </div>
         </div>
         <div class="text-sm uppercase text-gray-400">
             <select id="recordsPerPage" name="recordsPerPage" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2">

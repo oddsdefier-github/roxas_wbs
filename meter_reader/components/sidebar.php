@@ -4,20 +4,20 @@
     }
 </style> -->
 
-<aside class="z-10 flex min-h-screen cursor-pointer bg-primary-700 text-gray-50 text-sm">
+<aside class="z-10 flex min-h-screen cursor-pointer bg-primary-600 text-gray-50 text-sm">
     <div class="h-full w-64 px-3 py-5" id="sidebar">
         <div>
             <!-- <div>
                 <p class="py-3 px-5 font-bold text-xl">wbs.</p>
             </div> -->
 
-            <div class="flex h-full px-5 py-3 gap-3 rounded-md shadow-md" style="border: 2px solid #4f46e5;">
+            <div class="flex h-full px-5 py-3 gap-3 rounded-md" style="border: 2px solid #6366f1;">
                 <div>
-                    <img class=" w-10 h-10 rounded-full cursor-pointer p-1" style="border: 3px solid #4f46e5;" src="https://play-lh.googleusercontent.com/O8mvDQlw4AwmGfUrh4lviZD_PwwhRHz2etA25F77SbXrm3qEHOt2826aNkKar4D0yw" alt="User dropdown">
+                    <img class=" w-10 h-10 rounded-full cursor-pointer p-1" style="border: 3px solid #6366f1;" src="https://play-lh.googleusercontent.com/O8mvDQlw4AwmGfUrh4lviZD_PwwhRHz2etA25F77SbXrm3qEHOt2826aNkKar4D0yw" alt="User dropdown">
                 </div>
                 <div class="flex flex-col justify-center items-start">
                     <h5 class="font-medium"><?php echo $_SESSION['admin_name']; ?></h5>
-                    <h6 class="font-medium text-xs" style="color: #818cf8;"><?php echo $_SESSION['user_role']; ?></h6>
+                    <h6 class="font-medium text-xs" style="color: #a5b4fc;"><?php echo $_SESSION['user_role']; ?></h6>
                 </div>
             </div>
 

@@ -2,21 +2,32 @@
 include './database/connection.php';
 session_start();
 
-$recordsPerPage = isset($_POST["recordsPerPage"]) ? intval($_POST["recordsPerPage"]) : 10;
 
 $page = isset($_POST["displaySend"]) ? $_POST["displaySend"] : 1;
 
-$offset = ($page - 1) * $recordsPerPage;
 
-// Remove the code related to the query parameter
+if (isset($_POST["filterLogs"]) && !empty($_POST["filterLogs"])) {
+    $filterLogs = $_POST["filterLogs"];
+    $sql = "SELECT * FROM logs WHERE user_activity LIKE '%$filterLogs%' ORDER BY datetime DESC";
 
-$sql = "SELECT * FROM logs ORDER BY datetime DESC LIMIT $recordsPerPage OFFSET $offset";
+    $count_result = "SELECT * FROM logs WHERE user_activity LIKE '%$filterLogs%'";
+    $totalRecords = mysqli_num_rows(mysqli_query($conn, $count_result));
 
-$result = mysqli_query($conn, $sql);
+    $recordsPerPage = $totalRecords;
+    $totalPages = 1;
+    $result = mysqli_query($conn, $sql);
+} else {
+    $recordsPerPage = isset($_POST["recordsPerPage"]) ? intval($_POST["recordsPerPage"]) : 10;
+    $offset = ($page - 1) * $recordsPerPage;
+    $sql = "SELECT * FROM logs ORDER BY datetime DESC LIMIT $recordsPerPage OFFSET $offset";
 
-$sql = "SELECT * FROM logs";
-$totalRecords = mysqli_num_rows(mysqli_query($conn, $sql));
-$totalPages = ceil($totalRecords / $recordsPerPage);
+    $result = mysqli_query($conn, $sql);
+
+    $sql = "SELECT * FROM logs";
+    $totalRecords = mysqli_num_rows(mysqli_query($conn, $sql));
+    $totalPages = ceil($totalRecords / $recordsPerPage);
+}
+
 
 $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
     <thead class="text-xs text-gray-500 uppercase">
@@ -166,19 +177,21 @@ if ($number === 1) {
     echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No logs found</div>';
 } else {
     echo $table;
-    echo '<div class="flex gap-2 flex-col justify-center items-end mt-4 text-xs">';
-    echo '<div class="flex gap-2 justify-center mt-2">';
+    if ($totalPages > 1 && empty($_POST["query"])) {
+        echo '<div class="flex gap-2 flex-col justify-center items-end mt-4 text-xs">';
+        echo '<div class="flex gap-2 justify-center mt-2">';
 
-    renderPaginationButton('<<', $page, $totalPages);
-    renderPaginationButton('<', $page, $totalPages);
+        renderPaginationButton('<<', $page, $totalPages);
+        renderPaginationButton('<', $page, $totalPages);
 
-    renderPaginationButton('Current', $page, $totalPages);
+        renderPaginationButton('Current', $page, $totalPages);
 
-    renderPaginationButton('>', $page, $totalPages);
-    renderPaginationButton('>>', $page, $totalPages);
+        renderPaginationButton('>', $page, $totalPages);
+        renderPaginationButton('>>', $page, $totalPages);
 
-    echo '</div>';
-    echo '</div>';
+        echo '</div>';
+        echo '</div>';
+    }
 }
 
 function renderPaginationButton($page, $currentPage, $totalPages)

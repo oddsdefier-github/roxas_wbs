@@ -1,5 +1,5 @@
-<header class="z-10">
-    <nav class="flex h-16 items-center justify-between border-b border-zinc-100 px-10">
+<header class="py-3 border-b border-gray-200">
+    <nav class="flex items-center justify-between ">
         <div>
             <button id="toggle-button" class="appearance-none p-1 focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="h-5 w-5 stroke-gray-800" id="arrow-left">
@@ -11,6 +11,7 @@
             </button>
         </div>
         <div class="flex h-full items-center justify-center gap-5">
+
             <div>
                 <img id="avatarButton" type="button" data-dropdown-toggle="userDropdown" data-dropdown-placement="bottom-start" class=" w-10 h-10 rounded-full cursor-pointer" src="https://play-lh.googleusercontent.com/O8mvDQlw4AwmGfUrh4lviZD_PwwhRHz2etA25F77SbXrm3qEHOt2826aNkKar4D0yw" alt="User dropdown">
 
@@ -40,7 +41,10 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </nav>
 </header>
+
+<script>
+
+</script>
