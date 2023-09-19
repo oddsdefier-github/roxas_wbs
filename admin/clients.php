@@ -17,6 +17,7 @@ if ($_SESSION['user_role'] != "Admin") {
     session_destroy();
     echo '<script>window.location.href = "../authentication/signin.php";</script>';
 }
+
 ?>
 
 <!DOCTYPE html>

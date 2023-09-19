@@ -1,4 +1,18 @@
-<div class="hidden absolute bottom-0 left-28 z-50" id="toast-danger">
+<style>
+    #toast-danger {
+        transform: translateY(100%);
+        opacity: 0;
+        transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease-in-out;
+    }
+
+    #toast-danger.visible {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    
+</style>
+<div class=" absolute bottom-0 left-28 z-50" id="toast-danger">
     <div class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800" role="alert">
         <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200" id="toast-message">
             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -6,7 +20,7 @@
             </svg>
             <span class="sr-only">Error icon</span>
         </div>
-        <div class="ml-3 text-sm font-normal">Client has been deleted.</div>
+        <div class="ml-3 text-xs font-normal px-3"><span class="font-medium text-sm" id="del-message"></span> </br> has been deleted.</div>
         <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-danger" aria-label="Close">
             <span class="sr-only">Close</span>
             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">

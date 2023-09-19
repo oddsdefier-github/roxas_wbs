@@ -1,9 +1,11 @@
 <?php
 include './database/connection.php';
 
-if (isset($_POST['deleteSend'])) {
-    $uniqueId = $_POST['deleteSend'];
 
+
+if (isset($_POST['deleteSend'])) {
+
+    $uniqueId = $_POST['deleteSend'];
 
     $select_client = "SELECT client_name FROM clients WHERE id = '$uniqueId'";
     $select_client_result = mysqli_query($conn, $select_client);
@@ -21,7 +23,13 @@ if (isset($_POST['deleteSend'])) {
     mysqli_stmt_bind_param($stmt, "i", $uniqueId);
 
     if (mysqli_stmt_execute($stmt)) {
-        echo "Record deleted successfully.";
+
+        $delete_result = array(
+            "del_client" => $client
+        );
+
+        echo json_encode($delete_result);
+
         session_start();
 
         $currentDateTime = date("YmdHis");

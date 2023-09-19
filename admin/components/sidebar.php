@@ -24,7 +24,7 @@
 
             <div class="mt-5">
                 <ul class="">
-                    <li class="py-3 px-5 font-medium uppercase text-gray-400">Main</li>
+                    <li class="py-3 px-5 font-medium uppercase" style="color: #818cf8">Main</li>
                     <ul class="">
                         <li>
                             <a href="" class="flex items-center justify-between px-3 py-3 rounded-md hover:bg-indigo-400">
@@ -101,7 +101,7 @@
                     </ul>
                 </ul>
                 <ul class="w-full">
-                    <li class="py-3 px-5 font-medium uppercase text-gray-400">Settings</li>
+                    <li class="py-3 px-5 font-medium uppercase" style="color: #818cf8">Settings</li>
                     <li>
                         <a href="" class="flex items-center justify-between gap-2 rounded-md px-3 py-3 hover:bg-indigo-400">
                             <span class="flex items-center gap-2">

@@ -21,7 +21,6 @@
         fetchAddressData();
         addClient();
 
-
         addressDropdown.hide();
 
         searchType.on("change", function() {
@@ -141,7 +140,6 @@
     }
 
 
-
     function deletePopUp(delId) {
         $('#hidden-delId').val(delId);
 
@@ -167,6 +165,7 @@
     }
 
 
+
     function deleteClientRequest() {
         let $deleteClientModal = $('#deleteClientModal');
         let $cancelDelete = $("#cancel-deleteClient");
@@ -183,14 +182,22 @@
                     deleteSend: delId,
                 },
                 success: function(data, status) {
-
                     closeModal();
                     displayClientTable();
 
-                    toastDanger.removeClass('hidden')
+                    toastDanger.addClass('visible');
+                    const delMessage = JSON.parse(data)
+                    $("#del-message").text(delMessage.del_client);
+
+
                     setTimeout(function() {
-                        toastDanger.addClass('hidden');
-                    }, 3000);
+                        toastDanger.removeClass('visible');
+                    }, 2000);
+
+                    $("#toast-danger [aria-label='Close']").click(function() {
+                        toastDanger.removeClass('visible');
+                    });
+
                 },
 
                 error: function(xhr, status, error) {
