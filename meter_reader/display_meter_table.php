@@ -38,7 +38,6 @@ $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
             <span class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
             <th class="px-6 py-4">Property Type</th>
             <th class="px-6 py-4">Address</th>
-            <th class="px-6 py-4">Previous Reading</th>
             <th class="px-6 py-4">Current Reading</th>
             <th class="px-6 py-4">Action</th>
         </tr>
@@ -91,7 +90,6 @@ while ($rows = mysqli_fetch_assoc($result)) {
         <td class="px-6 py-3 text-sm hover:text-primary-500"><a target="_blank" href="./client_profile.php?client_id=' . $client_id . '">' . $client_name . '</a></td>
         <td class="px-6 py-3 text-sm">' . $client_property_type . '</td>
         <td class="px-6 py-3 text-sm">' . $client_address . '</td>
-        <td class="px-6 py-3 text-sm">' . $prev_reading . '</td>
         <td class="px-6 py-3 text-sm">' . $current_reading . '</td>
 
         <td class="px-6 py-3">

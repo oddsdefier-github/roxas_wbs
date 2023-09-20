@@ -386,7 +386,7 @@
                 setTimeout(function() {
                     signOutLoading.hide()
                     window.location.href = "../index.php";
-                }, 1000)
+                }, 500)
 
             }
         })

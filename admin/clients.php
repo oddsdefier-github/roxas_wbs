@@ -60,7 +60,7 @@ if ($_SESSION['user_role'] != "Admin") {
             </div>
         </main>
     </section>
-
+    <?php include './components/notification.php'; ?>
     <?php include './components/modal/update_client_modal.php'; ?>
     <?php include './components/modal/add_client_modal.php'; ?>
 

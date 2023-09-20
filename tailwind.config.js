@@ -8,7 +8,10 @@ module.exports = {
     "./admin/**/*.{html,php,js}",
     "./meter_reader/**/*.{html,php,js}",
     "./index.php",
-    "./node_modules/flowbite/**/*.js"
+    "./node_modules/flowbite/**/*.js",
+    "./**/*.html",
+    "./**/*.php",
+    "./**/*.js"
   ],
   theme: {
     extend: {
