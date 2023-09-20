@@ -60,19 +60,19 @@ if ($_SESSION['user_role'] != "Admin") {
             </div>
         </main>
     </section>
+    
     <?php include './components/notification.php'; ?>
     <?php include './components/modal/update_client_modal.php'; ?>
     <?php include './components/modal/add_client_modal.php'; ?>
 
 
-    <script src="../js/jquery.min.js"></script>
-    <script src="../node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script src="../node_modules/flowbite/dist/datepicker.js"></script>
+    <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="./assets/libs/flowbite/dist/flowbite.min.js"></script>
+    <script src="./assets/libs/flowbite/dist/datepicker.min.js"></script>
 
-    <script src="./js/sidebar.js"></script>
-    <script src="./js/popup.js"></script>
+    <script src="./assets/js/sidebar.js"></script>
+    <script src="./assets/js/popup.js"></script>
 </body>
-
 </html>
 <?php
 mysqli_close($conn);

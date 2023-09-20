@@ -206,9 +206,6 @@
     const tabMenu = $("#tab-menu");
     const tabSubMenu = $("#tab-submenu");
 
-
-
-
     $(document).ready(function() {
 
         var currentUrl = window.location.href;
