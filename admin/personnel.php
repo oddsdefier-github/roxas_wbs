@@ -1,5 +1,4 @@
 <?php
-
 include './database/connection.php';
 
 session_start();
@@ -17,7 +16,6 @@ if ($_SESSION['user_role'] != "Admin") {
     session_destroy();
     echo '<script>window.location.href = "../authentication/signin.php";</script>';
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -55,12 +53,8 @@ if ($_SESSION['user_role'] != "Admin") {
         </div>
         <main class="relative flex flex-1 flex-col justify-start px-10 overflow-auto">
             <div class="flex flex-col gap-5 bg-white p-5 rounded-md shadow-md mb-10">
-                <div>
-                    <?php
-
-                    include './components/client_profile_main.php';
-                    ?>
-                </div>
+                <?php include './components/clients_table_utilities.php'; ?>
+                <?php include './components/clients_main.php'; ?>
             </div>
         </main>
     </section>
@@ -72,7 +66,7 @@ if ($_SESSION['user_role'] != "Admin") {
 
     <?php include './layouts/scripts.php'; ?>
     <script>
-        $("#subheader-title").text("Clients Logs")
+        $("#subheader-title").text("Personnel")
     </script>
 </body>
 

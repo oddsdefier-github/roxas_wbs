@@ -1,6 +1,5 @@
 <?php
 include './database/connection.php';
-include './database/query_all.php';
 
 session_start();
 if (!isset($_SESSION['loggedin'])) {
@@ -17,7 +16,6 @@ if ($_SESSION['user_role'] != "Admin") {
     session_destroy();
     echo '<script>window.location.href = "../authentication/signin.php";</script>';
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -28,9 +26,9 @@ if ($_SESSION['user_role'] != "Admin") {
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clients</title>
-    <?php include './components/links.php'; ?>
-
+    <?php include './layouts/links.php'; ?>
 </head>
+
 <style>
     /* * {
         outline: 1px solid green;
@@ -44,11 +42,11 @@ if ($_SESSION['user_role'] != "Admin") {
 <body class="flex h-screen w-screen overflow-hidden font-inter bg-gray-50">
     <?php include './components/modal/modal.php'; ?>
     <?php include './components/signout_loader.php'; ?>
-    <?php include './components/sidebar.php'; ?>
+    <?php include './layouts/sidebar.php'; ?>
 
     <section class="flex min-h-screen grow flex-col bg-gray-100">
         <?php include './components/alerts.php'; ?>
-        <?php include './components/header.php'; ?>
+        <?php include './layouts/header.php'; ?>
         <div>
             <?php include './components/subheader.php'; ?>
             <?php include './components/table_search.php'; ?>
@@ -60,19 +58,15 @@ if ($_SESSION['user_role'] != "Admin") {
             </div>
         </main>
     </section>
-    
+
     <?php include './components/notification.php'; ?>
     <?php include './components/modal/update_client_modal.php'; ?>
     <?php include './components/modal/add_client_modal.php'; ?>
 
 
-    <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="./assets/libs/flowbite/dist/flowbite.min.js"></script>
-    <script src="./assets/libs/flowbite/dist/datepicker.min.js"></script>
-
-    <script src="./assets/js/sidebar.js"></script>
-    <script src="./assets/js/popup.js"></script>
+    <?php include './layouts/scripts.php'; ?>
 </body>
+
 </html>
 <?php
 mysqli_close($conn);
