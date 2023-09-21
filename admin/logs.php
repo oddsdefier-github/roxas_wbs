@@ -37,7 +37,7 @@ if ($_SESSION['user_role'] != "Admin") {
 
     <section class="flex min-h-screen grow flex-col bg-gray-100">
         <?php include './layouts/header.php'; ?>
-        <div>
+        <div class="py-3">
             <?php include './components/subheader.php'; ?>
         </div>
         <main class="relative flex flex-1 flex-col justify-start px-10 overflow-auto">

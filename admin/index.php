@@ -3,4 +3,4 @@ include './database/connection.php';
 
 session_start();
 
-header("Location: clients.php");
+header("Location: dashboard.php");

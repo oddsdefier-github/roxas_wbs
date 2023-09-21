@@ -10,7 +10,4 @@ $(document).ready(function () {
         arrowLeft.toggleClass("hidden");
         arrowRight.toggleClass("hidden");
     });
-
-
-
 })

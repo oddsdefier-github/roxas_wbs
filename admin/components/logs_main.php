@@ -4,7 +4,7 @@
     </div>
 </div>
 <script>
-    const recordsPerPageSelect = $("#recordsPerPage");
+    const logsPerPage = $("#recordsPerPage");
     const filterLogsSelect = $("#filter_logs");
     $(document).ready(function() {
         displayLogsTable();
@@ -26,7 +26,7 @@
         });
     }
 
-    recordsPerPageSelect.change(function() {
+    logsPerPage.change(function() {
         let selectedRecordsPerPage = $(this).val();
         recordsPerPage = selectedRecordsPerPage;
         displayLogsTable(1, recordsPerPage);

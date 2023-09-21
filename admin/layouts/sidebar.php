@@ -2,7 +2,8 @@
     .submenu-container {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.2s ease-out;
+        transition: max-height 0.2s;
+        transition-delay: 0s;
     }
 
     .submenu-container.open {
@@ -17,7 +18,7 @@
                     <img class=" w-10 h-10 rounded-full cursor-pointer p-1 ring-2 ring-primary-300" src="https://play-lh.googleusercontent.com/O8mvDQlw4AwmGfUrh4lviZD_PwwhRHz2etA25F77SbXrm3qEHOt2826aNkKar4D0yw" alt="User dropdown">
                 </div>
                 <div class="flex flex-col justify-center items-start">
-                    <h5 class="font-medium"><?php echo $_SESSION['admin_name']; ?></h5>
+                    <h5 class="font-medium text-xs"><?php echo $_SESSION['admin_name']; ?></h5>
                     <h6 class="font-medium text-xs" style="color: #a5b4fc;"><?php echo $_SESSION['user_role']; ?></h6>
                 </div>
             </div>
@@ -44,7 +45,7 @@
                             </a>
                         </li>
                         <li class="my-2">
-                            <a href="" class="flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600" id="tab-menu">
+                            <a href="" class="tab-menu flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
                                 <div class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="w-4 h-4">
@@ -119,19 +120,49 @@
                             </a>
                         </li>
                         <li class="my-2">
-                            <a href="application.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
-                                <span class="flex items-center gap-2">
+                            <a href="" class="tab-menu flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
+                                <div class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="w-4 h-4">
+                                            <path d="M256 464c-114.69 0-208-93.31-208-208S141.31 48 256 48s208 93.31 208 208-93.31 208-208 208zm0-384c-97 0-176 79-176 176s79 176 176 176 176-78.95 176-176S353.05 80 256 80z" />
+                                            <path d="M323.67 292c-17.4 0-34.21-7.72-47.34-21.73a83.76 83.76 0 01-22-51.32c-1.47-20.7 4.88-39.75 17.88-53.62S303.38 144 323.67 144c20.14 0 38.37 7.62 51.33 21.46s19.47 33 18 53.51a84 84 0 01-22 51.3C357.86 284.28 341.06 292 323.67 292zm55.81-74zM163.82 295.36c-29.76 0-55.93-27.51-58.33-61.33-1.23-17.32 4.15-33.33 15.17-45.08s26.22-18 43.15-18 32.12 6.44 43.07 18.14 16.5 27.82 15.25 45c-2.44 33.77-28.6 61.27-58.31 61.27zM420.37 355.28c-1.59-4.7-5.46-9.71-13.22-14.46-23.46-14.33-52.32-21.91-83.48-21.91-30.57 0-60.23 7.9-83.53 22.25-26.25 16.17-43.89 39.75-51 68.18-1.68 6.69-4.13 19.14-1.51 26.11a192.18 192.18 0 00232.75-80.17zM163.63 401.37c7.07-28.21 22.12-51.73 45.47-70.75a8 8 0 00-2.59-13.77c-12-3.83-25.7-5.88-42.69-5.88-23.82 0-49.11 6.45-68.14 18.17-5.4 3.33-10.7 4.61-14.78 5.75a192.84 192.84 0 0077.78 86.64l1.79-.14a102.82 102.82 0 013.16-20.02z" />
                                         </svg>
                                     </div>
                                     <p class="ml-2">Application</p>
-                                </span>
+                                </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
                                     <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                                 </svg>
                             </a>
+
+                            <ul class="px-3 submenu-container">
+                                <li class="my-2">
+                                    <a href="clients_application.php" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
+                                        <span class="gap-2 flex items-center">
+                                            <div class="p-1 rounded-md">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                                                    <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
+                                                </svg>
+                                            </div>
+                                            <p class="text-gray-100 text-xs group-hover:text-primary-300">Clients</p>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="my-2">
+                                    <a href="personnel_application.php" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
+                                        <span class="gap-2 flex items-center">
+                                            <div class="p-1 rounded-md">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zM6 8a2 2 0 11-4 0 2 2 0 014 0zM1.49 15.326a.78.78 0 01-.358-.442 3 3 0 014.308-3.516 6.484 6.484 0 00-1.905 3.959c-.023.222-.014.442.025.654a4.97 4.97 0 01-2.07-.655zM16.44 15.98a4.97 4.97 0 002.07-.654.78.78 0 00.357-.442 3 3 0 00-4.308-3.517 6.484 6.484 0 011.907 3.96 2.32 2.32 0 01-.026.654zM18 8a2 2 0 11-4 0 2 2 0 014 0zM5.304 16.19a.844.844 0 01-.277-.71 5 5 0 019.947 0 .843.843 0 01-.277.71A6.975 6.975 0 0110 18a6.974 6.974 0 01-4.696-1.81z" />
+                                                </svg>
+
+                                            </div>
+                                            <p class="text-gray-100 text-xs group-hover:text-primary-300">Personnel</p>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+
                         </li>
                         <li class="my-2">
                             <a href="logs.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
@@ -191,8 +222,7 @@
 
 <script>
     $(document).ready(function() {
-        const tabMenu = $("#tab-menu");
-
+        const tabMenu = $(".tab-menu");
 
         let currentPath = window.location.pathname.split("/")[0];
         currentPath = location.pathname == "/" ? "index.php" : location.pathname.substring(1);
@@ -201,30 +231,29 @@
 
         $(".tab").each(function() {
 
-
             if (currentPath === "/") {
                 currentPath = "index.php";
             }
             if ($(this).attr("href") === currentPath) {
                 if ($(this).closest("ul").hasClass("submenu-container")) {
-                    $(this).closest(".submenu-container").siblings("a").addClass("bg-primary-600");
+                    $(this).closest(".submenu-container").siblings("a").addClass("bg-primary-600 shadow");
                     $(this).closest("ul").toggleClass("open");
                     $(this).addClass("text-primary-300");
-                    console.log("Added text-primary-300 class");
-
                     $(this).find("p").addClass("text-primary-300");
-                    console.log("Added text-primary-600 class to <p> elements");
+
                 } else {
-                    $(this).addClass("bg-primary-600");
+                    $(this).addClass("bg-primary-600 shadow");
                     $(this).closest("ul").toggleClass("open");
                 }
             }
         });
         const tabSubMenuContainer = $(".submenu-container");
-        tabMenu.on("click", function(event) {
-            event.preventDefault();
-            tabSubMenuContainer.toggleClass("open");
-        });
+        tabMenu.each(function() {
+            $(this).on("click", function(event) {
+                event.preventDefault();
+                $(this).siblings("ul").toggleClass("open");
+            });
+        })
 
     });
 </script>

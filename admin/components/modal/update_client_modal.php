@@ -15,7 +15,7 @@
         z-index: -1;
     }
 </style>
-<section data-popup="modal" id="updateClientModal" class="absolute h-screen w-screen z-50 hidden">
+<section id="updateClientModal" class="absolute h-screen w-screen z-50 hidden">
     <div class=" relative p-4 w-full max-w-2xl h-full md:h-auto rounded-md ">
         <!-- Modal content -->
         <div class="relative p-4 bg-white rounded-b-lg dark:bg-gray-800 sm:p-5 shadow-lg border-t-4 border-blue-300">
@@ -24,7 +24,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                     Update client
                 </h3>
-                <button type="button" id="closeModal" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                <button data-button-type="close-modal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                     </svg>
@@ -62,11 +62,10 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button onclick="updateClient()" id="confirm-client-update" type="submit" class="text-white bg-primary-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <button onclick="confirmUpdateClient()" id="confirm-client-update" type="submit" class="text-white bg-primary-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                         Save changes
                     </button>
-                    <button id="cancel-update" type="button" class="text-red-500 bg-white hover:bg-red-100 focus:ring-4 focus:outline-none focus:ring-red-200 rounded-lg border border-red-300 text-sm font-medium px-5 py-2.5 hover:text-red-900 focus:z-10 dark:bg-red-700 dark:text-red-300 dark:border-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-600"> Cancel</button>
-
+                    <button data-button-type="close-modal" type="button" class="text-red-500 bg-white hover:bg-red-100 focus:ring-4 focus:outline-none focus:ring-red-200 rounded-lg border border-red-300 text-sm font-medium px-5 py-2.5 hover:text-red-900 focus:z-10 dark:bg-red-700 dark:text-red-300 dark:border-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-600"> Cancel</button>
 
                     <input type="hidden" name="hidden-data" id="hidden-data">
                 </div>
@@ -74,10 +73,3 @@
         </div>
     </div>
 </section>
-
-<script>
-    let cancelUpdateClient = $("#cancel-update");
-    cancelUpdateClient.click(function() {
-        $('#updateClientModal').hide();
-    });
-</script>

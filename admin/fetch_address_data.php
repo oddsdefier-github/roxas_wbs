@@ -9,5 +9,5 @@ while ($rows = mysqli_fetch_assoc($result)) {
     $address_array[] = $rows;
 }
 
-$response['Address'] = $address_array;
+$response['address'] = $address_array;
 echo json_encode($response);

@@ -1,47 +1,35 @@
 $(document).ready(function () {
 
-    $('#updateClientModal').hide()
-    $('#updateClientButton').click(function () {
-        $('#updateClientModal').toggle();
-    });
-    $('#closeModal').click(function () {
-        $('#updateClientModal').hide();
-        $('.modal-container').hide();
-    });
+    closeModalButton = $('button[data-button-type="close-modal"]');
 
-    // signout-modal
-    let $signoutModal = $('#signoutModal');
-    let $signoutBtn = $('#signout');
-    let $closeModal = $('#close-signout-modal');
-    let $cancelSignout = $("#cancel-signout")
-
-    $closeModal.click(function () {
-        $signoutModal.toggle();
+    closeModalButton.each(function () {
+        $(this).on("click", function () {
+            console.log("CANCEL OR CLOSE MODAL")
+            $(this).closest("section").hide()
+        })
     })
 
-    $cancelSignout.click(function () {
-        $signoutModal.hide();
-    })
-    $signoutBtn.click(function () {
-        $signoutModal.removeClass("hidden").addClass("flex justify-center items-center");
-        $signoutModal.show();
-    })
+    openModalButton = $('button[data-button-type="open-modal"]');
+    modalContainer = $('section[data-container="modal"]');
 
+    openModalButton.each(function () {
+        $(this).on("click", function () {
 
-    //add-client-modal
-    $('#addClientModal').hide()
-    $('#addClientButton').click(function () {
-        $('#addClientModal').toggle();
-        $('#addClientModal')
-            .css({
-                'display': 'grid',
-                'place-items': 'center',
-                'justify-content': 'center',
-                'align-items': 'center'
-            });
+            const buttonModalName = $(this).attr('data-modal-name');
+            console.log(buttonModalName)
+
+            const matchingModals = $('section[data-container="modal"][data-modal-name="' + buttonModalName + '"]');
+            console.log(matchingModals)
+
+            if (matchingModals.length > 0) {
+                matchingModals.css({
+                    'display': 'grid',
+                    'place-items': 'center',
+                    'justify-content': 'center',
+                    'align-items': 'center'
+                });
+            }
+        });
     });
-    $('#closeAddClientModal').click(function () {
-        $('#addClientModal').hide();
-        $('.modal-container').hide();
-    });
+
 });

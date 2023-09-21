@@ -487,9 +487,12 @@ include 'database/connection.php';
 				if ($("#designation-select").find(":selected").text() === "Meter Reader") {
 					emailInput.val("rogenevito@gmail.com");
 					passInput.val("rogene123");
+				} else if ($("#designation-select").find(":selected").text() === "Cashier") {
+					emailInput.val("anthonygalang@gmail.com");
+					passInput.val("anthony");
 				} else {
-					emailInput.val("test");
-					passInput.val("test");
+					emailInput.val("jeffrypaner@gmail.com");
+					passInput.val("jeffry123");
 				}
 			});
 		});
