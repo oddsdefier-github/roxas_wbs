@@ -10,7 +10,7 @@ const searchInput = $("#search-input");
 const clearInput = $("#clear-input");
 
 $(document).ready(function () {
-    fetchAddressData();
+
     displayClientTable();
     confirmDeleteClient();
     addClient();
@@ -45,7 +45,7 @@ $(document).ready(function () {
         displayClientTable(1, "10", query);
     });
 
-    clearInput.click(function () {
+    clearInput.on("click", function () {
         recordsPerPageSelect.toggle();
         tableSearch.val("");
         clearInput.hide();
@@ -53,11 +53,10 @@ $(document).ready(function () {
         displayClientTable(1, "10", "");
     });
 
-    addressDropdown.change(function () {
+    addressDropdown.on("change", function () {
         recordsPerPageSelect.hide();
         let query = $(this).find(":selected").text();
         displayClientTable(1, "10", query);
-        $(".pagination").hide()
     });
 
 
@@ -66,48 +65,54 @@ $(document).ready(function () {
         recordsPerPage = selectedRecordsPerPage;
         displayClientTable(1, recordsPerPage, "");
     });
+
 })
 
 
 
 function fetchAddressData() {
-    let fetchAddress = true;
-    $.ajax({
-        url: "fetch_address_data.php",
-        type: "get",
-        data: {
-            fetchAddress: fetchAddress
-        },
-        dataType: "json",
-        success: function (data) {
-            if (data && data.address) {
-                let addressData = data.address
-                $('.add_client_address').each(function () {
-                    let selectElement = $(this);
-
-                    selectElement.empty();
-
-                    $.each(addressData, function (index, item) {
-                        let option = $('<option>', {
-                            value: item.id,
-                            text: item.barangay
-                        });
-
-                        if (index === 0) {
-                            option.prop('selected', true);
-                        }
-                        selectElement.append(option);
-                    });
-                });
-            } else {
-                console.error("Invalid or missing 'address' data in the response.");
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "fetch_address_data.php",
+            type: "get",
+            data: { fetchAddress: true },
+            dataType: "json",
+            success: function (data) {
+                if (data && data.address) {
+                    resolve(data.address);
+                } else {
+                    reject("Invalid or missing 'address' data in the response.");
+                }
+            },
+            error: function (xhr, status, error) {
+                reject("AJAX request failed with status: " + status);
             }
-        },
-        error: function (xhr, status, error) {
-            console.error("AJAX request failed with status: " + status);
-        }
-    })
+        });
+    });
 }
+
+
+fetchAddressData()
+    .then((addressData) => {
+        $('.add_client_address').each(function () {
+            let selectElement = $(this);
+            selectElement.empty();
+            $.each(addressData, function (index, item) {
+                let option = $('<option>', {
+                    value: item.id,
+                    text: item.barangay
+                });
+                if (index === 0) {
+                    option.prop('selected', true);
+                }
+                selectElement.append(option);
+            });
+        });
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+
 
 
 function displayClientTable(page, recordsPerPage = "10", query = "") {
@@ -130,35 +135,44 @@ function displayClientTable(page, recordsPerPage = "10", query = "") {
 function updateClient(updateId) {
     $('#hidden-data').val(updateId);
 
-    $.post("update_client_req.php", {
-        updateId: updateId
-    }, function (data) {
-        let dataRequest = JSON.parse(data);
+    $.ajax({
+        url: "database_queries.php",
+        type: "post",
+        data: {
+            action: "retrieveClientData",
+            updateId: updateId
+        },
+        success: function (data) {
+            console.log(data)
 
-        let addressData = dataRequest.addressData;
-        let clientData = dataRequest.clientData;
+            let dataRequest = JSON.parse(data);
 
-        $('#update_client_name').val(clientData.client_name);
-        $('#update_client_email').val(clientData.email);
-        $('#update_property_type').val(clientData.property_type);
-        $('#update_client_phone_num').val(clientData.phone_number);
+            let addressData = dataRequest.addressData;
+            let clientData = dataRequest.clientData;
 
-        let selectedAddress = clientData.address
-        let selectElement = $('#update_client_address');
+            $('#update_client_name').val(clientData.client_name);
+            $('#update_client_email').val(clientData.email);
+            $('#update_property_type').val(clientData.property_type);
+            $('#update_client_phone_num').val(clientData.phone_number);
 
-        $.each(addressData, function (index, item) {
-            let option = $('<option>', {
-                value: item.id,
-                text: item.barangay
+            let selectedAddress = clientData.address
+            let selectElement = $('#update_client_address');
+
+            $.each(addressData, function (index, item) {
+                let option = $('<option>', {
+                    value: item.id,
+                    text: item.barangay
+                });
+
+                if (item.barangay === selectedAddress) {
+                    option.prop('selected', true);
+                }
+
+                selectElement.append(option);
             });
-
-            if (item.barangay === selectedAddress) {
-                option.prop('selected', true);
-            }
-
-            selectElement.append(option);
-        });
+        }
     });
+
 
     $('#updateClientModal')
         .css({
@@ -200,8 +214,7 @@ function confirmUpdateClient() {
 
 
                 displayClientTable();
-                console.log("Updated");
-
+                console.log(data);
 
                 toastSuccess.addClass('visible');
 

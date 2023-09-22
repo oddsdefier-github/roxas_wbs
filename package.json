@@ -21,6 +21,7 @@
 		"apexcharts": "^3.42.0",
 		"flowbite": "^1.6.5",
 		"flowbite-datepicker": "^1.2.2",
-		"jquery": "^3.7.1"
+		"jquery": "^3.7.1",
+		"validate.js": "^0.13.1"
 	}
 }
