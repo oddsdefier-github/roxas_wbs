@@ -49,7 +49,6 @@
         $('input[name="first-name"]').removeClass('border border-red-500 text-red-500');
 
         if (validationResult) {
-            // If there's a validation error for the 'myInput' field
             $('input[name="first-name"]').val("Pakyo empty");
         }
 
