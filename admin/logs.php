@@ -50,7 +50,9 @@ if ($_SESSION['user_role'] != "Admin") {
 
     <?php include './layouts/scripts.php'; ?>
     <script>
-        $("#subheader-title").text("Logs")
+        $("#subheader-title").text("Logs");
+        $("#subheader-title").siblings("h5").text("Your Activity Log")
+        $("#subheader-title").parent("div").siblings("div").hide()
     </script>
 </body>
 

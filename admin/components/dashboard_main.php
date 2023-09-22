@@ -1,4 +1,3 @@
-<!-- Start::row-2 -->
 <div class="flex flex-col gap-5">
     <div class="grid grid-cols-12 gap-x-6 w-full">
         <div class="col-span-12 md:col-span-3 bg-blue-500 p-4">
@@ -46,4 +45,3 @@
         </div>
     </div>
 </div>
-<!-- End::row-2 -->

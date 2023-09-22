@@ -51,7 +51,6 @@ if ($_SESSION['user_role'] != "Admin") {
         <?php include './layouts/header.php'; ?>
         <div>
             <?php include './components/subheader.php'; ?>
-            <?php include './components/table_search.php'; ?>
         </div>
         <main class="relative flex flex-1 flex-col justify-start px-10 overflow-auto">
             <div class="flex flex-col gap-5 bg-white p-5 rounded-md shadow-md mb-10">
@@ -72,7 +71,7 @@ if ($_SESSION['user_role'] != "Admin") {
 
     <?php include './layouts/scripts.php'; ?>
     <script>
-        $("#subheader-title").text("Clients Logs")
+        $("#subheader-title").text("Clients Profile")
     </script>
 </body>
 
