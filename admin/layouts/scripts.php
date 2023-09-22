@@ -7,3 +7,5 @@
 <script src="./assets/js/clients_functions.js"></script>
 <script src="./assets/js/popup.js"></script>
 <script src="./assets/js/apexcharts.js"></script>
+<script src="./assets/js/application_validate.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
