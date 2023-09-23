@@ -143,8 +143,6 @@ function updateClient(updateId) {
             updateId: updateId
         },
         success: function (data) {
-            console.log(data)
-
             let dataRequest = JSON.parse(data);
 
             let addressData = dataRequest.addressData;

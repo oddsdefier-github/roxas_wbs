@@ -2,10 +2,13 @@
 
 include 'database/connection.php';
 
+class Database {
+    private $conn;
+
+}
 class DatabaseQueries
 {
     private $conn;
-
     public function setConnection($databaseConnection)
     {
         $this->conn = $databaseConnection;
@@ -60,3 +63,6 @@ if (isset($_POST['action'])) {
         echo json_encode($client_data);
     }
 }
+
+
+
