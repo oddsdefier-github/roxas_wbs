@@ -18,13 +18,14 @@ $(document).ready(function () {
     const passInput = $("#password");
     const validationRules = {
         email: {
+            email: {
+                message: "is invalid",
+            },
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty",
             },
-            email: {
-                message: "is invalid",
-            },
+
         },
         password: {
             presence: {
@@ -62,6 +63,7 @@ $(document).ready(function () {
         inputFields.removeClass(errorInputClass).addClass(successInputClass);
         inputLabels.removeClass(errorLabelClass).addClass(successLabelClass);
         inputValidateFeedback.empty()
+
         inputFields.parent().append(checkElement)
 
         e.preventDefault();
@@ -80,7 +82,9 @@ $(document).ready(function () {
                 const labelElement = inputElement.siblings('label');
                 hasError = true;
                 if (hasError) {
-                    inputFields.siblings('span').remove()
+
+                    inputElement.siblings('span').remove()
+
                     signInForm.addClass('shake');
 
                     inputElement.removeClass(normalInputClass);

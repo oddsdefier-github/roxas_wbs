@@ -25,7 +25,7 @@ include 'database/connection.php';
 		margin-left: 5px;
 		color: #f87171;
 		line-height: 1rem;
-		font-size: 0.75rem;
+		font-size: 0.725rem;
 	}
 </style>
 
