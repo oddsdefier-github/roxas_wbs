@@ -43,7 +43,7 @@
 
     normalInputClass = 'border-gray-300';
     errorInputClass = 'border-red-300';
-    successInputClass = 'border-green-300';
+    successInputClass = 'success';
 
     let hasError = false;
 

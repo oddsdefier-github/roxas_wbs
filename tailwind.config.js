@@ -4,6 +4,7 @@ module.exports = {
   mode: "jit",
   content: [
     "./authentication/**/*.{html,php,js}",
+    "./authentication/assets/**/*.{html,php,js}",
     "./admin/**/*.{html,php,js}",
     "./meter_reader/**/*.{html,php,js}",
     "./index.php",

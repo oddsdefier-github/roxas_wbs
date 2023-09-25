@@ -21,6 +21,10 @@ include 'database/connection.php';
 		outline: 1px solid red;
 	} */
 
+	.success {
+		border-color: #06b6d4;
+	}
+
 	.input-group p {
 		margin-top: 5px;
 		margin-left: 5px;
