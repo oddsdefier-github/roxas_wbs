@@ -11,7 +11,7 @@ include 'database/connection.php';
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Sign In</title>
-	<link href="../dist/style.css" rel="stylesheet" />
+	<link href="../assets/css/style.css" rel="stylesheet" />
 	<link href="../dist/helpers.css" rel="stylesheet" />
 	<link href="./assets/css/main.css" rel="stylesheet" />
 </head>
@@ -20,11 +20,6 @@ include 'database/connection.php';
 	/* * {
 		outline: 1px solid red;
 	} */
-
-	.success {
-		border-color: #06b6d4;
-	}
-
 	.input-group p {
 		margin-top: 5px;
 		margin-left: 5px;
@@ -48,7 +43,7 @@ include 'database/connection.php';
 					<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><lottie-player src="https://lottie.host/8c2976a1-843f-4829-a62b-89f62d1c17b8/8HjjcW05ZO.json" background="transparent" speed="1" style="width: 300px; height: 300px" direction="1" mode="normal" loop autoplay hover></lottie-player>
 				</div> -->
 			</div>
-			<form id="form-signin" class="ring-1 ring-red-300 w-full max-w-md bg-white px-7 py-6 shadow-xl rounded-md transition-all duration-150">
+			<form id="form-signin" class="w-full max-w-md bg-white px-7 py-6 shadow-xl rounded-md transition-all duration-150">
 				<div class="my-5 text-left">
 					<a href="./redirect_demo.php">
 						<h1 class="block text-2xl font-bold text-gray-800" id="form-header">Sign in</h1>
@@ -68,7 +63,7 @@ include 'database/connection.php';
 						</div>
 						<div class="input-group">
 							<div class="relative">
-								<input id="email" name="email" type="email" class="validate-input block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
+								<input id="email" name="email" type="email" data-input-state="normal" class="validate-input block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
 								<label for="email" id="email_label" class="absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Email Address</label>
 							</div>
 							<p data-validate-input="email"></p>
@@ -76,7 +71,7 @@ include 'database/connection.php';
 
 						<div class="input-group">
 							<div class="relative">
-								<input id="password" name="password" type="password" class="validate-input block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
+								<input id="password" name="password" type="password" class="validate-input block px-2.5 py-3 w-full text-sm text-green-800 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
 								<label for="password" id="password_label" class="absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Password</label>
 
 								<span class="absolute top-0 right-0 px-3 h-full grid place-items-center">
@@ -105,6 +100,7 @@ include 'database/connection.php';
 	<script src="./assets/libs/jquery/jquery.min.js"></script>
 	<script src="./assets/libs/validate.js/validate.min.js"></script>
 	<!-- <script src="./assets/js/signin.js"></script> -->
+
 	<script src="./assets/js/validate.js"></script>
 
 </body>
