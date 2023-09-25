@@ -131,7 +131,6 @@
 
         if (validateInput) {
             console.log(validateInput)
-            $(".validate-feedback").show()
             $.each(validateInput, function (fieldName, errorMessage) {
 
                 const inputElement = $(`#${fieldName}-validation-message`).prev();

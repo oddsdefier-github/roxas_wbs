@@ -3,7 +3,6 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 module.exports = {
   mode: "jit",
   content: [
-    "./src/**/*.{html,php,js}",
     "./authentication/**/*.{html,php,js}",
     "./admin/**/*.{html,php,js}",
     "./meter_reader/**/*.{html,php,js}",

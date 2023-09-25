@@ -1,22 +1,22 @@
 (function () {
     "user strict";
-    const firstNameInput = $('input[name="first-name"]');
-    const middleNameInput = $('input[name="middle-name"]');
-    const lastNameInput = $('input[name="last-name"]');
-    const ageInput = $('input[name="age"]');
-    const genderInput = $('input[name="gender"]');
-    const contactInput = $('input[name="phone_number"]');
-    const emailInput = $('input[name="email"]');
-    const propertyTypeInput = $('input[name="property-type"]');
-    const streetAddressInput = $('input[name="street-address"]');
-    const brgyInput = $('input[name="brgy"]');
-    const validIdCheck = $('input[name="valid-id"]');
-    const proofOfOwnershipCheck = $('input[name="proof_of_ownership"]');
-    const deedOfSaleCheck = $('input[name="deed_of_sale"]');
-    const affidavitCheck = $('input[name="affidavit"]');
+    let eyeIcon = $("#eye-icon")
+
+    eyeIcon.on("click", function () {
+        if (passInput.attr("type") === "password") {
+            passInput.attr("type", "text");
+            eyeIcon.attr("src", "assets/eye-open.svg");
+        } else {
+            passInput.attr("type", "password");
+            eyeIcon.attr("src", "assets/eye-close.svg");
+        }
+    });
 
 
-    const applicationForm = $("#application_form");
+
+    const applicationForm = $("#form-signin");
+    const emailInput = $("#email");
+    const passInput = $("#password");
     const validationRules = {
         email: {
             presence: {
@@ -27,7 +27,7 @@
                 message: "is invalid",
             },
         },
-        streetAddress: {
+        password: {
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty",
@@ -41,48 +41,42 @@
     $(".validate-feedback").hide()
 
 
-    normalInputClass = 'ring-gray-300';
-    errorInputClass = 'ring-red-300';
-    successInputClass = 'ring-green-300';
+    normalInputClass = 'border-gray-300';
+    errorInputClass = 'border-red-300';
+    successInputClass = 'border-green-300';
 
     let hasError = false;
 
     applicationForm.on("submit", function (e) {
         $('.validate-input').removeClass(errorInputClass).addClass(successInputClass);
-
-        $(".validate-feedback").empty()
+        $(".input-group p").empty()
 
         e.preventDefault();
 
         const formData = {
-            firstName: firstNameInput.val().trim(),
-            middleName: middleNameInput.val().trim(),
-            lastName: lastNameInput.val().trim(),
-            age: ageInput.val().trim(),
-            contact: contactInput.val().trim(),
             email: emailInput.val().trim(),
-            streetAddress: streetAddressInput.val().trim()
+            password: passInput.val().trim(),
         }
 
         const validateInput = validate(formData, validationRules);
 
         if (validateInput) {
             console.log(validateInput)
-            $(".validate-feedback").show()
             $.each(validateInput, function (fieldName, errorMessage) {
 
-                const inputElement = $(`#${fieldName}-validation-message`).prev();
-
+                const inputElement = $(`p[data-validate-input="${fieldName}"]`).prev('div').find('input');
                 hasError = true;
                 if (hasError) {
                     inputElement.removeClass(normalInputClass);
+                    inputElement.removeClass(successInputClass);
                     inputElement.addClass(errorInputClass);
+
                 }
                 if (errorMessage.length > 1) {
-                    const errorHTML = errorMessage.join("<br>"); // Join items with <br>
-                    $(`#${fieldName}-validation-message`).html(errorHTML);
+                    const errorHTML = errorMessage.join("<br>");
+                    $(`p[data-validate-input="${fieldName}"]`).html(errorHTML);
                 } else {
-                    $(`#${fieldName}-validation-message`).text(errorMessage[0]);
+                    $(`p[data-validate-input="${fieldName}"]`).text(errorMessage[0]);
                 }
             });
         } else {
