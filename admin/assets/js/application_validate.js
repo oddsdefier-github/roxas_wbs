@@ -15,97 +15,143 @@
     const deedOfSaleCheck = $('input[name="deed_of_sale"]');
     const affidavitCheck = $('input[name="affidavit"]');
 
-    const applicationForm = $("#application_form");
 
+    const applicationForm = $("#application_form");
     const validationRules = {
         firstName: {
+            format: {
+                pattern: /^[a-zA-Z\s]+$/,
+                message: "can only contain letters (A-Z, a-z) and spaces"
+            },
             presence: {
                 allowEmpty: false,
-                message: "First name cannot be empty",
+                message: "cannot be empty",
             },
+            length: {
+                minimum: 3,
+                tooShort: "should be at least %{count} characters or more"
+            }
         },
         middleName: {
+            format: {
+                pattern: /^[a-zA-Z\s]+$/,
+                message: "can only contain letters (A-Z, a-z) and spaces"
+            },
             presence: {
                 allowEmpty: false,
-                message: "Middle name cannot be empty",
+                message: "cannot be empty",
             },
+            length: {
+                minimum: 3,
+                tooShort: "should be at least %{count} characters or more"
+            }
         },
-        lastNameInput: {
+        lastName: {
+            format: {
+                pattern: /^[a-zA-Z\s]+$/,
+                message: "can only contain letters (A-Z, a-z) and spaces"
+            },
             presence: {
                 allowEmpty: false,
-                message: "Last name cannot be empty",
+                message: "cannot be empty",
             },
+            length: {
+                minimum: 3,
+                tooShort: "should be at least %{count} characters or more"
+            }
         },
         age: {
             presence: {
                 allowEmpty: false,
-                message: "Age cannot be empty",
+                message: "cannot be empty",
             },
+            numericality: {
+                onlyInteger: true,
+                lessThanOrEqualTo: 80,
+                greaterThan: 18
+            }
         },
         contact: {
             presence: {
                 allowEmpty: false,
-                message: "Contact number cannot be empty",
+                message: "cannot be empty",
             },
+            format: {
+                pattern: /^(?:\+63|09)\d{9,}$/,
+                message: "should start with +63 or 09 and have at least 11 digits"
+            }
         },
         email: {
             presence: {
                 allowEmpty: false,
-                message: "Email cannot be empty",
+                message: "cannot be empty",
             },
             email: {
-                message: "Please enter a valid email address",
+                message: "is invalid",
             },
         },
         streetAddress: {
             presence: {
                 allowEmpty: false,
-                message: "Street address cannot be empty",
+                message: "cannot be empty",
             },
+            length: {
+                minimum: 5,
+                tooShort: "should be at least %{count} characters or more"
+            }
         },
     };
+    $(".validate-feedback").hide()
 
+
+    normalInputClass = 'ring-gray-300';
+    errorInputClass = 'ring-red-300';
+    successInputClass = 'ring-green-300';
+
+    let hasError = false;
 
     applicationForm.on("submit", function (e) {
+        $('.validate-input').removeClass(errorInputClass).addClass(successInputClass);
+
+        $(".validate-feedback").empty()
+
         e.preventDefault();
 
-        // const formData = {
-        //     firstName: $('input[name="first-name"]').val(),
-        //     email: $('input[name="email"]').val(),
-        // };
-
-        // const validationResult = validate(formData, validationRules);
-        // console.log(validationResult)
-        // $('input[name="first-name"]').removeClass('border border-red-500 text-red-500');
-
-        // if (validationResult) {
-        //     $('input[name="first-name"]').val("Pakyo empty");
-        // }
-
-        // else {
-        //     console.log("Form is valid, submitting...");
-        // }
-
         const formData = {
-            firstName: firstNameInput.val(),
-            middleName: middleNameInput.val(),
-            lastName: lastNameInput.val(),
-            age: ageInput.val(),
-            contact: contactInput.val(),
-            email: emailInput.val(),
-            streetAddress: streetAddressInput.val()
+            firstName: firstNameInput.val().trim(),
+            middleName: middleNameInput.val().trim(),
+            lastName: lastNameInput.val().trim(),
+            age: ageInput.val().trim(),
+            contact: contactInput.val().trim(),
+            email: emailInput.val().trim(),
+            streetAddress: streetAddressInput.val().trim()
         }
 
         const validateInput = validate(formData, validationRules);
 
         if (validateInput) {
             console.log(validateInput)
-            $.each(validateInput, function (index, item) {
-                console.log("Index:", index, "Item:", item.length);
-            })
+            $(".validate-feedback").show()
+            $.each(validateInput, function (fieldName, errorMessage) {
+
+                const inputElement = $(`#${fieldName}-validation-message`).prev();
+
+                hasError = true;
+                if (hasError) {
+                    inputElement.removeClass(normalInputClass);
+                    inputElement.addClass(errorInputClass);
+                }
+                if (errorMessage.length > 1) {
+                    const errorHTML = errorMessage.join("<br>"); // Join items with <br>
+                    $(`#${fieldName}-validation-message`).html(errorHTML);
+                } else {
+                    $(`#${fieldName}-validation-message`).text(errorMessage[0]);
+                }
+            });
         } else {
             console.log("Form is valid, submitting...");
         }
+
     });
 
 

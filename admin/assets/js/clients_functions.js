@@ -1,3 +1,5 @@
+
+
 const toastSuccess = $("#toast-success");
 const toastDanger = $("#toast-danger");
 const toastSuccessMessage = $("#toast-success-message");
@@ -143,6 +145,7 @@ function updateClient(updateId) {
             updateId: updateId
         },
         success: function (data) {
+            console.log(data)
             let dataRequest = JSON.parse(data);
 
             let addressData = dataRequest.addressData;
@@ -212,7 +215,7 @@ function confirmUpdateClient() {
 
 
                 displayClientTable();
-                console.log(data);
+                // console.log(data);
 
                 toastSuccess.addClass('visible');
 
@@ -376,7 +379,8 @@ function signOut() {
         url: "signout.php",
         type: "post",
         success: function (data, status) {
-
+            const audio = new Audio('./outro.mp3')
+            audio.play();
             console.log(JSON.parse(data))
             console.log("SIGN OUT")
 
@@ -395,8 +399,40 @@ function signOut() {
             setTimeout(function () {
                 signOutLoading.hide()
                 window.location.href = "../index.php";
-            }, 500)
+            }, 18000)
 
         }
     })
 }
+
+// function addApplicant() {
+
+//     return new Promise = (resolve, reject) => {
+//         $.ajax({
+//             url: "database_queries.php",
+//             type: "POST",
+//             dataType: "json",
+//             success: function (data) {
+//                 if () {
+//                     resolve;
+//                 } else {
+//                     reject;
+//                 }
+//             },
+//             error: function (status) {
+//                 reject("Failed with status: " + status)
+//             }
+//         })
+//     }
+// }
+
+// addApplicant()
+//     .then(() => {
+
+//     })
+//     .then(() => {
+
+//     })
+//     .then(() => {
+
+//     })

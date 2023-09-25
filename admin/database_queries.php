@@ -2,10 +2,6 @@
 
 include 'database/connection.php';
 
-class Database {
-    private $conn;
-
-}
 class DatabaseQueries
 {
     private $conn;
@@ -24,20 +20,36 @@ class DatabaseQueries
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
-        while ($rows = mysqli_fetch_assoc($result)) {
-            $response['clientData'] = $rows;
+        $response['clientData'] = null;
+
+        if ($clientRow = mysqli_fetch_assoc($result)) {
+            $response['clientData'] = $clientRow;
+        }
+        mysqli_stmt_free_result($stmt);
+        mysqli_stmt_close($stmt);
+
+        $addressArray = array();
+
+        $addressSql = "SELECT * FROM `address`";
+        $addressStmt = mysqli_prepare($this->conn, $addressSql);
+        mysqli_stmt_execute($addressStmt);
+        $addressResult = mysqli_stmt_get_result($addressStmt);
+
+
+        $addressArray = array();
+
+        while ($addressRow = mysqli_fetch_assoc($addressResult)) {
+            $addressArray[] = $addressRow;
         }
 
-        $address = "SELECT * FROM `address` ";
-        $addressData = mysqli_query($this->conn, $address);
-        $addressArray = array();
-        while ($addressRows = mysqli_fetch_assoc($addressData)) {
-            $addressArray[] = $addressRows;
-        }
+        mysqli_stmt_close($addressStmt);
 
         $response['addressData'] = $addressArray;
+
         return $response;
     }
+
+
     public function updateClient()
     {
     }
@@ -58,11 +70,10 @@ if (isset($_POST['action'])) {
     $action = $_POST['action'];
 
     if ($action == 'retrieveClientData') {
-        $client_id = $_POST['updateId'];
-        $client_data = $dbQueries->retrieveClientData($client_id);
-        echo json_encode($client_data);
+        if (isset($_POST['updateId'])) {
+            $client_id = $_POST['updateId'];
+            $client_data = $dbQueries->retrieveClientData($client_id);
+            echo json_encode($client_data);
+        }
     }
 }
-
-
-

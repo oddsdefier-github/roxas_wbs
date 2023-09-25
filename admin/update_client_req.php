@@ -74,7 +74,7 @@ if (isset($_POST['updateID'])) {
 
                 $update_log = "INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `client_id`, `description`, `date`, `time`, `datetime`) VALUES (NULL, '$log_id', '$role_db', '$admin_name', '$activity', '$client', '$description', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);";
 
-                $result = mysqli_query($conn, $update_log);
+                $update_result = mysqli_query($conn, $update_log);
 
                 if ($update_result) {
                     $response['success'] = true;

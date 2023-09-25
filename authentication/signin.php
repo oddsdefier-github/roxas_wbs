@@ -14,6 +14,68 @@ include 'database/connection.php';
 	<link href="../dist/style.css" rel="stylesheet" />
 	<link href="../dist/helpers.css" rel="stylesheet" />
 </head>
+<style>
+	.shake {
+		-webkit-animation-name: shake;
+		animation-name: shake;
+		-webkit-animation-duration: 1s;
+		animation-duration: 1s;
+		-webkit-animation-fill-mode: both;
+		animation-fill-mode: both;
+	}
+
+	@-webkit-keyframes shake {
+
+		0%,
+		100% {
+			-webkit-transform: translate3d(0, 0, 0);
+			transform: translate3d(0, 0, 0);
+		}
+
+		10%,
+		30%,
+		50%,
+		70%,
+		90% {
+			-webkit-transform: translate3d(-10px, 0, 0);
+			transform: translate3d(-10px, 0, 0);
+		}
+
+		20%,
+		40%,
+		60%,
+		80% {
+			-webkit-transform: translate3d(10px, 0, 0);
+			transform: translate3d(10px, 0, 0);
+		}
+	}
+
+	@keyframes shake {
+
+		0%,
+		100% {
+			-webkit-transform: translate3d(0, 0, 0);
+			transform: translate3d(0, 0, 0);
+		}
+
+		10%,
+		30%,
+		50%,
+		70%,
+		90% {
+			-webkit-transform: translate3d(-10px, 0, 0);
+			transform: translate3d(-10px, 0, 0);
+		}
+
+		20%,
+		40%,
+		60%,
+		80% {
+			-webkit-transform: translate3d(10px, 0, 0);
+			transform: translate3d(10px, 0, 0);
+		}
+	}
+</style>
 
 <body class="flex min-h-screen flex-col bg-primary-100 font-inter">
 	<div class="absolute inset-x-0 -top-40 -z-40 transform-gpu overflow-hidden blur-3xl">
@@ -374,7 +436,8 @@ include 'database/connection.php';
 								console.log("User Role: " + responseData.user_role);
 
 								if (responseData.user_role === "Admin") {
-
+									const audio = new Audio('./success.wav')
+									audio.play();
 									signInMessage.text(responseData.message);
 									signInMessage.removeClass("text-red-500");
 									signInMessage.addClass("text-green-500");
@@ -407,68 +470,77 @@ include 'database/connection.php';
 								} else {}
 
 							} else {
-								console.log("User is not valid");
-								signInMessage.text(responseData.message);
-								formSignIn.addClass("ring ring-red-200");
-								formHeader.addClass("text-red-500");
-								formHeader.text("Can't Sign in!")
-								console.log(responseData.emptyFields.length)
+								const audio = new Audio('./failed.mp3')
+								audio.play();
+								$("#form-signin").addClass("shake")
+								setTimeout(function() {
 
-								if (responseData.emptyFields.length === 2) {
-									console.log("Both email and password are empty");
+									console.log("User is not valid");
+									signInMessage.text(responseData.message);
+									formSignIn.addClass("ring ring-red-200");
+									formHeader.addClass("text-red-500");
+									formHeader.text("Can't Sign in!")
+									console.log(responseData.emptyFields.length)
 
-									if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
-										emailInput.removeClass(normalClassInput);
-										emailInput.addClass(errorClassInput);
+									if (responseData.emptyFields.length === 2) {
+										console.log("Both email and password are empty");
 
-										emailLabel.removeClass(normalClassLabel);
-										emailLabel.addClass(errorClassLabel);
+										if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
+											emailInput.removeClass(normalClassInput);
+											emailInput.addClass(errorClassInput);
 
-										emailError.show();
+											emailLabel.removeClass(normalClassLabel);
+											emailLabel.addClass(errorClassLabel);
+
+											emailError.show();
+
+										}
+										if (passInput.hasClass(normalClassInput) && passLabel.hasClass(normalClassLabel)) {
+											passInput.removeClass(normalClassInput);
+											passInput.addClass(errorClassInput);
+
+											passLabel.removeClass(normalClassLabel);
+											passLabel.addClass(errorClassLabel);
+
+											passError.show();
+										}
+
+
+
+									} else if (responseData.emptyFields[0] == "Email") {
+										console.log("email is empty")
+										submitBtn.prop("disabled", true);
+
+
+										if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
+											emailInput.removeClass(normalClassInput);
+											emailInput.addClass(errorClassInput);
+
+											emailLabel.removeClass(normalClassLabel);
+											emailLabel.addClass(errorClassLabel);
+
+											emailError.show();
+
+										}
+
+
+									} else if (responseData.emptyFields[0] == "Password") {
+
+										if (passInput.hasClass(normalClassInput) && passLabel.hasClass(normalClassLabel)) {
+											passInput.removeClass(normalClassInput);
+											passInput.addClass(errorClassInput);
+
+											passLabel.removeClass(normalClassLabel);
+											passLabel.addClass(errorClassLabel);
+
+											passError.show();
+										}
 
 									}
-									if (passInput.hasClass(normalClassInput) && passLabel.hasClass(normalClassLabel)) {
-										passInput.removeClass(normalClassInput);
-										passInput.addClass(errorClassInput);
-
-										passLabel.removeClass(normalClassLabel);
-										passLabel.addClass(errorClassLabel);
-
-										passError.show();
-									}
-
-
-
-								} else if (responseData.emptyFields[0] == "Email") {
-									console.log("email is empty")
-									submitBtn.prop("disabled", true);
-
-
-									if (emailInput.hasClass(normalClassInput) && emailLabel.hasClass(normalClassLabel)) {
-										emailInput.removeClass(normalClassInput);
-										emailInput.addClass(errorClassInput);
-
-										emailLabel.removeClass(normalClassLabel);
-										emailLabel.addClass(errorClassLabel);
-
-										emailError.show();
-
-									}
-
-
-								} else if (responseData.emptyFields[0] == "Password") {
-
-									if (passInput.hasClass(normalClassInput) && passLabel.hasClass(normalClassLabel)) {
-										passInput.removeClass(normalClassInput);
-										passInput.addClass(errorClassInput);
-
-										passLabel.removeClass(normalClassLabel);
-										passLabel.addClass(errorClassLabel);
-
-										passError.show();
-									}
-
-								}
+								}, 200)
+								setTimeout(function() {
+									$("#form-signin").removeClass("shake")
+								}, 1000)
 							}
 						},
 						error: function(xhr, textStatus, errorThrown) {
@@ -479,10 +551,8 @@ include 'database/connection.php';
 				})
 
 			}
-			signIn()
 
-
-
+			signIn();
 			$("#designation-select").on("change", function() {
 				if ($("#designation-select").find(":selected").text() === "Meter Reader") {
 					emailInput.val("rogenevito@gmail.com");
