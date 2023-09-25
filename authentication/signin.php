@@ -47,7 +47,7 @@ include 'database/connection.php';
 				<div class="my-5 text-left">
 					<a href="./redirect_demo.php">
 						<h1 class="block text-2xl font-bold text-gray-800" id="form-header">Sign in</h1>
-						<h5>to start managing customer's data.</h5>
+						<h5 class="text-base text-gray-400">to start managing customer's data.</h5>
 						<p id="signin-message" class="text-sm font-medium text-red-500"></p>
 					</a>
 				</div>
@@ -66,7 +66,8 @@ include 'database/connection.php';
 								<input id="email" name="email" type="email" data-input-state="normal" class="validate-input block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
 								<label for="email" id="email_label" class="absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Email Address</label>
 							</div>
-							<p data-validate-input="email"></p>
+							<p data-validate-input="email">
+							</p>
 						</div>
 
 						<div class="input-group">
