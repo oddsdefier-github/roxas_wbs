@@ -1740,6 +1740,10 @@ input:checked + .toggle-bg {
   isolation: auto;
 }
 
+.-z-10 {
+  z-index: -10;
+}
+
 .-z-40 {
   z-index: -40;
 }

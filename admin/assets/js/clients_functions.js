@@ -379,8 +379,10 @@ function signOut() {
         url: "signout.php",
         type: "post",
         success: function (data, status) {
-            const audio = new Audio('./outro.mp3')
-            audio.play();
+            setTimeout(function () {
+                const audio = new Audio('./outro.wav')
+                audio.play();
+            }, 500)
             console.log(JSON.parse(data))
             console.log("SIGN OUT")
 
@@ -399,7 +401,7 @@ function signOut() {
             setTimeout(function () {
                 signOutLoading.hide()
                 window.location.href = "../index.php";
-            }, 18000)
+            }, 1000)
 
         }
     })

@@ -1,6 +1,6 @@
 <style>
     .loader {
-        z-index: 11;
+        z-index: 9999999;
     }
 
     .loader::before {

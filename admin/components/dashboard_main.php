@@ -25,7 +25,7 @@
                         Column Chart
                     </h5>
                 </div>
-                <div class="">
+                <div class="-z-40">
                     <div id="column-chart"></div>
                 </div>
             </div>
