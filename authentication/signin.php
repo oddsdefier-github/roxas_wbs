@@ -38,7 +38,7 @@ include 'database/connection.php';
 			</div>
 			<form id="form-signin" class="w-full max-w-md bg-white px-7 py-6 shadow-xl rounded-md transition-all duration-150">
 				<div class="my-5 text-left">
-					<a href="./redirect_demo.php">
+					<a href="./">
 						<h1 class="block text-2xl font-bold text-gray-800" id="form-header">Sign in</h1>
 						<h5 class="text-base text-gray-400">to start managing customer's data.</h5>
 						<p id="signin-message" class="text-sm font-medium text-red-500"></p>
@@ -96,6 +96,7 @@ include 'database/connection.php';
 
 	<script src="./assets/js/validate.js"></script>
 	<script src="./assets/js/signin.js"></script>
+	<script type="module" src="./assets/js/variables.js"></script>
 
 </body>
 

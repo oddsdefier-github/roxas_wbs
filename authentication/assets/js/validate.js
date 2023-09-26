@@ -70,19 +70,101 @@ $(document).ready(function () {
         console.log("EYE CLICK");
     });
 
+    function signIn() {
+        return new Promise((resolve, reject) => {
+
+            let designationSelected = $("#designation-select").find(":selected").text();
+            $("#designation-select").on("change", function () {
+                designationSelected = $(this).find(":selected").text();
+            });
+
+            let emailInputVal = $("#email").val();
+            let passInputVal = $("#password").val();
+            const loader = $(".loader");
+            const signInMessage = $("#signin-message");
+
+            $.ajax({
+                url: "signin_process.php",
+                type: "post",
+                data: {
+                    emailSend: emailInputVal,
+                    passSend: passInputVal,
+                    designationSelectedSend: designationSelected
+                },
+                success: function (response) {
+                    var responseData = JSON.parse(response);
+
+                    signInMessage.text(responseData.message);
+
+                    if (responseData.valid) {
+                        console.log("User is valid");
+                        console.log("Admin Name: " + responseData.admin_name);
+                        console.log("User Role: " + responseData.user_role);
+
+                        loader.css({
+                            'display': 'flex',
+                            'flex-direction': 'column',
+                            'justify-content': 'center',
+                            'align-items': 'center'
+                        });
+                        loader.show();
+                        if (responseData.user_role === "Admin") {
+                            setTimeout(function () {
+                                loader.hide();
+                                window.location.href = "../admin/index.php";
+                                resolve(responseData); // Resolve the Promise with response data
+                            }, 1000);
+                        } else if (responseData.user_role === "Cashier") {
+                            window.location.href = "../cashier/index.php";
+                        } else if (responseData.user_role === "Meter Reader") {
+                            window.location.href = "../meter_reader/index.php";
+                        } else {
+                            resolve(responseData); // Resolve the Promise with response data
+                        }
+                    } else {
+                        inputFields.siblings('span[data-input-state="error"]').remove();
+                        $('span[data-input-state="normal"]').hide();
+                        $('span[data-input-state="success"]').remove();
+                        inputFields.parent().next().empty();
+
+                        inputFields.removeClass(cssClasses.errorInputClass).addClass(cssClasses.normalInputClass);
+                        inputLabels.removeClass(cssClasses.errorLabelClass).addClass(cssClasses.normalLabelClass);
+                        inputFields.removeClass(cssClasses.successInputClass).addClass(cssClasses.normalInputClass);
+                        inputLabels.removeClass(cssClasses.successLabelClass).addClass(cssClasses.normalLabelClass);
+
+                        const audio = new Audio('./failed.mp3');
+                        audio.play();
+                        $("#form-signin").addClass("shake");
+                        setTimeout(function () {
+                            console.log("ERROR");
+                        }, 200);
+                        setTimeout(function () {
+                            $("#form-signin").removeClass("shake");
+                            reject(responseData); // Reject the Promise with response data
+                        }, 1000);
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error("Error:", errorThrown);
+                    reject(errorThrown); // Reject the Promise with the error
+                },
+            });
+        });
+    }
+
 
     function handleSubmit(e) {
 
 
         inputFields.siblings('span[data-input-state="error"]').remove();
-        // $('span[data-input-state="normal"]').hide();
+        $('span[data-input-state="normal"]').hide();
 
-        // inputFields.removeClass(cssClasses.errorInputClass).addClass(cssClasses.successInputClass);
-        // inputLabels.removeClass(cssClasses.errorLabelClass).addClass(cssClasses.successLabelClass);
-        // inputFields.parent().append(elements.checkElement);
+        inputFields.removeClass(cssClasses.errorInputClass).addClass(cssClasses.successInputClass);
+        inputLabels.removeClass(cssClasses.errorLabelClass).addClass(cssClasses.successLabelClass);
+        inputFields.parent().append(elements.checkElement);
 
-        // inputValidateFeedback.html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Success!</p><span>`);
-        inputValidateFeedback.empty();
+        inputValidateFeedback.html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`);
+        // inputValidateFeedback.empty();
 
         e.preventDefault();
 
@@ -128,15 +210,23 @@ $(document).ready(function () {
                 }
             });
         } else {
-            // $('body').addClass('scale-out-center');
-            // setTimeout(function () {
-            //     $('body').removeClass('scale-out-center');
-            //     $('body').addClass('hidden bg-black');
-            //     window.location.href = "https://www.youtube.com";
-            // }, 500);
+
 
             console.log("Form is valid, submitting...");
-            signIn();
+            signIn()
+                .then(() => {
+                    const audio = new Audio('./success.wav');
+                    audio.play();
+
+                })
+                // .then(() => {
+                //     window.location.href = "https://www.youtube.com"
+
+                // })
+                .catch((error) => {
+                    console.log(error)
+                });
+
         }
     }
 
