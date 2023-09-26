@@ -95,6 +95,7 @@ include 'database/connection.php';
 	<!-- <script src="./assets/js/signin.js"></script> -->
 
 	<script src="./assets/js/validate.js"></script>
+	<script src="./assets/js/signin.js"></script>
 
 </body>
 

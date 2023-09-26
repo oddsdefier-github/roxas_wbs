@@ -72,13 +72,17 @@ $(document).ready(function () {
 
 
     function handleSubmit(e) {
-        inputFields.removeClass(cssClasses.errorInputClass).addClass(cssClasses.successInputClass);
-        inputLabels.removeClass(cssClasses.errorLabelClass).addClass(cssClasses.successLabelClass);
-        inputFields.siblings('span[data-input-state="error"]').remove();
-        $('span[data-input-state="normal"]').hide();
-        inputFields.parent().append(elements.checkElement);
 
-        inputValidateFeedback.html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Success!</p><span>`);
+
+        inputFields.siblings('span[data-input-state="error"]').remove();
+        // $('span[data-input-state="normal"]').hide();
+
+        // inputFields.removeClass(cssClasses.errorInputClass).addClass(cssClasses.successInputClass);
+        // inputLabels.removeClass(cssClasses.errorLabelClass).addClass(cssClasses.successLabelClass);
+        // inputFields.parent().append(elements.checkElement);
+
+        // inputValidateFeedback.html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Success!</p><span>`);
+        inputValidateFeedback.empty();
 
         e.preventDefault();
 
@@ -98,9 +102,11 @@ $(document).ready(function () {
                 if (hasError) {
                     signInForm.addClass('shake');
 
-                    $('span[data-input-state="normal"]').hide();
+                    if (!$(inputElement.attr('type') === 'password')) {
+                        $('span[data-input-state="normal"]').hide();
+                    }
                     console.log("EYE HIDE");
-                    
+
                     inputElement.siblings('span[data-input-state="success"]').remove();
                     inputElement.parent().append(elements.cautionElement);
                     inputElement.removeClass(cssClasses.normalInputClass);
@@ -123,14 +129,15 @@ $(document).ready(function () {
                 }
             });
         } else {
-            $('body').addClass('scale-out-center');
-            setTimeout(function () {
-                $('body').removeClass('scale-out-center');
-                $('body').addClass('hidden bg-black');
-                window.location.href = "https://www.youtube.com";
-            }, 500);
+            // $('body').addClass('scale-out-center');
+            // setTimeout(function () {
+            //     $('body').removeClass('scale-out-center');
+            //     $('body').addClass('hidden bg-black');
+            //     window.location.href = "https://www.youtube.com";
+            // }, 500);
 
             console.log("Form is valid, submitting...");
+            signIn();
         }
     }
 
