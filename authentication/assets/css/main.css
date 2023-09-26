@@ -1,3 +1,11 @@
+.input-group p {
+	margin-top: 5px;
+	margin-left: 5px;
+	color: #f87171;
+	line-height: 1rem;
+	font-size: 0.725rem;
+}
+
 .shake {
 	-webkit-animation-name: shake;
 	animation-name: shake;

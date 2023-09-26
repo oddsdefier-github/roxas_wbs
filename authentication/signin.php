@@ -20,13 +20,6 @@ include 'database/connection.php';
 	/* * {
 		outline: 1px solid red;
 	} */
-	.input-group p {
-		margin-top: 5px;
-		margin-left: 5px;
-		color: #f87171;
-		line-height: 1rem;
-		font-size: 0.725rem;
-	}
 </style>
 
 <body class="flex min-h-screen flex-col bg-primary-100 font-inter">
@@ -74,8 +67,7 @@ include 'database/connection.php';
 							<div class="relative">
 								<input id="password" name="password" type="password" class="validate-input block px-2.5 py-3 w-full text-sm text-green-800 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
 								<label for="password" id="password_label" class="absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Password</label>
-
-								<span class="absolute top-0 right-0 px-3 h-full grid place-items-center">
+								<span data-input-state="normal" class="absolute top-0 right-0 px-3 h-full grid place-items-center">
 									<img id="eye-icon" src="assets/eye-close.svg" alt="eye-close" class="w-5 h-5">
 								</span>
 							</div>
