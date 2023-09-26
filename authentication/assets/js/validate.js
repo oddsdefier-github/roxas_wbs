@@ -101,14 +101,13 @@ $(document).ready(function () {
                 hasError = true;
                 if (hasError) {
                     signInForm.addClass('shake');
-
-                    if (!$(inputElement.attr('type') === 'password')) {
-                        $('span[data-input-state="normal"]').hide();
-                    }
                     console.log("EYE HIDE");
 
                     inputElement.siblings('span[data-input-state="success"]').remove();
-                    inputElement.parent().append(elements.cautionElement);
+
+                    inputElement.parent().append(elements.cautionElement)
+                    passInput.siblings('span[data-input-state="error"]').remove();
+
                     inputElement.removeClass(cssClasses.normalInputClass);
                     inputElement.addClass(cssClasses.errorInputClass);
 
