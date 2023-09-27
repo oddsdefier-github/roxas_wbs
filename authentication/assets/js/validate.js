@@ -5,30 +5,8 @@ $(document).ready(function () {
     const passInput = $("#password");
     const inputFields = $('.validate-input');
     const inputLabels = inputFields.siblings('label');
-    const inputValidateFeedback = $(".input-group p");
+    const inputValidateFeedback = $(".input-group .validate-message");
 
-    const validationRules = {
-        email: {
-            email: {
-                message: "is invalid",
-            },
-            presence: {
-                allowEmpty: false,
-                message: "cannot be empty",
-            },
-
-        },
-        password: {
-            presence: {
-                allowEmpty: false,
-                message: "cannot be empty",
-            },
-            length: {
-                minimum: 8,
-                tooShort: "should be at least %{count} characters or more"
-            }
-        },
-    };
 
     const cssClasses = {
         normalLabelClass: 'absolute text-sm text-gray-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
@@ -155,6 +133,29 @@ $(document).ready(function () {
 
     function handleSubmit(e) {
 
+        const validationRules = {
+            email: {
+                email: {
+                    message: "is invalid",
+                },
+                presence: {
+                    allowEmpty: false,
+                    message: "cannot be empty",
+                },
+
+            },
+            password: {
+                presence: {
+                    allowEmpty: false,
+                    message: "cannot be empty",
+                },
+                length: {
+                    minimum: 8,
+                    tooShort: "should be at least %{count} characters or more"
+                }
+            },
+        };
+
 
         inputFields.siblings('span[data-input-state="error"]').remove();
         $('span[data-input-state="normal"]').hide();
@@ -176,14 +177,12 @@ $(document).ready(function () {
         const validateInput = validate(formData, validationRules);
 
         if (validateInput) {
-            console.log(validateInput);
             $.each(validateInput, function (fieldName, errorMessage) {
-                const inputElement = $(`p[data-validate-input="${fieldName}"]`).prev('div').find('input');
+                const inputElement = $(`div[data-validate-input="${fieldName}"]`).prev('div').find('input');
                 const labelElement = inputElement.siblings('label');
                 hasError = true;
                 if (hasError) {
                     signInForm.addClass('shake');
-                    console.log("EYE HIDE");
 
                     inputElement.siblings('span[data-input-state="success"]').remove();
 
@@ -201,12 +200,26 @@ $(document).ready(function () {
                     }, 1000);
                 }
 
+
+                // let obj = [
+                //     "Password cannot be empty",
+                //     "Password should be at least 8 characters or more"
+                // ];
+
+                // console.log(obj.map(message => "🤣" + `${message}`).join("<br>"))
+
+
                 if (errorMessage.length > 1) {
-                    const errorHTML = errorMessage.map(message => `<div style="display: inline-flex; align-items: center; justify-content: center">${elements.miniCautionElement} <p style="margin: 2.5px;">${message}</p></div>`).join("<br>");
-                    $(`p[data-validate-input="${fieldName}"]`).html(errorHTML);
+                    const errorHTML = errorMessage
+                        .map(message => `<div style="display: inline-flex; align-items: center; justify-content: center;">${elements.miniCautionElement} <p style="margin: 2.5px;">${message}</p></div>`)
+                        .join("<br>");
+
+                    $(`div[data-validate-input="${fieldName}"]`).html(errorHTML);
+                    console.log("🤡")
                 } else {
-                    $(`p[data-validate-input="${fieldName}"]`).css({ display: "inline-flex", "align-items": "center", "justify-content": "center" });
-                    $(`p[data-validate-input="${fieldName}"]`).html(`${elements.miniCautionElement} <p style="margin: 2.5px;">${errorMessage[0]}</p>`);
+                    $(`div[data-validate-input="${fieldName}"]`)
+                        .css({ display: "inline-flex", "align-items": "center", "justify-content": "center" })
+                        .html(`${elements.miniCautionElement} <p style="margin: 2.5px;">${errorMessage[0]}</p>`);
                 }
             });
         } else {
@@ -230,8 +243,67 @@ $(document).ready(function () {
         }
     }
 
+    function liveValidate() {
+        const validationRules = {
+            email: {
+                email: {
+                    message: "is invalid",
+                },
+            },
+            password: {
+                length: {
+                    minimum: 8,
+                    tooShort: "should be at least %{count} characters or more"
+                }
+            },
+        };
+
+
+        const formData = {
+            email: emailInput.val().trim(),
+            password: passInput.val().trim(),
+        };
+
+        const validateInput = validate(formData, validationRules);
+
+        if (validateInput) {
+            $.each(validateInput, function (fieldName, errorMessage) {
+                const inputElement = $(`div[data-validate-input="${fieldName}"]`).prev('div').find('input');
+                const labelElement = inputElement.siblings('label');
+                hasError = true;
+                if (hasError) {
+                    inputElement.siblings('span[data-input-state="success"]').remove();
+                    inputElement.parent().append(elements.cautionElement)
+                    passInput.siblings('span[data-input-state="error"]').remove();
+
+                    inputElement.removeClass(cssClasses.normalInputClass);
+                    inputElement.addClass(cssClasses.errorInputClass);
+
+                    labelElement.removeClass(cssClasses.normalLabelClass);
+                    labelElement.addClass(cssClasses.errorLabelClass);
+                }
+                if (errorMessage.length > 1) {
+                    const errorHTML = errorMessage
+                        .map(message => `<div style="display: inline-flex; align-items: center; justify-content: center">${elements.miniCautionElement} <p style="margin: 2.5px;">${message}</p></div>`)
+                        .join("<br>");
+                    $(`div[data-validate-input="${fieldName}"]`).html(errorHTML);
+                    console.log("😑")
+
+                } else {
+                    $(`div[data-validate-input="${fieldName}"]`)
+                        .css({ display: "inline-flex", "align-items": "center", "justify-content": "center" })
+                        .html(`${elements.miniCautionElement} <p style="margin: 2.5px;">${errorMessage[0]}</p>`);
+                    console.log("😬")
+                }
+            });
+        } else {
+            console.log("No error in input");
+
+        }
+    }
 
     signInForm.on("submit", handleSubmit);
+
 
     inputFields.on("input", function () {
         hasError = false;
@@ -243,5 +315,8 @@ $(document).ready(function () {
         if (!$('span[data-input-state="normal"]').is(':visible')) {
             $('span[data-input-state="normal"]').show();
         }
+
+        liveValidate();
+
     });
 });

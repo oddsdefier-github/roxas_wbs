@@ -59,8 +59,7 @@ include 'database/connection.php';
 								<input id="email" name="email" type="email" data-input-state="normal" class="validate-input block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
 								<label for="email" id="email_label" class="absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Email Address</label>
 							</div>
-							<p data-validate-input="email">
-							</p>
+							<div data-validate-input="email" class="validate-message"></div>
 						</div>
 
 						<div class="input-group">
@@ -71,7 +70,7 @@ include 'database/connection.php';
 									<img id="eye-icon" src="assets/eye-close.svg" alt="eye-close" class="w-5 h-5">
 								</span>
 							</div>
-							<p data-validate-input="password"></p>
+							<div data-validate-input="password"></div>
 						</div>
 
 						<button id="submit-btn" type="submit" name="submit" class="inline-flex items-center justify-center gap-2 rounded border border-transparent bg-primary-500 px-3 py-2 text-sm font-semibold text-white transition-all hover:bg-primary-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-offset-2">Sign in </button>
