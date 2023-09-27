@@ -38,11 +38,11 @@ include 'database/connection.php';
 			</div>
 			<form id="form-signin" class="w-full max-w-md bg-white px-7 py-6 shadow-xl rounded-md transition-all duration-150">
 				<div class="my-5 text-left">
-					<a href="./">
+					<div>
 						<h1 class="block text-2xl font-bold text-gray-800" id="form-header">Sign in</h1>
 						<h5 class="text-base text-gray-400">to start managing customer's data.</h5>
 						<p id="signin-message" class="text-sm font-medium text-red-500"></p>
-					</a>
+					</div>
 				</div>
 				<div class="my-4">
 					<div class="grid gap-y-4">
@@ -70,10 +70,9 @@ include 'database/connection.php';
 									<img id="eye-icon" src="assets/eye-close.svg" alt="eye-close" class="w-5 h-5">
 								</span>
 							</div>
-							<div data-validate-input="password"></div>
+							<div data-validate-input="password" class="validate-message"></div>
 						</div>
-
-						<button id="submit-btn" type="submit" name="submit" class="inline-flex items-center justify-center gap-2 rounded border border-transparent bg-primary-500 px-3 py-2 text-sm font-semibold text-white transition-all hover:bg-primary-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-offset-2">Sign in </button>
+						<button id="submit-btn" type="submit" name="submit" class="inline-flex items-center justify-center gap-2 rounded border border-transparent bg-primary-500 px-3 py-2 text-sm font-semibold text-white transition-all hover:bg-primary-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-offset-2" disabled>Sign in </button>
 
 						<p class="text-sm text-gray-600">
 							Not registered?
@@ -94,8 +93,8 @@ include 'database/connection.php';
 	<!-- <script src="./assets/js/signin.js"></script> -->
 
 	<script src="./assets/js/validate.js"></script>
-	<script src="./assets/js/signin.js"></script>
-	<script type="module" src="./assets/js/variables.js"></script>
+	<!-- <script src="./assets/js/signin.js"></script>
+	<script type="module" src="./assets/js/variables.js"></script> -->
 
 </body>
 
