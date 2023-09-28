@@ -13,11 +13,8 @@ $(document).ready(function () {
         errorLabelClass: 'absolute text-sm text-red-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
         successLabelClass: 'absolute text-sm text-green-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
         normalInputClass: 'block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-indigo-600 peer',
-        errorInputClass: 'block px-2.5 py-3 w-full text-sm text-red-800 bg-transparent rounded-lg border-1 border-red-500 appearance-none  focus:outline-none focus:ring-0 focus:border-indigo-600 peer',
-        successInputClass: 'block px-2.5 py-3 w-full text-sm text-green-800 bg-transparent rounded-lg border-1 border-green-500 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 peer',
-        focusInputClass: 'focus:border-blue-600',
-        focusErrorInputClass: 'focus:border-blue-600',
-        focusSuccessInputClass: 'focus:border-blue-600'
+        errorInputClass: 'block px-2.5 py-3 w-full text-sm text-red-800 bg-transparent rounded-lg border-1 border-red-500 appearance-none  focus:outline-none focus:ring-0 focus:border-red-600 peer',
+        successInputClass: 'block px-2.5 py-3 w-full text-sm text-green-800 bg-transparent rounded-lg border-1 border-green-500 appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer'
     }
 
     const elements = {
@@ -159,6 +156,7 @@ $(document).ready(function () {
     function validateField(fieldName, fieldValue) {
         const validationRules = {
             email: {
+                
                 email: {
                     message: "is invalid",
                 },
@@ -213,17 +211,17 @@ $(document).ready(function () {
             $('button[type="submit"]')
                 .text('Submit')
                 .prop('disabled', false);
-            $(this)
-                .trigger('blur')
-                .removeClass(cssClasses.focusInputClass)
-                .removeClass(cssClasses.focusErrorInputClass)
-                .addClass(cssClasses.focusSuccessInputClass);
+            // $(this)
+            //     .trigger('blur')
+            // .removeClass(cssClasses.focusInputClass)
+            // .removeClass(cssClasses.focusErrorInputClass)
+            // .addClass(cssClasses.focusSuccessInputClass);
 
             // setTimeout($(this).trigger('blur'), 1000);
 
             $(this).siblings('span[data-input-state="normal"]').hide();
             // Handle valid input styling
-            $(this).removeClass(cssClasses.errorInputClass).addClass(cssClasses.successInputClass);
+            $(this).removeClass(cssClasses.errorInputClass).removeClass(cssClasses.normalInputClass).addClass(cssClasses.successInputClass);
             $(this).siblings('label').removeClass(cssClasses.errorLabelClass).addClass(cssClasses.successLabelClass);
             $(this).parent().append(elements.checkElement);
 
