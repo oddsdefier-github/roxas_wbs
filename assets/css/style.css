@@ -1716,6 +1716,10 @@ input:checked + .toggle-bg {
   right: 0.625rem;
 }
 
+.right-5 {
+  right: 1.25rem;
+}
+
 .start-1 {
   inset-inline-start: 0.25rem;
 }
@@ -1730,6 +1734,14 @@ input:checked + .toggle-bg {
 
 .top-3 {
   top: 0.75rem;
+}
+
+.right-4 {
+  right: 1rem;
+}
+
+.right-3 {
+  right: 0.75rem;
 }
 
 .isolate {

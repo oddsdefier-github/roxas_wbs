@@ -48,8 +48,6 @@ $(document).ready(function () {
         console.log("EYE CLICK");
     });
 
-    let hasError = false;
-
 
     function signIn() {
         return new Promise((resolve, reject) => {
@@ -76,13 +74,10 @@ $(document).ready(function () {
                 success: function (response) {
                     var responseData = JSON.parse(response);
 
-                    console.log(responseData)
-                    signInMessage.text(responseData.message);
 
                     if (responseData.valid) {
-                        console.log("User is valid");
-                        console.log("Admin Name: " + responseData.admin_name);
-                        console.log("User Role: " + responseData.user_role);
+
+                        signInForm.hide(200)
 
                         loader.css({
                             'display': 'flex',
@@ -90,21 +85,27 @@ $(document).ready(function () {
                             'justify-content': 'center',
                             'align-items': 'center'
                         });
+
                         loader.show();
+
+
                         if (responseData.user_role === "Admin") {
                             setTimeout(function () {
                                 loader.hide();
                                 window.location.href = "../admin/index.php";
-                                resolve(responseData); // Resolve the Promise with response data
                             }, 1000);
                         } else if (responseData.user_role === "Cashier") {
                             window.location.href = "../cashier/index.php";
                         } else if (responseData.user_role === "Meter Reader") {
                             window.location.href = "../meter_reader/index.php";
-                        } else {
-                            resolve(responseData); // Resolve the Promise with response data
                         }
+
+                        resolve(responseData); // Resolve the Promise with response data
+
                     } else {
+
+                        signInMessage.text(responseData.message)
+
                         inputFields.siblings('span[data-input-state="error"]').remove();
                         $('span[data-input-state="normal"]').hide();
                         $('span[data-input-state="success"]').remove();
@@ -118,13 +119,12 @@ $(document).ready(function () {
                         const audio = new Audio('./failed.mp3');
                         audio.play();
                         $("#form-signin").addClass("shake");
-                        setTimeout(function () {
-                            console.log("ERROR");
-                        }, 200);
+
                         setTimeout(function () {
                             $("#form-signin").removeClass("shake");
                             reject(responseData); // Reject the Promise with response data
                         }, 1000);
+
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
@@ -142,7 +142,11 @@ $(document).ready(function () {
             .then(() => {
                 const audio = new Audio('./success.wav');
                 audio.play();
-
+            })
+            .then((responseData) => {
+                console.log("User is valid");
+                console.log("Admin Name: " + responseData.admin_name);
+                console.log("User Role: " + responseData.user_role);
             })
             .catch((error) => {
                 console.log(error)
@@ -158,13 +162,13 @@ $(document).ready(function () {
             email: {
 
                 email: {
-                    message: "is invalid",
+                    message: "is invalid!",
                 },
             },
             password: {
                 length: {
                     minimum: 8,
-                    tooShort: "should be at least %{count} characters or more",
+                    tooShort: "should be at least %{count} characters or more!",
                 },
             },
         };
@@ -195,8 +199,11 @@ $(document).ready(function () {
             $(this).siblings('span[data-input-state="normal"]').show();
 
             $('button[type="submit"]')
-                .text('Complete the fields')
+                .text('Complete Fields')
                 .prop('disabled', true);
+
+            $(this).siblings('span[data-input-state="normal"]')
+                .css({ "display": "absolute", "top": "0", "right": "0" });
 
 
             errorMessage.forEach((message) => {
@@ -210,14 +217,20 @@ $(document).ready(function () {
             $(this).siblings('label').removeClass(cssClasses.successLabelClass).addClass(cssClasses.errorLabelClass);
 
         } else {
+            const inputLabel = $(this).siblings('label');
+            const inputParent = $(this).parent();
+            const inputParentSibling = $(this).parent().next();
 
-            $(this).siblings('span[data-input-state="normal"]').hide();
+
+            $(this).siblings('span[data-input-state="normal"]')
+                .css({ "display": "absolute", "top": "0", "right": "1.5rem" });
+
             // Handle valid input styling
             $(this).removeClass(cssClasses.errorInputClass).removeClass(cssClasses.normalInputClass).addClass(cssClasses.successInputClass);
-            $(this).siblings('label').removeClass(cssClasses.errorLabelClass).removeClass(cssClasses.normalLabelClass).addClass(cssClasses.successLabelClass);
-            $(this).parent().append(elements.checkElement);
+            inputLabel.removeClass(cssClasses.errorLabelClass).removeClass(cssClasses.normalLabelClass).addClass(cssClasses.successLabelClass);
+            inputParent.append(elements.checkElement);
 
-            $(this).parent().next().html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`);
+            inputParentSibling.html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`);
 
 
             $(this).attr('data-input-state', 'success');
