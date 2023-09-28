@@ -12,7 +12,7 @@ $(document).ready(function () {
         normalLabelClass: 'absolute text-sm text-gray-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
         errorLabelClass: 'absolute text-sm text-red-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
         successLabelClass: 'absolute text-sm text-green-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
-        normalInputClass: 'block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-indigo-600 peer',
+        normalInputClass: 'block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-600 peer',
         errorInputClass: 'block px-2.5 py-3 w-full text-sm text-red-800 bg-transparent rounded-lg border-1 border-red-500 appearance-none  focus:outline-none focus:ring-0 focus:border-red-600 peer',
         successInputClass: 'block px-2.5 py-3 w-full text-sm text-green-800 bg-transparent rounded-lg border-1 border-green-500 appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer'
     }
@@ -156,7 +156,7 @@ $(document).ready(function () {
     function validateField(fieldName, fieldValue) {
         const validationRules = {
             email: {
-                
+
                 email: {
                     message: "is invalid",
                 },
@@ -170,10 +170,8 @@ $(document).ready(function () {
         };
 
         const fieldErrors = validate({ [fieldName]: fieldValue.trim() }, validationRules);
-        console.log(fieldErrors)
         return fieldErrors ? fieldErrors[fieldName] : null;
     }
-
 
     // Event handler for input fields
     inputFields.on("input", function () {
@@ -188,16 +186,18 @@ $(document).ready(function () {
         $(this).siblings('span[data-input-state="normal"]').show();
 
 
+
         if (errorMessage) {
+
+            console.log(errorMessage)
+            $(this).attr('data-input-state', 'error');
+            console.log($(this).attr('data-input-state'))
             $(this).siblings('span[data-input-state="normal"]').show();
 
             $('button[type="submit"]')
                 .text('Complete the fields')
                 .prop('disabled', true);
 
-            $(this)
-                .removeClass(cssClasses.focusInputClass)
-                .addClass(cssClasses.focusErrorInputClass);
 
             errorMessage.forEach((message) => {
                 const errorHTML = `<div style="display: inline-flex; align-items: center; justify-content: center">${elements.miniCautionElement} <p style="margin: 2.5px;">${message}</p></div>`;
@@ -205,34 +205,31 @@ $(document).ready(function () {
             });
 
             // Handle invalid input styling
+
             $(this).removeClass(cssClasses.successInputClass).addClass(cssClasses.errorInputClass);
             $(this).siblings('label').removeClass(cssClasses.successLabelClass).addClass(cssClasses.errorLabelClass);
-        } else {
-            $('button[type="submit"]')
-                .text('Submit')
-                .prop('disabled', false);
-            // $(this)
-            //     .trigger('blur')
-            // .removeClass(cssClasses.focusInputClass)
-            // .removeClass(cssClasses.focusErrorInputClass)
-            // .addClass(cssClasses.focusSuccessInputClass);
 
-            // setTimeout($(this).trigger('blur'), 1000);
+        } else {
 
             $(this).siblings('span[data-input-state="normal"]').hide();
             // Handle valid input styling
             $(this).removeClass(cssClasses.errorInputClass).removeClass(cssClasses.normalInputClass).addClass(cssClasses.successInputClass);
-            $(this).siblings('label').removeClass(cssClasses.errorLabelClass).addClass(cssClasses.successLabelClass);
+            $(this).siblings('label').removeClass(cssClasses.errorLabelClass).removeClass(cssClasses.normalLabelClass).addClass(cssClasses.successLabelClass);
             $(this).parent().append(elements.checkElement);
 
             $(this).parent().next().html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`);
+
+
+            $(this).attr('data-input-state', 'success');
+            console.log($(this).attr('data-input-state'))
+
+            if ((emailInput.attr('data-input-state') == 'success') && passInput.attr('data-input-state') == 'success') {
+                console.log("✔")
+                $('button[type="submit"]')
+                    .text('Submit')
+                    .prop('disabled', false);
+            }
         }
-        console.log(errorMessage)
-        // if (errorMessage.length === 0) {
-        //     $('button[type="submit"]')
-        //         .text('Submit')
-        //         .prop('disabled', false);
-        // }
 
     });
 
