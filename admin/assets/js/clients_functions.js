@@ -12,7 +12,6 @@ const searchInput = $("#search-input");
 const clearInput = $("#clear-input");
 
 $(document).ready(function () {
-    displayClientApplicationTable();
     displayClientTable();
     confirmDeleteClient();
     addClient();
@@ -408,30 +407,82 @@ function signOut() {
 }
 
 
-function displayClientApplicationTable(page = "1", recordsPerPage = "12", query = "") {
-    console.log("❓")
+
+let currentPageNumber = 1;
+let totalItem = 0; // Initialize totalItem
+
+function displayClientApplicationTable(pageNumber = 1, itemPerPage = 2) {
+    console.log("❓");
+
     $.ajax({
-        url: "display_client_application_table.php",
+        url: "database_queries.php",
         type: 'post',
         data: {
-            displaySend: page,
-            query: query,
-            recordsPerPage: recordsPerPage,
+            action: "getDataTable",
+            dataTableParam: {
+                pageNumber: currentPageNumber,
+                itemPerPage: itemPerPage
+            }
         },
         success: function (data, status) {
-            console.log(data)
-            $("#displayClientApplicationTable").html(data);
+            $('#displayClientApplicationTable').html(data);
         }
     });
 }
 
-// addApplicant()
-//     .then(() => {
+function pagination() {
+    const prev = $("#prev");
+    const next = $("#next");
 
-//     })
-//     .then(() => {
+    prev.on("click", function () {
+        if (currentPageNumber > 1) {
+            currentPageNumber--; // Decrease the current page number
+            $('button[data-current-page]').attr('data-current-page', currentPageNumber);
+            displayClientApplicationTable(currentPageNumber, 2);
+            updatePaginationButtons();
+        }
+    });
 
-//     })
-//     .then(() => {
+    next.on("click", function () {
+        if (currentPageNumber < lastPageNumber) {
+            currentPageNumber++; // Increase the current page number
+            $('button[data-current-page]').attr('data-current-page', currentPageNumber);
+            displayClientApplicationTable(currentPageNumber, 2);
+            updatePaginationButtons();
+        }
+    });
 
-//     })
+    function updatePaginationButtons() {
+        if (currentPageNumber <= 1) {
+            prev.prop("disabled", true);
+        } else {
+            prev.prop("disabled", false);
+        }
+
+        if (currentPageNumber >= lastPageNumber) {
+            next.prop("disabled", true);
+        } else {
+            next.prop("disabled", false);
+        }
+    }
+
+    // Get the totalItem value
+    $.ajax({
+        url: "database_queries.php",
+        type: "POST",
+        data: {
+            action: "getTotalItem",
+            tableName: "client_application"
+        },
+        success: function (data) {
+            console.log(data);
+            totalItem = JSON.parse(data).totalItem;
+            lastPageNumber = Math.ceil(totalItem / 2); // Calculate lastPageNumber
+            updatePaginationButtons(); // Update the pagination buttons
+        }
+    });
+}
+
+
+displayClientApplicationTable();
+pagination();

@@ -104,7 +104,7 @@
         }
 
         const formInput = {
-            meterNumber: meterNumberInput.val(),
+            meterNumber: meterNumberInput.val().toUpperCase(),
             firstName: formatName(firstNameInput.val()),
             middleName: formatName(middleNameInput.val()),
             lastName: formatName(lastNameInput.val()),
@@ -187,6 +187,7 @@
             },
             success: function (data) {
                 console.log(data)
+                window.location.href = "http://localhost/wbs_zero_php/admin/logs.php"
             }
         })
 
