@@ -156,6 +156,39 @@
         console.log(formInput.getFullAddress());
 
 
+        $.ajax({
+            url: "database_queries.php",
+            type: "POST",
+            data: {
+                action: "processClientApplication",
+                formData: {
+                    meterNumber: formInput.meterNumber,
+                    firstName: formInput.firstName,
+                    middleName: formInput.middleName,
+                    lastName: formInput.lastName,
+                    fullName: formInput.getFullNameWithInitial(),
+                    age: formInput.age,
+                    gender: formInput.gender,
+                    phoneNumber: formInput.phoneNumber,
+                    email: formInput.email,
+                    propertyType: formInput.propertyType,
+                    streetAddress: formInput.streetAddress,
+                    brgy: formInput.brgy,
+                    municipality: formInput.municipality,
+                    province: formInput.province,
+                    region: formInput.region,
+                    country: formInput.country,
+                    fullAddress: formInput.getFullAddress(),
+                    validID: formInput.validID,
+                    proofOfOwnership: formInput.proofOfOwnership,
+                    deedOfSale: formInput.deedOfSale,
+                    affidavit: formInput.affidavit
+                }
+            },
+            success: function (data) {
+                console.log(data)
+            }
+        })
 
 
     };
@@ -293,7 +326,7 @@
                 .attr('title', 'Complete the fields to unlock!')
 
             errorMessage.forEach((message) => {
-                const errorHTML = `<div style="display: inline-flex; align-items: center; justify-content: center; gap: 1.5px">${elements.miniCautionElement} <p>${message}</p></div>`;
+                const errorHTML = `<div style="display: inline-flex; align-items: center; justify-content: start; width: 100%;">${elements.miniCautionElement} <p style="margin: 2px">${message}</p></div>`;
                 $(`div[data-validate-input="${fieldName}"]`).append(errorHTML);
             });
 
@@ -334,7 +367,7 @@
                 count++
             }
             console.log(count)
-            if (count === 1) {
+            if (count === inputs.length - 7) {
                 console.log('🐓')
                 $('button[type="submit"]')
                     .prop('disabled', false)

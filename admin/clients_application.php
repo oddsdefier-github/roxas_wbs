@@ -46,10 +46,6 @@ if ($_SESSION['user_role'] != "Admin") {
         </main>
     </section>
 
-
-    <?php include './components/modal/update_client_modal.php'; ?>
-
-
     <?php include './layouts/scripts.php'; ?>
     <script>
         $("#subheader-title").text("Clients Application");

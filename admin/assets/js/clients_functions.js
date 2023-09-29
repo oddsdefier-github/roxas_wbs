@@ -12,7 +12,7 @@ const searchInput = $("#search-input");
 const clearInput = $("#clear-input");
 
 $(document).ready(function () {
-
+    displayClientApplicationTable();
     displayClientTable();
     confirmDeleteClient();
     addClient();
@@ -407,26 +407,23 @@ function signOut() {
     })
 }
 
-// function addApplicant() {
 
-//     return new Promise = (resolve, reject) => {
-//         $.ajax({
-//             url: "database_queries.php",
-//             type: "POST",
-//             dataType: "json",
-//             success: function (data) {
-//                 if () {
-//                     resolve;
-//                 } else {
-//                     reject;
-//                 }
-//             },
-//             error: function (status) {
-//                 reject("Failed with status: " + status)
-//             }
-//         })
-//     }
-// }
+function displayClientApplicationTable(page = "1", recordsPerPage = "12", query = "") {
+    console.log("❓")
+    $.ajax({
+        url: "display_client_application_table.php",
+        type: 'post',
+        data: {
+            displaySend: page,
+            query: query,
+            recordsPerPage: recordsPerPage,
+        },
+        success: function (data, status) {
+            console.log(data)
+            $("#displayClientApplicationTable").html(data);
+        }
+    });
+}
 
 // addApplicant()
 //     .then(() => {
