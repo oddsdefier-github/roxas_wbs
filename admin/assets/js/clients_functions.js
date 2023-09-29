@@ -477,10 +477,44 @@ function pagination() {
         success: function (data) {
             console.log(data);
             totalItem = JSON.parse(data).totalItem;
-            lastPageNumber = Math.ceil(totalItem / 2); // Calculate lastPageNumber
-            updatePaginationButtons(); // Update the pagination buttons
+            lastPageNumber = Math.ceil(totalItem / 2);
+            updatePaginationButtons();
         }
     });
+
+    function appendPageNumber(currentPage, totalPages) {
+        const pageNumbersContainer = $('#page-number-container');
+        pageNumbersContainer.empty();
+
+        const numPageNumbersToShow = 5;
+
+        // Calculate the range of page numbers to display
+        let startPage = Math.max(1, currentPage - Math.floor(numPageNumbersToShow / 2));
+        let endPage = Math.min(totalPages, startPage + numPageNumbersToShow - 1);
+
+        while (endPage - startPage + 1 < numPageNumbersToShow) {
+            if (startPage > 1) {
+                startPage--;
+            } else {
+                endPage++;
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const isSelectedPage = i === currentPage;
+            const pageNumber = `<a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold ${isSelectedPage
+                ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
+                }">${i}</a>`;
+            pageNumbersContainer.append(pageNumber);
+        }
+    }
+
+    const currentPage = currentPageNumber;
+    const totalPages = 10;
+    appendPageNumber(currentPage, totalPages);
+
+
 }
 
 
