@@ -1,24 +1,26 @@
 <?php
 
+use Admin\Database\DatabaseConnection;
+
 include 'database/connection.php';
 
 class DatabaseQueries
 {
     private $conn;
-    public function setConnection($databaseConnection)
+
+    public function __construct(DatabaseConnection $databaseConnection)
     {
         $this->conn = $databaseConnection;
     }
-
     public function retrieveClientData($clientId)
     {
         $response = array();
 
         $sql = "SELECT * FROM `clients` WHERE id = ?";
-        $stmt = mysqli_prepare($this->conn, $sql);
+        $stmt = $this->conn->prepareStatement($sql); // Use prepareStatement instead of query
         mysqli_stmt_bind_param($stmt, "i", $clientId);
         mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        $result = $this->conn->getResultSet($stmt);
 
         $clientRow = mysqli_fetch_assoc($result);
         if ($clientRow) {
@@ -30,10 +32,8 @@ class DatabaseQueries
         $addressArray = array();
 
         $addressSql = "SELECT * FROM `address`";
-        $addressStmt = mysqli_prepare($this->conn, $addressSql);
-        mysqli_stmt_execute($addressStmt);
-        $addressResult = mysqli_stmt_get_result($addressStmt);
-
+        $addressStmt = $this->conn->query($addressSql); // Use query method for the address query
+        $addressResult = $this->conn->getResultSet($addressStmt);
 
         $addressArray = array();
 
@@ -41,12 +41,13 @@ class DatabaseQueries
             $addressArray[] = $addressRow;
         }
 
-        mysqli_stmt_close($addressStmt);
+        $this->conn->closeStatement($addressStmt);
 
         $response['addressData'] = $addressArray;
 
         return $response;
     }
+
 
     public function processClientApplication(
         $formData,
@@ -80,7 +81,7 @@ class DatabaseQueries
 
         $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, full_name, email, phone_number, age, gender, property_type, street, brgy, municipality, province, region, country, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?,CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
-        $stmt = mysqli_prepare($this->conn, $sql);
+        $stmt = $this->conn->prepareStatement($sql);
 
         if ($stmt) {
             mysqli_stmt_bind_param(
@@ -113,12 +114,12 @@ class DatabaseQueries
             if (mysqli_stmt_execute($stmt)) {
                 $response['success'] = "Application submitted successfully.";
             } else {
-                $response['error'] = "Error executing the query: " . mysqli_error($this->conn);
+                $response['error'] = "Error executing the query: " . $this->conn->getErrorMessage();
             }
 
             mysqli_stmt_close($stmt);
         } else {
-            $response['error'] = "Error preparing the statement: " . mysqli_error($this->conn);
+            $response['error'] = "Error preparing the statement: " . $this->conn->getErrorMessage();
         }
 
         return $response;
@@ -131,14 +132,14 @@ class DatabaseQueries
         $offset = ($pageNumber - 1) * $itemPerPage;
         $sql = "SELECT * FROM client_application ORDER BY timestamp DESC LIMIT ? OFFSET ?";
 
-        $stmt = mysqli_prepare($this->conn, $sql);
+        $stmt = $this->conn->prepareStatement($sql);
         mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
         mysqli_stmt_execute($stmt);
 
         $result = mysqli_stmt_get_result($stmt);
 
         $sql = "SELECT * from client_application";
-        $totalRecords = mysqli_num_rows(mysqli_query($this->conn, $sql));
+        $totalRecords = mysqli_num_rows($this->conn->query($sql));
         // $totalPages = ceil($totalRecords / $itemPerPage);
 
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
@@ -231,7 +232,7 @@ class DatabaseQueries
     {
         $total = array();
         $sql = "SELECT COUNT(*) FROM $tableName";
-        $result = mysqli_query($this->conn, $sql);
+        $result = $this->conn->query($sql);
 
         if ($result) {
 
@@ -253,8 +254,8 @@ class DatabaseQueries
 
 
 if ($conn) {
-    $dbQueries = new DatabaseQueries();
-    $dbQueries->setConnection($conn);
+    $dbConnection = new DatabaseConnection($host1, $username1, $password1, $database1);
+    $dbQueries = new DatabaseQueries($dbConnection);
 } else {
     echo "Database connection failed.";
 }

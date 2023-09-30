@@ -1,4 +1,5 @@
 <?php
+
 include './database/connection.php';
 
 session_start();
@@ -37,6 +38,7 @@ if ($_SESSION['user_role'] != "Admin") {
     <?php include './layouts/sidebar.php'; ?>
 
     <section class="flex min-h-screen grow flex-col bg-white">
+
         <?php include './layouts/header.php'; ?>
         <?php include './components/subheader.php'; ?>
         <main class="relative flex flex-1 flex-col justify-start overflow-auto">
@@ -56,5 +58,5 @@ if ($_SESSION['user_role'] != "Admin") {
 
 </html>
 <?php
-mysqli_close($conn);
+$conn->close();
 ?>

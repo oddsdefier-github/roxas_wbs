@@ -77,5 +77,5 @@ if ($_SESSION['user_role'] != "Admin") {
 
 </html>
 <?php
-mysqli_close($conn);
+$conn->close();
 ?>

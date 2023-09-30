@@ -14,7 +14,6 @@
         <div class="flex h-full items-center justify-center gap-5">
             <?php include 'toggle_outline.php'; ?>
 
-
             <div>
                 <img id="avatarButton" type="button" data-dropdown-toggle="userDropdown" data-dropdown-placement="bottom-start" class=" w-10 h-10 rounded-full cursor-pointer" src="https://play-lh.googleusercontent.com/O8mvDQlw4AwmGfUrh4lviZD_PwwhRHz2etA25F77SbXrm3qEHOt2826aNkKar4D0yw" alt="User dropdown">
 

@@ -11,20 +11,20 @@ if (isset($_POST["filterLogs"]) && !empty($_POST["filterLogs"])) {
     $sql = "SELECT * FROM logs WHERE user_activity LIKE '%$filterLogs%' ORDER BY datetime DESC";
 
     $count_result = "SELECT * FROM logs WHERE user_activity LIKE '%$filterLogs%'";
-    $totalRecords = mysqli_num_rows(mysqli_query($conn, $count_result));
+    $totalRecords = mysqli_num_rows($conn->query($count_result));
 
     $recordsPerPage = $totalRecords;
     $totalPages = 1;
-    $result = mysqli_query($conn, $sql);
+    $result = $conn->query($sql);
 } else {
     $recordsPerPage = isset($_POST["recordsPerPage"]) ? intval($_POST["recordsPerPage"]) : 10;
     $offset = ($page - 1) * $recordsPerPage;
     $sql = "SELECT * FROM logs ORDER BY datetime DESC LIMIT $recordsPerPage OFFSET $offset";
 
-    $result = mysqli_query($conn, $sql);
+    $result = $conn->query($sql);
 
     $sql = "SELECT * FROM logs";
-    $totalRecords = mysqli_num_rows(mysqli_query($conn, $sql));
+    $totalRecords = mysqli_num_rows($conn->query($sql));
     $totalPages = ceil($totalRecords / $recordsPerPage);
 }
 
@@ -96,7 +96,7 @@ while ($rows = mysqli_fetch_assoc($result)) {
         $activity_class .= "bg-green-100 text-green-600 ";
 
         $sql = "SELECT client_name FROM clients WHERE id = $client_id";
-        $client_name_result = mysqli_query($conn, $sql);
+        $client_name_result = $conn->query($sql);
 
         if ($client_name_result) {
             $row = mysqli_fetch_assoc($client_name_result);
@@ -119,7 +119,7 @@ while ($rows = mysqli_fetch_assoc($result)) {
         $activity_class .= "bg-red-100 text-red-500 ";
 
         $sql = "SELECT client_name FROM clients_archive WHERE id = $client_id";
-        $client_name_result = mysqli_query($conn, $sql);
+        $client_name_result = $conn->query($sql);
 
         if ($client_name_result) {
             $row = mysqli_fetch_assoc($client_name_result);

@@ -1,4 +1,5 @@
 <?php
+
 include './database/connection.php';
 
 
@@ -12,19 +13,19 @@ if (isset($_POST["query"]) && !empty($_POST["query"])) {
     $sql = "SELECT * FROM clients WHERE client_name LIKE '%$query%' OR address LIKE '%$query%' OR client_id LIKE '%$query%' ORDER BY reg_date DESC";
 
     $count_result = "SELECT * FROM clients WHERE client_name LIKE '%$query%' OR address LIKE '%$query%' OR client_id LIKE '%$query%'";
-    $totalRecords = mysqli_num_rows(mysqli_query($conn, $count_result));
+    $totalRecords = mysqli_num_rows($conn->query($count_result));
 
     $recordsPerPage = $totalRecords;
     $totalPages = 1;
-    $result = mysqli_query($conn, $sql);
+    $result = $conn->query($sql);
 } else {
     $recordsPerPage = isset($_POST["recordsPerPage"]) ? intval($_POST["recordsPerPage"]) : 10;
     $offset = ($page - 1) * $recordsPerPage;
     $sql = "SELECT * FROM clients ORDER BY reg_date DESC LIMIT $recordsPerPage OFFSET $offset";
-    $result = mysqli_query($conn, $sql);
+    $result = $conn->query($sql);
 
     $sql = "SELECT * from clients";
-    $totalRecords = mysqli_num_rows(mysqli_query($conn, $sql));
+    $totalRecords = mysqli_num_rows($conn->query($sql));
     $totalPages = ceil($totalRecords / $recordsPerPage);
 }
 

@@ -2,7 +2,7 @@
 let currentPageNumber = 1;
 let totalItem = 0;
 let lastPageNumber = 0;
-let itemPerPage = 10; 
+let itemPerPage = 10;
 
 function updatePaginationButtons() {
     const prev = $("#prev");
@@ -70,7 +70,7 @@ function initializePagination(tableName) {
 
 $('select[data-table-utilities="itemPerPage"]').change(function () {
     itemPerPage = $(this).val();
-    currentPageNumber = 1; 
+    currentPageNumber = 1;
     displayClientApplicationTable();
     initializePagination("client_application");
 });

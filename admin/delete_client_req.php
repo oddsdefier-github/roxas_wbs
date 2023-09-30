@@ -8,18 +8,18 @@ if (isset($_POST['deleteSend'])) {
     $uniqueId = $_POST['deleteSend'];
 
     $select_client = "SELECT client_name FROM clients WHERE id = '$uniqueId'";
-    $select_client_result = mysqli_query($conn, $select_client);
+    $select_client_result = $conn->query($select_client);
 
     if ($row = mysqli_fetch_assoc($select_client_result)) {
         $client = $row['client_name'];
     }
 
     $backup_client = "INSERT INTO clients_archive SELECT * FROM clients WHERE id = $uniqueId;";
-    $backup_result = mysqli_query($conn, $backup_client);
+    $backup_result = $conn->query($backup_client);
 
 
     $sql = "DELETE FROM clients WHERE id = ?";
-    $stmt = mysqli_prepare($conn, $sql);
+    $stmt = $conn->prepareStatement($sql);
     mysqli_stmt_bind_param($stmt, "i", $uniqueId);
 
     if (mysqli_stmt_execute($stmt)) {
@@ -57,12 +57,12 @@ if (isset($_POST['deleteSend'])) {
 
         $delete_log = "INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `client_id`, `description`, `date`, `time`, `datetime`) VALUES (NULL, '$log_id', '$role_db', '$admin_name', '$activity', '$client', '$description', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);";
 
-        $result = mysqli_query($conn, $delete_log);
+        $result = $conn->query($delete_log);
 
 
         echo json_encode($delete_result);
     } else {
-        echo "Error deleting record: " . mysqli_error($conn);
+        echo "Error deleting record: " . $conn->getErrorMessage();
     }
 
     mysqli_stmt_close($stmt);

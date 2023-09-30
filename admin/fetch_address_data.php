@@ -2,7 +2,7 @@
 include './database/connection.php';
 
 $sql = "SELECT * FROM `address`";
-$result = mysqli_query($conn, $sql);
+$result = $conn->query($sql);
 
 $address_array = array();
 while ($rows = mysqli_fetch_assoc($result)) {

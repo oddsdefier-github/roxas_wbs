@@ -17,12 +17,11 @@
                 </div>
 
                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-
                     <div class="sm:col-span-6 grid sm:grid-cols-6">
                         <div class="sm:col-span-1">
                             <label for="meter-number" class="block text-sm font-medium leading-6 text-gray-900">Meter No.</label>
                             <div class="mt-2 relative">
-                                <input data-input-state="error" type="text" name="meterNumber" id="meter-number" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <input data-input-state="error" type="text" name="meterNumber" id="meter-number" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
 
                             </div>
                             <div data-validate-input="meterNumber" class="validate-message"></div>
@@ -33,7 +32,7 @@
                     <div class="sm:col-span-2">
                         <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
                         <div class="mt-2 relative">
-                            <input data-input-state="error" type="text" name="firstName" id="first-name" autocomplete="firstName" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <input data-input-state="error" type="text" name="firstName" id="first-name" autocomplete="firstName" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
                         </div>
                         <div data-validate-input="firstName" class="validate-message"></div>
                     </div>
@@ -41,7 +40,7 @@
                     <div class="sm:col-span-2">
                         <label for="middle-name" class="block text-sm font-medium leading-6 text-gray-900">Middle name</label>
                         <div class="mt-2 relative">
-                            <input data-input-state="error" type="text" name="middleName" id="middle-name" autocomplete="family-name" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <input data-input-state="error" type="text" name="middleName" id="middle-name" autocomplete="family-name" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
 
                         </div>
                         <div data-validate-input="middleName" class="validate-message"></div>
@@ -49,7 +48,7 @@
                     <div class="sm:col-span-2">
                         <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
                         <div class="mt-2 relative">
-                            <input data-input-state="error" type="text" name="lastName" id="last-name" autocomplete="family-name" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <input data-input-state="error" type="text" name="lastName" id="last-name" autocomplete="family-name" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
 
                         </div>
                         <div data-validate-input="lastName" class="validate-message"></div>
@@ -58,14 +57,14 @@
                     <div class="sm:col-span-1">
                         <label for="age" class="block text-sm font-medium leading-6 text-gray-900">Age</label>
                         <div class="mt-2 relative">
-                            <input data-input-state="error" id="age" name="age" type="text" inputmode="numeric" pattern="[0-9]*" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <input data-input-state="error" id="age" name="age" type="text" inputmode="numeric" pattern="[0-9]*" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
                         </div>
                         <div data-validate-input="age" class="validate-message"></div>
                     </div>
                     <div class="sm:col-span-1">
                         <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
                         <div class="mt-2 relative">
-                            <select id="gender" name="gender" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                            <select id="gender" name="gender" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
@@ -74,14 +73,14 @@
                     <div class="sm:col-span-2">
                         <label for="phone_number" class="block text-sm font-medium leading-6 text-gray-900">Contact Number</label>
                         <div class="mt-2 relative">
-                            <input data-input-state="error" id="phone_number" name="phoneNumber" type="text" inputmode="numeric" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <input data-input-state="error" id="phone_number" name="phoneNumber" type="text" inputmode="numeric" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
                         </div>
                         <div data-validate-input="phoneNumber" class="validate-message"></div>
                     </div>
                     <div class="sm:col-span-2">
                         <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
                         <div class="mt-2 relative">
-                            <input data-input-state="error" id="email" name="email" type="email" autocomplete="email" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <input data-input-state="error" id="email" name="email" type="email" autocomplete="email" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
                         </div>
                         <div data-validate-input="email" class="validate-message"></div>
                     </div>
@@ -91,7 +90,7 @@
                     <div class="sm:col-span-4">
                         <label for="propertyType" class="block text-sm font-medium leading-6 text-gray-900">Property Type</label>
                         <div class="mt-2 relative">
-                            <select id="propertyType" name="propertyType" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                            <select id="propertyType" name="propertyType" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
                                 <option value="Residential">Residential</option>
                                 <option value="Commercial">Commercial</option>
                             </select>
@@ -103,14 +102,14 @@
                         <label for="country" class="block text-sm font-medium leading-6 text-gray-900">Country</label>
                         <div class="mt-2 relative">
                             <input id="country" name="country" type="text" autocomplete="country-name" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
-                            focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6" value="Philippines" readonly disabled>
+                            focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6" value="Philippines" readonly disabled>
                         </div>
                     </div>
 
                     <div class="sm:col-span-3">
                         <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
                         <div class="mt-2 relative">
-                            <input data-input-state="error" type="text" name="streetAddress" id="street-address" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <input data-input-state="error" type="text" name="streetAddress" id="street-address" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
 
                         </div>
                         <div data-validate-input="streetAddress" class="validate-message"></div>
@@ -119,7 +118,7 @@
                     <div class="sm:col-span-3">
                         <label for="brgy" class="block text-sm font-medium leading-6 text-gray-900">Barangay</label>
                         <div class="mt-2 relative">
-                            <select id="brgy" name="brgy" class="add_client_address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <select id="brgy" name="brgy" class="add_client_address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
                             </select>
                         </div>
                     </div>
@@ -128,20 +127,20 @@
                     <div class="sm:col-span-2">
                         <label for="municipality" class="block text-sm font-medium leading-6 text-gray-900">Municipality</label>
                         <div class="mt-2 relative">
-                            <input type="text" name="municipality" id="municipality" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="Roxas" readonly disabled>
+                            <input type="text" name="municipality" id="municipality" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="Roxas" readonly disabled>
                         </div>
                     </div>
 
                     <div class="sm:col-span-2">
                         <label for="province" class="block text-sm font-medium leading-6 text-gray-900">Province</label>
                         <div class="mt-2 relative">
-                            <input type="text" name="province" id="province" autocomplete="province" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="Oriental Mindoro" readonly disabled>
+                            <input type="text" name="province" id="province" autocomplete="province" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="Oriental Mindoro" readonly disabled>
                         </div>
                     </div>
                     <div class="sm:col-span-2">
                         <label for="region" class="block text-sm font-medium leading-6 text-gray-900">Region</label>
                         <div class="mt-2 relative">
-                            <input type="text" name="region" id="region" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value="REGION IV-B (MIMAROPA)" readonly disabled>
+                            <input type="text" name="region" id="region" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="REGION IV-B (MIMAROPA)" readonly disabled>
                         </div>
                     </div>
                 </div>
@@ -157,7 +156,7 @@
                         <div class="mt-6 space-y-6">
                             <div class="relative flex gap-x-3">
                                 <div class="flex h-6 items-center">
-                                    <input id="validId" name="validId" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                                    <input id="validId" name="validId" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                 </div>
                                 <div class="text-sm leading-6">
                                     <label for="validId" class="font-medium text-gray-900"><span class="font-bold text-primary-600">Valid ID</span> <br>
@@ -168,7 +167,7 @@
                             </div>
                             <div class="relative flex gap-x-3">
                                 <div class="flex h-6 items-center">
-                                    <input id="proofOfOwnership" name="proofOfOwnership" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                                    <input id="proofOfOwnership" name="proofOfOwnership" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                 </div>
                                 <div class="text-sm leading-6">
                                     <label for="proofOfOwnership" class="font-medium text-gray-900"><span class="font-bold text-primary-600">Proof of Ownership</span> <br>
@@ -179,7 +178,7 @@
                             </div>
                             <div class="relative flex gap-x-3">
                                 <div class="flex h-6 items-center">
-                                    <input id="deedOfSale" name="deedOfSale" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                                    <input id="deedOfSale" name="deedOfSale" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                 </div>
                                 <div class="text-sm leading-6">
                                     <label for="deedOfSale" class="font-medium text-gray-900"><span class="font-bold text-primary-600"> Deed of Sale</span> <br>
@@ -189,7 +188,7 @@
                             </div>
                             <div class="relative flex gap-x-3">
                                 <div class="flex h-6 items-center">
-                                    <input id="affidavit" name="affidavit" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                                    <input id="affidavit" name="affidavit" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                 </div>
                                 <div class="text-sm leading-6">
                                     <label for="affidavit" class="font-medium text-gray-900"><span class="font-bold text-primary-600">Affidavit of undertaking (when applicable)</span> <br>

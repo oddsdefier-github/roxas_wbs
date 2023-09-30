@@ -57,3 +57,6 @@ if ($_SESSION['user_role'] != "Admin") {
 </body>
 
 </html>
+<?php
+$conn->close();
+?>

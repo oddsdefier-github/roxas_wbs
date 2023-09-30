@@ -1,0 +1,14 @@
+{
+    "database1": {
+        "db_host": "localhost",
+        "db_user": "root",
+        "db_password": "",
+        "db_name": "wbs_db"
+    },
+    "database2": {
+        "db_host": "localhost",
+        "db_user": "root",
+        "db_password": "",
+        "db_name": "personal_db"
+    }
+}

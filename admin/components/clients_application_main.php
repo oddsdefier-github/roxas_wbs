@@ -1,6 +1,7 @@
-<div class="px-10">
+
+<div class="px-10 mb-10">
     <div>
-        <div class="sticky top-0 mb-4 bg-white border-b border-gray-200 dark:border-gray-700">
+        <div class="sticky z-40 top-0 mb-4 bg-white border-b border-gray-200 dark:border-gray-700">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
                 <li class="mr-2" role="presentation">
                     <button class="inline-block p-4 text-blue-600 border-b-2 rounded-t-lg active" id="profile-tab" data-tabs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">New Client</button>
@@ -21,9 +22,8 @@
                 <div class="mb-5">
                     <?php include 'application_table_utilities.php' ?>
                 </div>
-                <?php include 'display_client_application_table.php'; ?>
-
-                <div>
+                <div class="shadow">
+                    <?php include 'display_client_application_table.php'; ?>
                     <?php include 'pagination.php' ?>
                 </div>
             </div>

@@ -24,7 +24,7 @@ $description = $admin_name . " has been signed out.";
 
 $sign_out_log = "INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `description`, `date`, `time`, `datetime`) VALUES (NULL, '$log_id', '$role_db', '$admin_name', '$activity', '$description', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);";
 
-$result = mysqli_query($conn, $sign_out_log);
+$result = $conn->query($sign_out_log);
 
 $_SESSION = array();
 
