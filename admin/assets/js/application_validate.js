@@ -187,7 +187,7 @@
             },
             success: function (data) {
                 console.log(data)
-                window.location.href = "http://localhost/wbs_zero_php/admin/logs.php"
+                // window.location.href = "http://localhost/wbs_zero_php/admin/logs.php"
             }
         })
 

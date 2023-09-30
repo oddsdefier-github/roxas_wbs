@@ -159,7 +159,8 @@ class DatabaseQueries
             </tr>
         </thead>';
 
-
+        $countArr = array();
+        $response = array();
         $number = ($pageNumber - 1) * $itemPerPage + 1;
 
         while ($row = mysqli_fetch_assoc($result)) {
@@ -175,7 +176,7 @@ class DatabaseQueries
             $date = $row['date'];
 
             $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <td class="px-6 py-3 text-sm">' . $number . '</td>
+            <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
             <td class="px-6 py-3 text-sm">' . $property_type . '</td>
@@ -201,8 +202,13 @@ class DatabaseQueries
                 </button>
             </td>
         </tr>';
+            array_push($countArr, $number);
             $number++;
         }
+
+        $start = $countArr[0];
+        $end = end($countArr);
+
 
         $table .= '</tbody></table>'; // Close table body and table
 
@@ -212,7 +218,13 @@ class DatabaseQueries
             echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
         }
 
+        $start = '<input data-hidden-name="start" type="hidden" value=' . $start . '>';
+        $end = '<input data-hidden-name="end" type="hidden" value=' . $end . '>';
         mysqli_stmt_close($stmt);
+
+        echo $start;
+        echo $end;
+        return "success";
     }
 
     public function getTotalItem($tableName)

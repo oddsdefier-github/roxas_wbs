@@ -1,5 +1,3 @@
-
-
 const toastSuccess = $("#toast-success");
 const toastDanger = $("#toast-danger");
 const toastSuccessMessage = $("#toast-success-message");
@@ -214,8 +212,6 @@ function confirmUpdateClient() {
 
 
                 displayClientTable();
-                // console.log(data);
-
                 toastSuccess.addClass('visible');
 
                 setTimeout(function () {
@@ -247,11 +243,7 @@ function deleteClient(delId) {
     }, function (responseData, status) {
         let clientDetails = JSON.parse(responseData);
 
-        //Name of client on the pop-up
         let name = clientDetails.clientDetails.client_name;
-        // let address = clientDetails.clientDetails.address;
-        // let email = clientDetails.clientDetails.email;
-        // let property_type = clientDetails.clientDetails.property_type;
 
         $(document).ready(function () {
             $("#client-details").html(name);
@@ -266,9 +258,6 @@ function deleteClient(delId) {
             'justify-content': 'center',
             'align-items': 'center'
         });
-    // $.ajax({
-    //     url: "fetch_client_data.php";
-    // })
 }
 
 function confirmDeleteClient() {
@@ -319,8 +308,6 @@ function confirmDeleteClient() {
     $closeDeleteModal.click(closeModal);
     $cancelDelete.click(closeModal);
 }
-
-
 
 
 
@@ -408,115 +395,3 @@ function signOut() {
 
 
 
-let currentPageNumber = 1;
-let totalItem = 0; // Initialize totalItem
-
-function displayClientApplicationTable(pageNumber = 1, itemPerPage = 2) {
-    console.log("❓");
-
-    $.ajax({
-        url: "database_queries.php",
-        type: 'post',
-        data: {
-            action: "getDataTable",
-            dataTableParam: {
-                pageNumber: currentPageNumber,
-                itemPerPage: itemPerPage
-            }
-        },
-        success: function (data, status) {
-            $('#displayClientApplicationTable').html(data);
-        }
-    });
-}
-
-function pagination() {
-    const prev = $("#prev");
-    const next = $("#next");
-
-    prev.on("click", function () {
-        if (currentPageNumber > 1) {
-            currentPageNumber--; // Decrease the current page number
-            $('button[data-current-page]').attr('data-current-page', currentPageNumber);
-            displayClientApplicationTable(currentPageNumber, 2);
-            updatePaginationButtons();
-        }
-    });
-
-    next.on("click", function () {
-        if (currentPageNumber < lastPageNumber) {
-            currentPageNumber++; // Increase the current page number
-            $('button[data-current-page]').attr('data-current-page', currentPageNumber);
-            displayClientApplicationTable(currentPageNumber, 2);
-            updatePaginationButtons();
-        }
-    });
-
-    function updatePaginationButtons() {
-        if (currentPageNumber <= 1) {
-            prev.prop("disabled", true);
-        } else {
-            prev.prop("disabled", false);
-        }
-
-        if (currentPageNumber >= lastPageNumber) {
-            next.prop("disabled", true);
-        } else {
-            next.prop("disabled", false);
-        }
-    }
-
-    // Get the totalItem value
-    $.ajax({
-        url: "database_queries.php",
-        type: "POST",
-        data: {
-            action: "getTotalItem",
-            tableName: "client_application"
-        },
-        success: function (data) {
-            console.log(data);
-            totalItem = JSON.parse(data).totalItem;
-            lastPageNumber = Math.ceil(totalItem / 2);
-            updatePaginationButtons();
-        }
-    });
-
-    function appendPageNumber(currentPage, totalPages) {
-        const pageNumbersContainer = $('#page-number-container');
-        pageNumbersContainer.empty();
-
-        const numPageNumbersToShow = 5;
-
-        // Calculate the range of page numbers to display
-        let startPage = Math.max(1, currentPage - Math.floor(numPageNumbersToShow / 2));
-        let endPage = Math.min(totalPages, startPage + numPageNumbersToShow - 1);
-
-        while (endPage - startPage + 1 < numPageNumbersToShow) {
-            if (startPage > 1) {
-                startPage--;
-            } else {
-                endPage++;
-            }
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            const isSelectedPage = i === currentPage;
-            const pageNumber = `<a href="#" class="relative inline-flex items-center px-4 py-2 text-sm font-semibold ${isSelectedPage
-                ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
-                }">${i}</a>`;
-            pageNumbersContainer.append(pageNumber);
-        }
-    }
-
-    const currentPage = currentPageNumber;
-    const totalPages = 10;
-    appendPageNumber(currentPage, totalPages);
-
-
-}
-
-
-displayClientApplicationTable();
-pagination();

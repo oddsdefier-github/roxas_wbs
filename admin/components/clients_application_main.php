@@ -18,6 +18,9 @@
                 <?php include 'client_application_form.php'; ?>
             </div>
             <div class="hidden w-full p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                <div class="mb-5">
+                    <?php include 'application_table_utilities.php' ?>
+                </div>
                 <?php include 'display_client_application_table.php'; ?>
 
                 <div>
