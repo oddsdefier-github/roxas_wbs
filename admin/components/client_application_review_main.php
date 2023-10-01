@@ -199,21 +199,68 @@ if (isset($_GET['id'])) {
                 </div>
                 <div class="mt-10 space-y-10">
                     <fieldset>
-                        <legend class="text-base font-semibold leading-6 text-gray-900">Payments</legend>
+                        <legend class="text-base font-semibold leading-6 text-gray-900">Pre-Installation Charges</legend>
                         <div class="mt-6 space-y-6">
-                            <div class="relative flex gap-x-3">
-                                <div>
-                                    <input type="checkbox" id="react-option" value="" class="hidden peer" required="">
-                                    <label for="react-option" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                            <div class="relative grid grid-rows-5 gap-4 w-1/4">
+                                <div class="">
+                                    <input type="checkbox" id="application-fee" value="" class="hidden peer" required="">
+                                    <label for="application-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="flex gap-2">
                                                 <h5 class="font-bold text-primary-600 text-xl">50 PHP</h5>
                                             </div>
-                                            <div class="w-full text-lg font-bold text-gray-400">Application Fee</div>
+                                            <div class="w-full text-lg font-bold text-gray-500">Application Fee</div>
+                                            <div class="w-full text-sm">Covers the inspection related costs.</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="">
+                                    <input type="checkbox" id="inspection-fee" value="" class="hidden peer" required="">
+                                    <label for="inspection-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                        <div class="block">
+                                            <div class="flex gap-2">
+                                                <h5 class="font-bold text-primary-600 text-xl">250 PHP</h5>
+                                            </div>
+                                            <div class="w-full text-lg font-bold text-gray-500">Inspection Fee</div>
                                             <div class="w-full text-sm">Covers the administrative processing and setup costs associated with new service requests.</div>
                                         </div>
                                     </label>
-                                    </d>
+                                </div>
+                                <div class="">
+                                    <input type="checkbox" id="registration-fee" value="" class="hidden peer" required="">
+                                    <label for="registration-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                        <div class="block">
+                                            <div class="flex gap-2">
+                                                <h5 class="font-bold text-primary-600 text-xl">100 PHP</h5>
+                                            </div>
+                                            <div class="w-full text-lg font-bold text-gray-500">Registration Fee</div>
+                                            <div class="w-full text-sm">Bookkeeping and Setting of new accounts.</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="">
+                                    <input type="checkbox" id="connection-fee" value="" class="hidden peer" required="">
+                                    <label for="connection-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                        <div class="block">
+                                            <div class="flex gap-2">
+                                                <h5 class="font-bold text-primary-600 text-xl">4100 PHP</h5>
+                                            </div>
+                                            <div class="w-full text-lg font-bold text-gray-500">Connection Fee</div>
+                                            <div class="w-full text-sm">Includes the cost of meter and ball valve.</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="">
+                                    <input type="checkbox" id="installation-fee" value="" class="hidden peer" required="">
+                                    <label for="installation-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                        <div class="block">
+                                            <div class="flex gap-2">
+                                                <h5 class="font-bold text-primary-600 text-xl">400 PHP</h5>
+                                            </div>
+                                            <div class="w-full text-lg font-bold text-gray-500">Installation Fee</div>
+                                            <div class="w-full text-sm">Dirt or crossing connection</div>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
                     </fieldset>
