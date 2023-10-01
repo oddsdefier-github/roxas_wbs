@@ -1,3 +1,11 @@
+<?php
+
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+} else {
+    echo "Invalid or missing id parameter.";
+}
+?>
 <style>
     .validate-message p {
         margin-top: 5px;
@@ -8,6 +16,7 @@
     }
 </style>
 <div class="">
+    <input type="hidden" id="review-id-hidden" value="<?php echo $id ?>">
     <form id="application_form">
         <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
@@ -118,7 +127,7 @@
                     <div class="sm:col-span-3">
                         <label for="brgy" class="block text-sm font-medium leading-6 text-gray-900">Barangay</label>
                         <div class="mt-2 relative">
-                            <select id="brgy" name="brgy" class="add_client_address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                            <select id="brgy" name="brgy" class="applicant-address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
                             </select>
                         </div>
                     </div>
@@ -152,7 +161,7 @@
 
                 <div class="mt-10 space-y-10">
                     <fieldset>
-                        <legend class="text-sm font-semibold leading-6 text-gray-900">Documents</legend>
+                        <legend class="text-base font-semibold leading-6 text-gray-900">Documents</legend>
                         <div class="mt-6 space-y-6">
                             <div class="relative flex gap-x-3">
                                 <div class="flex h-6 items-center">
@@ -162,20 +171,9 @@
                                     <label for="validId" class="font-medium text-gray-900"><span class="font-bold text-primary-600">Valid ID</span> <br>
                                         <p class="text-gray-500">Presented a valid.</p>
                                     </label>
-
                                 </div>
                             </div>
-                            <div class="relative flex gap-x-3">
-                                <div class="flex h-6 items-center">
-                                    <input id="proofOfOwnership" name="proofOfOwnership" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                </div>
-                                <div class="text-sm leading-6">
-                                    <label for="proofOfOwnership" class="font-medium text-gray-900"><span class="font-bold text-primary-600">Proof of Ownership</span> <br>
-                                        <p class="text-gray-500">Presented a photocopy of Original Certificate of Title.</p>
-                                    </label>
 
-                                </div>
-                            </div>
                             <div class="relative flex gap-x-3">
                                 <div class="flex h-6 items-center">
                                     <input id="deedOfSale" name="deedOfSale" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
@@ -199,15 +197,36 @@
                         </div>
                     </fieldset>
                 </div>
-                
+                <div class="mt-10 space-y-10">
+                    <fieldset>
+                        <legend class="text-base font-semibold leading-6 text-gray-900">Payments</legend>
+                        <div class="mt-6 space-y-6">
+                            <div class="relative flex gap-x-3">
+                                <div>
+                                    <input type="checkbox" id="react-option" value="" class="hidden peer" required="">
+                                    <label for="react-option" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                        <div class="block">
+                                            <div class="flex gap-2">
+                                                <h5 class="font-bold text-primary-600 text-xl">50 PHP</h5>
+                                            </div>
+                                            <div class="w-full text-lg font-bold text-gray-400">Application Fee</div>
+                                            <div class="w-full text-sm">Covers the administrative processing and setup costs associated with new service requests.</div>
+                                        </div>
+                                    </label>
+                                    </d>
+                                </div>
+                            </div>
+                    </fieldset>
+                </div>
             </div>
         </div>
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
-            <button id="submit-application" type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" disabled>
-                Save
+            <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Reject</button>
+            <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Accept
             </button>
         </div>
     </form>
 </div>
+<script src="./assets/js/application_review_main.js"></script>

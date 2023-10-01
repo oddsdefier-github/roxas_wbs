@@ -2,22 +2,25 @@
 
 use Admin\Database\DatabaseConnection;
 
-include 'database/connection.php';
+require 'database/connection.php';
 
-class DatabaseQueries
+class BaseQuery
 {
-    private $conn;
+    protected $conn;
 
     public function __construct(DatabaseConnection $databaseConnection)
     {
         $this->conn = $databaseConnection;
     }
+}
+class DatabaseQueries extends BaseQuery
+{
     public function retrieveClientData($clientId)
     {
         $response = array();
 
         $sql = "SELECT * FROM `clients` WHERE id = ?";
-        $stmt = $this->conn->prepareStatement($sql); // Use prepareStatement instead of query
+        $stmt = $this->conn->prepareStatement($sql);
         mysqli_stmt_bind_param($stmt, "i", $clientId);
         mysqli_stmt_execute($stmt);
         $result = $this->conn->getResultSet($stmt);
@@ -32,7 +35,7 @@ class DatabaseQueries
         $addressArray = array();
 
         $addressSql = "SELECT * FROM `address`";
-        $addressStmt = $this->conn->query($addressSql); // Use query method for the address query
+        $addressStmt = $this->conn->query($addressSql);
         $addressResult = $this->conn->getResultSet($addressStmt);
 
         $addressArray = array();
@@ -124,6 +127,55 @@ class DatabaseQueries
 
         return $response;
     }
+
+
+    public function getTotalItem($tableName)
+    {
+        $total = array();
+        $sql = "SELECT COUNT(*) FROM $tableName";
+        $result = $this->conn->query($sql);
+
+        if ($result) {
+
+            $row = mysqli_fetch_row($result);
+
+            if ($row) {
+                $total['totalItem'] = $row[0];
+            }
+        }
+        return $total;
+    }
+
+
+    public function retrieveClientApplicationData($id)
+    {
+
+        $data = array();
+        $sql = "SELECT * FROM client_application WHERE id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, "s", $id);
+        mysqli_stmt_execute($stmt);
+        $result = $this->conn->getResultSet($stmt);
+
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            if ($row) {
+                $data['applicationData'] = $row;
+            } else {
+                echo "Applicant not found.";
+            }
+            mysqli_free_result($result);
+        } else {
+            echo "Error: " . $this->conn->getErrorMessage();
+        }
+        mysqli_stmt_close($stmt);
+        return $data;
+    }
+}
+
+
+class DataTable extends BaseQuery
+{
     public function clientApplicationTable($dataTableParam)
     {
         $pageNumber = $dataTableParam['pageNumber'];
@@ -146,6 +198,7 @@ class DatabaseQueries
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b">
                 <th class="px-6 py-4">No.</th>
+                <th class="px-6 py-4">ID.</th>
                 <th class="px-6 py-4">Meter No.</th>
                 <th class="px-6 py-4">Names&nbsp;&nbsp; 
                 <span class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
@@ -178,6 +231,7 @@ class DatabaseQueries
 
             $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
+            <td  class="px-6 py-3 text-sm">' . $id . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
             <td class="px-6 py-3 text-sm">' . $property_type . '</td>
@@ -189,12 +243,13 @@ class DatabaseQueries
             <td class="px-6 py-3 text-sm">' . $date . '</td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button onclick="updateClient(' . $id . ')" type="button" class="update text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16px" class=" w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 <span class="sr-only">Icon description</span>
-                </button>
+                </a>
                 <button  onclick="deleteClient(' . $id . ')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16px" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
@@ -211,7 +266,7 @@ class DatabaseQueries
         $end = end($countArr);
 
 
-        $table .= '</tbody></table>'; // Close table body and table
+        $table .= '</tbody></table>';
 
         if ($number > 1) {
             echo $table;
@@ -226,66 +281,5 @@ class DatabaseQueries
         echo $start;
         echo $end;
         return "success";
-    }
-
-    public function getTotalItem($tableName)
-    {
-        $total = array();
-        $sql = "SELECT COUNT(*) FROM $tableName";
-        $result = $this->conn->query($sql);
-
-        if ($result) {
-
-            $row = mysqli_fetch_row($result);
-
-            if ($row) {
-                $total['totalItem'] = $row[0];
-            }
-        }
-        return $total;
-    }
-    public function updateClient()
-    {
-    }
-    public function deleteClient()
-    {
-    }
-}
-
-
-if ($conn) {
-    $dbConnection = new DatabaseConnection($host1, $username1, $password1, $database1);
-    $dbQueries = new DatabaseQueries($dbConnection);
-} else {
-    echo "Database connection failed.";
-}
-
-if (isset($_POST['action'])) {
-    $action = $_POST['action'];
-
-    if ($action == 'retrieveClientData') {
-        if (isset($_POST['updateId'])) {
-            $client_id = $_POST['updateId'];
-            $client_data = $dbQueries->retrieveClientData($client_id);
-            echo json_encode($client_data);
-        }
-    } elseif ($action == 'processClientApplication') {
-        if (isset($_POST['formData'])) {
-            $formData = $_POST['formData'];
-            $processResponse = $dbQueries->processClientApplication($formData);
-            echo json_encode($processResponse);
-        }
-    } elseif ($action == 'getDataTable') {
-        if (isset($_POST['dataTableParam'])) {
-            $dataTableParam = $_POST['dataTableParam'];
-            $html = $dbQueries->clientApplicationTable($dataTableParam);
-        }
-    } elseif ($action == 'getTotalItem') {
-        if (isset($_POST['tableName'])) {
-            $tableName = $_POST['tableName'];
-            $getTotal = $dbQueries->getTotalItem($tableName);
-
-            echo json_encode($getTotal);
-        }
     }
 }

@@ -8,5 +8,3 @@
 <script src="./assets/js/clients_functions.js"></script>
 <script src="./assets/js/popup.js"></script>
 <script src="./assets/js/apexcharts.js"></script>
-<script src="./assets/js/application_validate.js"></script>
-<script src="./assets/js/client_application.js"></script>

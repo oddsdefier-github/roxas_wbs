@@ -17,7 +17,7 @@ function displayClientApplicationTable() {
     console.log("❓");
 
     $.ajax({
-        url: "database_queries.php",
+        url: "database_actions.php",
         type: 'post',
         data: {
             action: "getDataTable",
@@ -48,10 +48,9 @@ function handlePageChange(direction) {
     updatePaginationButtons();
 }
 
-
 function initializePagination(tableName) {
     $.ajax({
-        url: "database_queries.php",
+        url: "database_actions.php",
         type: "POST",
         data: {
             action: "getTotalItem",
@@ -66,6 +65,8 @@ function initializePagination(tableName) {
         }
     });
 }
+
+
 
 
 $('select[data-table-utilities="itemPerPage"]').change(function () {

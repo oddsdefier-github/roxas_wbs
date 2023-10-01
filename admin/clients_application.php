@@ -49,6 +49,8 @@ if ($_SESSION['user_role'] != "Admin") {
     </section>
 
     <?php include './layouts/scripts.php'; ?>
+    <script src="./assets/js/application_validate.js"></script>
+    <script src="./assets/js/client_application.js"></script>
     <script>
         $("#subheader-title").text("Clients Application");
         $("#subheader-title").siblings("h5").text("Manage, Evaluate, Approve, or Decline Client Applications.")
