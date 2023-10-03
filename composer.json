@@ -14,5 +14,7 @@
             "email": "panerjeffryjames@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "dompdf/dompdf": "^2.0"
+    }
 }

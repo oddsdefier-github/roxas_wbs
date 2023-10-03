@@ -199,7 +199,7 @@ function processApplication() {
 function handleSubmit(e) {
     e.preventDefault();
     processApplication();
-
+    
 };
 
 applicationForm.on('submit', handleSubmit);
