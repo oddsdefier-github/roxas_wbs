@@ -398,7 +398,10 @@ $(document).ready(function () {
     }
 
 
-
+    /**
+     * ? Initialize the input to all have a data-input-track = "valid"
+     * * 
+     */
     inputs = [
         meterNumberInput,
         firstNameInput,
@@ -418,14 +421,14 @@ $(document).ready(function () {
     }
 
     addTrackingAttr()
-
     console.log(addTrackingAttr())
 
     let count = inputs.length;
     console.log(`Count: ${count}`)
 
+    //add tracking data attr
 
-    
+
     inputFields.on("input", function () {
         const fieldName = $(this).attr("name");
         const fieldValue = $(this).val();
@@ -440,16 +443,18 @@ $(document).ready(function () {
         if (errorMessage) {
             console.log(errorMessage)
 
+
             $(this).attr('data-input-track', 'error')
 
+            console.log(`Count of valid: ${count}`)
 
             console.log($(this).attr('data-input-state'));
 
-            $('#review-submit')
-                .text('Fill all fields')
-                .prop('disabled', true)
-                .attr('title', 'Complete the fields to unlock!')
-                .removeClass(cssClasses.normalSubmitClass).addClass(cssClasses.errorSubmitClass);
+            // $('#review-submit')
+            //     .text('Fill all fields')
+            //     .prop('disabled', true)
+            //     .attr('title', 'Complete the fields to unlock!')
+            //     .removeClass(cssClasses.normalSubmitClass).addClass(cssClasses.errorSubmitClass);
 
             console.log($('#review-submit').prop('disabled'))
 
@@ -466,8 +471,8 @@ $(document).ready(function () {
             $(this).parent().find('svg').remove();
             $(this).parent().append(elements.cautionElement);
         } else {
-            $(this).attr('data-input-track', 'valid')
 
+            $(this).attr('data-input-track', 'valid')
 
             if ($(this).attr('name') == 'phoneNumber') {
                 $(this).trigger('blur')
@@ -488,7 +493,6 @@ $(document).ready(function () {
             $(this).parent().next().html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`);
 
 
-            let count = 0;
             // $.each(inputs, function (index, item) {
             //     if (item.attr('data-input-track') === 'valid') {
             //         console.log('👌')
@@ -504,22 +508,70 @@ $(document).ready(function () {
             //             .removeClass(cssClasses.errorSubmitClass).addClass(cssClasses.normalSubmitClass);
             //     }
             // })
-            $('#review-submit')
-                .text("Approve")
-                .prop('disabled', false)
-                .attr('title', 'You can now submit!')
-                .removeClass(cssClasses.errorSubmitClass).addClass(cssClasses.normalSubmitClass);
 
-            console.log($('#review-submit').prop('disabled'))
         }
     })
 
-    $('#review-submit').on('click', function () {
-        console.log("CLICK")
-    })
+    let totalFee = 0;
+    let allChecked = true;
+
+
+    const paymentCheckboxes = [
+        { name: 'application-fee', value: 50 },
+        { name: 'inspection-fee', value: 250 },
+        { name: 'registration-fee', value: 100 },
+        { name: 'connection-fee', value: 4100 },
+        { name: 'installation-fee', value: 400 }
+    ];
+
+
+    function areAllCheckboxesChecked() {
+        return paymentCheckboxes.every(function (checkbox) {
+            return $('#' + checkbox.name).prop('checked');
+        });
+    }
+
+
     reviewForm.on('submit', function (e) {
         e.preventDefault();
-        console.log("Form submitted");
+        if (!areAllCheckboxesChecked()) {
+
+            alert('Please Pay First.');
+        } else {
+            // All checkboxes are checked, you can proceed with form submission
+            console.log('SUBMITTED!!!!')
+        }
     });
 
-})
+    paymentCheckboxes.forEach(function (checkbox) {
+        const checkboxElement = $('#' + checkbox.name);
+
+        checkboxElement.on('change', function () {
+            if (checkboxElement.prop('checked')) {
+                console.log(`The checkbox named ${checkbox.name} is checked`);
+                console.log(`You need to pay ${checkbox.value}`);
+                totalFee += parseInt(checkbox.value);
+                alert(`TOTAL PAYMENT = ${totalFee}`);
+                $('#total-fee').text(`${totalFee} PHP`);
+            } else {
+                totalFee -= parseInt(checkbox.value);
+                alert(`TOTAL PAYMENT = ${totalFee}`);
+                $('#total-fee').text(`${totalFee} PHP`);
+            }
+
+            allChecked = areAllCheckboxesChecked();
+
+            if (allChecked) {
+                console.log("All checkboxes are checked!");
+            } else {
+                console.log('Payment first!')
+            }
+        });
+    });
+
+
+});
+
+
+
+

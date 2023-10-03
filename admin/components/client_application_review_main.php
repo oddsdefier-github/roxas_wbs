@@ -25,131 +25,168 @@ if (isset($_GET['id'])) {
                     <p class="address-subtitle mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
                 </div>
 
-                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+
+                <div class="mt-10 grid sm:grid-cols-6 grid-cols-1 gap-x-6 gap-y-8 ">
                     <div class="sm:col-span-6 grid sm:grid-cols-6">
                         <div class="sm:col-span-1">
                             <label for="meter-number" class="block text-sm font-medium leading-6 text-gray-900">Meter No.</label>
                             <div class="mt-2 relative">
-                                <input data-input-state="error" type="text" name="meterNumber" id="meter-number" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-
+                                <input data-input-state="error" type="text" name="meterNumber" id="meter-number" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="W-">
                             </div>
                             <div data-validate-input="meterNumber" class="validate-message"></div>
                         </div>
                     </div>
-
-
-                    <div class="sm:col-span-2">
-                        <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
-                        <div class="mt-2 relative">
-                            <input data-input-state="error" type="text" name="firstName" id="first-name" autocomplete="firstName" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                        </div>
-                        <div data-validate-input="firstName" class="validate-message"></div>
-                    </div>
-
-                    <div class="sm:col-span-2">
-                        <label for="middle-name" class="block text-sm font-medium leading-6 text-gray-900">Middle name</label>
-                        <div class="mt-2 relative">
-                            <input data-input-state="error" type="text" name="middleName" id="middle-name" autocomplete="family-name" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-
-                        </div>
-                        <div data-validate-input="middleName" class="validate-message"></div>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
-                        <div class="mt-2 relative">
-                            <input data-input-state="error" type="text" name="lastName" id="last-name" autocomplete="family-name" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-
-                        </div>
-                        <div data-validate-input="lastName" class="validate-message"></div>
-                    </div>
-
-                    <div class="sm:col-span-1">
-                        <label for="age" class="block text-sm font-medium leading-6 text-gray-900">Age</label>
-                        <div class="mt-2 relative">
-                            <input data-input-state="error" id="age" name="age" type="text" inputmode="numeric" pattern="[0-9]*" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                        </div>
-                        <div data-validate-input="age" class="validate-message"></div>
-                    </div>
-                    <div class="sm:col-span-1">
-                        <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
-                        <div class="mt-2 relative">
-                            <select id="gender" name="gender" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label for="phone_number" class="block text-sm font-medium leading-6 text-gray-900">Contact Number</label>
-                        <div class="mt-2 relative">
-                            <input data-input-state="error" id="phone_number" name="phoneNumber" type="text" inputmode="numeric" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                        </div>
-                        <div data-validate-input="phoneNumber" class="validate-message"></div>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
-                        <div class="mt-2 relative">
-                            <input data-input-state="error" id="email" name="email" type="email" autocomplete="email" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                        </div>
-                        <div data-validate-input="email" class="validate-message"></div>
-                    </div>
-
-
-
-                    <div class="sm:col-span-4">
-                        <label for="propertyType" class="block text-sm font-medium leading-6 text-gray-900">Property Type</label>
-                        <div class="mt-2 relative">
-                            <select id="propertyType" name="propertyType" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
-                                <option value="Residential">Residential</option>
-                                <option value="Commercial">Commercial</option>
-                            </select>
+                    <div class="sm:col-span-6 grid grid-cols-6">
+                        <div class="sm:col-span-1">
+                            <label for="propertyType" class="block text-sm font-medium leading-6 text-gray-900">Property Type</label>
+                            <div class="mt-2 relative">
+                                <select id="propertyType" name="propertyType" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
+                                    <option value="Residential">Residential</option>
+                                    <option value="Commercial">Commercial</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
+                    <div class="sm:col-span-6 grid grid-cols-7  gap-x-6 gap-y-8">
+                        <div class="sm:col-span-2">
+                            <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
+                            <div class="mt-2 relative">
+                                <input data-input-state="error" type="text" name="firstName" id="first-name" autocomplete="firstName" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                            </div>
+                            <div data-validate-input="firstName" class="validate-message"></div>
+                        </div>
 
-                    <div class="sm:col-span-6">
-                        <label for="country" class="block text-sm font-medium leading-6 text-gray-900">Country</label>
-                        <div class="mt-2 relative">
-                            <input id="country" name="country" type="text" autocomplete="country-name" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300
-                            focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6" value="Philippines" readonly disabled>
+                        <div class="sm:col-span-2">
+                            <label for="middle-name" class="block text-sm font-medium leading-6 text-gray-900">Middle name</label>
+                            <div class="mt-2 relative">
+                                <input data-input-state="error" type="text" name="middleName" id="middle-name" autocomplete="family-name" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+
+                            </div>
+                            <div data-validate-input="middleName" class="validate-message"></div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
+                            <div class="mt-2 relative">
+                                <input data-input-state="error" type="text" name="lastName" id="last-name" autocomplete="family-name" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+
+                            </div>
+                            <div data-validate-input="lastName" class="validate-message"></div>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <label for="nameSuffix" class="block text-sm font-medium leading-6 text-gray-900">Name Suffix</label>
+                            <div class="mt-2 relative">
+                                <select id="nameSuffix" name="nameSuffix" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
+                                    <option value="none"></option>
+                                    <option value="Jr.">Jr. (Junior)</option>
+                                    <option value="Sr.">Sr. (Senior)</option>
+                                    <option value="II">II (the Second)</option>
+                                    <option value="III">III (the Third)</option>
+                                    <option value="IV">IV (the Fourth)</option>
+                                    <option value="Ph.D.">Ph.D. (Doctor of Philosophy)</option>
+                                    <option value="M.D.">M.D. (Doctor of Medicine)</option>
+                                    <option value="D.D.S.">D.D.S. (Doctor of Dental Surgery)</option>
+                                    <option value="MBA">MBA (Master of Business Administration)</option>
+                                    <option value="CPA">CPA (Certified Public Accountant)</option>
+                                </select>
+
+                            </div>
+                            <div data-validate-input="lastName" class="validate-message"></div>
                         </div>
                     </div>
 
-                    <div class="sm:col-span-3">
-                        <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
-                        <div class="mt-2 relative">
-                            <input data-input-state="error" type="text" name="streetAddress" id="street-address" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-
+                    <div class="sm:col-span-6 grid grid-cols-7">
+                        <div class="sm:col-span-6 grid grid-cols-6 gap-x-6 gap-y-8">
+                            <div class="sm:col-span-2">
+                                <label for="age" class="block text-sm font-medium leading-6 text-gray-900">Birthday</label>
+                                <div class="mt-2 relative">
+                                    <div class="absolute top-0 left-0 inset-0 flex items-center pl-3 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                        </svg>
+                                    </div>
+                                    <input required id="birthdate" datepicker datepicker-buttons datepicker-autohide type="text" class="pl-10 block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder=" Select date">
+                                </div>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="age" class="block text-sm font-medium leading-6 text-gray-900">Age</label>
+                                <div class="mt-2 relative">
+                                    <input data-input-state="error" id="age" name="age" type="text" placeholder="Must be 18 years old or above." inputmode="numeric" pattern="[0-9]*" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                                </div>
+                                <div data-validate-input="age" class="validate-message"></div>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
+                                <div class="mt-2 relative">
+                                    <select id="gender" name="gender" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                        <option value="prefer_not_to_say">Prefer Not to Say</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div data-validate-input="streetAddress" class="validate-message"></div>
                     </div>
 
-                    <div class="sm:col-span-3">
-                        <label for="brgy" class="block text-sm font-medium leading-6 text-gray-900">Barangay</label>
-                        <div class="mt-2 relative">
-                            <select id="brgy" name="brgy" class="applicant-address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                            </select>
+                    <div class="sm:col-span-6 grid grid-cols-7 gap-x-6 gap-y-8">
+                        <div class="sm:col-span-4 grid grid-cols-6 gap-x-6 gap-y-8">
+                            <div class="sm:col-span-3">
+                                <label for="phone_number" class="block text-sm font-medium leading-6 text-gray-900">Contact Number</label>
+                                <div class="mt-2 relative">
+                                    <input data-input-state="error" id="phone_number" name="phoneNumber" type="text" inputmode="numeric" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                                </div>
+                                <div data-validate-input="phoneNumber" class="validate-message"></div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
+                                <div class="mt-2 relative">
+                                    <input data-input-state="error" id="email" name="email" type="email" autocomplete="email" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                                </div>
+                                <div data-validate-input="email" class="validate-message"></div>
+                            </div>
                         </div>
                     </div>
 
+                    <div class="sm:col-span-6 gap-x-6 gap-y-8 mt-2">
+                        <div class="sm:col-span-6 grid grid-cols-7 gap-x-6 gap-y-8">
+                            <div class="sm:col-span-2">
+                                <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
+                                <div class="mt-2 relative">
+                                    <input data-input-state="error" type="text" name="streetAddress" id="street-address" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
 
-                    <div class="sm:col-span-2">
-                        <label for="municipality" class="block text-sm font-medium leading-6 text-gray-900">Municipality</label>
-                        <div class="mt-2 relative">
-                            <input type="text" name="municipality" id="municipality" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="Roxas" readonly disabled>
+                                </div>
+                                <div data-validate-input="streetAddress" class="validate-message"></div>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="brgy" class="block text-sm font-medium leading-6 text-gray-900">Barangay</label>
+                                <div class="mt-2 relative">
+                                    <select id="brgy" name="brgy" class="add_client_address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="sm:col-span-2">
-                        <label for="province" class="block text-sm font-medium leading-6 text-gray-900">Province</label>
-                        <div class="mt-2 relative">
-                            <input type="text" name="province" id="province" autocomplete="province" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="Oriental Mindoro" readonly disabled>
-                        </div>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label for="region" class="block text-sm font-medium leading-6 text-gray-900">Region</label>
-                        <div class="mt-2 relative">
-                            <input type="text" name="region" id="region" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="REGION IV-B (MIMAROPA)" readonly disabled>
+                    <div class="sm:col-span-6 gap-x-6 gap-y-8 mt-2">
+                        <div class="sm:col-span-6 grid grid-cols-7 gap-x-6 gap-y-8">
+                            <div class="sm:col-span-2">
+                                <label for="municipality" class="block text-sm font-medium leading-6 text-gray-900">Municipality</label>
+                                <div class="mt-2 relative">
+                                    <input type="text" name="municipality" id="municipality" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="Roxas" readonly disabled>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="province" class="block text-sm font-medium leading-6 text-gray-900">Province</label>
+                                <div class="mt-2 relative">
+                                    <input type="text" name="province" id="province" autocomplete="province" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="Oriental Mindoro" readonly disabled>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="region" class="block text-sm font-medium leading-6 text-gray-900">Region</label>
+                                <div class="mt-2 relative">
+                                    <input type="text" name="region" id="region" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="REGION IV-B (MIMAROPA)" readonly disabled>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -262,6 +299,19 @@ if (isset($_GET['id'])) {
                                         </div>
                                     </label>
                                 </div>
+
+                                <div class="">
+                                    <div class="shadow-md inline-flex items-center justify-between w-full p-5 text-white bg-primary-600 border-2 border-primary-500 rounded-lg cursor-pointer hover:text-primary-200 hover:bg-primary-500">
+                                        <div class="block">
+                                            <div class="flex flex-col gap-1">
+                                                <h5 class="font-semibold text-xl text-primary-100">TOTAL CHARGING FEE</h5>
+
+                                                <div class="w-full text-3xl font-bold" id="total-fee">0 PHP</div>
+                                                <div class="w-full text-sm text-primary-100">Pay the total charging fee in order to approve the registration.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                     </fieldset>
                 </div>
@@ -270,7 +320,7 @@ if (isset($_GET['id'])) {
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
             <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Reject</button>
-            <button id="review-submit" type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" disabled>
+            <button id="review-submit" type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Approve
             </button>
         </div>
