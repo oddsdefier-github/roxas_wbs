@@ -48,7 +48,10 @@ const cssClasses = {
     successLabelClass: 'block text-sm font-medium leading-6 text-green-600',
     normalInputClass: 'block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6',
     errorInputClass: 'block w-full rounded-md border-0 py-3 text-red-900 shadow-sm ring-1 ring-inset ring-red-400 placeholder:text-red-400 focus:ring-2 focus:ring-inset focus:ring-red-500 sm:text-sm sm:leading-6',
-    successInputClass: 'block w-full rounded-md border-0 py-3 text-green-900 shadow-sm ring-1 ring-inset ring-green-400 placeholder:text-green-400 focus:ring-2 focus:ring-inset focus:ring-green-500 sm:text-sm sm:leading-6'
+    successInputClass: 'block w-full rounded-md border-0 py-3 text-green-900 shadow-sm ring-1 ring-inset ring-green-400 placeholder:text-green-400 focus:ring-2 focus:ring-inset focus:ring-green-500 sm:text-sm sm:leading-6',
+
+    normalSubmitClass: 'rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
+    errorSubmitClass: 'rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600',
 };
 
 const elements = {
@@ -130,33 +133,10 @@ function processApplication() {
         }
     };
 
-
-    console.log(formInput.meterNumber);
-    console.log(formInput.firstName);
-    console.log(formInput.middleName);
-    console.log(formInput.lastName);
-    console.log(formInput.age);
-    console.log(formInput.gender);
-    console.log(formInput.phoneNumber);
-    console.log(formInput.email);
-    console.log(formInput.propertyType);
-    console.log(formInput.streetAddress);
-    console.log(formInput.brgy);
-    console.log(formInput.municipality);
-    console.log(formInput.province);
-    console.log(formInput.region);
-    console.log(formInput.country);
-    console.log(formInput.validID);
-    console.log(formInput.proofOfOwnership);
-    console.log(formInput.deedOfSale);
-    console.log(formInput.affidavit);
-    console.log(formInput.getFullNameWithInitial());
-    console.log(formInput.getFullAddress());
-
-
     $.ajax({
         url: "database_actions.php",
         type: "POST",
+        dataType: "json",
         data: {
             action: "processClientApplication",
             formData: {
@@ -184,13 +164,22 @@ function processApplication() {
             }
         },
         success: function (data) {
+            responseData = data;
             console.log(data)
 
-            setTimeout(function () {
-                window.location.reload();
-            }, 3000)
-
-
+            if (responseData) {
+                if (responseData['status'] === 'error') {
+                    alert(`${responseData['message']}`)
+                } else if ((responseData['status'] === 'success')) {
+                    alert(`${responseData['applicant']}'s application has been added.`)
+                    // setTimeout(function () {
+                    //     window.location.reload();
+                    // }, 1000)
+                }
+            }
+        },
+        error: function (error) {
+            console.log(error)
         }
     })
 
@@ -325,8 +314,10 @@ inputFields.on("input", function () {
         console.log($(this).attr('data-input-state'));
 
         $('#submit-application')
+            .text('Fill all fields')
             .prop('disabled', true)
             .attr('title', 'Complete the fields to unlock!')
+            .removeClass(cssClasses.normalSubmitClass).addClass(cssClasses.errorSubmitClass);
 
         errorMessage.forEach((message) => {
             const errorHTML = `<div style="display: inline-flex; align-items: center; justify-content: start; width: 100%;">${elements.miniCautionElement} <p style="margin: 2px">${message}</p></div>`;
@@ -343,7 +334,7 @@ inputFields.on("input", function () {
         $(this).attr('data-input-track', 'valid')
 
 
-        if ($(this).attr('name') == 'phoneNumber') {
+        if ($(this).attr('name') == 'phoneNumber' || $(this).attr('name') == 'meterNumber') {
             $(this).trigger('blur')
         }
         $(this).parent().find('svg').remove();
@@ -371,8 +362,10 @@ inputFields.on("input", function () {
         if (count === inputs.length) {
             console.log('🐓')
             $('#submit-application')
+                .text("Submit")
                 .prop('disabled', false)
                 .attr('title', 'You can now submit!')
+                .removeClass(cssClasses.errorSubmitClass).addClass(cssClasses.normalSubmitClass);
         }
     })
 

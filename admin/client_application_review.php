@@ -59,7 +59,7 @@ if ($_SESSION['user_role'] != "Admin") {
 
 
     <?php include './layouts/scripts.php'; ?>
-    <script src="./assets/js/application_review_validate.js"></script>
+
     <script>
         $("#subheader-title").text("Clients Application Review");
         $("#subheader-title").siblings("h5").text("Review client application.")

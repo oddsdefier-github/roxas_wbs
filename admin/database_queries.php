@@ -82,49 +82,86 @@ class DatabaseQueries extends BaseQuery
         $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
 
 
-        $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, full_name, email, phone_number, age, gender, property_type, street, brgy, municipality, province, region, country, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?,CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
-
-        $stmt = $this->conn->prepareStatement($sql);
+        $checkDuplicate = "SELECT email FROM client_application WHERE email = ?";
+        $stmt = $this->conn->prepareStatement($checkDuplicate);
 
         if ($stmt) {
-            mysqli_stmt_bind_param(
-                $stmt,
-                "sssssssssssssssssssss",
-                $meterNumber,
-                $firstName,
-                $middleName,
-                $lastName,
-                $fullName,
-                $email,
-                $phoneNumber,
-                $age,
-                $gender,
-                $propertyType,
-                $streetAddress,
-                $brgy,
-                $municipality,
-                $province,
-                $region,
-                $country,
-                $fullAddress,
-                $validID,
-                $proofOfOwnership,
-                $deedOfSale,
-                $affidavit,
-            );
 
+            mysqli_stmt_bind_param($stmt, "s", $email);
 
-            if (mysqli_stmt_execute($stmt)) {
-                $response['success'] = "Application submitted successfully.";
+            mysqli_stmt_execute($stmt);
+
+            mysqli_stmt_store_result($stmt);
+
+            // Check if there are any rows returned (duplicate email found)
+
+            if (mysqli_stmt_num_rows($stmt) > 0) {
+                $response = array(
+                    "status" => "error",
+                    "message" => $email . " already exists in the database."
+                );
             } else {
-                $response['error'] = "Error executing the query: " . $this->conn->getErrorMessage();
+
+                $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, full_name, email, phone_number, age, gender, property_type, street, brgy, municipality, province, region, country, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+
+                $stmt = $this->conn->prepareStatement($sql);
+
+                if ($stmt) {
+                    mysqli_stmt_bind_param(
+                        $stmt,
+                        "sssssssssssssssssssss",
+                        $meterNumber,
+                        $firstName,
+                        $middleName,
+                        $lastName,
+                        $fullName,
+                        $email,
+                        $phoneNumber,
+                        $age,
+                        $gender,
+                        $propertyType,
+                        $streetAddress,
+                        $brgy,
+                        $municipality,
+                        $province,
+                        $region,
+                        $country,
+                        $fullAddress,
+                        $validID,
+                        $proofOfOwnership,
+                        $deedOfSale,
+                        $affidavit
+                    );
+
+                    if (mysqli_stmt_execute($stmt)) {
+                        $response = array(
+                            "applicant" => $firstName,
+                            "status" => "success",
+                            "message" => $firstName . "'s application submitted successfully."
+                        );
+                    } else {
+                        $response = array(
+                            "status" => "error",
+                            "message" => "Error executing the query: " . $this->conn->getErrorMessage()
+                        );
+                    }
+
+                    mysqli_stmt_close($stmt);
+                } else {
+                    $response = array(
+                        "status" => "error",
+                        "message" => "Error preparing the statement: " . $this->conn->getErrorMessage()
+                    );
+                }
             }
 
-            mysqli_stmt_close($stmt);
+            return $response;
         } else {
-            $response['error'] = "Error preparing the statement: " . $this->conn->getErrorMessage();
+            $response = array(
+                "status" => "error",
+                "error" => "Error in preparing the statement: " . $this->conn->getErrorMessage()
+            );
         }
-
         return $response;
     }
 

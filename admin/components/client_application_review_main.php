@@ -17,12 +17,12 @@ if (isset($_GET['id'])) {
 </style>
 <div class="">
     <input type="hidden" id="review-id-hidden" value="<?php echo $id ?>">
-    <form id="application_form">
+    <form class="review-form">
         <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
                 <div class="border-b border-gray-900/10 py-3">
-                    <h2 class="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
-                    <p class="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
+                    <h2 class="name-title text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
+                    <p class="address-subtitle mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
                 </div>
 
                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -203,7 +203,7 @@ if (isset($_GET['id'])) {
                         <div class="mt-6 space-y-6">
                             <div class="relative grid grid-rows-5 gap-4 w-1/4">
                                 <div class="">
-                                    <input type="checkbox" id="application-fee" value="" class="hidden peer" required="">
+                                    <input type="checkbox" id="application-fee" name="application-fee" value="" class="hidden peer">
                                     <label for="application-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="flex gap-2">
@@ -215,7 +215,7 @@ if (isset($_GET['id'])) {
                                     </label>
                                 </div>
                                 <div class="">
-                                    <input type="checkbox" id="inspection-fee" value="" class="hidden peer" required="">
+                                    <input type="checkbox" id="inspection-fee" name="inspection-fee" value="" class="hidden peer">
                                     <label for="inspection-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="flex gap-2">
@@ -227,7 +227,7 @@ if (isset($_GET['id'])) {
                                     </label>
                                 </div>
                                 <div class="">
-                                    <input type="checkbox" id="registration-fee" value="" class="hidden peer" required="">
+                                    <input type="checkbox" id="registration-fee" name="registration-fee" value="" class="hidden peer">
                                     <label for="registration-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="flex gap-2">
@@ -239,7 +239,7 @@ if (isset($_GET['id'])) {
                                     </label>
                                 </div>
                                 <div class="">
-                                    <input type="checkbox" id="connection-fee" value="" class="hidden peer" required="">
+                                    <input type="checkbox" id="connection-fee" name="connection-fee" value="" class="hidden peer">
                                     <label for="connection-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="flex gap-2">
@@ -251,7 +251,7 @@ if (isset($_GET['id'])) {
                                     </label>
                                 </div>
                                 <div class="">
-                                    <input type="checkbox" id="installation-fee" value="" class="hidden peer" required="">
+                                    <input type="checkbox" id="installation-fee" name="installation-fee" value="" class="hidden peer">
                                     <label for="installation-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="flex gap-2">
@@ -270,8 +270,8 @@ if (isset($_GET['id'])) {
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
             <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Reject</button>
-            <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                Accept
+            <button id="review-submit" type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" disabled>
+                Approve
             </button>
         </div>
     </form>
