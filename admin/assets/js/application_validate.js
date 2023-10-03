@@ -6,6 +6,7 @@ $(document).ready(function () {
     const firstNameInput = $('input[name="firstName"]');
     const middleNameInput = $('input[name="middleName"]');
     const lastNameInput = $('input[name="lastName"]');
+    const birthDateInput = $('input[name="birthdate"]')
     const ageInput = $('input[name="age"]');
     const genderInput = $('select[name="gender"]');
     const phoneNumberInput = $('input[name="phoneNumber"]');
@@ -29,7 +30,6 @@ $(document).ready(function () {
         firstNameInput,
         middleNameInput,
         lastNameInput,
-        ageInput,
         phoneNumberInput,
         emailInput,
         streetAddressInput
@@ -190,15 +190,32 @@ $(document).ready(function () {
     };
 
     /**
-     * 
+     * TODO: Fix the date picker functionality
+     * * The age should be automatically calculated when date is set
      */
-    document.getElementById('birthdate').addEventListener("blur", function () {
-        console.log("👩‍🎤")
-        const dateText = $(this).val();
+
+    birthDateInput.on("blur", function () {
+        validateAndCalculateAge();
+    });
+
+    $('#birthdate').on("blur", function () {
+        validateAndCalculateAge();
+    });
+
+
+    $('#birthdate').on("keyup", function (event) {
+        if (event.key === 'Enter') {
+            validateAndCalculateAge();
+        }
+    });
+
+    function validateAndCalculateAge() {
+        console.log("👩‍🎤");
+        const dateText = $('#birthdate').val();
         const parts = dateText.split("/");
 
         if (parts.length === 3) {
-            const birthdate = new Date(parts[2], parts[0] - 1, parts[1]); // Month is 0-based
+            const birthdate = new Date(parts[2], parts[0] - 1, parts[1]);
             console.log(birthdate)
             const today = new Date();
             console.log(today)
@@ -209,19 +226,28 @@ $(document).ready(function () {
             if (parseInt(today.getMonth() < birthdate.getMonth() || (today.getMonth() === birthdate.getMonth() && today.getDate() < birthdate.getDate()))) {
                 age--;
             }
-            // Update the content of the <span> element with the calculated age
-            $("#age").val(age + " years old");
+
+            if (age < 18) {
+                alert("You must be at least 18 years old.");
+                $('#birthdate').val("");
+                $("#age").val("");
+
+            } else {
+                $("#age").val(age + " years old");
+            }
         } else {
-            // Update the content of the <span> element with "Invalid date"
-            $("#age").val("Invalid date");
+            $("#age").html('<span style="color: red;">Invalid date</span>');
         }
-    });
+
+    };
+    /**
+     * ! End of Date picker code
+     */
 
     function handleSubmit(e) {
         e.preventDefault();
 
         processApplication();
-
     };
 
     applicationForm.on('submit', handleSubmit);
@@ -280,16 +306,16 @@ $(document).ready(function () {
                     tooShort: "should be at least %{count} characters or more"
                 }
             },
-            age: {
-                presence: {
-                    allowEmpty: false,
-                    message: "cannot be empty",
-                },
-                numericality: {
-                    onlyInteger: true,
-                    greaterThanOrEqualTo: 18,
-                }
-            },
+            // age: {
+            //     presence: {
+            //         allowEmpty: false,
+            //         message: "cannot be empty",
+            //     },
+            //     numericality: {
+            //         onlyInteger: true,
+            //         greaterThanOrEqualTo: 18,
+            //     }
+            // },
             phoneNumber: {
                 presence: {
                     allowEmpty: false,
@@ -405,4 +431,52 @@ $(document).ready(function () {
 
     })
 
+
+    function navigateUsingArrowKey() {
+
+        const inputs = document.querySelectorAll('input');
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                focusNextEnabledInput();
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                focusPreviousEnabledInput();
+            } else if (event.key === 'Enter' && document.activeElement.type === 'checkbox') {
+                toggleCheckboxSelection(document.activeElement);
+            }
+        });
+
+        function focusNextEnabledInput() {
+            const focusedInput = document.activeElement;
+            const currentIndex = Array.from(inputs).indexOf(focusedInput);
+            let nextIndex = (currentIndex + 1) % inputs.length;
+
+            while (inputs[nextIndex].disabled) {
+                nextIndex = (nextIndex + 1) % inputs.length;
+            }
+
+            inputs[nextIndex].focus();
+        }
+
+        function focusPreviousEnabledInput() {
+            const focusedInput = document.activeElement;
+            const currentIndex = Array.from(inputs).indexOf(focusedInput);
+            let previousIndex = (currentIndex - 1 + inputs.length) % inputs.length;
+
+            while (inputs[previousIndex].disabled) {
+                previousIndex = (previousIndex - 1 + inputs.length) % inputs.length;
+            }
+
+            inputs[previousIndex].focus();
+        }
+
+        function toggleCheckboxSelection(checkbox) {
+            checkbox.checked = !checkbox.checked;
+        }
+
+
+    }
+    navigateUsingArrowKey()
 });

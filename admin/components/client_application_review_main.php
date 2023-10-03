@@ -105,8 +105,9 @@ if (isset($_GET['id'])) {
                                             <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                         </svg>
                                     </div>
-                                    <input required id="birthdate" datepicker datepicker-buttons datepicker-autohide type="text" class="pl-10 block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder=" Select date">
+                                    <input datepicker id="birthdate" name="birthdate" datepicker-autohide type="text" class="pl-10 block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="mm/dd/yyyy">
                                 </div>
+                                <div data-validate-input="birthdate" class="validate-message"></div>
                             </div>
                             <div class="sm:col-span-2">
                                 <label for="age" class="block text-sm font-medium leading-6 text-gray-900">Age</label>
