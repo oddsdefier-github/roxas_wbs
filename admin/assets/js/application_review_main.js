@@ -311,7 +311,31 @@ $(document).ready(function () {
                     if (responseData['status'] === 'error') {
                         alert(`${responseData['message']}`)
                     } else if ((responseData['status'] === 'success')) {
-                        alert(`${responseData['applicant']}'s application has been approved.`)
+                        console.log(JSON.stringify(responseData));
+                        alert(`${responseData['message']}`)
+
+                        setTimeout(() => {
+                            console.log("Before AJAX request");
+                            $.ajax({
+                                url: "print.php",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    data: responseData
+                                },
+                                success: function (data) {
+                                    console.log("PDF was created.")
+                                    console.log(data);
+                                    window.open(`${responseData['meter_number']}.pdf`, '_blank');
+                                },
+                                // error: function (xhr, textStatus, errorThrown) {
+                                //     console.error("Error:", errorThrown);
+                                // }
+                            });
+                            console.log("After AJAX request");
+                        }, 500);
+
+
                         // setTimeout(function () {
                         //     window.location.reload();
                         // }, 1000)

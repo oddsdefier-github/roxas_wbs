@@ -299,9 +299,15 @@ class DatabaseQueries extends BaseQuery
 
                                     if ($stmt->execute()) {
                                         $response = array(
-                                            "applicant" => $firstName,
                                             "status" => "success",
-                                            "message" => $firstName . "'s application has been approved."
+                                            "message" => $firstName . "'s application has been approved.",
+                                            "name" => $fullName,
+                                            "address" => $fullAddress,
+                                            "age" => $age,
+                                            "property_type" => $propertyType,
+                                            "registration_id" => $registrationId,
+                                            "meter_number" => $meterNumber,
+                                            "date" => date('F j, Y')
                                         );
                                     } else {
                                         $response = array(
