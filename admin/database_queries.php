@@ -54,7 +54,6 @@ class DatabaseQueries extends BaseQuery
 
     public function processClientApplication(
         $formData,
-
     ) {
         $response = array();
         // Sanitize and validate input data
@@ -64,6 +63,8 @@ class DatabaseQueries extends BaseQuery
         $middleName = htmlspecialchars($formData['middleName'], ENT_QUOTES, 'UTF-8');
         $lastName = htmlspecialchars($formData['lastName'], ENT_QUOTES, 'UTF-8');
         $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
+        $nameSuffix = htmlspecialchars($formData['nameSuffix'], ENT_QUOTES, 'UTF-8');
+        $birthDate = htmlspecialchars($formData['birthDate'], ENT_QUOTES, 'UTF-8');
         $age = htmlspecialchars($formData['age'], ENT_QUOTES, 'UTF-8');
         $email = htmlspecialchars($formData['email'], ENT_QUOTES, 'UTF-8');
         $gender = htmlspecialchars($formData['gender'], ENT_QUOTES, 'UTF-8');
@@ -74,7 +75,6 @@ class DatabaseQueries extends BaseQuery
         $municipality = htmlspecialchars($formData['municipality'], ENT_QUOTES, 'UTF-8');
         $province = htmlspecialchars($formData['province'], ENT_QUOTES, 'UTF-8');
         $region = htmlspecialchars($formData['region'], ENT_QUOTES, 'UTF-8');
-        $country = htmlspecialchars($formData['country'], ENT_QUOTES, 'UTF-8');
         $fullAddress = htmlspecialchars($formData['fullAddress'], ENT_QUOTES, 'UTF-8');
         $validID = htmlspecialchars($formData['validID'], ENT_QUOTES, 'UTF-8');
         $proofOfOwnership = htmlspecialchars($formData['proofOfOwnership'], ENT_QUOTES, 'UTF-8');
@@ -102,21 +102,23 @@ class DatabaseQueries extends BaseQuery
                 );
             } else {
 
-                $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, full_name, email, phone_number, age, gender, property_type, street, brgy, municipality, province, region, country, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+                $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
                 $stmt = $this->conn->prepareStatement($sql);
 
                 if ($stmt) {
                     mysqli_stmt_bind_param(
                         $stmt,
-                        "sssssssssssssssssssss",
+                        "ssssssssssssssssssssss",
                         $meterNumber,
                         $firstName,
                         $middleName,
                         $lastName,
+                        $nameSuffix,
                         $fullName,
                         $email,
                         $phoneNumber,
+                        $birthDate,
                         $age,
                         $gender,
                         $propertyType,
@@ -125,7 +127,6 @@ class DatabaseQueries extends BaseQuery
                         $municipality,
                         $province,
                         $region,
-                        $country,
                         $fullAddress,
                         $validID,
                         $proofOfOwnership,

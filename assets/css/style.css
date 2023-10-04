@@ -6470,10 +6470,6 @@ input:checked + .toggle-bg {
     display: flex;
   }
 
-  .sm\:grid {
-    display: grid;
-  }
-
   .sm\:hidden {
     display: none;
   }

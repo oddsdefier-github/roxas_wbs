@@ -6,6 +6,8 @@ $(document).ready(function () {
     const firstNameInput = $('input[name="firstName"]');
     const middleNameInput = $('input[name="middleName"]');
     const lastNameInput = $('input[name="lastName"]');
+    const nameSuffixInput = $('select[name="nameSuffix"]');
+    const birthDateInput = $('input[name="birthdate"]')
     const ageInput = $('input[name="age"]');
     const genderInput = $('select[name="gender"]');
     const phoneNumberInput = $('input[name="phoneNumber"]');
@@ -71,6 +73,8 @@ $(document).ready(function () {
         const firstName = applicationData.first_name
         const middleName = applicationData.middle_name
         const lastName = applicationData.last_name
+        const nameSuffix = applicationData.name_suffix
+        const birthDate = applicationData.birthdate
         const age = applicationData.age
         const gender = applicationData.gender
         const phoneNumber = applicationData.phone_number
@@ -91,7 +95,9 @@ $(document).ready(function () {
         firstNameInput.val(firstName);
         middleNameInput.val(middleName);
         lastNameInput.val(lastName);
-        ageInput.val(age);
+        nameSuffixInput.find(':selected').text(nameSuffix);
+        birthDateInput.val(birthDate);
+        ageInput.val(age + (parseInt(age) > 1 ? ' years old' : ' year old'));
         genderInput.find(':selected').text(gender)
         phoneNumberInput.val(phoneNumber);
         emailInput.val(email);

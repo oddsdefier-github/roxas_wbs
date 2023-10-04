@@ -112,7 +112,7 @@ if (isset($_GET['id'])) {
                             <div class="sm:col-span-2">
                                 <label for="age" class="block text-sm font-medium leading-6 text-gray-900">Age</label>
                                 <div class="mt-2 relative">
-                                    <input data-input-state="error" id="age" name="age" type="text" placeholder="Must be 18 years old or above." inputmode="numeric" pattern="[0-9]*" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                                    <input id="age" name="age" type="text" placeholder="Must be 18 years old or above." inputmode="numeric" pattern="[0-9]*" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" readonly disabled>
                                 </div>
                                 <div data-validate-input="age" class="validate-message"></div>
                             </div>

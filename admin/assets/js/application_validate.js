@@ -6,6 +6,7 @@ $(document).ready(function () {
     const firstNameInput = $('input[name="firstName"]');
     const middleNameInput = $('input[name="middleName"]');
     const lastNameInput = $('input[name="lastName"]');
+    const nameSuffixInput = $('select[name="nameSuffix"]');
     const birthDateInput = $('input[name="birthdate"]')
     const ageInput = $('input[name="age"]');
     const genderInput = $('select[name="gender"]');
@@ -17,7 +18,6 @@ $(document).ready(function () {
     const municipalityInput = $('input[name="municipality"]');
     const provinceInput = $('input[name="province"]');
     const regionInput = $('input[name="region"]');
-    const countryInput = $('input[name="country"]');
     const validIdCheck = $('input[name="validId"]');
     const proofOfOwnershipCheck = $('input[name="proofOfOwnership"]');
     const deedOfSaleCheck = $('input[name="deedOfSale"]');
@@ -86,6 +86,16 @@ $(document).ready(function () {
             });
             return value;
         }
+        function getAgeIntValue(ageInput) {
+            age = ageInput.val().trim();
+            console.log(age);
+            age = age.split(" ")[0]
+            if (!isNaN(age)) {
+                return age;
+            } else {
+                return null;
+            }
+        }
 
         function getCheckedItemValue(checkboxEl) {
             return checkboxEl.is(':checked') ? 'Yes' : 'No';
@@ -102,7 +112,6 @@ $(document).ready(function () {
                     }
                 }
                 formattedName = words.join(' ');
-
                 return formattedName;
             }
             return name;
@@ -113,7 +122,9 @@ $(document).ready(function () {
             firstName: formatName(firstNameInput.val()),
             middleName: formatName(middleNameInput.val()),
             lastName: formatName(lastNameInput.val()),
-            age: ageInput.val(),
+            nameSuffix: getSelectedItemValue(nameSuffixInput),
+            birthDate: birthDateInput.val(),
+            age: getAgeIntValue(ageInput),
             gender: getSelectedItemValue(genderInput),
             phoneNumber: phoneNumberInput.val(),
             email: emailInput.val(),
@@ -123,19 +134,43 @@ $(document).ready(function () {
             municipality: municipalityInput.val(),
             province: provinceInput.val(),
             region: regionInput.val(),
-            country: countryInput.val(),
             validID: getCheckedItemValue(validIdCheck),
             proofOfOwnership: getCheckedItemValue(proofOfOwnershipCheck),
             deedOfSale: getCheckedItemValue(deedOfSaleCheck),
             affidavit: getCheckedItemValue(affidavitCheck),
             getFullNameWithInitial: function () {
                 const middleInitial = this.middleName.length > 0 ? this.middleName.charAt(0) + '.' : '';
-                return `${this.firstName} ${middleInitial} ${this.lastName}`;
+                const suffix = this.nameSuffix ? ' ' + this.nameSuffix : '';
+                return `${this.firstName} ${middleInitial} ${this.lastName}${suffix}`;
             },
             getFullAddress: function () {
-                return `${this.streetAddress}, ${this.brgy}, ${this.municipality}, ${this.province}, ${this.region}, ${this.country}`;
+                return `${this.streetAddress}, ${this.brgy}, ${this.municipality}, ${this.province}, ${this.region}, Philippines`;
             }
         };
+
+        console.log("meterNumber:", formInput.meterNumber);
+        console.log("firstName:", formInput.firstName);
+        console.log("middleName:", formInput.middleName);
+        console.log("lastName:", formInput.lastName);
+        console.log("nameSuffix:", formInput.nameSuffix);
+        console.log("birthDate:", formInput.birthDate);
+        console.log("age:", formInput.age);
+        console.log("gender:", formInput.gender);
+        console.log("phoneNumber:", formInput.phoneNumber);
+        console.log("email:", formInput.email);
+        console.log("propertyType:", formInput.propertyType);
+        console.log("streetAddress:", formInput.streetAddress);
+        console.log("brgy:", formInput.brgy);
+        console.log("municipality:", formInput.municipality);
+        console.log("province:", formInput.province);
+        console.log("region:", formInput.region);
+        console.log("validID:", formInput.validID);
+        console.log("proofOfOwnership:", formInput.proofOfOwnership);
+        console.log("deedOfSale:", formInput.deedOfSale);
+        console.log("affidavit:", formInput.affidavit);
+        console.log("getFullNameWithInitial:", formInput.getFullNameWithInitial());
+        console.log("getFullAddress:", formInput.getFullAddress());
+
 
         $.ajax({
             url: "database_actions.php",
@@ -149,6 +184,8 @@ $(document).ready(function () {
                     middleName: formInput.middleName,
                     lastName: formInput.lastName,
                     fullName: formInput.getFullNameWithInitial(),
+                    nameSuffix: formInput.nameSuffix,
+                    birthDate: formInput.birthDate,
                     age: formInput.age,
                     gender: formInput.gender,
                     phoneNumber: formInput.phoneNumber,
@@ -159,7 +196,6 @@ $(document).ready(function () {
                     municipality: formInput.municipality,
                     province: formInput.province,
                     region: formInput.region,
-                    country: formInput.country,
                     fullAddress: formInput.getFullAddress(),
                     validID: formInput.validID,
                     proofOfOwnership: formInput.proofOfOwnership,
@@ -191,6 +227,8 @@ $(document).ready(function () {
 
     /**
      * TODO: Fix the date picker functionality
+     * TODO: Manage the input validation -> submit form
+     * ? Just include the form for review and apply, use only one form / div
      * * The age should be automatically calculated when date is set
      */
 
@@ -251,6 +289,7 @@ $(document).ready(function () {
     };
 
     applicationForm.on('submit', handleSubmit);
+
 
     function validateField(fieldName, fieldValue) {
         const validationRules = {
