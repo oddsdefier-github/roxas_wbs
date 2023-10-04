@@ -548,6 +548,7 @@ $(document).ready(function () {
             console.log('SUBMITTED!!!!')
             
 
+
         }
     });
 
@@ -559,11 +560,9 @@ $(document).ready(function () {
                 console.log(`The checkbox named ${checkbox.name} is checked`);
                 console.log(`You need to pay ${checkbox.value}`);
                 totalFee += parseInt(checkbox.value);
-                alert(`TOTAL PAYMENT = ${totalFee}`);
                 $('#total-fee').text(`${totalFee} PHP`);
             } else {
                 totalFee -= parseInt(checkbox.value);
-                alert(`TOTAL PAYMENT = ${totalFee}`);
                 $('#total-fee').text(`${totalFee} PHP`);
             }
 
