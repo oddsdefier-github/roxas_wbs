@@ -77,17 +77,16 @@ if (isset($_GET['id'])) {
                             <label for="nameSuffix" class="block text-sm font-medium leading-6 text-gray-900">Name Suffix</label>
                             <div class="mt-2 relative">
                                 <select id="nameSuffix" name="nameSuffix" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
-                                    <option value="none"></option>
-                                    <option value="Jr.">Jr. (Junior)</option>
-                                    <option value="Sr.">Sr. (Senior)</option>
-                                    <option value="II">II (the Second)</option>
-                                    <option value="III">III (the Third)</option>
-                                    <option value="IV">IV (the Fourth)</option>
-                                    <option value="Ph.D.">Ph.D. (Doctor of Philosophy)</option>
-                                    <option value="M.D.">M.D. (Doctor of Medicine)</option>
-                                    <option value="D.D.S.">D.D.S. (Doctor of Dental Surgery)</option>
-                                    <option value="MBA">MBA (Master of Business Administration)</option>
-                                    <option value="CPA">CPA (Certified Public Accountant)</option>
+                                    <option value=""></option>
+                                    <option value="Jr.">Jr.</option>
+                                    <option value="Sr.">Sr.</option>
+                                    <option value="II">II</option>
+                                    <option value="III">III</option>
+                                    <option value="IV">IV</option>
+                                    <option value="Ph.D.">Ph.D.</option>
+                                    <option value="M.D.">M.D.</option>
+                                    <option value="MBA">MBA</option>
+                                    <option value="CPA">CPA</option>
                                 </select>
 
                             </div>
@@ -320,7 +319,7 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Reject</button>
+            <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Reject</button> -->
             <button id="review-submit" type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Approve
             </button>

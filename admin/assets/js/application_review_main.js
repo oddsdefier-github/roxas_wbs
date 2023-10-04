@@ -546,6 +546,8 @@ $(document).ready(function () {
         } else {
             // All checkboxes are checked, you can proceed with form submission
             console.log('SUBMITTED!!!!')
+            
+
         }
     });
 
