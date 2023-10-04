@@ -1,0 +1,10 @@
+{
+    "require": {
+        "mpdf/mpdf": "v8.1",
+        "dompdf/dompdf": "^2.0",
+        "swiftmailer/swiftmailer": "^6.0",
+        "symfony/mailer": "^6.3",
+        "symfony/twig-bundle": "^6.3",
+        "bacon/bacon-qr-code": "^2.0"
+    }
+}

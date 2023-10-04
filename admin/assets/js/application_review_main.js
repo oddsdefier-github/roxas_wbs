@@ -103,6 +103,7 @@ $(document).ready(function () {
         emailInput.val(email);
         propertyTypeInput.find(':selected').text(propertyType)
         streetAddressInput.val(streetAddress);
+        $("#application-id-hidden").val(applicationData.application_id)
 
         if (validID == 'Yes') {
             validIdCheck.prop('checked', true)
@@ -183,6 +184,16 @@ $(document).ready(function () {
             });
             return value;
         }
+        function getAgeIntValue(ageInput) {
+            age = ageInput.val().trim();
+            console.log(age);
+            age = age.split(" ")[0]
+            if (!isNaN(age)) {
+                return age;
+            } else {
+                return null;
+            }
+        }
 
         function getCheckedItemValue(checkboxEl) {
             return checkboxEl.is(':checked') ? 'Yes' : 'No';
@@ -199,18 +210,20 @@ $(document).ready(function () {
                     }
                 }
                 formattedName = words.join(' ');
-
                 return formattedName;
             }
             return name;
         }
 
         const formInput = {
+            applicationID: $("#application-id-hidden").val(),
             meterNumber: meterNumberInput.val().toUpperCase(),
             firstName: formatName(firstNameInput.val()),
             middleName: formatName(middleNameInput.val()),
             lastName: formatName(lastNameInput.val()),
-            age: ageInput.val(),
+            nameSuffix: getSelectedItemValue(nameSuffixInput),
+            birthDate: birthDateInput.val(),
+            age: getAgeIntValue(ageInput),
             gender: getSelectedItemValue(genderInput),
             phoneNumber: phoneNumberInput.val(),
             email: emailInput.val(),
@@ -220,55 +233,59 @@ $(document).ready(function () {
             municipality: municipalityInput.val(),
             province: provinceInput.val(),
             region: regionInput.val(),
-            country: countryInput.val(),
             validID: getCheckedItemValue(validIdCheck),
             proofOfOwnership: getCheckedItemValue(proofOfOwnershipCheck),
             deedOfSale: getCheckedItemValue(deedOfSaleCheck),
             affidavit: getCheckedItemValue(affidavitCheck),
             getFullNameWithInitial: function () {
                 const middleInitial = this.middleName.length > 0 ? this.middleName.charAt(0) + '.' : '';
-                return `${this.firstName} ${middleInitial} ${this.lastName}`;
+                const suffix = this.nameSuffix ? ' ' + this.nameSuffix : '';
+                return `${this.firstName} ${middleInitial} ${this.lastName}${suffix}`;
             },
             getFullAddress: function () {
-                return `${this.streetAddress}, ${this.brgy}, ${this.municipality}, ${this.province}, ${this.region}, ${this.country}`;
+                return `${this.streetAddress}, ${this.brgy}, ${this.municipality}, ${this.province}, ${this.region}, Philippines`;
             }
         };
 
-
-        console.log(formInput.meterNumber);
-        console.log(formInput.firstName);
-        console.log(formInput.middleName);
-        console.log(formInput.lastName);
-        console.log(formInput.age);
-        console.log(formInput.gender);
-        console.log(formInput.phoneNumber);
-        console.log(formInput.email);
-        console.log(formInput.propertyType);
-        console.log(formInput.streetAddress);
-        console.log(formInput.brgy);
-        console.log(formInput.municipality);
-        console.log(formInput.province);
-        console.log(formInput.region);
-        console.log(formInput.country);
-        console.log(formInput.validID);
-        console.log(formInput.proofOfOwnership);
-        console.log(formInput.deedOfSale);
-        console.log(formInput.affidavit);
-        console.log(formInput.getFullNameWithInitial());
-        console.log(formInput.getFullAddress());
+        console.log("meterNumber:", formInput.meterNumber);
+        console.log("firstName:", formInput.firstName);
+        console.log("middleName:", formInput.middleName);
+        console.log("lastName:", formInput.lastName);
+        console.log("nameSuffix:", formInput.nameSuffix);
+        console.log("birthDate:", formInput.birthDate);
+        console.log("age:", formInput.age);
+        console.log("gender:", formInput.gender);
+        console.log("phoneNumber:", formInput.phoneNumber);
+        console.log("email:", formInput.email);
+        console.log("propertyType:", formInput.propertyType);
+        console.log("streetAddress:", formInput.streetAddress);
+        console.log("brgy:", formInput.brgy);
+        console.log("municipality:", formInput.municipality);
+        console.log("province:", formInput.province);
+        console.log("region:", formInput.region);
+        console.log("validID:", formInput.validID);
+        console.log("proofOfOwnership:", formInput.proofOfOwnership);
+        console.log("deedOfSale:", formInput.deedOfSale);
+        console.log("affidavit:", formInput.affidavit);
+        console.log("getFullNameWithInitial:", formInput.getFullNameWithInitial());
+        console.log("getFullAddress:", formInput.getFullAddress());
 
 
         $.ajax({
             url: "database_actions.php",
             type: "POST",
+            dataType: "json",
             data: {
                 action: "approveClientApplication",
                 formData: {
+                    applicationID: formInput.applicationID,
                     meterNumber: formInput.meterNumber,
                     firstName: formInput.firstName,
                     middleName: formInput.middleName,
                     lastName: formInput.lastName,
                     fullName: formInput.getFullNameWithInitial(),
+                    nameSuffix: formInput.nameSuffix,
+                    birthDate: formInput.birthDate,
                     age: formInput.age,
                     gender: formInput.gender,
                     phoneNumber: formInput.phoneNumber,
@@ -279,7 +296,6 @@ $(document).ready(function () {
                     municipality: formInput.municipality,
                     province: formInput.province,
                     region: formInput.region,
-                    country: formInput.country,
                     fullAddress: formInput.getFullAddress(),
                     validID: formInput.validID,
                     proofOfOwnership: formInput.proofOfOwnership,
@@ -288,17 +304,27 @@ $(document).ready(function () {
                 }
             },
             success: function (data) {
+                responseData = data;
                 console.log(data)
 
-                setTimeout(function () {
-                    window.location.reload();
-                }, 3000)
-
-
+                if (responseData) {
+                    if (responseData['status'] === 'error') {
+                        alert(`${responseData['message']}`)
+                    } else if ((responseData['status'] === 'success')) {
+                        alert(`${responseData['applicant']}'s application has been approved.`)
+                        // setTimeout(function () {
+                        //     window.location.reload();
+                        // }, 1000)
+                    }
+                }
+            },
+            error: function (error) {
+                console.log(error)
             }
         })
 
     };
+
 
 
     function validateField(fieldName, fieldValue) {
@@ -546,7 +572,9 @@ $(document).ready(function () {
         } else {
             // All checkboxes are checked, you can proceed with form submission
             console.log('SUBMITTED!!!!')
-            
+            processApplication();
+
+
 
 
         }

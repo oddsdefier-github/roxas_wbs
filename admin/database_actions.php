@@ -32,7 +32,13 @@ if (isset($_POST['action'])) {
                 echo json_encode($processResponse);
             }
             break;
-
+        case 'approveClientApplication':
+            if (isset($_POST['formData'])) {
+                $formData = $_POST['formData'];
+                $processResponse = $dbQueries->approveClientApplication($formData);
+                echo json_encode($processResponse);
+            }
+            break;
         case 'getDataTable':
             if (isset($_POST['dataTableParam'])) {
                 $dataTableParam = $_POST['dataTableParam'];

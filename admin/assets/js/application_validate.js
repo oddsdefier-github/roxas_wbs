@@ -270,13 +270,17 @@ $(document).ready(function () {
                 $('#birthdate').val("");
                 $("#age").val("");
 
+            }
+            else if (age > 100) {
+                alert("Invalid age input.");
+                $('#birthdate').val("");
+                $("#age").val("");
             } else {
                 $("#age").val(age + " years old");
             }
         } else {
             $("#age").html('<span style="color: red;">Invalid date</span>');
         }
-
     };
     /**
      * ! End of Date picker code

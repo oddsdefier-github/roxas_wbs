@@ -52,9 +52,8 @@ class DatabaseQueries extends BaseQuery
     }
 
 
-    public function processClientApplication(
-        $formData,
-    ) {
+    public function processClientApplication($formData)
+    {
         $response = array();
         // Sanitize and validate input data
 
@@ -81,81 +80,101 @@ class DatabaseQueries extends BaseQuery
         $deedOfSale = htmlspecialchars($formData['deedOfSale'], ENT_QUOTES, 'UTF-8');
         $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
 
+        $status = 'new';
 
-        $checkDuplicate = "SELECT email FROM client_application WHERE email = ?";
-        $stmt = $this->conn->prepareStatement($checkDuplicate);
+        $checkDuplicateMeterNo = "SELECT meter_number FROM client_application WHERE meter_number = ?";
+        $stmt = $this->conn->prepareStatement($checkDuplicateMeterNo);
 
         if ($stmt) {
-
-            mysqli_stmt_bind_param($stmt, "s", $email);
+            mysqli_stmt_bind_param($stmt, "s", $meterNumber);
 
             mysqli_stmt_execute($stmt);
-
             mysqli_stmt_store_result($stmt);
-
-            // Check if there are any rows returned (duplicate email found)
 
             if (mysqli_stmt_num_rows($stmt) > 0) {
                 $response = array(
                     "status" => "error",
-                    "message" => $email . " already exists in the database."
+                    "inputName" => "meterNumber",
+                    "message" => "Meter No: " . $meterNumber . " already exists in the database."
                 );
             } else {
-
-                $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
-
-                $stmt = $this->conn->prepareStatement($sql);
+                $checkDuplicate = "SELECT email FROM client_application WHERE email = ?";
+                $stmt = $this->conn->prepareStatement($checkDuplicate);
 
                 if ($stmt) {
-                    mysqli_stmt_bind_param(
-                        $stmt,
-                        "ssssssssssssssssssssss",
-                        $meterNumber,
-                        $firstName,
-                        $middleName,
-                        $lastName,
-                        $nameSuffix,
-                        $fullName,
-                        $email,
-                        $phoneNumber,
-                        $birthDate,
-                        $age,
-                        $gender,
-                        $propertyType,
-                        $streetAddress,
-                        $brgy,
-                        $municipality,
-                        $province,
-                        $region,
-                        $fullAddress,
-                        $validID,
-                        $proofOfOwnership,
-                        $deedOfSale,
-                        $affidavit
-                    );
 
-                    if (mysqli_stmt_execute($stmt)) {
-                        $response = array(
-                            "applicant" => $firstName,
-                            "status" => "success",
-                            "message" => $firstName . "'s application submitted successfully."
-                        );
-                    } else {
+                    mysqli_stmt_bind_param($stmt, "s", $email);
+
+                    mysqli_stmt_execute($stmt);
+
+                    mysqli_stmt_store_result($stmt);
+
+                    if (mysqli_stmt_num_rows($stmt) > 0) {
                         $response = array(
                             "status" => "error",
-                            "message" => "Error executing the query: " . $this->conn->getErrorMessage()
+                            "inputName" => "email",
+                            "message" => $email . " already exists in the database."
                         );
-                    }
+                    } else {
 
-                    mysqli_stmt_close($stmt);
-                } else {
-                    $response = array(
-                        "status" => "error",
-                        "message" => "Error preparing the statement: " . $this->conn->getErrorMessage()
-                    );
+                        $applicationID = 'A' . date("YmdHis");
+                        $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, status, application_id, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+
+                        $stmt = $this->conn->prepareStatement($sql);
+
+                        if ($stmt) {
+                            mysqli_stmt_bind_param(
+                                $stmt,
+                                "ssssssssssssssssssssssss",
+                                $meterNumber,
+                                $firstName,
+                                $middleName,
+                                $lastName,
+                                $nameSuffix,
+                                $fullName,
+                                $email,
+                                $phoneNumber,
+                                $birthDate,
+                                $age,
+                                $gender,
+                                $propertyType,
+                                $streetAddress,
+                                $brgy,
+                                $municipality,
+                                $province,
+                                $region,
+                                $fullAddress,
+                                $validID,
+                                $proofOfOwnership,
+                                $deedOfSale,
+                                $affidavit,
+                                $status,
+                                $applicationID
+                            );
+
+                            if (mysqli_stmt_execute($stmt)) {
+                                $response = array(
+                                    "applicant" => $firstName,
+                                    "status" => "success",
+                                    "message" => $firstName . "'s application submitted successfully."
+                                );
+                            } else {
+                                $response = array(
+                                    "status" => "error",
+                                    "message" => "Error executing the query: " . $this->conn->getErrorMessage()
+                                );
+                            }
+
+                            mysqli_stmt_close($stmt);
+                        } else {
+                            $response = array(
+                                "status" => "error",
+                                "message" => "Error preparing the statement: " . $this->conn->getErrorMessage()
+                            );
+                        }
+                    }
                 }
             }
-
             return $response;
         } else {
             $response = array(
@@ -167,6 +186,160 @@ class DatabaseQueries extends BaseQuery
     }
 
 
+
+    public function approveClientApplication($formData)
+    {
+        $response = array();
+        // Sanitize and validate input data
+
+        $applicationID = htmlspecialchars($formData['applicationID'], ENT_QUOTES, 'UTF-8');
+        $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
+        $firstName = htmlspecialchars($formData['firstName'], ENT_QUOTES, 'UTF-8');
+        $middleName = htmlspecialchars($formData['middleName'], ENT_QUOTES, 'UTF-8');
+        $lastName = htmlspecialchars($formData['lastName'], ENT_QUOTES, 'UTF-8');
+        $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
+        $nameSuffix = htmlspecialchars($formData['nameSuffix'], ENT_QUOTES, 'UTF-8');
+        $birthDate = htmlspecialchars($formData['birthDate'], ENT_QUOTES, 'UTF-8');
+        $age = htmlspecialchars($formData['age'], ENT_QUOTES, 'UTF-8');
+        $email = htmlspecialchars($formData['email'], ENT_QUOTES, 'UTF-8');
+        $gender = htmlspecialchars($formData['gender'], ENT_QUOTES, 'UTF-8');
+        $phoneNumber = htmlspecialchars($formData['phoneNumber'], ENT_QUOTES, 'UTF-8');
+        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
+        $streetAddress = htmlspecialchars($formData['streetAddress'], ENT_QUOTES, 'UTF-8');
+        $brgy = htmlspecialchars($formData['brgy'], ENT_QUOTES, 'UTF-8');
+        $municipality = htmlspecialchars($formData['municipality'], ENT_QUOTES, 'UTF-8');
+        $province = htmlspecialchars($formData['province'], ENT_QUOTES, 'UTF-8');
+        $region = htmlspecialchars($formData['region'], ENT_QUOTES, 'UTF-8');
+        $fullAddress = htmlspecialchars($formData['fullAddress'], ENT_QUOTES, 'UTF-8');
+        $validID = htmlspecialchars($formData['validID'], ENT_QUOTES, 'UTF-8');
+        $proofOfOwnership = htmlspecialchars($formData['proofOfOwnership'], ENT_QUOTES, 'UTF-8');
+        $deedOfSale = htmlspecialchars($formData['deedOfSale'], ENT_QUOTES, 'UTF-8');
+        $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
+
+
+
+        $checkDuplicateMeterNo = "SELECT meter_number FROM client_data WHERE meter_number = ?";
+        $stmt = $this->conn->prepareStatement($checkDuplicateMeterNo);
+
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $meterNumber);
+
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_store_result($stmt);
+
+            if (mysqli_stmt_num_rows($stmt) > 0) {
+                $response = array(
+                    "status" => "error",
+                    "inputName" => "meterNumber",
+                    "message" => "Meter No: " . $meterNumber . " already exists in the client_data database."
+                );
+            } else {
+                $checkDuplicate = "SELECT email FROM client_data WHERE email = ?";
+                $stmt = $this->conn->prepareStatement($checkDuplicate);
+
+                if ($stmt) {
+
+                    mysqli_stmt_bind_param($stmt, "s", $email);
+
+                    mysqli_stmt_execute($stmt);
+
+                    mysqli_stmt_store_result($stmt);
+
+                    if (mysqli_stmt_num_rows($stmt) > 0) {
+                        $response = array(
+                            "status" => "error",
+                            "inputName" => "email",
+                            "message" => $email . " already exists in the database."
+                        );
+                    } else {
+                        $status = "approved";
+                        $registrationId = 'R' . date("YmdHis");
+                        $sql = "INSERT INTO client_data (reg_id, meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, status,application_id, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+
+                        $stmt = $this->conn->prepareStatement($sql);
+
+                        if ($stmt) {
+                            mysqli_stmt_bind_param(
+                                $stmt,
+                                "sssssssssssssssssssssssss",
+                                $registrationId,
+                                $meterNumber,
+                                $firstName,
+                                $middleName,
+                                $lastName,
+                                $nameSuffix,
+                                $fullName,
+                                $email,
+                                $phoneNumber,
+                                $birthDate,
+                                $age,
+                                $gender,
+                                $propertyType,
+                                $streetAddress,
+                                $brgy,
+                                $municipality,
+                                $province,
+                                $region,
+                                $fullAddress,
+                                $validID,
+                                $proofOfOwnership,
+                                $deedOfSale,
+                                $affidavit,
+                                $status,
+                                $applicationID
+                            );
+
+                            if (mysqli_stmt_execute($stmt)) {
+                                $status = 'approved';
+                                $sql = "UPDATE client_application SET status = ? WHERE application_id = ?";
+                                $stmt = $this->conn->prepareStatement($sql);
+
+                                if ($stmt) {
+                                    $stmt->bind_param("ss", $status, $applicationID);
+
+                                    if ($stmt->execute()) {
+                                        $response = array(
+                                            "applicant" => $firstName,
+                                            "status" => "success",
+                                            "message" => $firstName . "'s application has been approved."
+                                        );
+                                    } else {
+                                        $response = array(
+                                            "status" => "error",
+                                            "message" => "Error updating status: " . $this->conn->getErrorMessage()
+                                        );
+                                    }
+                                } else {
+                                    $response = array(
+                                        "status" => "error",
+                                        "message" => "Error preparing statement: " . $this->conn->getErrorMessage()
+                                    );
+                                }
+                            } else {
+                                $response = array(
+                                    "status" => "error",
+                                    "message" => "Error executing the query: " . $this->conn->getErrorMessage()
+                                );
+                            }
+                            mysqli_stmt_close($stmt);
+                        } else {
+                            $response = array(
+                                "status" => "error",
+                                "message" => "Error preparing the statement: " . $this->conn->getErrorMessage()
+                            );
+                        }
+                    }
+                }
+            }
+            return $response;
+        } else {
+            $response = array(
+                "status" => "error",
+                "error" => "Error in preparing the statement: " . $this->conn->getErrorMessage()
+            );
+        }
+        return $response;
+    }
     public function getTotalItem($tableName)
     {
         $total = array();
@@ -245,6 +418,7 @@ class DataTable extends BaseQuery
                 <th class="px-6 py-4">Age</th>
                 <th class="px-6 py-4">Email</th>
                 <th class="px-6 py-4">Phone Number</th>
+                <th class="px-6 py-4">Status</th>
                 <th class="px-6 py-4">Time</th>
                 <th class="px-6 py-4">Date</th>
                 <th class="px-6 py-4">Action</th>
@@ -263,6 +437,7 @@ class DataTable extends BaseQuery
             $property_type = $row['property_type'];
             $email = $row['email'];
             $phone_number = $row['phone_number'];
+            $status = $row['status'];
             $age = $row['age'];
             $time = $row['time'];
             $date = $row['date'];
@@ -277,6 +452,7 @@ class DataTable extends BaseQuery
             <td class="px-6 py-3 text-sm">' . $age . '</td>
             <td class="px-6 py-3 text-sm">' . $email . '</td>
             <td class="px-6 py-3 text-sm">' . $phone_number . '</td>
+            <td class="px-6 py-3 text-sm">' . $status . '</td>
             <td class="px-6 py-3 text-sm">' . $time . '</td>
             <td class="px-6 py-3 text-sm">' . $date . '</td>
 
@@ -300,24 +476,29 @@ class DataTable extends BaseQuery
             $number++;
         }
 
-        $start = $countArr[0];
-        $end = end($countArr);
 
 
-        $table .= '</tbody></table>';
-
-        if ($number > 1) {
-            echo $table;
-        } else {
+        if (empty($countArr)) {
             echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+        } else {
+            $start = $countArr[0];
+            $end = end($countArr);
+
+            $table .= '</tbody></table>';
+
+            if ($number > 1) {
+                echo $table;
+            } else {
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+            }
+
+            $start = '<input data-hidden-name="start" type="hidden" value=' . $start . '>';
+            $end = '<input data-hidden-name="end" type="hidden" value=' . $end . '>';
+            mysqli_stmt_close($stmt);
+
+            echo $start;
+            echo $end;
+            return "success";
         }
-
-        $start = '<input data-hidden-name="start" type="hidden" value=' . $start . '>';
-        $end = '<input data-hidden-name="end" type="hidden" value=' . $end . '>';
-        mysqli_stmt_close($stmt);
-
-        echo $start;
-        echo $end;
-        return "success";
     }
 }
