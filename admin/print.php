@@ -19,7 +19,7 @@ if (isset($_POST['data'])) {
     $options = new Options;
     $options->setChroot(__DIR__);
     $options->setIsRemoteEnabled(true);
-    $options->set('defaultFont', 'Arial');
+    $options->set('defaultFont', 'Helvetica');
     $options->set('isHtml5ParserEnabled', true);
 
     $options->set('margin-top', '0mm'); // Top margin
@@ -51,7 +51,3 @@ if (isset($_POST['data'])) {
 
     file_put_contents($fileName, $output);
 }
-
-/**
- * Set the Dompdf options
- */
