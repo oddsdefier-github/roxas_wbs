@@ -476,8 +476,7 @@ $(document).ready(function () {
 
 
     function navigateUsingArrowKey() {
-
-        const inputs = document.querySelectorAll('input');
+        const inputs = document.querySelectorAll('input:not([type="checkbox"])');
 
         document.addEventListener('keydown', function (event) {
             if (event.key === 'ArrowRight') {
@@ -486,8 +485,6 @@ $(document).ready(function () {
             } else if (event.key === 'ArrowLeft') {
                 event.preventDefault();
                 focusPreviousEnabledInput();
-            } else if (event.key === 'Enter' && document.activeElement.type === 'checkbox') {
-                toggleCheckboxSelection(document.activeElement);
             }
         });
 
@@ -495,10 +492,6 @@ $(document).ready(function () {
             const focusedInput = document.activeElement;
             const currentIndex = Array.from(inputs).indexOf(focusedInput);
             let nextIndex = (currentIndex + 1) % inputs.length;
-
-            while (inputs[nextIndex].disabled) {
-                nextIndex = (nextIndex + 1) % inputs.length;
-            }
 
             inputs[nextIndex].focus();
         }
@@ -508,18 +501,10 @@ $(document).ready(function () {
             const currentIndex = Array.from(inputs).indexOf(focusedInput);
             let previousIndex = (currentIndex - 1 + inputs.length) % inputs.length;
 
-            while (inputs[previousIndex].disabled) {
-                previousIndex = (previousIndex - 1 + inputs.length) % inputs.length;
-            }
-
             inputs[previousIndex].focus();
         }
-
-        function toggleCheckboxSelection(checkbox) {
-            checkbox.checked = !checkbox.checked;
-        }
-
-
     }
-    navigateUsingArrowKey()
+
+    navigateUsingArrowKey();
+
 });

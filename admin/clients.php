@@ -32,7 +32,7 @@ if ($_SESSION['user_role'] != "Admin") {
 <body class="flex h-screen w-screen overflow-hidden font-inter bg-gray-50">
     <?php include './components/alerts.php'; ?>
     <?php include './components/notification.php'; ?>
-    <?php include './components/modal/modal.php'; ?>
+    <?php include './components/modal/modal.php'; ?> 
     <?php include './components/signout_loader.php'; ?>
     <?php include './layouts/sidebar.php'; ?>
 
