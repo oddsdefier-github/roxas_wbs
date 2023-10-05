@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    id = $('#review-id-hidden').val();
+
 
     const reviewForm = $('.review-form');
     const meterNumberInput = $('input[name="meterNumber"]');
@@ -68,7 +68,8 @@ $(document).ready(function () {
         });
     }
 
-    retrieveClientApplicationData(id, function (applicationData) {
+    applicantID = $('#review-id-hidden').val();
+    retrieveClientApplicationData(applicantID, function (applicationData) {
         const meterNumber = applicationData.meter_number
         const firstName = applicationData.first_name
         const middleName = applicationData.middle_name
@@ -103,6 +104,7 @@ $(document).ready(function () {
         emailInput.val(email);
         propertyTypeInput.find(':selected').text(propertyType)
         streetAddressInput.val(streetAddress);
+
         $("#application-id-hidden").val(applicationData.application_id)
 
         if (validID == 'Yes') {
@@ -314,26 +316,25 @@ $(document).ready(function () {
                         console.log(JSON.stringify(responseData));
                         alert(`${responseData['message']}`)
 
-                        setTimeout(() => {
-                            console.log("Before AJAX request");
-                            $.ajax({
-                                url: "print.php",
-                                type: "POST",
-                                dataType: "json",
-                                data: {
-                                    data: responseData
-                                },
-                                success: function (data) {
-                                    console.log("PDF was created.")
-                                    console.log(data);
-                                    window.open(`${responseData['meter_number']}.pdf`, '_blank');
-                                },
-                                // error: function (xhr, textStatus, errorThrown) {
-                                //     console.error("Error:", errorThrown);
-                                // }
-                            });
-                            console.log("After AJAX request");
-                        }, 500);
+                        window.open(`./print.php?id=${responseData['registration_id']}`, '_blank');
+
+                        // setTimeout(() => {
+                        //     console.log("Before AJAX request");
+                        //     $.ajax({
+                        //         url: "print.php",
+                        //         type: "POST",
+                        //         data: {
+                        //             data: responseData
+                        //         },
+                        //         success: function (data) {
+                        //             console.log("PDF was created.")
+                        //         },
+                        //         error: function (xhr, textStatus, errorThrown) {
+                        //             console.error("Error:", errorThrown);
+                        //         }
+                        //     });
+                        //     console.log("After AJAX request");
+                        // }, 500);
 
 
                         // setTimeout(function () {

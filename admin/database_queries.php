@@ -425,8 +425,7 @@ class DataTable extends BaseQuery
                 <th class="px-6 py-4">Email</th>
                 <th class="px-6 py-4">Phone Number</th>
                 <th class="px-6 py-4">Status</th>
-                <th class="px-6 py-4">Time</th>
-                <th class="px-6 py-4">Date</th>
+                <th class="px-6 py-4">DateTime</th>
                 <th class="px-6 py-4">Action</th>
             </tr>
         </thead>';
@@ -448,6 +447,9 @@ class DataTable extends BaseQuery
             $time = $row['time'];
             $date = $row['date'];
 
+            $readable_date = date("F j, Y", strtotime($date));
+            $readable_time = date("h:i A", strtotime($time));
+
             $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $id . '</td>
@@ -459,8 +461,10 @@ class DataTable extends BaseQuery
             <td class="px-6 py-3 text-sm">' . $email . '</td>
             <td class="px-6 py-3 text-sm">' . $phone_number . '</td>
             <td class="px-6 py-3 text-sm">' . $status . '</td>
-            <td class="px-6 py-3 text-sm">' . $time . '</td>
-            <td class="px-6 py-3 text-sm">' . $date . '</td>
+            <td class="px-6 py-3 text-sm">            
+                <span class="font-medium text-sm">' . $readable_date . '</span> </br>
+                <span class="text-xs">' . $readable_time . '</span>
+            </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
                 <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

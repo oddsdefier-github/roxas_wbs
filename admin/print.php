@@ -1,53 +1,80 @@
 <?php
 
+use Admin\Database\DatabaseConnection;
+
+require './database_queries.php';
 require __DIR__ . "/vendor/autoload.php";
+
+
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-
-if (isset($_POST['data'])) {
-    $data = $_POST['data'];
-
-    $name = $data['name'];
-    $address = $data['address'];
-    $propertyType = $data['property_type'];
-    $date = $data['date'];
-    $regID = $data['registration_id'];
-    $meterNumber = $data['meter_number'];
-
-    $options = new Options;
-    $options->setChroot(__DIR__);
-    $options->setIsRemoteEnabled(true);
-    $options->set('defaultFont', 'Helvetica');
-    $options->set('isHtml5ParserEnabled', true);
-
-    $options->set('margin-top', '0mm'); // Top margin
-    $options->set('margin-right', '0mm'); // Right margin
-    $options->set('margin-bottom', '0mm'); // Bottom margin
-    $options->set('margin-left', '0mm'); // Left margin
-
-    $dompdf = new Dompdf($options);
-
-    $dompdf->setPaper("A4", "portrait");
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    if ($conn) {
+        $dbConnection = new DatabaseConnection($host1, $username1, $password1, $database1);
+    } else {
+        echo "Database connection failed.";
+    }
 
 
-    $html = file_get_contents("./templates/template.html");
+    $sql = "SELECT * FROM client_data WHERE reg_id = ?";
+    $stmt = $dbConnection->prepareStatement($sql);
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
+    $result = $dbConnection->getResultSet($stmt);
 
-    $html = str_replace(["{{ name }}", "{{ address }}", "{{ meter_number }}", "{{ reg_id }}", "{{ date }}", " {{ property_type }}"], [$name, $address, $meterNumber, $regID, $date, $propertyType], $html);
+    $clientRow = mysqli_fetch_assoc($result);
+    if ($clientRow) {
+        $data = $clientRow;
+        $name = $data['full_name'];
+        $address = $data['full_address'];
+        $propertyType = $data['property_type'];
+        $date = $data['date'];
+        $regID = $data['reg_id'];
+        $meterNumber = $data['meter_number'];
+
+        $options = new Options;
+        $options->setChroot(__DIR__);
+        $options->setIsRemoteEnabled(true);
+        $options->set('defaultFont', 'Helvetica');
+        $options->set('isHtml5ParserEnabled', true);
+
+        $options->set('margin-top', '0mm'); // Top margin
+        $options->set('margin-right', '0mm'); // Right margin
+        $options->set('margin-bottom', '0mm'); // Bottom margin
+        $options->set('margin-left', '0mm'); // Left margin
+
+        $dompdf = new Dompdf($options);
+
+        $dompdf->setPaper("A4", "portrait");
 
 
-    $dompdf->loadHtml($html);
+        $html = file_get_contents("./templates/template.html");
 
-    $dompdf->render();
+        $html = str_replace(["{{ name }}", "{{ address }}", "{{ meter_number }}", "{{ reg_id }}", "{{ date }}", " {{ property_type }}"], [$name, $address, $meterNumber, $regID, $date, $propertyType], $html);
 
-    $dompdf->addInfo("Title", "Registration");
 
-    $dompdf->stream("invoice.pdf", ["Attachment" => 0]);
-    $output = $dompdf->output();
+        $dompdf->loadHtml($html);
 
-    $response = array();
-    $fileName = $meterNumber . ".pdf";
+        $dompdf->render();
 
-    file_put_contents($fileName, $output);
+        $dompdf->addInfo("Title", "Registration");
+
+        $fileName = $regID . ".pdf";
+        $dompdf->stream($fileName, ["Attachment" => 0]);
+
+
+        $output = $dompdf->output();
+
+        $fileName = "reg_pdf/" . $regID . ".pdf";
+
+        file_put_contents($fileName, $output);
+    }
+
+    mysqli_stmt_free_result($stmt);
+    mysqli_stmt_close($stmt);
+} else {
+    echo "Invalid or missing id parameter.";
 }

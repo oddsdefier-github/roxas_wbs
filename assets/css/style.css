@@ -5411,6 +5411,14 @@ input:checked + .toggle-bg {
   a-z-a--z-: #;
 }
 
+.\[a-zA-Z0-9_\:\\-\\\.\] {
+  a-z-a--z0-9_: \-\.;
+}
+
+.\[a-zA-Z0-9_\:\\-\] {
+  a-z-a--z0-9_: \-;
+}
+
 .\[image\:\$img\|\$width\|\$height\|\$type\] {
   image: $img|$width|$height|$type;
 }
