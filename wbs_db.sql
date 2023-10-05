@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 22, 2023 at 04:17 PM
+-- Generation Time: Oct 05, 2023 at 04:16 AM
 -- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- PHP Version: 8.1.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -210,144 +210,19 @@ INSERT INTO `billing_id` (`id`) VALUES
 CREATE TABLE `clients` (
   `id` int(20) NOT NULL,
   `client_id` varchar(50) NOT NULL,
+  `meter_number` varchar(20) NOT NULL,
   `client_name` varchar(50) NOT NULL,
-  `prev_reading` int(55) DEFAULT NULL,
-  `current_reading` int(55) DEFAULT NULL,
-  `amount_due` int(55) DEFAULT NULL,
+  `street` text NOT NULL,
+  `brgy` varchar(50) NOT NULL,
   `address` varchar(50) NOT NULL,
   `property_type` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `phone_number` varchar(50) NOT NULL,
+  `birthdate` varchar(20) NOT NULL,
+  `time` time NOT NULL,
+  `date` date NOT NULL,
   `reg_date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `clients`
---
-
-INSERT INTO `clients` (`id`, `client_id`, `client_name`, `prev_reading`, `current_reading`, `amount_due`, `address`, `property_type`, `email`, `phone_number`, `reg_date`) VALUES
-(1446, 'WBS01446', 'Roderick F. Wade', 0, NULL, 0, 'Libertad', 'Commercial', 'roderick.wade5447@yahoo.com', '422-547-9421', '2023-09-17 16:58:42'),
-(1447, 'WBS01447', 'Patricia L. Garcia', 0, NULL, 0, 'San Mariano', 'Commercial', 'patricia.garcia3049@hotmail.com', '947-342-3366', '2023-09-17 16:58:42'),
-(1449, 'WBS01449', 'Lebron P. Lee', 0, NULL, 0, 'San Miguel', 'Residential', 'lebron.lee7327@yahoo.com', '816-472-9715', '2023-09-17 16:58:42'),
-(1450, 'WBS01450', 'Jep R. James', 0, NULL, 0, 'San Rafael', 'Residential', 'jep.james7350@gmail.com', '875-661-5721', '2023-09-17 16:58:42'),
-(1451, 'WBS01451', 'Justine U. Uvas', 0, NULL, 0, 'Mabuhay', 'Residential', 'justine.uvas5805@yahoo.com', '865-884-1423', '2023-09-17 16:58:42'),
-(1452, 'WBS01452', 'James U. Bryant', 0, NULL, 0, 'San Mariano', 'Residential', 'james.bryant1746@outlook.com', '472-272-3579', '2023-09-17 16:58:42'),
-(1453, 'WBS01453', 'Jose M. Bryant', 0, NULL, 0, 'San Jose', 'Commercial', 'jose.bryant4348@outlook.com', '887-840-7489', '2023-09-17 16:58:42'),
-(1454, 'WBS01454', 'Cristel Q. Dela Cruz', 0, NULL, 0, 'Mabuhay', 'Residential', 'cristel.cruz5729@hotmail.com', '174-460-5345', '2023-09-17 16:58:42'),
-(1455, 'WBS01455', 'Jose M. Lee', 0, NULL, 0, 'Little Tanauan', 'Residential', 'jose.lee8458@gmail.com', '527-660-7290', '2023-09-17 16:58:42'),
-(1456, 'WBS01456', 'Cristel D. Garcia', 0, NULL, 0, 'Bagumbayan', 'Residential', 'cristel.garcia1632@outlook.com', '369-565-1926', '2023-09-17 16:58:42'),
-(1457, 'WBS01457', 'Jose Paolo F. Uvas', 0, NULL, 0, 'Victoria', 'Residential', 'jose.uvas1262@outlook.com', '395-924-9224', '2023-09-17 16:58:42'),
-(1458, 'WBS01458', 'Jay Y. Delos Reyes', 0, NULL, 0, 'San Vicente', 'Commercial', 'jay.reyes8005@yahoo.com', '325-353-9352', '2023-09-17 16:58:42'),
-(1459, 'WBS01459', 'Jeffry H. Dela Cruz', 0, NULL, 0, 'Mabuhay', 'Commercial', 'jeffry.cruz6567@hotmail.com', '549-888-9969', '2023-09-17 16:58:42'),
-(1460, 'WBS01460', 'Jep D. Dayanghirang', 0, NULL, 0, 'San Vicente', 'Commercial', 'jep.dayanghirang2182@hotmail.com', '790-396-6486', '2023-09-17 16:58:42'),
-(1461, 'WBS01461', 'Patrick F. Jordan', 0, NULL, 0, 'Victoria', 'Commercial', 'patrick.jordan6596@yahoo.com', '920-939-2635', '2023-09-17 16:58:42'),
-(1462, 'WBS01462', 'Jose Paolo P. Garcia', 0, NULL, 0, 'Happy Valley', 'Commercial', 'jose.garcia5512@yahoo.com', '902-930-6543', '2023-09-17 16:58:42'),
-(1463, 'WBS01463', 'Hannah A. Garcia', 0, NULL, 0, 'Cantil', 'Commercial', 'hannah.garcia3959@gmail.com', '221-504-4487', '2023-09-17 16:58:42'),
-(1464, 'WBS01464', 'Jeffry V. Catapang', 0, NULL, 0, 'San Aquilino', 'Commercial', 'jeffry.catapang1437@yahoo.com', '412-330-5026', '2023-09-17 16:58:42'),
-(1465, 'WBS01465', 'Juanita R. Dela Cruz', 0, NULL, 0, 'Little Tanauan', 'Commercial', 'juanita.cruz7062@gmail.com', '232-325-9642', '2023-09-17 16:58:42'),
-(1466, 'WBS01466', 'Mark O. Dayanghirang', 0, NULL, 0, 'San Isidro', 'Residential', 'mark.dayanghirang5326@yahoo.com', '894-605-8673', '2023-09-17 16:58:42'),
-(1467, 'WBS01467', 'Ann A. Jordan', 0, NULL, 0, 'San Aquilino', 'Residential', 'ann.jordan7720@hotmail.com', '140-478-8996', '2023-09-17 16:58:42'),
-(1468, 'WBS01468', 'Roderick Q. Festin', 0, NULL, 0, 'Uyao', 'Commercial', 'roderick.festin8020@yahoo.com', '378-708-9233', '2023-09-17 16:58:42'),
-(1469, 'WBS01469', 'Roderick S. James', 0, NULL, 0, 'Dangay', 'Commercial', 'roderick.james4205@yahoo.com', '813-792-3472', '2023-09-17 16:58:42'),
-(1470, 'WBS01470', 'Ann C. Catapang', 0, NULL, 0, 'San Isidro', 'Residential', 'ann.catapang4531@hotmail.com', '556-136-2338', '2023-09-17 16:58:42'),
-(1471, 'WBS01471', 'Jep N. Delos Reyes', 0, NULL, 0, 'San Vicente', 'Residential', 'jep.reyes8880@yahoo.com', '180-166-6741', '2023-09-17 16:58:42'),
-(1472, 'WBS01472', 'Rogene A. Wade', 0, NULL, 0, 'Uyao', 'Residential', 'rogene.wade1379@gmail.com', '273-895-6975', '2023-09-17 16:58:42'),
-(1473, 'WBS01473', 'Jose Paolo A. Wade', 0, NULL, 0, 'Uyao', 'Residential', 'jose.wade1695@gmail.com', '203-976-2472', '2023-09-17 16:58:42'),
-(1474, 'WBS01474', 'Hannah Y. Catapang', 0, NULL, 0, 'Bagumbayan', 'Residential', 'hannah.catapang4012@hotmail.com', '699-901-4484', '2023-09-17 16:58:42'),
-(1475, 'WBS01475', 'Jose Paolo Z. James', 0, NULL, 0, 'Dangay', 'Commercial', 'jose.james2194@yahoo.com', '722-390-5263', '2023-09-17 16:58:42'),
-(1476, 'WBS01476', 'Jasper O. Uvas', 0, NULL, 0, 'Cantil', 'Commercial', 'jasper.uvas7242@outlook.com', '149-289-9068', '2023-09-17 16:58:42'),
-(1477, 'WBS01477', 'Ann E. Uvas', 0, NULL, 0, 'San Rafael', 'Residential', 'ann.uvas7545@outlook.com', '883-221-3659', '2023-09-17 16:58:42'),
-(1478, 'WBS01478', 'Lei B. Castillo', 0, NULL, 0, 'Little Tanauan', 'Residential', 'lei.castillo9706@hotmail.com', '802-527-4201', '2023-09-17 16:58:42'),
-(1479, 'WBS01479', 'Jose L. Morales', 0, NULL, 0, 'Libertad', 'Commercial', 'jose.morales1318@gmail.com', '964-118-8471', '2023-09-17 16:58:42'),
-(1480, 'WBS01480', 'Jeffry N. Jordan', 0, NULL, 0, 'San Isidro', 'Residential', 'jeffry.jordan7225@hotmail.com', '745-674-2728', '2023-09-17 16:58:42'),
-(1481, 'WBS01481', 'Mark E. Festin', 0, NULL, 0, 'San Jose', 'Commercial', 'mark.festin6979@yahoo.com', '512-824-6543', '2023-09-17 16:58:42'),
-(1482, 'WBS01482', 'Cristel U. Lee', 0, NULL, 0, 'San Mariano', 'Residential', 'cristel.lee9564@yahoo.com', '345-120-9844', '2023-09-17 16:58:42'),
-(1483, 'WBS01483', 'Mark F. Dayanghirang', 0, NULL, 0, 'Libertad', 'Commercial', 'mark.dayanghirang6822@outlook.com', '611-716-6401', '2023-09-17 16:58:42'),
-(1484, 'WBS01484', 'Lei G. Mayo', 0, NULL, 0, 'Libertad', 'Commercial', 'lei.mayo2046@hotmail.com', '793-975-5892', '2023-09-17 16:58:42'),
-(1485, 'WBS01485', 'Patrick P. Dela Cruz', 0, NULL, 0, 'Bagumbayan', 'Residential', 'patrick.cruz6443@yahoo.com', '693-648-4757', '2023-09-17 16:58:42'),
-(1486, 'WBS01486', 'Lebron Z. Ortiz', 0, NULL, 0, 'San Vicente', 'Commercial', 'lebron.ortiz4723@gmail.com', '234-706-6468', '2023-09-17 16:58:42'),
-(1487, 'WBS01487', 'Lebron O. Catapang', 0, NULL, 0, 'San Mariano', 'Commercial', 'lebron.catapang3807@hotmail.com', '936-487-2642', '2023-09-17 16:58:42'),
-(1488, 'WBS01488', 'Patricia N. Dela Cruz', 0, NULL, 0, 'San Miguel', 'Residential', 'patricia.cruz6530@yahoo.com', '999-651-5596', '2023-09-17 16:58:42'),
-(1489, 'WBS01489', 'Cristel V. Uvas', 0, NULL, 0, 'Mabuhay', 'Residential', 'cristel.uvas7446@yahoo.com', '379-542-8108', '2023-09-17 16:58:42'),
-(1490, 'WBS01490', 'Mark A. Bryant', 0, NULL, 0, 'San Aquilino', 'Residential', 'mark.bryant3959@yahoo.com', '500-126-4303', '2023-09-17 16:58:42'),
-(1491, 'WBS01491', 'Mark Q. Mayo', 0, NULL, 0, 'Happy Valley', 'Residential', 'mark.mayo7295@hotmail.com', '452-608-1563', '2023-09-17 16:58:42'),
-(1492, 'WBS01492', 'Jasper E. Delos Reyes', 0, NULL, 0, 'Libertad', 'Commercial', 'jasper.reyes5382@hotmail.com', '137-883-6549', '2023-09-17 16:58:42'),
-(1493, 'WBS01493', 'Patrick H. Wade', 0, NULL, 0, 'Bagumbayan', 'Residential', 'patrick.wade7983@outlook.com', '542-708-3867', '2023-09-17 16:58:42'),
-(1494, 'WBS01494', 'Mark O. Uvas', 0, NULL, 0, 'Mabuhay', 'Commercial', 'mark.uvas1643@hotmail.com', '421-490-8905', '2023-09-17 16:58:42'),
-(1495, 'WBS01495', 'Juanita P. Morales', 0, NULL, 0, 'Cantil', 'Commercial', 'juanita.morales6513@hotmail.com', '621-601-4707', '2023-09-17 16:58:42'),
-(1496, 'WBS01496', 'Lei Y. Richards', 0, NULL, 0, 'San Rafael', 'Residential', 'lei.richards3668@hotmail.com', '912-212-2109', '2023-09-17 16:58:42'),
-(1497, 'WBS01497', 'Jeffry B. Lee', 0, NULL, 0, 'Odiong', 'Commercial', 'jeffry.lee5177@gmail.com', '808-702-8824', '2023-09-17 16:58:42'),
-(1498, 'WBS01498', 'Ann P. Festin', 0, NULL, 0, 'Bagumbayan', 'Commercial', 'ann.festin1910@outlook.com', '917-432-7186', '2023-09-17 16:58:42'),
-(1499, 'WBS01499', 'Jep A. Yap', 0, NULL, 0, 'San Jose', 'Commercial', 'jep.yap1825@gmail.com', '899-548-8800', '2023-09-17 16:58:42'),
-(1500, 'WBS01500', 'Rogene J. Jordan', 0, NULL, 0, 'Bagumbayan', 'Commercial', 'rogene.jordan6165@hotmail.com', '438-358-8551', '2023-09-17 16:58:42'),
-(1501, 'WBS01501', 'Jose Paolo P. Dela Cruz', 0, NULL, 0, 'Maraska', 'Residential', 'jose.cruz3639@gmail.com', '203-870-2566', '2023-09-17 16:58:42'),
-(1502, 'WBS01502', 'Nick R. Delos Reyes', 0, NULL, 0, 'Cantil', 'Residential', 'nick.reyes4875@hotmail.com', '878-570-1846', '2023-09-17 16:58:42'),
-(1503, 'WBS01503', 'Ann E. Bryant', 0, NULL, 0, 'San Aquilino', 'Commercial', 'ann.bryant6602@outlook.com', '447-391-9456', '2023-09-17 16:58:42'),
-(1504, 'WBS01504', 'Louiella K. Yap', 0, NULL, 0, 'Dangay', 'Residential', 'louiella.yap8074@yahoo.com', '235-473-8335', '2023-09-17 16:58:42'),
-(1505, 'WBS01505', 'Jasper G. James', 0, NULL, 0, 'Cantil', 'Residential', 'jasper.james1623@gmail.com', '286-517-3263', '2023-09-17 16:58:42'),
-(1506, 'WBS01506', 'Louiella U. James', 0, NULL, 0, 'San Miguel', 'Commercial', 'louiella.james2959@outlook.com', '783-214-8063', '2023-09-17 16:58:42'),
-(1507, 'WBS01507', 'Patricia M. Delos Reyes', 0, NULL, 0, 'San Vicente', 'Commercial', 'patricia.reyes6768@hotmail.com', '106-186-3026', '2023-09-17 16:58:42'),
-(1508, 'WBS01508', 'Cristel X. Morales', 0, NULL, 0, 'Cantil', 'Residential', 'cristel.morales8036@yahoo.com', '135-601-4774', '2023-09-17 16:58:42'),
-(1509, 'WBS01509', 'Joy U. James', 0, NULL, 0, 'San Miguel', 'Commercial', 'joy.james4346@yahoo.com', '849-896-2800', '2023-09-17 16:58:42'),
-(1510, 'WBS01510', 'Lebron C. Ortiz', 0, NULL, 0, 'Happy Valley', 'Commercial', 'lebron.ortiz2099@outlook.com', '907-332-6021', '2023-09-17 16:58:42'),
-(1511, 'WBS01511', 'Jep C. Lee', 0, NULL, 0, 'San Rafael', 'Residential', 'jep.lee5876@gmail.com', '229-119-8255', '2023-09-17 16:58:42'),
-(1512, 'WBS01512', 'Nick M. Dayanghirang', 0, NULL, 0, 'San Vicente', 'Commercial', 'nick.dayanghirang3138@hotmail.com', '865-219-6125', '2023-09-17 16:58:42'),
-(1513, 'WBS01513', 'Joy E. Festin', 0, NULL, 0, 'Little Tanauan', 'Commercial', 'joy.festin3003@yahoo.com', '951-764-8915', '2023-09-17 16:58:42'),
-(1514, 'WBS01514', 'Juanita Y. Robles', 0, NULL, 0, 'Dangay', 'Commercial', 'juanita.robles1848@yahoo.com', '587-617-8368', '2023-09-17 16:58:42'),
-(1515, 'WBS01515', 'PJ Y. Jordan', 0, NULL, 0, 'Happy Valley', 'Residential', 'pj.jordan4939@gmail.com', '126-210-3384', '2023-09-17 16:58:42'),
-(1516, 'WBS01516', 'Jasper N. Ortiz', 0, NULL, 0, 'Dangay', 'Commercial', 'jasper.ortiz6744@gmail.com', '332-979-4277', '2023-09-17 16:58:42'),
-(1517, 'WBS01517', 'Lei R. Jordan', 0, NULL, 0, 'Libertad', 'Residential', 'lei.jordan4213@yahoo.com', '615-989-4758', '2023-09-17 16:58:42'),
-(1518, 'WBS01518', 'Jose Paolo X. Lee', 0, NULL, 0, 'Happy Valley', 'Commercial', 'jose.lee9780@hotmail.com', '140-604-9465', '2023-09-17 16:58:42'),
-(1519, 'WBS01519', 'Jennifer O. Ortiz', 0, NULL, 0, 'San Jose', 'Commercial', 'jennifer.ortiz9924@outlook.com', '356-306-1495', '2023-09-17 16:58:42'),
-(1520, 'WBS01520', 'Carl M. Curry', 0, NULL, 0, 'San Mariano', 'Residential', 'carl.curry1817@hotmail.com', '406-136-6929', '2023-09-17 16:58:42'),
-(1521, 'WBS01521', 'Mark T. Dela Cruz', 0, NULL, 0, 'Victoria', 'Commercial', 'mark.cruz3285@hotmail.com', '779-156-6471', '2023-09-17 16:58:42'),
-(1522, 'WBS01522', 'Hannah V. Festin', 0, NULL, 0, 'Libertad', 'Residential', 'hannah.festin8191@gmail.com', '799-493-6776', '2023-09-17 16:58:42'),
-(1523, 'WBS01523', 'Juanita T. Wade', 0, NULL, 0, 'San Mariano', 'Residential', 'juanita.wade8370@outlook.com', '708-253-2308', '2023-09-17 16:58:42'),
-(1524, 'WBS01524', 'Hannah U. Lee', 0, NULL, 0, 'San Rafael', 'Commercial', 'hannah.lee1227@hotmail.com', '552-183-3148', '2023-09-17 16:58:42'),
-(1525, 'WBS01525', 'PJ I. Morales', 0, NULL, 0, 'San Vicente', 'Residential', 'pj.morales8190@outlook.com', '349-659-6991', '2023-09-17 16:58:42'),
-(1526, 'WBS01526', 'Jose Paolo R. Catapang', 0, NULL, 0, 'Happy Valley', 'Residential', 'jose.catapang9838@outlook.com', '502-176-7887', '2023-09-17 16:58:42'),
-(1528, 'WBS01528', 'Jeffry M. Paner', 0, NULL, 0, 'Libtong', 'Residential', 'jeffry.paner7273@yahoo.com', '187-309-3929', '2023-09-17 16:58:42'),
-(1530, 'WBS01530', 'Jay D. Wade', 0, NULL, 0, 'Victoria', 'Commercial', 'jay.wade2955@gmail.com', '894-450-7705', '2023-09-17 16:58:42'),
-(1531, 'WBS01531', 'Patrick K. Bryant', 0, NULL, 0, 'San Isidro', 'Commercial', 'patrick.bryant9802@hotmail.com', '320-376-5215', '2023-09-17 16:58:42'),
-(1533, 'WBS01533', 'Nicpar G. Garcia', 0, NULL, 0, 'San Vicente', 'Residential', 'nicpar.garcia7390@hotmail.com', '879-604-6098', '2023-09-17 16:58:42'),
-(1535, 'WBS01535', 'PJ P. Festin', 0, NULL, 0, 'Little Tanauan', 'Residential', 'pj.festin9405@hotmail.com', '740-797-2513', '2023-09-17 16:58:42'),
-(1597, 'WBS01597', 'Jennifer K. Robles', 0, NULL, 0, 'San Vicente', 'Residential', 'jennifer.robles1258@outlook.com', '932-928-9603', '2023-09-17 16:58:42'),
-(1599, 'WBS01599', 'Jose Paolo K. Robles', 0, NULL, 0, 'Uyao', 'Residential', 'jose.robles1109@hotmail.com', '303-477-2651', '2023-09-17 16:58:42'),
-(1600, 'WBS01600', 'Hannah V. Wade', 0, NULL, 0, 'Happy Valley', 'Commercial', 'hannah.wade5140@outlook.com', '903-713-5843', '2023-09-17 16:58:42'),
-(1601, 'WBS01601', 'Cristel N. Uvas', 0, NULL, 0, 'Paclasan', 'Residential', 'cristel.uvas1484@gmail.com', '638-447-5085', '2023-09-17 16:58:42'),
-(1602, 'WBS01602', 'Jeffry T. Wade', 0, NULL, 0, 'Odiong', 'Residential', 'jeffry.wade4157@outlook.com', '865-271-3800', '2023-09-17 16:58:42'),
-(1605, 'WBS01605', 'Jose X. Jordan', 0, NULL, 0, 'San Aquilino', 'Residential', 'jose.jordan3338@outlook.com', '227-126-9411', '2023-09-17 16:58:42'),
-(1608, 'WBS01608', 'Roderick A. James', 0, NULL, 0, 'Victoria', 'Residential', 'roderick.james6557@yahoo.com', '823-214-1817', '2023-09-17 16:58:42'),
-(1609, 'WBS01609', 'Hannah G. Mayo', 0, NULL, 0, 'Dangay', 'Commercial', 'hannah.mayo9604@yahoo.com', '787-471-8142', '2023-09-17 16:58:42'),
-(1612, 'WBS01612', 'Ann F. James', 0, NULL, 0, 'Bagumbayan', 'Commercial', 'ann.james5607@outlook.com', '445-408-1292', '2023-09-17 16:58:42'),
-(1614, 'WBS01614', 'Roderick Q. Lee', 0, NULL, 0, 'San Miguel', 'Commercial', 'roderick.lee8010@hotmail.com', '473-560-9452', '2023-09-17 16:58:42'),
-(1615, 'WBS01615', 'Cristel F. James', 0, NULL, 0, 'Little Tanauan', 'Commercial', 'cristel.james4341@gmail.com', '830-269-1118', '2023-09-17 16:58:42'),
-(1617, 'WBS01617', 'James F. Uvas', 0, NULL, 0, 'Libertad', 'Residential', 'james.uvas3235@hotmail.com', '357-649-4792', '2023-09-17 16:58:42'),
-(1619, 'WBS01619', 'Ann D. Catapang', 0, NULL, 0, 'Uyao', 'Residential', 'ann.catapang8688@gmail.com', '257-419-3115', '2023-09-17 16:58:42'),
-(1621, 'WBS01621', 'Justine F. Morales', 0, NULL, 0, 'Mabuhay', 'Commercial', 'justine.morales6565@hotmail.com', '547-108-6775', '2023-09-17 16:58:42'),
-(1622, 'WBS01622', 'Hannah R. Paner', 0, NULL, 0, 'Happy Valley', 'Commercial', 'hannah.paner7232@outlook.com', '632-709-7889', '2023-09-17 16:58:42'),
-(1623, 'WBS01623', 'James W. Wade', 0, NULL, 0, 'Paclasan', 'Commercial', 'james.wade8252@yahoo.com', '763-976-4976', '2023-09-17 16:58:42'),
-(1624, 'WBS01624', 'Jeffry W. Festin', 0, NULL, 0, 'Paclasan', 'Commercial', 'jeffry.festin2977@yahoo.com', '826-865-1376', '2023-09-17 16:58:42'),
-(1625, 'WBS01625', 'Jep H. Curry', 0, NULL, 0, 'Libertad', 'Residential', 'jep.curry1512@outlook.com', '801-715-8724', '2023-09-17 16:58:42'),
-(1626, 'WBS01626', 'Joy T. Bryant', 0, NULL, 0, 'Maraska', 'Commercial', 'joy.bryant3868@hotmail.com', '535-721-6194', '2023-09-17 16:58:42'),
-(1627, 'WBS01627', 'Jose Paolo L. Lee', 0, NULL, 0, 'Cantil', 'Residential', 'jose.lee6837@hotmail.com', '338-632-9447', '2023-09-17 16:58:42'),
-(1628, 'WBS01628', 'Hannah U. Catapang', 0, NULL, 0, 'Uyao', 'Commercial', 'hannah.catapang7800@hotmail.com', '649-502-6350', '2023-09-17 16:58:42'),
-(1629, 'WBS01629', 'Jasper M. Paner', 0, NULL, 0, 'Mabuhay', 'Residential', 'jasper.paner1667@yahoo.com', '758-780-4169', '2023-09-17 16:58:42'),
-(1630, 'WBS01630', 'Justine Q. Mayo', 0, NULL, 0, 'Dangay', 'Commercial', 'justine.mayo9586@hotmail.com', '540-989-8806', '2023-09-17 16:58:42'),
-(1632, 'WBS01632', 'Jennifer U. Festin', 0, NULL, 0, 'San Vicente', 'Commercial', 'jennifer.festin8606@hotmail.com', '907-172-5759', '2023-09-17 16:58:42'),
-(1633, 'WBS01633', 'Lei M. Curry', 0, NULL, 0, 'Paclasan', 'Residential', 'lei.curry9268@gmail.com', '370-655-7262', '2023-09-17 16:58:42'),
-(1634, 'WBS01634', 'James W. Lee', 0, NULL, 0, 'Dangay', 'Residential', 'james.lee4996@gmail.com', '792-121-7693', '2023-09-17 16:58:42'),
-(1635, 'WBS01635', 'Jose Paolo Q. Castillo', 0, NULL, 0, 'Maraska', 'Commercial', 'jose.castillo8680@outlook.com', '400-433-4403', '2023-09-17 16:58:42'),
-(1636, 'WBS01636', 'Lei L. Castillo', 0, NULL, 0, 'Maraska', 'Residential', 'lei.castillo7575@gmail.com', '757-148-4760', '2023-09-17 16:58:42'),
-(1637, 'WBS01637', 'Rogene E. Castillo', 0, NULL, 0, 'Maraska', 'Residential', 'rogene.castillo4118@outlook.com', '211-698-5086', '2023-09-17 16:58:42'),
-(1638, 'WBS01638', 'Nicpar K. Castillo', 0, NULL, 0, 'San Rafael', 'Residential', 'nicpar.castillo8761@hotmail.com', '605-640-5908', '2023-09-17 16:58:42'),
-(1639, 'WBS01639', 'PJ Z. Robles', 0, NULL, 0, 'Maraska', 'Commercial', 'pj.robles2940@outlook.com', '962-974-4715', '2023-09-17 16:58:42'),
-(1640, 'WBS01640', 'Jennifer N. Bryant', 0, NULL, 0, 'San Rafael', 'Commercial', 'jennifer.bryant5673@outlook.com', '610-934-1378', '2023-09-17 16:58:42'),
-(1641, 'WBS01641', 'Lei M. Mayo', 0, NULL, 0, 'Victoria', 'Commercial', 'lei.mayo2337@outlook.com', '530-337-9741', '2023-09-17 16:58:42'),
-(1642, 'WBS01642', 'Nicpar Q. Curry', 0, NULL, 0, 'San Mariano', 'Residential', 'nicpar.curry5115@hotmail.com', '276-838-6577', '2023-09-17 16:58:42'),
-(1643, 'WBS01643', 'Juanita E. James', 0, NULL, 0, 'Little Tanauan', 'Commercial', 'juanita.james8224@gmail.com', '631-288-6309', '2023-09-17 16:58:42'),
-(1644, 'WBS01644', 'Jose M. Dela Cruz', 0, NULL, 0, 'San Isidro', 'Residential', 'jose.cruz7114@yahoo.com', '844-476-8283', '2023-09-17 16:58:42'),
-(1645, 'WBS01645', 'Louiella U. Lee', 0, NULL, 0, 'Paclasan', 'Commercial', 'louiella.lee9951@hotmail.com', '511-308-9366', '2023-09-17 16:58:42');
 
 --
 -- Triggers `clients`
@@ -447,18 +322,124 @@ INSERT INTO `clients_archive` (`id`, `client_id`, `client_name`, `prev_reading`,
 (1594, 'WBS01594', 'Joy S. Richards', 0, NULL, 0, 'Little Tanauan', 'Commercial', 'joy.richards9472@yahoo.com', '858-885-1672', '2023-09-17 16:58:42'),
 (1595, 'WBS01595', 'Nicpar O. James', 0, NULL, 0, 'Maraska', 'Commercial', 'nicpar.james6465@hotmail.com', '172-357-2206', '2023-09-17 16:58:42'),
 (1596, 'WBS01596', 'Hannah U. Yap', 0, NULL, 0, 'San Mariano', 'Residential', 'hannah.yap2205@gmail.com', '654-407-8288', '2023-09-17 16:58:42'),
+(1597, 'WBS01597', 'Jennifer K. Robles', 0, NULL, 0, 'San Vicente', 'Residential', 'jennifer.robles1258@outlook.com', '932-928-9603', '2023-09-17 16:58:42'),
 (1598, 'WBS01598', 'Lebron K. Festin', 0, NULL, 0, 'Odiong', 'Commercial', 'lebron.festin1575@gmail.com', '209-733-5319', '2023-09-17 16:58:42'),
+(1599, 'WBS01599', 'Jose Paolo K. Robles', 0, NULL, 0, 'Uyao', 'Residential', 'jose.robles1109@hotmail.com', '303-477-2651', '2023-09-17 16:58:42'),
+(1600, 'WBS01600', 'Hannah V. Wade', 0, NULL, 0, 'Happy Valley', 'Commercial', 'hannah.wade5140@outlook.com', '903-713-5843', '2023-09-17 16:58:42'),
+(1602, 'WBS01602', 'Jeffry T. Wade', 0, NULL, 0, 'Odiong', 'Residential', 'jeffry.wade4157@outlook.com', '865-271-3800', '2023-09-17 16:58:42'),
 (1603, 'WBS01603', 'Louiella C. Richards', 0, NULL, 0, 'San Aquilino', 'Residential', 'louiella.richards6095@hotmail.com', '845-838-2167', '2023-09-17 16:58:42'),
 (1604, 'WBS01604', 'Patrick I. Delos Reyes', 0, NULL, 0, 'San Aquilino', 'Residential', 'patrick.reyes5602@outlook.com', '979-346-9813', '2023-09-17 16:58:42'),
+(1605, 'WBS01605', 'Jose X. Jordan', 0, NULL, 0, 'San Aquilino', 'Residential', 'jose.jordan3338@outlook.com', '227-126-9411', '2023-09-17 16:58:42'),
 (1606, 'WBS01606', 'Hannah I. Bryant', 0, NULL, 0, 'Uyao', 'Residential', 'hannah.bryant9232@outlook.com', '240-454-8081', '2023-09-17 16:58:42'),
 (1607, 'WBS01607', 'Jasper M. Robles', 0, NULL, 0, 'Cantil', 'Residential', 'jasper.robles1243@yahoo.com', '419-242-5379', '2023-09-17 16:58:42'),
+(1608, 'WBS01608', 'Roderick A. James', 0, NULL, 0, 'Victoria', 'Residential', 'roderick.james6557@yahoo.com', '823-214-1817', '2023-09-17 16:58:42'),
 (1610, 'WBS01610', 'Mark C. Paner', 0, NULL, 0, 'San Jose', 'Commercial', 'mark.paner8781@gmail.com', '993-320-3061', '2023-09-17 16:58:42'),
 (1611, 'WBS01611', 'Jose Paolo S. Jordan', 0, NULL, 0, 'Libertad', 'Commercial', 'jose.jordan5083@outlook.com', '452-798-7327', '2023-09-17 16:58:42'),
+(1614, 'WBS01614', 'Roderick Q. Lee', 0, NULL, 0, 'San Miguel', 'Commercial', 'roderick.lee8010@hotmail.com', '473-560-9452', '2023-09-17 16:58:42'),
+(1615, 'WBS01615', 'Cristel F. James', 0, NULL, 0, 'Little Tanauan', 'Commercial', 'cristel.james4341@gmail.com', '830-269-1118', '2023-09-17 16:58:42'),
 (1616, 'WBS01616', 'Mark M. Festin', 0, NULL, 0, 'Dangay', 'Commercial', 'mark.festin5031@hotmail.com', '797-918-6814', '2023-09-17 16:58:42'),
+(1617, 'WBS01617', 'James F. Uvas', 0, NULL, 0, 'Libertad', 'Residential', 'james.uvas3235@hotmail.com', '357-649-4792', '2023-09-17 16:58:42'),
 (1618, 'WBS01618', 'Jose H. Morales', 0, NULL, 0, 'Mabuhay', 'Commercial', 'jose.morales1255@gmail.com', '345-242-4617', '2023-09-17 16:58:42'),
 (1620, 'WBS01620', 'Carl O. Wade', 0, NULL, 0, 'Paclasan', 'Residential', 'carl.wade8543@gmail.com', '639-754-8229', '2023-09-17 16:58:42'),
+(1621, 'WBS01621', 'Justine F. Morales', 0, NULL, 0, 'Mabuhay', 'Commercial', 'justine.morales6565@hotmail.com', '547-108-6775', '2023-09-17 16:58:42'),
+(1622, 'WBS01622', 'Hannah R. Paner', 0, NULL, 0, 'Happy Valley', 'Commercial', 'hannah.paner7232@outlook.com', '632-709-7889', '2023-09-17 16:58:42'),
+(1625, 'WBS01625', 'Jep H. Curry', 0, NULL, 0, 'Libertad', 'Residential', 'jep.curry1512@outlook.com', '801-715-8724', '2023-09-17 16:58:42'),
+(1628, 'WBS01628', 'Hannah U. Catapang', 0, NULL, 0, 'Uyao', 'Commercial', 'hannah.catapang7800@hotmail.com', '649-502-6350', '2023-09-17 16:58:42'),
+(1629, 'WBS01629', 'Jasper M. Paner', 0, NULL, 0, 'Mabuhay', 'Residential', 'jasper.paner1667@yahoo.com', '758-780-4169', '2023-09-17 16:58:42'),
 (1631, 'WBS01631', 'Carl V. Lee', 0, NULL, 0, 'Little Tanauan', 'Residential', 'carl.lee5851@gmail.com', '867-696-7264', '2023-09-17 16:58:42'),
 (1673, 'WBS01674', '', NULL, NULL, NULL, '', 'Commercial', '', '', '2023-09-22 00:59:46');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `client_application`
+--
+
+CREATE TABLE `client_application` (
+  `id` int(11) NOT NULL,
+  `meter_number` varchar(20) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `middle_name` varchar(50) NOT NULL,
+  `last_name` varchar(20) NOT NULL,
+  `name_suffix` varchar(20) DEFAULT NULL,
+  `full_name` text NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `phone_number` varchar(20) NOT NULL,
+  `birthdate` varchar(20) NOT NULL,
+  `age` int(11) NOT NULL,
+  `gender` varchar(20) NOT NULL,
+  `property_type` varchar(15) NOT NULL,
+  `street` text NOT NULL,
+  `brgy` varchar(20) NOT NULL,
+  `municipality` varchar(20) NOT NULL,
+  `province` varchar(20) NOT NULL,
+  `region` varchar(20) NOT NULL,
+  `full_address` text NOT NULL,
+  `valid_id` varchar(10) NOT NULL,
+  `proof_of_ownership` varchar(10) NOT NULL,
+  `deed_of_sale` varchar(10) NOT NULL,
+  `affidavit` varchar(10) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `application_id` varchar(50) NOT NULL,
+  `time` time NOT NULL,
+  `date` date NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `client_application`
+--
+
+INSERT INTO `client_application` (`id`, `meter_number`, `first_name`, `middle_name`, `last_name`, `name_suffix`, `full_name`, `email`, `phone_number`, `birthdate`, `age`, `gender`, `property_type`, `street`, `brgy`, `municipality`, `province`, `region`, `full_address`, `valid_id`, `proof_of_ownership`, `deed_of_sale`, `affidavit`, `status`, `application_id`, `time`, `date`, `timestamp`) VALUES
+(1, 'W-00001', 'Nicpar', 'Santiago', 'Paner', '', 'Nicpar S. Paner', 'nicaparsantiago@gmail.com', '09073070146', '06/19/1966', 57, 'Male', 'Commercial', 'Gawad Kalinga, Amihan 2', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROP', 'Gawad Kalinga, Amihan 2, San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'A20231004131607', '19:16:07', '2023-10-04', '2023-10-04 11:16:07'),
+(2, 'W-00002', 'Jennifer', 'Morales', 'Paner', '', 'Jennifer M. Paner', 'jennifermorales@gmail.com', '09090909099', '07/27/1980', 43, 'Male', 'Residential', 'Gawad Kalinga, Amihan 2', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROP', 'Gawad Kalinga, Amihan 2, San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'A20231004131931', '19:19:31', '2023-10-04', '2023-10-04 11:19:31'),
+(3, 'W-00003', 'Monkey', 'Dalok', 'Luffy', '', 'Monkey D. Luffy', 'monkeydluffy@gmail.com', '09073070146', '03/29/1991', 32, 'Male', 'Residential', 'Amihan 2', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROP', 'Amihan 2, San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'A20231004132749', '19:27:49', '2023-10-04', '2023-10-04 11:27:49'),
+(4, 'W-19092', 'Rogene ', 'Garcia', 'Vito', 'II', 'Rogene  G. Vito II', 'rogenevito@gmail.com', '09876543424', '05/25/1997', 26, 'Male', 'Residential', 'Palengke', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROP', 'Palengke, San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'A20231004153022', '21:30:22', '2023-10-04', '2023-10-04 13:30:22');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `client_data`
+--
+
+CREATE TABLE `client_data` (
+  `id` int(11) NOT NULL,
+  `meter_number` varchar(20) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `middle_name` varchar(50) NOT NULL,
+  `last_name` varchar(20) NOT NULL,
+  `name_suffix` varchar(20) DEFAULT NULL,
+  `full_name` text NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `phone_number` varchar(20) NOT NULL,
+  `birthdate` varchar(20) NOT NULL,
+  `age` int(11) NOT NULL,
+  `gender` varchar(20) NOT NULL,
+  `property_type` varchar(15) NOT NULL,
+  `street` text NOT NULL,
+  `brgy` varchar(20) NOT NULL,
+  `municipality` varchar(20) NOT NULL,
+  `province` varchar(20) NOT NULL,
+  `region` varchar(50) NOT NULL,
+  `full_address` text NOT NULL,
+  `valid_id` varchar(10) NOT NULL,
+  `proof_of_ownership` varchar(10) NOT NULL,
+  `deed_of_sale` varchar(10) NOT NULL,
+  `affidavit` varchar(10) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `reg_id` varchar(50) NOT NULL,
+  `application_id` varchar(50) NOT NULL,
+  `time` time NOT NULL,
+  `date` date NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `client_data`
+--
+
+INSERT INTO `client_data` (`id`, `meter_number`, `first_name`, `middle_name`, `last_name`, `name_suffix`, `full_name`, `email`, `phone_number`, `birthdate`, `age`, `gender`, `property_type`, `street`, `brgy`, `municipality`, `province`, `region`, `full_address`, `valid_id`, `proof_of_ownership`, `deed_of_sale`, `affidavit`, `status`, `reg_id`, `application_id`, `time`, `date`, `timestamp`) VALUES
+(35, 'W-00002', 'Jennifer', 'Morales', 'Paner', '', 'Jennifer M. Paner', 'jennifermorales@gmail.com', '09090909099', '07/27/1980', 43, 'Male', 'Residential', 'Gawad Kalinga, Amihan 2', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Gawad Kalinga, Amihan 2, San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'No', 'Yes', 'Yes', 'approved', 'R20231004165855', 'A20231004131931', '22:58:55', '2023-10-04', '2023-10-04 14:58:55');
 
 -- --------------------------------------------------------
 
@@ -683,6 +664,30 @@ INSERT INTO `client_id` (`id`) VALUES
 (1670),
 (1671),
 (1674);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `client_specific_data`
+--
+
+CREATE TABLE `client_specific_data` (
+  `id` int(11) NOT NULL,
+  `client_id` varchar(20) NOT NULL,
+  `reg_id` varchar(20) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `middle_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `valid_id` varchar(11) NOT NULL,
+  `birthdate` varchar(50) NOT NULL,
+  `deed_of_sale` varchar(11) NOT NULL,
+  `affidavit` varchar(11) NOT NULL,
+  `charging_fee` varchar(50) NOT NULL,
+  `time` time NOT NULL,
+  `date` date NOT NULL,
+  `added_by` varchar(20) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1015,7 +1020,56 @@ INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `
 (552, 'SOAJJP20230922131635', 'Admin', 'Jeffry James Paner', 'Sign out', 0, 'Jeffry James Paner has been signed out.', '2023-09-22', '19:16:35', '2023-09-22 19:16:35'),
 (553, 'SIAJJP20230922131640', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-09-22', '19:16:40', '2023-09-22 19:16:40'),
 (554, 'SIAJJP20230922131734', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-09-22', '19:17:34', '2023-09-22 19:17:34'),
-(555, 'DAJJP20230922140801', 'Admin', 'Jeffry James Paner', 'Delete', 1532, 'Lei B. Mayo has been deleted.', '2023-09-22', '20:08:01', '2023-09-22 20:08:01');
+(555, 'DAJJP20230922140801', 'Admin', 'Jeffry James Paner', 'Delete', 1532, 'Lei B. Mayo has been deleted.', '2023-09-22', '20:08:01', '2023-09-22 20:08:01'),
+(556, 'SIAJJP20231001190432', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-02', '01:04:32', '2023-10-02 01:04:32'),
+(557, 'SIAJJP20231001191136', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-02', '01:11:36', '2023-10-02 01:11:36'),
+(558, 'SIAJJP20231001191344', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-02', '01:13:44', '2023-10-02 01:13:44'),
+(559, 'DAJJP20231001191756', 'Admin', 'Jeffry James Paner', 'Delete', 1597, 'Jennifer K. Robles has been deleted.', '2023-10-02', '01:17:56', '2023-10-02 01:17:56'),
+(560, 'DAJJP20231001191803', 'Admin', 'Jeffry James Paner', 'Delete', 1628, 'Hannah U. Catapang has been deleted.', '2023-10-02', '01:18:03', '2023-10-02 01:18:03'),
+(561, 'SIAJJP20231001192837', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-02', '01:28:37', '2023-10-02 01:28:37'),
+(562, 'SIAJJP20231002101434', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-02', '16:14:34', '2023-10-02 16:14:34'),
+(563, 'DAJJP20231002105931', 'Admin', 'Jeffry James Paner', 'Delete', 1617, 'James F. Uvas has been deleted.', '2023-10-02', '16:59:31', '2023-10-02 16:59:31'),
+(564, 'SIAJJP20231003085200', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '14:52:00', '2023-10-03 14:52:00'),
+(565, 'DAJJP20231003085233', 'Admin', 'Jeffry James Paner', 'Delete', 1615, 'Cristel F. James has been deleted.', '2023-10-03', '14:52:33', '2023-10-03 14:52:33'),
+(566, 'DAJJP20231003085239', 'Admin', 'Jeffry James Paner', 'Delete', 1614, 'Roderick Q. Lee has been deleted.', '2023-10-03', '14:52:39', '2023-10-03 14:52:39'),
+(567, 'DAJJP20231003085242', 'Admin', 'Jeffry James Paner', 'Delete', 1621, 'Justine F. Morales has been deleted.', '2023-10-03', '14:52:42', '2023-10-03 14:52:42'),
+(568, 'DAJJP20231003085244', 'Admin', 'Jeffry James Paner', 'Delete', 1605, 'Jose X. Jordan has been deleted.', '2023-10-03', '14:52:44', '2023-10-03 14:52:44'),
+(569, 'SIAJJP20231003085305', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '14:53:05', '2023-10-03 14:53:05'),
+(570, 'SIAJJP20231003103521', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '16:35:21', '2023-10-03 16:35:21'),
+(571, 'SIAJJP20231003104435', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '16:44:35', '2023-10-03 16:44:35'),
+(572, 'SIAJJP20231003113005', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '17:30:05', '2023-10-03 17:30:05'),
+(573, 'SIAJJP20231003120506', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '18:05:06', '2023-10-03 18:05:06'),
+(574, 'SIAJJP20231003130032', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '19:00:32', '2023-10-03 19:00:32');
+INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `client_id`, `description`, `date`, `time`, `datetime`) VALUES
+(575, 'SIAJJP20231003135118', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '19:51:18', '2023-10-03 19:51:18'),
+(576, 'DAJJP20231003135213', 'Admin', 'Jeffry James Paner', 'Delete', 1608, 'Roderick A. James has been deleted.', '2023-10-03', '19:52:13', '2023-10-03 19:52:13'),
+(577, 'SIAJJP20231003151755', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '21:17:55', '2023-10-03 21:17:55'),
+(578, 'SOAJJP20231003160316', 'Admin', 'Jeffry James Paner', 'Sign out', 0, 'Jeffry James Paner has been signed out.', '2023-10-03', '22:03:16', '2023-10-03 22:03:16'),
+(579, 'SIAJJP20231003163914', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-03', '22:39:14', '2023-10-03 22:39:14'),
+(580, 'SIAJJP20231003181532', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '00:15:32', '2023-10-04 00:15:32'),
+(581, 'SIAJJP20231003181918', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '00:19:18', '2023-10-04 00:19:18'),
+(582, 'SIAJJP20231003183046', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '00:30:46', '2023-10-04 00:30:46'),
+(583, 'SIAJJP20231003183509', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '00:35:09', '2023-10-04 00:35:09'),
+(584, 'SOAJJP20231003183938', 'Admin', 'Jeffry James Paner', 'Sign out', 0, 'Jeffry James Paner has been signed out.', '2023-10-04', '00:39:38', '2023-10-04 00:39:38'),
+(585, 'SIAJJP20231003183948', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '00:39:48', '2023-10-04 00:39:48'),
+(586, 'SIAJJP20231003201311', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '02:13:11', '2023-10-04 02:13:11'),
+(587, 'SOAJJP20231003201731', 'Admin', 'Jeffry James Paner', 'Sign out', 0, 'Jeffry James Paner has been signed out.', '2023-10-04', '02:17:31', '2023-10-04 02:17:31'),
+(588, 'SIAJJP20231004083427', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '14:34:27', '2023-10-04 14:34:27'),
+(589, 'SIAJJP20231004092416', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '15:24:16', '2023-10-04 15:24:16'),
+(590, 'SIAJJP20231004094107', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '15:41:07', '2023-10-04 15:41:07'),
+(591, 'SIAJJP20231004095502', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '15:55:02', '2023-10-04 15:55:02'),
+(592, 'DAJJP20231004104926', 'Admin', 'Jeffry James Paner', 'Delete', 1599, 'Jose Paolo K. Robles has been deleted.', '2023-10-04', '16:49:26', '2023-10-04 16:49:26'),
+(593, 'DAJJP20231004104930', 'Admin', 'Jeffry James Paner', 'Delete', 1600, 'Hannah V. Wade has been deleted.', '2023-10-04', '16:49:30', '2023-10-04 16:49:30'),
+(594, 'DAJJP20231004104932', 'Admin', 'Jeffry James Paner', 'Delete', 1602, 'Jeffry T. Wade has been deleted.', '2023-10-04', '16:49:32', '2023-10-04 16:49:32'),
+(595, 'DAJJP20231004104935', 'Admin', 'Jeffry James Paner', 'Delete', 1622, 'Hannah R. Paner has been deleted.', '2023-10-04', '16:49:35', '2023-10-04 16:49:35'),
+(596, 'DAJJP20231004104938', 'Admin', 'Jeffry James Paner', 'Delete', 1625, 'Jep H. Curry has been deleted.', '2023-10-04', '16:49:38', '2023-10-04 16:49:38'),
+(597, 'DAJJP20231004104941', 'Admin', 'Jeffry James Paner', 'Delete', 1629, 'Jasper M. Paner has been deleted.', '2023-10-04', '16:49:41', '2023-10-04 16:49:41'),
+(598, 'SOAJJP20231004105257', 'Admin', 'Jeffry James Paner', 'Sign out', 0, 'Jeffry James Paner has been signed out.', '2023-10-04', '16:52:57', '2023-10-04 16:52:57'),
+(599, 'SIAJJP20231004105307', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '16:53:07', '2023-10-04 16:53:07'),
+(600, 'SOAJJP20231004133615', 'Admin', 'Jeffry James Paner', 'Sign out', 0, 'Jeffry James Paner has been signed out.', '2023-10-04', '19:36:15', '2023-10-04 19:36:15'),
+(601, 'SIAJJP20231004133623', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '19:36:23', '2023-10-04 19:36:23'),
+(602, 'SIAJJP20231004164534', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-04', '22:45:34', '2023-10-04 22:45:34'),
+(603, 'SIAJJP20231005041504', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-05', '10:15:04', '2023-10-05 10:15:04');
 
 -- --------------------------------------------------------
 
@@ -45007,9 +45061,28 @@ ALTER TABLE `clients_archive`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Indexes for table `client_application`
+--
+ALTER TABLE `client_application`
+  ADD PRIMARY KEY (`id`,`first_name`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `client_data`
+--
+ALTER TABLE `client_data`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `client_id`
 --
 ALTER TABLE `client_id`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `client_specific_data`
+--
+ALTER TABLE `client_specific_data`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -45092,7 +45165,7 @@ ALTER TABLE `billing_id`
 -- AUTO_INCREMENT for table `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1675;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `clients_archive`
@@ -45101,16 +45174,34 @@ ALTER TABLE `clients_archive`
   MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1674;
 
 --
+-- AUTO_INCREMENT for table `client_application`
+--
+ALTER TABLE `client_application`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `client_data`
+--
+ALTER TABLE `client_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
 -- AUTO_INCREMENT for table `client_id`
 --
 ALTER TABLE `client_id`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1675;
 
 --
+-- AUTO_INCREMENT for table `client_specific_data`
+--
+ALTER TABLE `client_specific_data`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=556;
+  MODIFY `id` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=604;
 
 --
 -- AUTO_INCREMENT for table `pricing_scheme`
