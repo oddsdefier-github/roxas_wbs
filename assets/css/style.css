@@ -2714,6 +2714,10 @@ input:checked + .toggle-bg {
   grid-template-rows: repeat(5, minmax(0, 1fr));
 }
 
+.grid-rows-6 {
+  grid-template-rows: repeat(6, minmax(0, 1fr));
+}
+
 .flex-row {
   flex-direction: row;
 }

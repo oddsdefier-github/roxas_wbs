@@ -549,23 +549,6 @@ $(document).ready(function () {
             $(this).attr('data-input-state', 'success');
             $(this).parent().next().html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`);
 
-
-            // $.each(inputs, function (index, item) {
-            //     if (item.attr('data-input-track') === 'valid') {
-            //         console.log('👌')
-            //         count++
-            //     }
-            //     console.log(count)
-            //     if (count === inputs.length) {
-            //         console.log('🐓')
-            //         $('#review-submit')
-            //             .text("Submit")
-            //             .prop('disabled', false)
-            //             .attr('title', 'You can now submit!')
-            //             .removeClass(cssClasses.errorSubmitClass).addClass(cssClasses.normalSubmitClass);
-            //     }
-            // })
-
         }
     })
 
@@ -591,17 +574,16 @@ $(document).ready(function () {
 
     reviewForm.on('submit', function (e) {
         e.preventDefault();
-        if (!areAllCheckboxesChecked()) {
 
-            alert('Please Pay First.');
+        if ($('#validId').prop('checked') === false) {
+            alert('Please upload a Valid ID!')
         } else {
-            // All checkboxes are checked, you can proceed with form submission
-            console.log('SUBMITTED!!!!')
-            processApplication();
-
-
-
-
+            if (!areAllCheckboxesChecked()) {
+                alert('Please Pay First.');
+            } else {
+                console.log('SUBMITTED!!!!')
+                processApplication();
+            }
         }
     });
 

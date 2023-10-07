@@ -93,11 +93,19 @@ $(document).ready(function () {
                             setTimeout(function () {
                                 loader.hide();
                                 window.location.href = "../admin/index.php";
-                            }, 1000);
+                            }, 5000);
                         } else if (responseData.user_role === "Cashier") {
-                            window.location.href = "../cashier/index.php";
+                            setTimeout(function () {
+                                loader.hide();
+
+                                window.location.href = "../cashier/index.php";
+                            }, 5000);
                         } else if (responseData.user_role === "Meter Reader") {
-                            window.location.href = "../meter_reader/index.php";
+                            setTimeout(function () {
+                                loader.hide();
+
+                                window.location.href = "../meter_reader/index.php";
+                            }, 5000);
                         }
 
                         resolve(responseData); // Resolve the Promise with response data

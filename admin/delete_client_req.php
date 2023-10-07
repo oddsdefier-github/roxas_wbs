@@ -2,7 +2,6 @@
 include './database/connection.php';
 
 
-
 if (isset($_POST['deleteSend'])) {
 
     $uniqueId = $_POST['deleteSend'];

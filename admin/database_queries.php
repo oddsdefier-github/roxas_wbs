@@ -415,15 +415,11 @@ class DataTable extends BaseQuery
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b">
                 <th class="px-6 py-4">No.</th>
-                <th class="px-6 py-4">ID.</th>
                 <th class="px-6 py-4">Meter No.</th>
                 <th class="px-6 py-4">Names&nbsp;&nbsp; 
                 <span class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
                 <th class="px-6 py-4">Property Type</th>
                 <th class="px-6 py-4">Address</th>
-                <th class="px-6 py-4">Age</th>
-                <th class="px-6 py-4">Email</th>
-                <th class="px-6 py-4">Phone Number</th>
                 <th class="px-6 py-4">Status</th>
                 <th class="px-6 py-4">DateTime</th>
                 <th class="px-6 py-4">Action</th>
@@ -438,28 +434,24 @@ class DataTable extends BaseQuery
             $id = $row['id'];
             $meter_number = $row['meter_number'];
             $name = $row['full_name'];
-            $address = $row['street'] . ", " . $row['brgy'];
+            $street = $row['street'];
+            $brgy = $row['brgy'];
             $property_type = $row['property_type'];
-            $email = $row['email'];
-            $phone_number = $row['phone_number'];
             $status = $row['status'];
-            $age = $row['age'];
             $time = $row['time'];
             $date = $row['date'];
 
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
-            <td  class="px-6 py-3 text-sm">' . $id . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
             <td class="px-6 py-3 text-sm">' . $property_type . '</td>
-            <td class="px-6 py-3 text-sm">' . $address . '</td>
-            <td class="px-6 py-3 text-sm">' . $age . '</td>
-            <td class="px-6 py-3 text-sm">' . $email . '</td>
-            <td class="px-6 py-3 text-sm">' . $phone_number . '</td>
+            <td class="px-6 py-3 text-sm"> 
+                <span class="font-medium text-sm">' . $brgy . '</span> </br>
+                <span class="text-xs text-gray-400">' . $street . '</span>
             <td class="px-6 py-3 text-sm">' . $status . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>

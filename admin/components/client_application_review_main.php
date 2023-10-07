@@ -211,7 +211,6 @@ if (isset($_GET['id'])) {
                                     </label>
                                 </div>
                             </div>
-
                             <div class="relative flex gap-x-3">
                                 <div class="flex h-6 items-center">
                                     <input id="deedOfSale" name="deedOfSale" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
@@ -239,7 +238,7 @@ if (isset($_GET['id'])) {
                     <fieldset>
                         <legend class="text-base font-semibold leading-6 text-gray-900">Pre-Installation Charges</legend>
                         <div class="mt-6 space-y-6">
-                            <div class="relative grid grid-rows-5 gap-4 w-1/4">
+                            <div class="relative grid grid-rows-6 gap-5 w-1/4">
                                 <div class="">
                                     <input type="checkbox" id="application-fee" name="application-fee" value="" class="hidden peer">
                                     <label for="application-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
@@ -254,7 +253,7 @@ if (isset($_GET['id'])) {
                                 </div>
                                 <div class="">
                                     <input type="checkbox" id="inspection-fee" name="inspection-fee" value="" class="hidden peer">
-                                    <label for="inspection-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-500 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                    <label for="inspection-fee" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-primary-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <div class="block">
                                             <div class="flex gap-2">
                                                 <h5 class="font-bold text-primary-600 text-xl">250 PHP</h5>
@@ -300,7 +299,6 @@ if (isset($_GET['id'])) {
                                         </div>
                                     </label>
                                 </div>
-
                                 <div class="">
                                     <div class="shadow-md inline-flex items-center justify-between w-full p-5 text-white bg-primary-600 border-2 border-primary-500 rounded-lg cursor-pointer hover:text-primary-200 hover:bg-primary-500">
                                         <div class="block">
