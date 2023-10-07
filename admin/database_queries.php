@@ -460,7 +460,8 @@ class DataTable extends BaseQuery
                 <th class="px-6 py-4">No.</th>
                 <th class="px-6 py-4">Meter No.</th>
                 <th class="px-6 py-4">Names&nbsp;&nbsp; 
-                <span class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
+                <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
+                <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
                 <th class="px-6 py-4">Property Type</th>
                 <th class="px-6 py-4">Address</th>
                 <th class="px-6 py-4">Status</th>
