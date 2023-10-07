@@ -325,4 +325,4 @@ if (isset($_GET['id'])) {
         </div>
     </form>
 </div>
-<script src="./assets/js/application_review_main.js"></script>
+<script src="./assets/js/clientApplicationProcessing.js"></script>

@@ -18,7 +18,6 @@ $(document).ready(function () {
     const municipalityInput = $('input[name="municipality"]');
     const provinceInput = $('input[name="province"]');
     const regionInput = $('input[name="region"]');
-    const countryInput = $('input[name="country"]');
     const validIdCheck = $('input[name="validId"]');
     const proofOfOwnershipCheck = $('input[name="proofOfOwnership"]');
     const deedOfSaleCheck = $('input[name="deedOfSale"]');

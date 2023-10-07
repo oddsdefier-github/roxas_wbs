@@ -53,6 +53,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'getClientApplicationData':
             handleGetClientApplicationData($dbQueries);
             break;
+        case 'getAddressData':
+            handleGetAddressData($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -125,4 +128,9 @@ function handleGetClientApplicationData($dbQueries)
         $getClientApplicationData = $dbQueries->retrieveClientApplicationData($id);
         echo json_encode($getClientApplicationData);
     }
+}
+function handleGetAddressData($dbQueries)
+{
+    $getAddressData = $dbQueries->fetchAddressData();
+    echo json_encode($getAddressData);
 }

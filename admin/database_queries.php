@@ -13,6 +13,8 @@ class BaseQuery
         $this->conn = $databaseConnection;
     }
 }
+
+
 class DatabaseQueries extends BaseQuery
 {
     public function retrieveClientData($clientId)
@@ -185,7 +187,19 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 
+    public function fetchAddressData()
+    {
+        $sql = "SELECT * FROM `address`";
+        $result = $this->conn->query($sql);
 
+        $address_array = array();
+        while ($rows = mysqli_fetch_assoc($result)) {
+            $address_array[] = $rows;
+        }
+        $response['address'] = $address_array;
+
+        return $response;
+    }
 
     public function approveClientApplication($formData)
     {
