@@ -1,4 +1,4 @@
-class DataTableWithPagination {
+export class DataTableWithPagination {
     constructor (tableName, tableContainerSelector = '#displayClientApplicationTable') {
         this.currentPageNumber = 1;
         this.totalItems = 0;
@@ -133,9 +133,4 @@ class DataTableWithPagination {
         });
     }
 }
-
-
-// Instantiate the DataTableWithPagination class
-const clientAppTable = new DataTableWithPagination("client_application");
-const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
 

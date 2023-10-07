@@ -69,48 +69,48 @@
 
 
 
-// function fetchAddressData() {
-//     return new Promise((resolve, reject) => {
-//         $.ajax({
-//             url: "fetch_address_data.php",
-//             type: "get",
-//             data: { fetchAddress: true },
-//             dataType: "json",
-//             success: function (data) {
-//                 if (data && data.address) {
-//                     resolve(data.address);
-//                 } else {
-//                     reject("Invalid or missing 'address' data in the response.");
-//                 }
-//             },
-//             error: function (xhr, status, error) {
-//                 reject("AJAX request failed with status: " + status);
-//             }
-//         });
-//     });
-// }
+function fetchAddressData() {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "fetch_address_data.php",
+            type: "get",
+            data: { fetchAddress: true },
+            dataType: "json",
+            success: function (data) {
+                if (data && data.address) {
+                    resolve(data.address);
+                } else {
+                    reject("Invalid or missing 'address' data in the response.");
+                }
+            },
+            error: function (xhr, status, error) {
+                reject("AJAX request failed with status: " + status);
+            }
+        });
+    });
+}
 
 
-// fetchAddressData()
-//     .then((addressData) => {
-//         $('.add_client_address').each(function () {
-//             let selectElement = $(this);
-//             selectElement.empty();
-//             $.each(addressData, function (index, item) {
-//                 let option = $('<option>', {
-//                     value: item.id,
-//                     text: item.barangay
-//                 });
-//                 if (index === 0) {
-//                     option.prop('selected', true);
-//                 }
-//                 selectElement.append(option);
-//             });
-//         });
-//     })
-//     .catch((error) => {
-//         console.error(error);
-//     });
+fetchAddressData()
+    .then((addressData) => {
+        $('.add_client_address').each(function () {
+            let selectElement = $(this);
+            selectElement.empty();
+            $.each(addressData, function (index, item) {
+                let option = $('<option>', {
+                    value: item.id,
+                    text: item.barangay
+                });
+                if (index === 0) {
+                    option.prop('selected', true);
+                }
+                selectElement.append(option);
+            });
+        });
+    })
+    .catch((error) => {
+        console.error(error);
+    });
 
 
 
