@@ -6,8 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Home</title>
-	<link href="./dist/style.css" rel="stylesheet" />
-	<link href="./dist/helpers.css" rel="stylesheet" />
+	<link href="./assets/css/style.css" rel="stylesheet" />
 </head>
 
 <body class="relative flex min-h-screen flex-col overflow-clip bg-gray-50 font-inter">
