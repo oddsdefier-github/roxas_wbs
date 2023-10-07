@@ -21,20 +21,17 @@ include './auth_guard.php';
     <?php include './components/logout_loader.php'; ?>
     <?php include './layouts/sidebar.php'; ?>
 
-    <section class="flex min-h-screen grow flex-col bg-gray-100">
+    <section class="flex min-h-screen grow flex-col bg-white">
+
         <?php include './layouts/header.php'; ?>
         <?php include './components/subheader.php'; ?>
-        <main class="relative flex flex-1 flex-col justify-start px-10 overflow-auto">
-            <div class="flex flex-col gap-5 bg-white p-5 rounded-md shadow-md mb-10">
-                <?php include './components/clients_table_utilities.php'; ?>
+        <main class="relative flex flex-1 flex-col justify-start overflow-auto">
+            <div class="flex flex-col gap-5">
                 <?php include './components/clients_main.php'; ?>
             </div>
         </main>
     </section>
-
-
     <?php include './components/modal/update_client_modal.php'; ?>
-
     <?php include './layouts/scripts.php'; ?>
 </body>
 

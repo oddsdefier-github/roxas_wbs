@@ -88,9 +88,24 @@ function handleApproveClientApplication($dbQueries)
 
 function handleGetDataTable($dataTable)
 {
-    if (isset($_POST['dataTableParam'])) {
+    if (isset($_POST['dataTableParam']) && isset($_POST['tableName'])) {
         $dataTableParam = $_POST['dataTableParam'];
-        $dataTable->clientApplicationTable($dataTableParam);
+        $tableName = $_POST['tableName'];
+
+        switch ($tableName) {
+            case "client_application":
+                $dataTable->clientApplicationTable($dataTableParam);
+                break;
+            case "client_data":
+                $dataTable->clientTable($dataTableParam);
+                break;
+                // Add more cases if you have more tables with similar functionality.
+                // case "another_table":
+                //     $dataTable->anotherTableFunction($dataTableParam);
+                //     break;
+            default:
+                echo "Invalid table name provided.";
+        }
     }
 }
 

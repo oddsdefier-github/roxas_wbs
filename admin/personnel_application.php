@@ -26,7 +26,7 @@ if ($_SESSION['user_role'] != "Admin") {
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personnel Application</title>
-    <?php include './layouts/links.php'; ?>
+    <?php include './components/logout_loader.php'; ?>
 </head>
 
 <body class="flex h-screen w-screen overflow-hidden font-inter bg-gray-50">

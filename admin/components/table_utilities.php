@@ -1,12 +1,6 @@
 <div class="block">
     <div class="flex items-center justify-between">
         <div class="flex gap-3">
-            <div class="text-sm uppercase text-gray-400">
-                <select id="search-type" name="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2">
-                    <option value="client_name">Name</option>
-                    <option value="address">Address</option>
-                </select>
-            </div>
             <div id="search-input" class="relative">
                 <input type="text" id="table-search" class="block p-2 pr-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for client">
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 ">
@@ -23,9 +17,9 @@
                 </select>
             </div>
         </div>
-
         <div class="text-sm uppercase text-gray-400">
             <select data-table-utilities="itemPerPage" name="recordsPerPage" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2">
+                <option value="5">5</option>
                 <option value="10">10</option>
                 <option value="15">15</option>
                 <option value="20">20</option>

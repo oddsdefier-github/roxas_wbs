@@ -19,7 +19,7 @@ include './auth_guard.php';
 
 <body class="flex h-screen w-screen overflow-hidden font-inter bg-gray-50">
     <?php include './components/modal/modal.php'; ?>
-    <?php include './components/signout_loader.php'; ?>
+    <?php include './components/logout_loader.php'; ?>
     <?php include './layouts/sidebar.php'; ?>
 
     <section class="flex min-h-screen grow flex-col bg-gray-100">

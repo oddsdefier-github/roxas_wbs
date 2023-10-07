@@ -1925,10 +1925,6 @@ input:checked + .toggle-bg {
   margin-right: 0.625rem;
 }
 
-.mr-3 {
-  margin-right: 0.75rem;
-}
-
 .mt-0 {
   margin-top: 0px;
 }
@@ -2708,10 +2704,6 @@ input:checked + .toggle-bg {
 
 .grid-cols-7 {
   grid-template-columns: repeat(7, minmax(0, 1fr));
-}
-
-.grid-rows-5 {
-  grid-template-rows: repeat(5, minmax(0, 1fr));
 }
 
 .grid-rows-6 {
@@ -5415,14 +5407,6 @@ input:checked + .toggle-bg {
   a-z-a--z-: #;
 }
 
-.\[a-zA-Z0-9_\:\\-\\\.\] {
-  a-z-a--z0-9_: \-\.;
-}
-
-.\[a-zA-Z0-9_\:\\-\] {
-  a-z-a--z0-9_: \-;
-}
-
 .\[image\:\$img\|\$width\|\$height\|\$type\] {
   image: $img|$width|$height|$type;
 }
@@ -5580,10 +5564,6 @@ input:checked + .toggle-bg {
 
 .focus-within\:ring-offset-2:focus-within {
   --tw-ring-offset-width: 2px;
-}
-
-.hover\:border-b-2:hover {
-  border-bottom-width: 2px;
 }
 
 .hover\:border-gray-300:hover {
@@ -6017,11 +5997,6 @@ input:checked + .toggle-bg {
 .group:hover .group-hover\:text-primary-300 {
   --tw-text-opacity: 1;
   color: rgb(165 180 252 / var(--tw-text-opacity));
-}
-
-.group:hover .group-hover\:text-primary-600 {
-  --tw-text-opacity: 1;
-  color: rgb(79 70 229 / var(--tw-text-opacity));
 }
 
 .peer:checked ~ .peer-checked\:border-primary-600 {

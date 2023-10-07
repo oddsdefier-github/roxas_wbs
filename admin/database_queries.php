@@ -397,18 +397,33 @@ class DataTable extends BaseQuery
     {
         $pageNumber = $dataTableParam['pageNumber'];
         $itemPerPage = $dataTableParam['itemPerPage'];
-
+        $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
-        $sql = "SELECT * FROM client_application ORDER BY timestamp DESC LIMIT ? OFFSET ?";
 
-        $stmt = $this->conn->prepareStatement($sql);
-        mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
+        $sql = "SELECT * FROM client_application";
+        if ($searchTerm) {
+            $likeTerm = "%" . $searchTerm . "%";
+            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ?";
+        }
+        $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
+
+        if ($searchTerm) {
+            $stmt = $this->conn->prepareStatement($sql);
+            mysqli_stmt_bind_param($stmt, "ssssiii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
+        } else {
+            $stmt = $this->conn->prepareStatement($sql);
+            mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
+        }
+
         mysqli_stmt_execute($stmt);
-
         $result = mysqli_stmt_get_result($stmt);
 
-        $sql = "SELECT * from client_application";
-        $totalRecords = mysqli_num_rows($this->conn->query($sql));
+        // More efficient way to get total records
+        $sqlCount = "SELECT COUNT(*) as total FROM client_application";
+        $resultCount = $this->conn->query($sqlCount);
+        $row = mysqli_fetch_assoc($resultCount);
+        $totalRecords = $row['total'];
+
         // $totalPages = ceil($totalRecords / $itemPerPage);
 
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
@@ -427,7 +442,6 @@ class DataTable extends BaseQuery
         </thead>';
 
         $countArr = array();
-        $response = array();
         $number = ($pageNumber - 1) * $itemPerPage + 1;
 
         while ($row = mysqli_fetch_assoc($result)) {
@@ -491,7 +505,124 @@ class DataTable extends BaseQuery
             } else {
                 echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
             }
+            echo  '<input data-hidden-name="start" type="hidden" value=' . $start . '>';
+            echo '<input data-hidden-name="end" type="hidden" value=' . $end . '>';
+        }
+    }
 
+
+    public function clientTable($dataTableParam)
+    {
+        $pageNumber = $dataTableParam['pageNumber'];
+        $itemPerPage = $dataTableParam['itemPerPage'];
+        $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
+        $offset = ($pageNumber - 1) * $itemPerPage;
+
+        $sql = "SELECT * FROM client_data";
+        if ($searchTerm) {
+            $likeTerm = "%" . $searchTerm . "%";
+            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ?";
+        }
+        $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
+
+        if ($searchTerm) {
+            $stmt = $this->conn->prepareStatement($sql);
+            mysqli_stmt_bind_param($stmt, "ssssiii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
+        } else {
+            $stmt = $this->conn->prepareStatement($sql);
+            mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
+        }
+
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        // More efficient way to get total records
+        $sqlCount = "SELECT COUNT(*) as total FROM client_data";
+        $resultCount = $this->conn->query($sqlCount);
+        $row = mysqli_fetch_assoc($resultCount);
+        $totalRecords = $row['total'];
+
+        // $totalPages = ceil($totalRecords / $itemPerPage);
+
+        $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
+        <thead class="text-xs text-gray-500 uppercase">
+            <tr class="bg-slate-100 border-b">
+                <th class="px-6 py-4">No.</th>
+                <th class="px-6 py-4">Meter No.</th>
+                <th class="px-6 py-4">Names&nbsp;&nbsp; 
+                <span class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
+                <th class="px-6 py-4">Property Type</th>
+                <th class="px-6 py-4">Address</th>
+                <th class="px-6 py-4">Status</th>
+                <th class="px-6 py-4">DateTime</th>
+                <th class="px-6 py-4">Action</th>
+            </tr>
+        </thead>';
+
+        $countArr = array();
+        $number = ($pageNumber - 1) * $itemPerPage + 1;
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id = $row['id'];
+            $meter_number = $row['meter_number'];
+            $name = $row['full_name'];
+            $street = $row['street'];
+            $brgy = $row['brgy'];
+            $property_type = $row['property_type'];
+            $status = $row['status'];
+            $time = $row['time'];
+            $date = $row['date'];
+
+            $readable_date = date("F j, Y", strtotime($date));
+            $readable_time = date("h:i A", strtotime($time));
+
+            $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            <td  class="px-6 py-3 text-sm">' . $number . '</td>
+            <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
+            <td class="px-6 py-3 text-sm">' . $name . '</td>
+            <td class="px-6 py-3 text-sm">' . $property_type . '</td>
+            <td class="px-6 py-3 text-sm"> 
+                <span class="font-medium text-sm">' . $brgy . '</span> </br>
+                <span class="text-xs text-gray-400">' . $street . '</span>
+            <td class="px-6 py-3 text-sm">' . $status . '</td>
+            <td class="px-6 py-3 text-sm">            
+                <span class="font-medium text-sm">' . $readable_date . '</span> </br>
+                <span class="text-xs">' . $readable_time . '</span>
+            </td>
+
+            <td class="flex items-center px-6 py-4 space-x-3">
+                <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                <span class="sr-only">Icon description</span>
+                </a>
+                <button  onclick="deleteClient(' . $id . ')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16px" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                <span class="sr-only">Icon description</span>
+                </button>
+            </td>
+        </tr>';
+            array_push($countArr, $number);
+            $number++;
+        }
+
+        if (empty($countArr)) {
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+        } else {
+            $start = $countArr[0];
+            $end = end($countArr);
+
+            $table .= '</tbody></table>';
+
+            if ($number > 1) {
+                echo $table;
+            } else {
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+            }
             echo  '<input data-hidden-name="start" type="hidden" value=' . $start . '>';
             echo '<input data-hidden-name="end" type="hidden" value=' . $end . '>';
         }

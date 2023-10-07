@@ -1,4 +1,3 @@
-
 <div class="px-10 mb-10">
     <div>
         <div class="sticky z-40 top-0 mb-4 bg-white border-b border-gray-200 dark:border-gray-700">
@@ -20,10 +19,12 @@
             </div>
             <div class="hidden w-full p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
                 <div class="mb-5">
-                    <?php include 'application_table_utilities.php' ?>
+                    <?php include 'table_utilities.php' ?>
                 </div>
                 <div class="shadow">
-                    <?php include 'display_client_application_table.php'; ?>
+                    <div>
+                        <div id="displayClientApplicationTable">POTA</div>
+                    </div>
                     <?php include 'pagination.php' ?>
                 </div>
             </div>

@@ -1,13 +1,36 @@
 <style>
     .submenu-container {
-        max-height: 0;
+        max-height: 0px;
         overflow: hidden;
-        transition: max-height 0.2s;
-        transition-delay: 0s;
     }
 
+    @keyframes show {
+        0% {
+            max-height: 0px;
+        }
+
+        100% {
+            max-height: 500px;
+        }
+    }
+
+    @keyframes hide {
+        0% {
+            max-height: 500px;
+        }
+
+        100% {
+            max-height: 0px;
+        }
+    }
+
+
     .submenu-container.open {
-        max-height: 500px;
+        animation: show 0.768s forwards;
+    }
+
+    .submenu-container.close {
+        animation: hide 0.5s forwards;
     }
 </style>
 <aside class="flex min-h-screen cursor-pointer bg-primary-700 text-gray-50 text-sm">
@@ -251,7 +274,12 @@
         tabMenu.each(function() {
             $(this).on("click", function(event) {
                 event.preventDefault();
-                $(this).siblings("ul").toggleClass("open");
+
+                if ($(this).siblings("ul").hasClass('open')) {
+                    $(this).siblings("ul").removeClass("open").addClass("close");
+                } else {
+                    $(this).siblings("ul").removeClass("close").addClass("open");
+                }
             });
         })
 

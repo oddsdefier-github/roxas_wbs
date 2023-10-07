@@ -6,5 +6,6 @@
 
 <script src="./assets/js/sidebar.js"></script>
 <script src="./assets/js/clients_functions.js"></script>
+<script src="./assets/js/client_application.js"></script>
 <script src="./assets/js/popup.js"></script>
 <script src="./assets/js/apexcharts.js"></script>
