@@ -99,7 +99,7 @@ $(document).ready(function () {
                                 loader.hide();
 
                                 window.location.href = "../cashier/index.php";
-                            }, 5000);
+                            }, 1000);
                         } else if (responseData.user_role === "Meter Reader") {
                             setTimeout(function () {
                                 loader.hide();
