@@ -34,9 +34,6 @@ include './auth_guard.php';
     </section>
 
 
-    <?php include './components/modal/update_client_modal.php'; ?>
-
-
     <?php include './layouts/scripts.php'; ?>
     <script>
         $("#subheader-title").text("Billing")

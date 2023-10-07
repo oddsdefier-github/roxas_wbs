@@ -35,18 +35,20 @@ export class DataTableWithPagination {
         this.elements.itemsPerPageSelector.change(() => {
             this.itemsPerPage = this.elements.itemsPerPageSelector.val();
             this.currentPageNumber = 1;
-            this.fetchTableData();
-            this.initializeTotalItems();
+
+            const searchTerm = this.elements.searchInput.val();
+            console.log("🤬" + searchTerm)
+            this.fetchTableData(searchTerm);
+            this.initializeTotalItems(searchTerm);
         });
     }
-
     handleSearch() {
-        // Reset to the first page and fetch the table data when a search occurs
+        const searchTerm = this.elements.searchInput.val();
         this.currentPageNumber = 1;
-        this.fetchTableData();
-        this.initializeTotalItems();
+        this.fetchTableData(searchTerm);
+        this.initializeTotalItems(searchTerm);
+        console.log("Search Term:", this.elements.searchInput.val());
     }
-
     updateButtonsState() {
         this.elements.prevBtn.prop("disabled", this.currentPageNumber <= 1);
         this.elements.nextBtn.prop("disabled", this.currentPageNumber >= this.lastPageNumber);
@@ -108,20 +110,22 @@ export class DataTableWithPagination {
                 return;
         }
 
-        this.fetchTableData();
+        const searchTerm = this.elements.searchInput.val();
+        this.fetchTableData(searchTerm);
         this.updateButtonsState();
     }
 
-    initializeTotalItems() {
-        // Fetch the total number of items from the server
+    initializeTotalItems(searchTerm = "") {
         $.ajax({
             url: "database_actions.php",
             type: "POST",
             data: {
                 action: "getTotalItem",
-                tableName: this.tableName
+                tableName: this.tableName,
+                searchTerm: searchTerm
             },
             success: (data) => {
+                console.log("Total Items Data:", data);
                 this.totalItems = JSON.parse(data).totalItem;
                 $('#totalItem').text(this.totalItems);
                 this.lastPageNumber = Math.ceil(this.totalItems / this.itemsPerPage);
@@ -132,5 +136,7 @@ export class DataTableWithPagination {
             }
         });
     }
+
+
 }
 

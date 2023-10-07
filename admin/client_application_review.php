@@ -1,7 +1,6 @@
 <?php
 
 include '../database/connection.php';
-
 include './auth_guard.php';
 
 ?>
@@ -40,9 +39,6 @@ include './auth_guard.php';
     </section>
 
     <?php include './components/notification.php'; ?>
-    <?php include './components/modal/update_client_modal.php'; ?>
-    <?php include './components/modal/add_client_modal.php'; ?>
-
 
     <?php include './layouts/scripts.php'; ?>
 
@@ -50,8 +46,6 @@ include './auth_guard.php';
         $("#subheader-title").text("Clients Application Review");
         $("#subheader-title").siblings("h5").text("Review client application.")
         $("#subheader-title").parent("div").siblings("div").hide();
-
-
         const backEl = `<a href="<?php echo CLIENTS_APPLICATION_URL ?>" class="flex justify-start items-center gap-2 py-3">
         <span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />

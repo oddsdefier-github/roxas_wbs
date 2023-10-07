@@ -360,20 +360,33 @@ class DatabaseQueries extends BaseQuery
         }
         return $response;
     }
-    public function getTotalItem($tableName)
+
+
+    public function getTotalItem($tableName, $searchTerm = "")
     {
         $total = array();
+
         $sql = "SELECT COUNT(*) FROM $tableName";
-        $result = $this->conn->query($sql);
 
-        if ($result) {
-
-            $row = mysqli_fetch_row($result);
-
-            if ($row) {
-                $total['totalItem'] = $row[0];
-            }
+        if ($searchTerm) {
+            $likeTerm = "%" . $searchTerm . "%";
+            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?";
         }
+
+        $stmt = $this->conn->prepareStatement($sql);
+        if ($searchTerm) {
+            mysqli_stmt_bind_param($stmt, "ssssss", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm);
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+        if ($row = mysqli_fetch_row($result)) {
+            $total['totalItem'] = $row[0];
+        }
+
+        mysqli_stmt_close($stmt);
+
         return $total;
     }
 
@@ -414,16 +427,16 @@ class DataTable extends BaseQuery
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
 
-        $sql = "SELECT * FROM client_application";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application";
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ?";
+            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?";
         }
         $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
 
         if ($searchTerm) {
             $stmt = $this->conn->prepareStatement($sql);
-            mysqli_stmt_bind_param($stmt, "ssssiii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
+            mysqli_stmt_bind_param($stmt, "ssssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
         } else {
             $stmt = $this->conn->prepareStatement($sql);
             mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
@@ -433,12 +446,13 @@ class DataTable extends BaseQuery
         $result = mysqli_stmt_get_result($stmt);
 
         // More efficient way to get total records
-        $sqlCount = "SELECT COUNT(*) as total FROM client_application";
-        $resultCount = $this->conn->query($sqlCount);
-        $row = mysqli_fetch_assoc($resultCount);
-        $totalRecords = $row['total'];
+        $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
 
-        // $totalPages = ceil($totalRecords / $itemPerPage);
+        if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
+            $totalRecords = $row['total'];
+        } else {
+            $totalRecords = 0;
+        }
 
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
         <thead class="text-xs text-gray-500 uppercase">
@@ -506,9 +520,10 @@ class DataTable extends BaseQuery
             $number++;
         }
 
-        if (empty($countArr)) {
-            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
-        } else {
+        $start = 0;
+        $end = 0;
+
+        if (!empty($countArr)) {
             $start = $countArr[0];
             $end = end($countArr);
 
@@ -519,9 +534,12 @@ class DataTable extends BaseQuery
             } else {
                 echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
             }
-            echo  '<input data-hidden-name="start" type="hidden" value=' . $start . '>';
-            echo '<input data-hidden-name="end" type="hidden" value=' . $end . '>';
+        } else {
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
         }
+
+        echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
+        echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
     }
 
 
@@ -532,16 +550,16 @@ class DataTable extends BaseQuery
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
 
-        $sql = "SELECT * FROM client_data";
+        $sql = "SELECT * FROM client_application";
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ?";
+            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?";
         }
         $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
 
         if ($searchTerm) {
             $stmt = $this->conn->prepareStatement($sql);
-            mysqli_stmt_bind_param($stmt, "ssssiii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
+            mysqli_stmt_bind_param($stmt, "ssssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
         } else {
             $stmt = $this->conn->prepareStatement($sql);
             mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
@@ -550,13 +568,11 @@ class DataTable extends BaseQuery
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
-        // More efficient way to get total records
+
         $sqlCount = "SELECT COUNT(*) as total FROM client_data";
         $resultCount = $this->conn->query($sqlCount);
         $row = mysqli_fetch_assoc($resultCount);
         $totalRecords = $row['total'];
-
-        // $totalPages = ceil($totalRecords / $itemPerPage);
 
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
         <thead class="text-xs text-gray-500 uppercase">

@@ -116,10 +116,13 @@ function handleGetTotalItem($dbQueries)
 {
     if (isset($_POST['tableName'])) {
         $tableName = $_POST['tableName'];
-        $getTotal = $dbQueries->getTotalItem($tableName);
+        $searchTerm = isset($_POST['searchTerm']) ? $_POST['searchTerm'] : "";
+
+        $getTotal = $dbQueries->getTotalItem($tableName, $searchTerm);
         echo json_encode($getTotal);
     }
 }
+
 
 function handleGetClientApplicationData($dbQueries)
 {
