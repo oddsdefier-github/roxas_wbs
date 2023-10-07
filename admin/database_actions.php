@@ -4,7 +4,6 @@ use Admin\Database\DatabaseConnection;
 
 require './database_queries.php';
 
-// Sanitize POST data
 function sanitizeArray($array)
 {
     foreach ($array as $key => $value) {
@@ -91,8 +90,7 @@ function handleGetDataTable($dataTable)
 {
     if (isset($_POST['dataTableParam'])) {
         $dataTableParam = $_POST['dataTableParam'];
-        $html = $dataTable->clientApplicationTable($dataTableParam);
-        echo json_encode(['html' => $html]);
+        $dataTable->clientApplicationTable($dataTableParam);
     }
 }
 

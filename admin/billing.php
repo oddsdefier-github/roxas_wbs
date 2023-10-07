@@ -1,21 +1,7 @@
 <?php
 include './database/connection.php';
 
-session_start();
-if (!isset($_SESSION['loggedin'])) {
-
-    echo '<script>alert("Please log in first!");</script>';
-    echo '<script>window.location.href = "../authentication/signin.php";</script>';
-    exit;
-}
-
-if ($_SESSION['user_role'] != "Admin") {
-    echo '<script>alert("You\'re not allowed here!");</script>';
-    $_SESSION = array();
-    session_unset();
-    session_destroy();
-    echo '<script>window.location.href = "../authentication/signin.php";</script>';
-}
+include './auth_guard.php';
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +19,7 @@ if ($_SESSION['user_role'] != "Admin") {
     <?php include './components/alerts.php'; ?>
     <?php include './components/notification.php'; ?>
     <?php include './components/modal/modal.php'; ?>
-    <?php include './components/signout_loader.php'; ?>
+    <?php include './components/logout_loader.php'; ?>
     <?php include './layouts/sidebar.php'; ?>
 
     <section class="flex min-h-screen grow flex-col bg-gray-100">

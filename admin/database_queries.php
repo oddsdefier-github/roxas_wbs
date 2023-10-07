@@ -478,8 +478,6 @@ class DataTable extends BaseQuery
             $number++;
         }
 
-
-
         if (empty($countArr)) {
             echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
         } else {
@@ -494,13 +492,8 @@ class DataTable extends BaseQuery
                 echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
             }
 
-            $start = '<input data-hidden-name="start" type="hidden" value=' . $start . '>';
-            $end = '<input data-hidden-name="end" type="hidden" value=' . $end . '>';
-            mysqli_stmt_close($stmt);
-
-            echo $start;
-            echo $end;
-            return "success";
+            echo  '<input data-hidden-name="start" type="hidden" value=' . $start . '>';
+            echo '<input data-hidden-name="end" type="hidden" value=' . $end . '>';
         }
     }
 }
