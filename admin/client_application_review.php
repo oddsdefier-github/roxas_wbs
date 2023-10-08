@@ -1,6 +1,6 @@
 <?php
 
-include '../database/connection.php';
+include './database/connection.php';
 include './auth_guard.php';
 
 ?>

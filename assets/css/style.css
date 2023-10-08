@@ -3506,11 +3506,6 @@ input:checked + .toggle-bg {
   border-color: rgb(14 159 110 / var(--tw-border-opacity));
 }
 
-.border-green-600 {
-  --tw-border-opacity: 1;
-  border-color: rgb(5 122 85 / var(--tw-border-opacity));
-}
-
 .border-primary-400 {
   --tw-border-opacity: 1;
   border-color: rgb(129 140 248 / var(--tw-border-opacity));
@@ -3553,11 +3548,6 @@ input:checked + .toggle-bg {
 .bg-\[rgb\(255\2c 0\2c 0\)\] {
   --tw-bg-opacity: 1;
   background-color: rgb(255 0 0 / var(--tw-bg-opacity));
-}
-
-.bg-black {
-  --tw-bg-opacity: 1;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 
 .bg-blue-100 {
@@ -4675,11 +4665,6 @@ input:checked + .toggle-bg {
 .ring-gray-300 {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(209 213 219 / var(--tw-ring-opacity));
-}
-
-.ring-green-200 {
-  --tw-ring-opacity: 1;
-  --tw-ring-color: rgb(188 240 218 / var(--tw-ring-opacity));
 }
 
 .ring-green-400 {
@@ -6132,16 +6117,6 @@ input:checked + .toggle-bg {
   border-color: rgb(31 41 55 / var(--tw-border-opacity));
 }
 
-:is(.dark .dark\:border-green-500) {
-  --tw-border-opacity: 1;
-  border-color: rgb(14 159 110 / var(--tw-border-opacity));
-}
-
-:is(.dark .dark\:border-indigo-500) {
-  --tw-border-opacity: 1;
-  border-color: rgb(104 117 245 / var(--tw-border-opacity));
-}
-
 :is(.dark .dark\:border-red-500) {
   --tw-border-opacity: 1;
   border-color: rgb(240 82 82 / var(--tw-border-opacity));
@@ -6259,11 +6234,6 @@ input:checked + .toggle-bg {
   color: rgb(188 240 218 / var(--tw-text-opacity));
 }
 
-:is(.dark .dark\:text-green-500) {
-  --tw-text-opacity: 1;
-  color: rgb(14 159 110 / var(--tw-text-opacity));
-}
-
 :is(.dark .dark\:text-indigo-500) {
   --tw-text-opacity: 1;
   color: rgb(104 117 245 / var(--tw-text-opacity));
@@ -6354,24 +6324,9 @@ input:checked + .toggle-bg {
   border-color: rgb(63 131 248 / var(--tw-border-opacity));
 }
 
-:is(.dark .dark\:focus\:border-green-500:focus) {
-  --tw-border-opacity: 1;
-  border-color: rgb(14 159 110 / var(--tw-border-opacity));
-}
-
-:is(.dark .dark\:focus\:border-indigo-500:focus) {
-  --tw-border-opacity: 1;
-  border-color: rgb(104 117 245 / var(--tw-border-opacity));
-}
-
 :is(.dark .dark\:focus\:border-primary-500:focus) {
   --tw-border-opacity: 1;
   border-color: rgb(99 102 241 / var(--tw-border-opacity));
-}
-
-:is(.dark .dark\:focus\:border-red-500:focus) {
-  --tw-border-opacity: 1;
-  border-color: rgb(240 82 82 / var(--tw-border-opacity));
 }
 
 :is(.dark .dark\:focus\:ring-blue-500:focus) {

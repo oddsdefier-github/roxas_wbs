@@ -1,21 +1,23 @@
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", () => {
     const eyeIcon = $("#eye-icon");
     const signInForm = $("#form-signin");
     const emailInput = $("#email");
     const passInput = $("#password");
     const inputFields = $('.validate-input');
     const inputLabels = inputFields.siblings('label');
-    const inputValidateFeedback = $(".input-group .validate-message");
-
-
+    const signInMessage = $("#signin-message");
     const cssClasses = {
-        normalLabelClass: 'absolute text-sm text-gray-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
-        errorLabelClass: 'absolute text-sm text-red-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
-        successLabelClass: 'absolute text-sm text-green-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
-        normalInputClass: 'block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-600 peer',
-        errorInputClass: 'block px-2.5 py-3 w-full text-sm text-red-800 bg-transparent rounded-lg border-1 border-red-500 appearance-none  focus:outline-none focus:ring-0 focus:border-red-600 peer',
-        successInputClass: 'block px-2.5 py-3 w-full text-sm text-green-800 bg-transparent rounded-lg border-1 border-green-500 appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer'
-    }
+        input: {
+            normal: 'block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-600 peer',
+            error: 'block px-2.5 py-3 w-full text-sm text-red-800 bg-transparent rounded-lg border-1 border-red-500 appearance-none  focus:outline-none focus:ring-0 focus:border-red-600 peer',
+            success: 'block px-2.5 py-3 w-full text-sm text-green-800 bg-transparent rounded-lg border-1 border-green-500 appearance-none focus:outline-none focus:ring-0 focus:border-green-600 peer'
+        },
+        label: {
+            normal: 'absolute text-sm text-gray-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
+            error: 'absolute text-sm text-red-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1',
+            success: 'absolute text-sm text-green-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1'
+        }
+    };
 
     const elements = {
         miniCheckElement: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3">
@@ -37,31 +39,43 @@ $(document).ready(function () {
 
 
 
-    eyeIcon.on("click", function () {
-        if (passInput.attr("type") === "password") {
-            passInput.attr("type", "text");
-            eyeIcon.attr("src", "assets/eye-open.svg");
-        } else {
-            passInput.attr("type", "password");
-            eyeIcon.attr("src", "assets/eye-close.svg");
-        }
-        console.log("EYE CLICK");
-    });
 
+    const validationRules = {
+        email: {
+            presence: {
+                allowEmpty: false,
+                message: "cannot be empty"
+            },
+            email: {
+                message: "is invalid!",
+            },
+        },
+        password: {
+            exclusion: {
+                within: ["password"],
+                message: "'%{value}' is not allowed"
+            },
+            length: {
+                minimum: 8,
+                tooShort: "should be at least %{count} characters or more!",
+            },
+        },
+    };
 
-    function signIn() {
+    function togglePasswordVisibility() {
+        const inputType = passInput.attr("type");
+        console.log(`Current input type: ${inputType}`);
+        const newType = inputType === "password" ? "text" : "password";
+        const newIcon = inputType === "password" ? "assets/eye-open.svg" : "assets/eye-close.svg";
+        passInput.attr("type", newType);
+        eyeIcon.attr("src", newIcon);
+    }
+
+    function processSignIn() {
         return new Promise((resolve, reject) => {
-
             let designationSelected = $("#designation-select").find(":selected").text();
-            $("#designation-select").on("change", function () {
-                designationSelected = $(this).find(":selected").text();
-            });
-
             let emailInputVal = emailInput.val();
             let passInputVal = passInput.val();
-
-            const loader = $(".loader");
-            const signInMessage = $("#signin-message");
 
             $.ajax({
                 url: "signin_process.php",
@@ -72,201 +86,306 @@ $(document).ready(function () {
                     designationSelectedSend: designationSelected
                 },
                 success: function (response) {
-                    var responseData = JSON.parse(response);
-
+                    const responseData = JSON.parse(response);
 
                     if (responseData.valid) {
-
-                        signInForm.hide(200)
-
-                        loader.css({
-                            'display': 'flex',
-                            'flex-direction': 'column',
-                            'justify-content': 'center',
-                            'align-items': 'center'
-                        });
-
-                        loader.show();
-
-
-                        if (responseData.user_role === "Admin") {
-                            setTimeout(function () {
-                                loader.hide();
-                                window.location.href = "../admin/index.php";
-                            }, 5000);
-                        } else if (responseData.user_role === "Cashier") {
-                            setTimeout(function () {
-                                loader.hide();
-
-                                window.location.href = "../cashier/index.php";
-                            }, 1000);
-                        } else if (responseData.user_role === "Meter Reader") {
-                            setTimeout(function () {
-                                loader.hide();
-
-                                window.location.href = "../meter_reader/index.php";
-                            }, 5000);
-                        }
-
-                        resolve(responseData); // Resolve the Promise with response data
-
+                        resolve(responseData);
+                        console.log(responseData)
                     } else {
+                        signInMessage.text(responseData.message);
+                        handleLoginFailure();
 
-                        signInMessage.text(responseData.message)
-
-                        inputFields.siblings('span[data-input-state="error"]').remove();
-                        $('span[data-input-state="normal"]').hide();
-                        $('span[data-input-state="success"]').remove();
-                        inputFields.parent().next().empty();
-
-                        inputFields.removeClass(cssClasses.errorInputClass).addClass(cssClasses.normalInputClass);
-                        inputLabels.removeClass(cssClasses.errorLabelClass).addClass(cssClasses.normalLabelClass);
-                        inputFields.removeClass(cssClasses.successInputClass).addClass(cssClasses.normalInputClass);
-                        inputLabels.removeClass(cssClasses.successLabelClass).addClass(cssClasses.normalLabelClass);
-
-                        const audio = new Audio('./failed.mp3');
-                        audio.play();
-                        $("#form-signin").addClass("shake");
-
-                        setTimeout(function () {
-                            $("#form-signin").removeClass("shake");
-                            reject(responseData); // Reject the Promise with response data
-                        }, 1000);
-
+                        reject(responseData); // Reject the Promise with response data
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     console.error("Error:", errorThrown);
-                    reject(errorThrown); // Reject the Promise with the error
+                    reject(errorThrown);
                 },
             });
         });
     }
 
+    function handleLoginFailure() {
+        inputFields.siblings('span[data-input-state="error"]').remove();
+        $('span[data-input-state="success"]').remove();
+        $('span[data-input-state="normal"]').show();
 
-    function handleSubmit(e) {
-        e.preventDefault()
-        signIn()
-            .then(() => {
-                const audio = new Audio('./success.wav');
-                audio.play();
-            })
-            .then((responseData) => {
-                console.log("User is valid");
-                console.log("Admin Name: " + responseData.admin_name);
-                console.log("User Role: " + responseData.user_role);
-            })
-            .catch((error) => {
-                console.log(error)
-            });
+        inputFields.parent().next().empty();
+
+        inputFields.removeClass(cssClasses.input.error + ' ' + cssClasses.input.success).addClass(cssClasses.input.normal);
+        inputLabels.removeClass(cssClasses.label.error + ' ' + cssClasses.label.success).addClass(cssClasses.label.normal);
+        inputFields.val("")
+
+        $('span[data-input-state="normal"]')
+            .css({ "display": "absolute", "top": "0", "right": "0.1rem" });
+
+
+        const audio = new Audio('./failed.mp3');
+        audio.play();
+
+        $("#form-signin").addClass("shake");
+
+        setTimeout(function () {
+            $("#form-signin").removeClass("shake");
+
+        }, 500);
     }
 
-    signInForm.on("submit", handleSubmit);
+    function playSuccessAudio() {
+        const audio = new Audio('./success.wav');
+        audio.play();
+    }
 
+    async function preloadPages(pages) {
+        let loadedPages = {};
 
-    // Function to validate an individual input field
-    function validateField(fieldName, fieldValue) {
-        const validationRules = {
-            email: {
-                presence: {
-                    allowEmpty: false,
-                    message: "cannot be empty"
-                },
-                email: {
-                    message: "is invalid!",
-                },
-            },
-            password: {
-                exclusion: {
-                    within: ["password"],
-                    message: "'%{value}' is not allowed"
-                },
-                length: {
-                    minimum: 8,
-                    tooShort: "should be at least %{count} characters or more!",
-                },
-            },
+        for (let page of pages) {
+            const data = await $.get(page);
+            loadedPages[page] = data;
+        }
+        console.log(loadedPages)
+        return loadedPages;
+    }
+
+    async function redirectToRolePage(userRole) {
+        const roleRedirects = {
+            "Admin": "../admin/index.php",
+            "Cashier": "../cashier/index.php",
+            "Meter Reader": "../meter_reader/index.php"
         };
 
+        if (roleRedirects[userRole]) {
+            signInForm.hide(200);
+
+            const loader = $(".loader");
+            loader.css({
+                'display': 'flex',
+                'flex-direction': 'column',
+                'justify-content': 'center',
+                'align-items': 'center'
+            });
+
+            // Show the loader
+            loader.show();
+
+            // Preload the pages asynchronously
+            const pagesToPreload = [
+                '../admin/clients.php',
+                '../admin/dashboard.php',
+                '../admin/clients_application.php',
+                '../admin/logs.php',
+                '../admin/client_application_review.php',
+                '../admin/layouts/sidebar.php',
+                '../admin/layouts/header.php',
+            ];
+
+            await preloadPages(pagesToPreload);
+
+            setTimeout(() => {
+                $('#loading-message').text('Loading the page, please wait....')
+            }, 100)
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            loader.hide();
+
+            // Redirect to the appropriate role page
+            window.location.href = roleRedirects[userRole];
+        } else {
+            console.error('Unexpected user role:', userRole);
+        }
+    }
+
+
+
+
+    function formSubmissionHandler(e) {
+        e.preventDefault();
+        if (validateFormOnSubmit()) {
+            processSignIn()
+                .then(responseData => {
+                    if (responseData && responseData.user_role) {
+                        playSuccessAudio();
+                        redirectToRolePage(responseData.user_role);
+                    } else {
+                        console.error('Unexpected responseData structure:', responseData);
+                    }
+                })
+                .catch(console.log);
+        }
+    }
+
+    function validateFormOnSubmit() {
+        const emailError = validateField("email", emailInput.val());
+        const passwordError = validateField("password", passInput.val());
+        const allErrors = {
+            email: emailError,
+            password: passwordError
+        };
+
+        let isValid = true;
+
+        for (const [field, error] of Object.entries(allErrors)) {
+            if (error) {
+                isValid = false;
+                displayFieldError(field, error);
+            } else {
+                displayFieldSuccess(field);
+            }
+        }
+
+        return isValid;
+    }
+
+    function validateField(fieldName, fieldValue) {
         const fieldErrors = validate({ [fieldName]: fieldValue.trim() }, validationRules);
         return fieldErrors ? fieldErrors[fieldName] : null;
     }
 
-    // Event handler for input fields
-    inputFields.on("input", function () {
-        const fieldName = $(this).attr("name");
-        const fieldValue = $(this).val();
+    function displayFieldError(fieldName, errorMessage) {
+        const targetInput = $(`input[name=${fieldName}]`);
+        const targetLabel = targetInput.siblings('label');
+        const targetParent = targetInput.parent();
+        const targetParentSibling = targetInput.parent().next();
 
-        const errorMessage = validateField(fieldName, fieldValue);
+        targetInput.removeClass(cssClasses.input.success).addClass(cssClasses.input.error);
+        targetLabel.removeClass(cssClasses.label.success).addClass(cssClasses.label.error);
+
+
+        targetParent.find('span[data-input-state="error"], span[data-input-state="valid"]').remove();
+        $('span[data-input-state="normal"]')
+            .css({ "display": "absolute", "top": "0", "right": "0.1rem" });
+
+        targetParentSibling.empty();
+
+        errorMessage.forEach((message) => {
+            const errorHTML = `<div style="display: inline-flex; align-items: center; justify-content: start; width: 100%">${elements.miniCautionElement} <p style="margin: 2px;">${message}</p></div>`;
+            targetParentSibling.append(errorHTML);
+        });
+
+        if (fieldName == 'email') {
+            targetParent.append(elements.cautionElement);
+        }
+    }
+
+    function displayFieldSuccess(fieldName) {
+        const targetInput = $(`input[name=${fieldName}]`);
+        const targetLabel = targetInput.siblings('label');
+        const targetParent = targetInput.parent();
+        const targetParentSibling = targetInput.parent().next();
+
+        targetInput.removeClass(cssClasses.input.error).addClass(cssClasses.input.success);
+        targetLabel.removeClass(cssClasses.label.error).addClass(cssClasses.label.success);
+
+        targetParent.find('span[data-input-state="error"], span[data-input-state="valid"]').remove();
+        $('span[data-input-state="normal"]')
+            .css({ "display": "absolute", "top": "0", "right": "1.5rem" });
+
+        targetParentSibling.empty();
+
+        const successHTML = `<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`;
+        targetParentSibling.append(successHTML);
+
+        if (fieldName == 'email') {
+            targetParent.append(elements.checkElement);
+        }
+    }
+
+
+    function validateIndividualInput(inputElement) {
 
         // Clear previous error messages for this field
+        const fieldName = inputElement.attr("name");
+        const fieldValue = inputElement.val();
+        const errorMessage = validateField(fieldName, fieldValue);
+
+
         $(`div[data-validate-input="${fieldName}"]`).empty();
-        $(this).siblings('span[data-input-state="success"]').remove();
-        $(this).siblings('span[data-input-state="normal"]').show();
-
-
+        inputElement.siblings('span[data-input-state="success"]').remove();
+        inputElement.siblings('span[data-input-state="normal"]').show();
 
         if (errorMessage) {
-
-            console.log(errorMessage)
-            $(this).attr('data-input-state', 'error');
-            console.log($(this).attr('data-input-state'))
-            $(this).siblings('span[data-input-state="normal"]').show();
-
-            $('button[type="submit"]')
-                .text('Complete Fields')
-                .prop('disabled', true);
-
-            $(this).siblings('span[data-input-state="normal"]')
-                .css({ "display": "absolute", "top": "0", "right": "0" });
-
+            inputElement.attr('data-input-state', 'error');
 
             errorMessage.forEach((message) => {
                 const errorHTML = `<div style="display: inline-flex; align-items: center; justify-content: start; width: 100%">${elements.miniCautionElement} <p style="margin: 2px;">${message}</p></div>`;
-
                 $(`div[data-validate-input="${fieldName}"]`).append(errorHTML);
             });
 
             // Handle invalid input styling
+            inputElement.removeClass(cssClasses.input.success).addClass(cssClasses.input.error);
+            inputElement.siblings('label').removeClass(cssClasses.label.success).addClass(cssClasses.label.error);
 
-            $(this).removeClass(cssClasses.successInputClass).addClass(cssClasses.errorInputClass);
-            $(this).siblings('label').removeClass(cssClasses.successLabelClass).addClass(cssClasses.errorLabelClass);
+            inputElement.siblings('span[data-input-state="normal"]')
+                .css({ "display": "absolute", "top": "0", "right": "0.1rem" });
 
-            if ($(this).attr('name') == 'email') {
-                $(this).parent().find('svg').remove();
-                $(this).parent().append(elements.cautionElement);
+            if (inputElement.attr('name') == 'email') {
+                inputElement.parent().find('svg').remove();
+                inputElement.parent().append(elements.cautionElement);
             }
+
+            updateSubmitButtonState();
+
+            return false; // indicates the input is not valid
         } else {
-            const inputLabel = $(this).siblings('label');
-            const inputParent = $(this).parent();
-            const inputParentSibling = $(this).parent().next();
-
-
-            $(this).siblings('span[data-input-state="normal"]')
-                .css({ "display": "absolute", "top": "0", "right": "1.5rem" });
+            const inputLabel = inputElement.siblings('label');
+            const inputParent = inputElement.parent();
+            const inputParentSibling = inputElement.parent().next();
 
             // Handle valid input styling
-            $(this).removeClass(cssClasses.errorInputClass).removeClass(cssClasses.normalInputClass).addClass(cssClasses.successInputClass);
-            inputLabel.removeClass(cssClasses.errorLabelClass).removeClass(cssClasses.normalLabelClass).addClass(cssClasses.successLabelClass);
+            inputElement.removeClass(cssClasses.input.error + ' ' + cssClasses.input.normal).addClass(cssClasses.input.success);
+            inputLabel.removeClass(cssClasses.label.error + ' ' + cssClasses.label.normal).addClass(cssClasses.label.success);
 
-            $(this).parent().find('svg').remove();
+            inputElement.siblings('span[data-input-state="normal"]')
+                .css({ "display": "absolute", "top": "0", "right": "1.5rem" });
+
+            inputElement.parent().find('svg').remove();
             inputParent.append(elements.checkElement);
-
 
             inputParentSibling.html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`);
 
+            inputElement.attr('data-input-state', 'success');
 
-            $(this).attr('data-input-state', 'success');
-            console.log($(this).attr('data-input-state'))
+            updateSubmitButtonState();
 
-            if ((emailInput.attr('data-input-state') == 'success') && passInput.attr('data-input-state') == 'success') {
-                console.log("✔")
-                $('button[type="submit"]')
-                    .text('Submit')
-                    .prop('disabled', false);
-            }
+            return true; // indicates the input is valid
         }
+    }
 
+    function updateSubmitButtonState() {
+        const allInputsValid = inputFields.toArray().every(input => $(input).attr('data-input-state') == 'success');
+        if (allInputsValid) {
+            $('button[type="submit"]').text('Submit').prop('disabled', false);
+        } else {
+            $('button[type="submit"]').text('Complete Fields').prop('disabled', true);
+        }
+    }
+
+    function formSubmissionHandler(e) {
+        e.preventDefault();
+
+        let allInputsValid = true;
+        inputFields.each(function () {
+            if (!validateIndividualInput($(this))) {
+                allInputsValid = false;
+            }
+        });
+
+        if (allInputsValid) {
+            processSignIn()
+                .then(responseData => {
+                    playSuccessAudio();
+                    redirectToRolePage(responseData.user_role);
+                })
+                .catch(console.log);
+        }
+    }
+
+    inputFields.on("input", function () {
+        validateIndividualInput($(this));
     });
+
+
+    eyeIcon.on("click", togglePasswordVisibility);
+    signInForm.on("submit", formSubmissionHandler);
 
 });

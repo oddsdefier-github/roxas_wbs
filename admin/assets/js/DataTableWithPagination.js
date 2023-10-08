@@ -8,6 +8,8 @@ export class DataTableWithPagination {
 
         this.elements = {
             searchInput: $("#table-search"),
+            clearSearch: $("#clear-input"),
+            searchIcon: $("#search-icon"),
             tableContainer: $(tableContainerSelector),
             prevBtn: $("#prev"),
             nextBtn: $("#next"),
@@ -16,21 +18,22 @@ export class DataTableWithPagination {
             itemsPerPageSelector: $('select[data-table-utilities="itemPerPage"]')
         };
 
-        this.elements.prevBtn.on("click", () => {
-            console.log("Prev button was clicked");
-        });
-
         this.bindEvents();
-        this.updateButtonsState();
-        this.fetchTableData();
         this.handlePageChange('start');
+        this.fetchTableData();
+        this.updateButtonsState();
+
     }
 
     bindEvents() {
         let debounceTimeout;
         this.elements.searchInput.on("keyup", () => {
+
+            this.handleClearInput();
+
             clearTimeout(debounceTimeout);
             debounceTimeout = setTimeout(() => this.handleSearch(), 300);
+
         });
 
         // Bind pagination events
@@ -42,14 +45,40 @@ export class DataTableWithPagination {
         // Handle change of items per page
         this.elements.itemsPerPageSelector.change(() => {
             this.itemsPerPage = this.elements.itemsPerPageSelector.val();
-            this.currentPageNumber = 1;
+
+            this.lastPageNumber = Math.ceil(this.totalItems / this.itemsPerPage);
+
+            if (this.currentPageNumber > this.lastPageNumber) {
+                this.currentPageNumber = this.lastPageNumber;
+            }
+
             this.fetchTableData(this.elements.searchInput.val());
         });
+
+        this.elements.clearSearch.on("click", () => {
+            console.log("💀")
+            this.elements.searchInput.val("");
+            this.handleClearInput();
+            this.handleSearch();
+        })
+
     }
+
 
     handleSearch() {
         this.currentPageNumber = 1;
         this.fetchTableData(this.elements.searchInput.val());
+    }
+
+    handleClearInput() {
+        let searchTerm = this.elements.searchInput.val().trim();
+        if (searchTerm === "") {
+            this.elements.clearSearch.hide();
+            this.elements.searchIcon.show();
+        } else {
+            this.elements.clearSearch.show();
+            this.elements.searchIcon.hide();
+        }
     }
 
     updateButtonsState() {
@@ -64,6 +93,7 @@ export class DataTableWithPagination {
         $.ajax({
             url: "database_actions.php",
             type: 'post',
+            dataType: 'html',
             data: {
                 action: "getDataTable",
                 tableName: this.tableName,
@@ -74,34 +104,33 @@ export class DataTableWithPagination {
                 }
             },
             success: (data, status) => {
-                this.updateButtonsState();
                 this.elements.tableContainer.html(data);
 
-                this.totalItems = parseInt($('#totalItemsHidden').val()) || 0;
-
-                this.firstItem = $('input[data-hidden-name="start"]').val();
-                this.lastItem = $('input[data-hidden-name="end"]').val();
+                // Properly parse the hidden values
+                this.totalItems = parseInt($('#totalItemsHidden').val(), 10) || 0;
+                this.firstItem = parseInt($('input[data-hidden-name="start"]').val(), 10) || 0;
+                this.lastItem = parseInt($('input[data-hidden-name="end"]').val(), 10) || 0;
 
                 $('#first_item').text(this.firstItem);
                 $('#last_item').text(this.lastItem);
-
-                $('#totalItem').text(this.totalItems);
+                $('#total_items').text(this.totalItems);
 
                 this.lastPageNumber = Math.ceil(this.totalItems / this.itemsPerPage);
+                console.log("🧮 " + this.lastPageNumber);
+                this.updateButtonsState();
 
                 this.elements.tableContainer.find("tbody tr").addClass("animate-fade-in");
             },
             error: (jqXHR, textStatus, errorThrown) => {
                 console.error("AJAX error:", textStatus, errorThrown);
+                this.elements.tableContainer.html("<p>Error fetching data. Please try again later.</p>");  // User-friendly message
             }
         });
     }
 
     handlePageChange(direction) {
-
         console.log("Inside handlePageChange method");
         console.log("Direction received:", direction);
-
 
         switch (direction) {
             case "prev":

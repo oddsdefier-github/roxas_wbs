@@ -47,10 +47,11 @@ $(document).ready(function () {
     function fetchAddressData() {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: "fetch_address_data.php",
-                type: "get",
+                url: "database_actions.php",
+                type: "post",
+                dataType: "json",
                 data: {
-                    fetchAddress: true
+                    action: "getAddressData"
                 },
                 dataType: "json",
                 success: function (data) {

@@ -551,7 +551,7 @@ class DataTable extends BaseQuery
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
 
-        $sql = "SELECT * FROM client_application";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data";
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
             $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?";
@@ -569,11 +569,14 @@ class DataTable extends BaseQuery
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
+        // More efficient way to get total records
+        $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
 
-        $sqlCount = "SELECT COUNT(*) as total FROM client_data";
-        $resultCount = $this->conn->query($sqlCount);
-        $row = mysqli_fetch_assoc($resultCount);
-        $totalRecords = $row['total'];
+        if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
+            $totalRecords = $row['total'];
+        } else {
+            $totalRecords = 0;
+        }
 
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
         <thead class="text-xs text-gray-500 uppercase">
@@ -581,7 +584,8 @@ class DataTable extends BaseQuery
                 <th class="px-6 py-4">No.</th>
                 <th class="px-6 py-4">Meter No.</th>
                 <th class="px-6 py-4">Names&nbsp;&nbsp; 
-                <span class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
+                <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
+                <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
                 <th class="px-6 py-4">Property Type</th>
                 <th class="px-6 py-4">Address</th>
                 <th class="px-6 py-4">Status</th>
@@ -641,9 +645,10 @@ class DataTable extends BaseQuery
             $number++;
         }
 
-        if (empty($countArr)) {
-            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
-        } else {
+        $start = 0;
+        $end = 0;
+
+        if (!empty($countArr)) {
             $start = $countArr[0];
             $end = end($countArr);
 
@@ -654,8 +659,11 @@ class DataTable extends BaseQuery
             } else {
                 echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
             }
-            echo  '<input data-hidden-name="start" type="hidden" value=' . $start . '>';
-            echo '<input data-hidden-name="end" type="hidden" value=' . $end . '>';
+        } else {
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
         }
+
+        echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
+        echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
     }
 }

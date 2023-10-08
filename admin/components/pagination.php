@@ -11,7 +11,7 @@
                 to
                 <span id="last_item" class="font-medium"></span>
                 of
-                <span id="totalItem" class="font-medium"></span>
+                <span id="total_items" class="font-medium"></span>
                 results
             </p>
         </div>

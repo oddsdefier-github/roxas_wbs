@@ -162,7 +162,7 @@ if (isset($_GET['id'])) {
                             <div class="sm:col-span-2">
                                 <label for="brgy" class="block text-sm font-medium leading-6 text-gray-900">Barangay</label>
                                 <div class="mt-2 relative">
-                                    <select id="brgy" name="brgy" class="add_client_address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                                    <select id="brgy" name="brgy" class="applicant-address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
                                     </select>
                                 </div>
                             </div>
