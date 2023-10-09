@@ -42,7 +42,7 @@ export class DataTableWithPagination {
         this.elements.startBtn.on("click", () => this.handlePageChange("start"));
         this.elements.endBtn.on("click", () => this.handlePageChange("end"));
 
-        // Handle change of items per page
+
         this.elements.itemsPerPageSelector.change(() => {
             this.itemsPerPage = this.elements.itemsPerPageSelector.val();
 
@@ -52,6 +52,7 @@ export class DataTableWithPagination {
                 this.currentPageNumber = this.lastPageNumber;
             }
 
+            // Fetch data normally.
             this.fetchTableData(this.elements.searchInput.val());
         });
 
@@ -61,7 +62,17 @@ export class DataTableWithPagination {
             this.handleClearInput();
             this.handleSearch();
         })
+    }
 
+    updateItemsPerPageOptions() {
+        this.elements.itemsPerPageSelector.find('option').each((index, option) => {
+            let value = parseInt($(option).val(), 10);
+            if (value > this.totalItems) {
+                $(option).prop("disabled", true);
+            } else {
+                $(option).prop("disabled", false);
+            }
+        });
     }
 
 
@@ -108,6 +119,7 @@ export class DataTableWithPagination {
 
                 // Properly parse the hidden values
                 this.totalItems = parseInt($('#totalItemsHidden').val(), 10) || 0;
+                this.updateItemsPerPageOptions();
                 this.firstItem = parseInt($('input[data-hidden-name="start"]').val(), 10) || 0;
                 this.lastItem = parseInt($('input[data-hidden-name="end"]').val(), 10) || 0;
 

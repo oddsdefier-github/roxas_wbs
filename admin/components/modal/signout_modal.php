@@ -15,6 +15,7 @@
         z-index: -1;
     }
 </style>
+
 <section id="signoutModal" class="absolute h-screen w-screen z-50 hidden" data-container="modal" data-modal-name="sign_out">
     <div>
         <div class="relative w-full max-w-md max-h-full">
@@ -39,10 +40,3 @@
         </div>
     </div>
 </section>
-<!-- <script>
-    $("#signout").click(function() {
-        $.ajax({
-            url: "../authentication/signout.php'"
-        })
-    })
-</script> -->

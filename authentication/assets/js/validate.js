@@ -176,8 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 '../admin/clients_application.php',
                 '../admin/logs.php',
                 '../admin/client_application_review.php',
-                '../admin/layouts/sidebar.php',
-                '../admin/layouts/header.php',
             ];
 
             await preloadPages(pagesToPreload);

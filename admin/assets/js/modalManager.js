@@ -6,7 +6,6 @@ class ModalHandler {
 
         this.initialize();
     }
-
     initialize() {
         this.closeModalButtons.each((_, button) => {
             $(button).on("click", this.closeModal.bind(this));

@@ -14,7 +14,6 @@ class BaseQuery
     }
 }
 
-
 class DatabaseQueries extends BaseQuery
 {
     public function retrieveClientData($clientId)
@@ -415,6 +414,76 @@ class DatabaseQueries extends BaseQuery
         mysqli_stmt_close($stmt);
         return $data;
     }
+
+    public function deleteItem($delID, $tableName)
+    {
+        $response = array();
+        $sqlFetchName = "SELECT full_name FROM $tableName WHERE id = ?";
+        $stmtName = $this->conn->prepareStatement($sqlFetchName);
+        $stmtName->bind_param("i", $delID);
+        if ($stmtName->execute()) {
+            $result = $stmtName->get_result();
+            if ($result->num_rows > 0) {
+                $userData = $result->fetch_assoc();
+                $response['full_name'] = $userData['full_name'];
+            }
+            $stmtName->close();
+        } else {
+            $response['error'] = "Failed to fetch user's full name.";
+            return $response;
+        }
+
+        $sqlDelete = "DELETE FROM $tableName WHERE id = ?";
+        try {
+            $stmtDelete = $this->conn->prepareStatement($sqlDelete);
+            $stmtDelete->bind_param("i", $delID);
+
+            if (!$stmtDelete->execute()) {
+                throw new Exception("Failed to delete item. " . $stmtDelete->error);
+            }
+
+            if ($stmtDelete->affected_rows == 0) {
+                throw new Exception("No rows were deleted.");
+            }
+
+            $stmtDelete->close();
+
+            $response['success'] = "Item deleted successfully!";
+        } catch (Exception $e) {
+            $response['error'] = $e->getMessage();
+        }
+
+        return $response;
+    }
+
+    public function getName($id, $tableName)
+    {
+        $sql = "SELECT full_name FROM $tableName WHERE id = ?";
+        $response = array();
+
+        try {
+            $stmt = $this->conn->prepareStatement($sql); 
+            $stmt->bind_param("i", $id); 
+
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to fetch name. " . $stmt->error);
+            }
+
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $response['full_name'] = $row['full_name'];
+            } else {
+                throw new Exception("No user found with the given ID.");
+            }
+
+            $stmt->close();
+        } catch (Exception $e) {
+            $response['error'] = $e->getMessage();
+        }
+
+        return $response;
+    }
 }
 
 
@@ -474,6 +543,7 @@ class DataTable extends BaseQuery
         $number = ($pageNumber - 1) * $itemPerPage + 1;
 
         while ($row = mysqli_fetch_assoc($result)) {
+            $tableName = "client_application";
             $id = $row['id'];
             $meter_number = $row['meter_number'];
             $name = $row['full_name'];
@@ -487,7 +557,7 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            $table .= '<tr data-id="' . $id . '" class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
@@ -509,7 +579,7 @@ class DataTable extends BaseQuery
                     </svg>
                 <span class="sr-only">Icon description</span>
                 </a>
-                <button  onclick="deleteClient(' . $id . ')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                <button  onclick="deleteClientApplication(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16px" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
@@ -598,6 +668,7 @@ class DataTable extends BaseQuery
         $number = ($pageNumber - 1) * $itemPerPage + 1;
 
         while ($row = mysqli_fetch_assoc($result)) {
+            $tableName = "client_data";
             $id = $row['id'];
             $meter_number = $row['meter_number'];
             $name = $row['full_name'];
@@ -611,7 +682,7 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
@@ -633,7 +704,7 @@ class DataTable extends BaseQuery
                     </svg>
                 <span class="sr-only">Icon description</span>
                 </a>
-                <button  onclick="deleteClient(' . $id . ')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                <button onclick="deleteClient(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16px" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>

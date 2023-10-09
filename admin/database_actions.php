@@ -50,12 +50,19 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'getTotalItem':
             handleGetTotalItem($dbQueries);
             break;
+        case 'getName':
+            handleGetName($dbQueries);
+            break;
         case 'getClientApplicationData':
             handleGetClientApplicationData($dbQueries);
             break;
         case 'getAddressData':
             handleGetAddressData($dbQueries);
             break;
+        case 'deleteItem':
+            handleDeleteItem($dbQueries);
+            break;
+
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -136,4 +143,24 @@ function handleGetAddressData($dbQueries)
 {
     $getAddressData = $dbQueries->fetchAddressData();
     echo json_encode($getAddressData);
+}
+
+function handleDeleteItem($dbQueries)
+{
+    if (isset($_POST['id']) && isset($_POST['tableName'])) {
+        $id = $_POST['id'];
+        $tableName = $_POST['tableName'];
+        $deleteItem = $dbQueries->deleteItem($id, $tableName);
+        echo json_encode($deleteItem);
+    }
+}
+
+function handleGetName($dbQueries)
+{
+    if (isset($_POST['id']) && isset($_POST['tableName'])) {
+        $id = $_POST['id'];
+        $tableName = $_POST['tableName'];
+        $getName = $dbQueries->getName($id, $tableName);
+        echo json_encode($getName);
+    }
 }
