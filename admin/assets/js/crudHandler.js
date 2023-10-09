@@ -41,6 +41,10 @@ class DeleteHandler {
 
     deleteItem() {
         this.showModal();
+
+        $('.confirm-delete').off('click');
+        $('#cancelDeleteButton').off('click');
+
         $('.confirm-delete').on('click', () => {
             console.log("CONFIRMDELETEBUTTON IS BEING CLICKED");
             this.executeDeletion();

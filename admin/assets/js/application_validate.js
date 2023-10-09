@@ -1,6 +1,4 @@
 $(document).ready(function () {
-
-
     const applicationForm = $('#application_form');
     const meterNumberInput = $('input[name="meterNumber"]')
     const firstNameInput = $('input[name="firstName"]');
@@ -212,6 +210,7 @@ $(document).ready(function () {
                         alert(`${responseData['message']}`)
                     } else if ((responseData['status'] === 'success')) {
                         alert(`${responseData['applicant']}'s application has been added.`)
+                        window.location.reload();
                         // setTimeout(function () {
                         //     window.location.reload();
                         // }, 1000)
@@ -349,16 +348,6 @@ $(document).ready(function () {
                     tooShort: "should be at least %{count} characters or more"
                 }
             },
-            // age: {
-            //     presence: {
-            //         allowEmpty: false,
-            //         message: "cannot be empty",
-            //     },
-            //     numericality: {
-            //         onlyInteger: true,
-            //         greaterThanOrEqualTo: 18,
-            //     }
-            // },
             phoneNumber: {
                 presence: {
                     allowEmpty: false,
@@ -507,6 +496,6 @@ $(document).ready(function () {
 
     navigateUsingArrowKey();
 
-    
+
 });
 

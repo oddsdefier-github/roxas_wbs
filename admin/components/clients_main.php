@@ -26,7 +26,6 @@
                     <?php include 'pagination.php' ?>
                 </div>
             </div>
-
             <!-- <div class="hidden w-full p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
             </div> -->
 

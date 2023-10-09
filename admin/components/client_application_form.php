@@ -107,10 +107,8 @@
                                 <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
                                 <div class="mt-2 relative">
                                     <select id="gender" name="gender" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                        <option value="prefer_not_to_say">Prefer Not to Say</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                     </select>
                                 </div>
                             </div>

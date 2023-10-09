@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         if (roleRedirects[userRole]) {
-            signInForm.hide(200);
+            signInForm.fadeOut(500);
 
             const loader = $(".loader");
             loader.css({
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 $('#loading-message').text('Loading the page, please wait....')
             }, 100)
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            await new Promise(resolve => setTimeout(resolve, 1500));
             loader.hide();
 
             // Redirect to the appropriate role page
@@ -192,7 +192,6 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error('Unexpected user role:', userRole);
         }
     }
-
 
 
 

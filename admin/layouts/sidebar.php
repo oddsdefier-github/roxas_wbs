@@ -38,7 +38,7 @@
         <div class="h-16 text-white pr-10">
             <div class="flex gap-3 h-full items-end justify-center">
                 <div>
-                    <img class=" w-10 h-10 rounded-full cursor-pointer p-1 ring-2 ring-primary-300" src="https://play-lh.googleusercontent.com/O8mvDQlw4AwmGfUrh4lviZD_PwwhRHz2etA25F77SbXrm3qEHOt2826aNkKar4D0yw" alt="User dropdown">
+                    <img data-profile-picture class=" w-10 h-10 rounded-full cursor-pointer p-1 ring-2 ring-primary-300" src="https://play-lh.googleusercontent.com/O8mvDQlw4AwmGfUrh4lviZD_PwwhRHz2etA25F77SbXrm3qEHOt2826aNkKar4D0yw" alt="User dropdown">
                 </div>
                 <div class="flex flex-col justify-center items-start">
                     <h5 class="font-medium text-xs truncate"><?php echo $_SESSION['admin_name']; ?></h5>
@@ -270,6 +270,7 @@
                 }
             }
         });
+        
         const tabSubMenuContainer = $(".submenu-container");
         tabMenu.each(function() {
             $(this).on("click", function(event) {

@@ -1,30 +1,35 @@
 export class DataTableWithPagination {
     constructor (tableName, tableContainerSelector = '#displayClientApplicationTable') {
-        this.currentPageNumber = 1;
+        this.tableName = tableName;
+
+        this.itemsPerPageKey = `${this.tableName}-itemsPerPage`;
+        this.currentPageNumberKey = `${this.tableName}-currentPageNumber`;
+
+        this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 5;
+
+        this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
+
         this.totalItems = 0;
         this.lastPageNumber = 0;
-        this.itemsPerPage = 5;
-        this.tableName = tableName;
 
         this.elements = {
             searchInput: $("#table-search"),
             clearSearch: $("#clear-input"),
             searchIcon: $("#search-icon"),
             tableContainer: $(tableContainerSelector),
-            prevBtn: $("#prev"),
-            nextBtn: $("#next"),
-            startBtn: $("#start"),
-            endBtn: $("#end"),
+            prevBtn: $(`nav[data-table-name='${this.tableName}'] #prev`),
+            nextBtn: $(`nav[data-table-name='${this.tableName}'] #next`),
+            startBtn: $(`nav[data-table-name='${this.tableName}'] #start`),
+            endBtn: $(`nav[data-table-name='${this.tableName}'] #end`),
             itemsPerPageSelector: $('select[data-table-utilities="itemPerPage"]')
         };
+        this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
         this.bindEvents();
-        this.handlePageChange('start');
+        // this.handlePageChange('start');
         this.fetchTableData();
         this.updateButtonsState();
-
     }
-
     bindEvents() {
         let debounceTimeout;
         this.elements.searchInput.on("keyup", () => {
@@ -37,27 +42,28 @@ export class DataTableWithPagination {
         });
 
         // Bind pagination events
-        this.elements.prevBtn.on("click", () => this.handlePageChange("prev"));
+        this.elements.prevBtn.on("click", () => {
+            console.log(`[DEBUG] ${this.tableName} - prevBtn clicked`);
+            this.handlePageChange("prev");
+        });
+
         this.elements.nextBtn.on("click", () => this.handlePageChange("next"));
         this.elements.startBtn.on("click", () => this.handlePageChange("start"));
         this.elements.endBtn.on("click", () => this.handlePageChange("end"));
 
 
         this.elements.itemsPerPageSelector.change(() => {
-            this.itemsPerPage = this.elements.itemsPerPageSelector.val();
-
+            this.itemsPerPage = parseInt(this.elements.itemsPerPageSelector.val(), 10);
+            localStorage.setItem(this.itemsPerPageKey, this.itemsPerPage);
             this.lastPageNumber = Math.ceil(this.totalItems / this.itemsPerPage);
 
             if (this.currentPageNumber > this.lastPageNumber) {
                 this.currentPageNumber = this.lastPageNumber;
             }
-
-            // Fetch data normally.
             this.fetchTableData(this.elements.searchInput.val());
         });
 
         this.elements.clearSearch.on("click", () => {
-            console.log("💀")
             this.elements.searchInput.val("");
             this.handleClearInput();
             this.handleSearch();
@@ -97,7 +103,7 @@ export class DataTableWithPagination {
         this.elements.nextBtn.prop("disabled", this.currentPageNumber >= this.lastPageNumber);
         this.elements.startBtn.prop("disabled", this.currentPageNumber <= 1);
         this.elements.endBtn.prop("disabled", this.currentPageNumber >= this.lastPageNumber);
-        $('a[aria-current="page"]').text(this.currentPageNumber);
+        $(`nav[data-table-name='${this.tableName}'] a[aria-current="page"]`).text(this.currentPageNumber);
     }
 
     fetchTableData(searchTerm = "") {
@@ -123,12 +129,14 @@ export class DataTableWithPagination {
                 this.firstItem = parseInt($('input[data-hidden-name="start"]').val(), 10) || 0;
                 this.lastItem = parseInt($('input[data-hidden-name="end"]').val(), 10) || 0;
 
+
+                console.log("Fetching data for pageNumber:", this.currentPageNumber);
+
                 $('#first_item').text(this.firstItem);
                 $('#last_item').text(this.lastItem);
                 $('#total_items').text(this.totalItems);
 
                 this.lastPageNumber = Math.ceil(this.totalItems / this.itemsPerPage);
-                console.log("🧮 " + this.lastPageNumber);
                 this.updateButtonsState();
 
                 this.elements.tableContainer.find("tbody tr").addClass("animate-fade-in");
@@ -141,9 +149,7 @@ export class DataTableWithPagination {
     }
 
     handlePageChange(direction) {
-        console.log("Inside handlePageChange method");
-        console.log("Direction received:", direction);
-
+        console.log(`[${this.tableName}] Page change handled:`, direction);
         switch (direction) {
             case "prev":
                 if (this.currentPageNumber > 1) this.currentPageNumber--;
@@ -162,6 +168,8 @@ export class DataTableWithPagination {
                 return;
         }
 
+        localStorage.setItem(this.currentPageNumberKey, this.currentPageNumber);
+        console.log("LOCAL STORAGE: " + this.currentPageNumber)
         this.fetchTableData(this.elements.searchInput.val());
     }
 }

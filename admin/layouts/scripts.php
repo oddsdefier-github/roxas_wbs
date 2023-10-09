@@ -11,5 +11,5 @@
 <script src="./assets/js/sidebar.js"></script>
 <script src="./assets/js/signoutHandler.js"></script>
 <script src="./assets/js/modalManager.js"></script>
-
 <script src="./assets/js/apexcharts.js"></script>
+<script src="./assets/js/pfpAPI.js"></script>

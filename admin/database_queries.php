@@ -81,7 +81,7 @@ class DatabaseQueries extends BaseQuery
         $deedOfSale = htmlspecialchars($formData['deedOfSale'], ENT_QUOTES, 'UTF-8');
         $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
 
-        $status = 'new';
+        $status = 'pending';
 
         $checkDuplicateMeterNo = "SELECT meter_number FROM client_application WHERE meter_number = ?";
         $stmt = $this->conn->prepareStatement($checkDuplicateMeterNo);

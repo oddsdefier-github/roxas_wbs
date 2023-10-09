@@ -3,7 +3,6 @@ class ModalHandler {
         this.closeModalButtons = $('button[data-button-type="close-modal"]');
         this.openModalButtons = $('button[data-button-type="open-modal"]');
         this.modals = $('section[data-container="modal"]');
-
         this.initialize();
     }
     initialize() {
