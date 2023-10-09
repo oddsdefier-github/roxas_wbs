@@ -35,5 +35,6 @@ class SignOutHandler {
 }
 
 function signOut() {
+    localStorage.clear();
     SignOutHandler.signOut();
 }

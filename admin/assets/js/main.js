@@ -13,8 +13,8 @@ $(document).ready(function () {
     console.log(filename)
     if (tableName) {
         $('.pagination-container').attr('data-table-name', tableName);
+        $('.table-utilities-container').attr('data-table-name', tableName);
     }
-
     const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
     const clientAppTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
 

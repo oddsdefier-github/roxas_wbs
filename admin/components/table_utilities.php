@@ -1,4 +1,4 @@
-<div class="block">
+<nav class="table-utilities-container block">
     <div class="flex items-center justify-between">
         <div class="flex gap-3">
             <div id="search-input" class="relative">
@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="text-sm uppercase text-gray-400">
-            <select data-table-utilities="itemPerPage" name="recordsPerPage" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2">
+            <select id="item-per-page" data-table-utilities="itemPerPage" name="recordsPerPage" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2">
                 <option value="5">5</option>
                 <option value="10">10</option>
                 <option value="15">15</option>
@@ -26,4 +26,4 @@
             </select>
         </div>
     </div>
-</div>
+</nav>

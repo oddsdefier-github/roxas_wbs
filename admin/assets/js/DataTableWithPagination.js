@@ -21,7 +21,7 @@ export class DataTableWithPagination {
             nextBtn: $(`nav[data-table-name='${this.tableName}'] #next`),
             startBtn: $(`nav[data-table-name='${this.tableName}'] #start`),
             endBtn: $(`nav[data-table-name='${this.tableName}'] #end`),
-            itemsPerPageSelector: $('select[data-table-utilities="itemPerPage"]')
+            itemsPerPageSelector: $(`nav[data-table-name='${this.tableName}'] #item-per-page`)
         };
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
@@ -54,7 +54,7 @@ export class DataTableWithPagination {
 
         this.elements.itemsPerPageSelector.change(() => {
             this.itemsPerPage = parseInt(this.elements.itemsPerPageSelector.val(), 10);
-            localStorage.setItem(this.itemsPerPageKey, this.itemsPerPage);
+            localStorage.setItem(this.itemsPerPageKey, this.itemsPerPage); 
             this.lastPageNumber = Math.ceil(this.totalItems / this.itemsPerPage);
 
             if (this.currentPageNumber > this.lastPageNumber) {
