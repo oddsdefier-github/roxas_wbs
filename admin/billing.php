@@ -33,7 +33,6 @@ include './auth_guard.php';
         </main>
     </section>
 
-
     <?php include './layouts/scripts.php'; ?>
     <script>
         $("#subheader-title").text("Billing")

@@ -21,27 +21,21 @@ include 'database/connection.php';
 	} */
 </style>
 
-<body class="relative flex min-h-screen flex-col bg-primary-100 font-inter">
+<body class="relative flex min-h-screen flex-col font-inter" style="background-color: #1e1b4b;">
 	<div class="absolute inset-x-0 -top-40 -z-40 transform-gpu overflow-hidden blur-3xl">
 		<div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[35deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
-	</div>
-	<div class="fixed top-3 right-2">
-		<?php include 'toggle_outline.php'; ?>
 	</div>
 	<?php include 'loader.php' ?>
 	<main class="flex flex-1 items-center justify-center">
 		<div class="flex w-full max-w-sm flex-col gap-5">
-			<div class="flex w-full items-center justify-center">
-				<div id="logo"> <img src="./assets/quality.png" alt="water-logo" class="aspect-square pointer-events-none w-14 select-none" />
+			<!-- <div class="flex w-full items-center justify-center">
+				<div id="logo"> <img src="./assets/images/wbs-logo.png" alt="water-logo" class="aspect-square pointer-events-none w-14 select-none" />
 				</div>
-				<!-- <div class="hidden absolute cursor-grab" id="cat">
-					<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><lottie-player src="https://lottie.host/8c2976a1-843f-4829-a62b-89f62d1c17b8/8HjjcW05ZO.json" background="transparent" speed="1" style="width: 300px; height: 300px" direction="1" mode="normal" loop autoplay hover></lottie-player>
-				</div> -->
-			</div>
+			</div> -->
 			<form id="form-signin" class="w-full max-w-md bg-white px-7 py-6 shadow-xl rounded-md transition-all duration-150">
-				<div class="my-5 text-left">
+				<div class="mb-5 text-left">
 					<div>
-						<h1 class="block text-2xl font-bold text-gray-800" id="form-header">Sign in</h1>
+						<h1 class="block text-2xl font-bold text-gray-800" id="form-header">SIGN IN</h1>
 						<h5 class="text-base text-gray-400">to start managing customer's data.</h5>
 						<p id="signin-message" class="text-sm font-medium text-red-500"></p>
 					</div>
@@ -69,7 +63,7 @@ include 'database/connection.php';
 								<input data-input-state="error" id="password" name="password" type="password" class="validate-input block px-2.5 py-3 w-full text-sm text-gray-800 bg-transparent rounded-lg border-1 appearance-none border-gray-300 focus:outline-none focus:ring-0 focus:border-indigo-600 peer" placeholder=" " />
 								<label for="password" id="password_label" class="absolute text-sm text-gray-600 dark:text-indigo-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Password</label>
 								<span data-input-state="normal" class="absolute top-0 right-0 px-3 h-full grid place-items-center">
-									<img id="eye-icon" src="assets/eye-close.svg" alt="eye-close" class="w-5 h-5">
+									<img id="eye-icon" src="./assets/images/eye-close.svg" alt="eye-close" class="w-5 h-5">
 								</span>
 							</div>
 							<div data-validate-input="password" class="validate-message"></div>
@@ -84,19 +78,14 @@ include 'database/connection.php';
 
 				</div>
 			</form>
-
 		</div>
 	</main>
 
 
 	<script src="./assets/libs/jquery/jquery.min.js"></script>
 	<script src="./assets/libs/validate.js/validate.min.js"></script>
-	<!-- <script src="./assets/js/signin.js"></script> -->
 
-	<script src="./assets/js/validate.js"></script>
-	<!-- <script src="./assets/js/signin.js"></script>
-	<script type="module" src="./assets/js/variables.js"></script> -->
-
+	<script src="./assets/js/signin.js"></script>
 </body>
 
 </html>

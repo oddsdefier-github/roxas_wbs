@@ -31,6 +31,9 @@ include './auth_guard.php';
         </main>
     </section>
     <?php include './layouts/scripts.php'; ?>
+    <script>
+        $("#subheader-title").siblings("h5").text("Manage, Update, or Delete Client.")
+    </script>
 </body>
 
 </html>
