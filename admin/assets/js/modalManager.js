@@ -37,5 +37,9 @@ class ModalHandler {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new ModalHandler();
+    function modalManager() {
+        new ModalHandler();
+    }
+    modalManager()
+    window.modalManager = modalManager;
 });

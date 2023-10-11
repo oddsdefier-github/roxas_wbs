@@ -33,12 +33,12 @@
         animation: hide 0.5s forwards;
     }
 </style>
-<aside class="flex min-h-screen cursor-pointer bg-primary-700 text-gray-50 text-sm">
-    <div class="h-full w-64" id="sidebar">
+<aside class="flex flex-col min-h-screen cursor-pointer bg-primary-700 text-gray-50 text-sm pb-5" id="sidebar">
+    <div class="h-full w-64">
         <div class="h-16 text-white pr-10">
             <div class="flex gap-3 h-full items-end justify-center">
                 <div>
-                    <img data-profile-picture class=" w-10 h-10 rounded-full cursor-pointer p-1 ring-2 ring-primary-300" src="https://play-lh.googleusercontent.com/O8mvDQlw4AwmGfUrh4lviZD_PwwhRHz2etA25F77SbXrm3qEHOt2826aNkKar4D0yw" alt="User dropdown">
+                    <img data-profile-picture class=" w-10 h-10 rounded-full cursor-pointer p-1 ring-2 ring-primary-300" src="<?php echo BASE_URL ?>/cat.png" alt="User dropdown">
                 </div>
                 <div class="flex flex-col justify-center items-start">
                     <h5 class="font-medium text-xs truncate"><?php echo $_SESSION['admin_name']; ?></h5>
@@ -242,6 +242,13 @@
             </div>
         </div>
     </div>
+    <div class="flex-1 text-white">
+        <div class="flex gap-3 h-full items-end justify-center px-5">
+            <button data-button-type="open-modal" data-modal-name="sign_out" class="flex w-full items-center justify-center px-3 py-2 shadow-md ring-1 ring-primary-500 rounded-md hover:bg-primary-600">
+                <p class="text-base pointer-events-none">Sign out</p>
+            </button>
+        </div>
+    </div>
 </aside>
 
 <script>
@@ -270,7 +277,7 @@
                 }
             }
         });
-        
+
         const tabSubMenuContainer = $(".submenu-container");
         tabMenu.each(function() {
             $(this).on("click", function(event) {
