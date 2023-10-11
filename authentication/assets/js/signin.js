@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function processSignIn() {
         return new Promise((resolve, reject) => {
             let designationSelected = $("#designation-select").find(":selected").text();
+
             let emailInputVal = emailInput.val();
             let passInputVal = passInput.val();
 
@@ -83,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     designationSelectedSend: designationSelected
                 },
                 success: function (response) {
+                    console.log(response)
                     const responseData = JSON.parse(response);
 
                     if (responseData.valid) {
@@ -130,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function playSuccessAudio() {
-        const audio = new Audio('./success.wav');
+        const audio = new Audio('./assets/sounds/success.wav');
         audio.play();
     }
 
@@ -141,18 +143,37 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await $.get(page);
             loadedPages[page] = data;
         }
-        console.log(loadedPages)
         return loadedPages;
     }
 
     async function redirectToRolePage(userRole) {
-        const roleRedirects = {
-            "Admin": "../admin/index.php",
-            "Cashier": "../cashier/index.php",
-            "Meter Reader": "../meter_reader/index.php"
+        const roleData = {
+            "Admin": {
+                "redirect": "../admin/index.php",
+                "preload": [
+                    "clients.php",
+                    "dashboard.php",
+                    "clients_application.php",
+                    "logs.php",
+                    "client_application_review.php"
+                ]
+            },
+            "Cashier": {
+                "redirect": "../cashier/index.php",
+                "preload": [
+
+                ]
+            },
+            "Meter Reader": {
+                "redirect": "../meter-reader/index.php",
+                "preload": [
+
+                ]
+            }
         };
 
-        if (roleRedirects[userRole]) {
+        const data = roleData[userRole];
+        if (data) {
             signInForm.fadeOut(500);
 
             const loader = $(".loader");
@@ -167,67 +188,23 @@ document.addEventListener("DOMContentLoaded", () => {
             loader.show();
 
             // Preload the pages asynchronously
-            const pagesToPreload = [
-                '../admin/clients.php',
-                '../admin/dashboard.php',
-                '../admin/clients_application.php',
-                '../admin/logs.php',
-                '../admin/client_application_review.php',
-            ];
+            const baseDir = data.redirect.substring(0, data.redirect.lastIndexOf('/') + 1);
+            const pagesToPreload = data.preload.map(page => baseDir + page);
 
             await preloadPages(pagesToPreload);
 
             setTimeout(() => {
                 $('#loading-message').text('Loading the page, please wait....')
-            }, 100)
+            }, 100);
+
             await new Promise(resolve => setTimeout(resolve, 1500));
             loader.hide();
 
             // Redirect to the appropriate role page
-            window.location.href = roleRedirects[userRole];
+            window.location.href = data.redirect;
         } else {
             console.error('Unexpected user role:', userRole);
         }
-    }
-
-
-
-    function formSubmissionHandler(e) {
-        e.preventDefault();
-        if (validateFormOnSubmit()) {
-            processSignIn()
-                .then(responseData => {
-                    if (responseData && responseData.user_role) {
-                        playSuccessAudio();
-                        redirectToRolePage(responseData.user_role);
-                    } else {
-                        console.error('Unexpected responseData structure:', responseData);
-                    }
-                })
-                .catch(console.log);
-        }
-    }
-
-    function validateFormOnSubmit() {
-        const emailError = validateField("email", emailInput.val());
-        const passwordError = validateField("password", passInput.val());
-        const allErrors = {
-            email: emailError,
-            password: passwordError
-        };
-
-        let isValid = true;
-
-        for (const [field, error] of Object.entries(allErrors)) {
-            if (error) {
-                isValid = false;
-                displayFieldError(field, error);
-            } else {
-                displayFieldSuccess(field);
-            }
-        }
-
-        return isValid;
     }
 
     function validateField(fieldName, fieldValue) {
@@ -354,6 +331,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function validateFormOnSubmit() {
+        const emailError = validateField("email", emailInput.val());
+        const passwordError = validateField("password", passInput.val());
+        const allErrors = {
+            email: emailError,
+            password: passwordError
+        };
+
+        let isValid = true;
+
+        for (const [field, error] of Object.entries(allErrors)) {
+            if (error) {
+                isValid = false;
+                displayFieldError(field, error);
+            } else {
+                displayFieldSuccess(field);
+            }
+        }
+
+        return isValid;
+    }
+
     function formSubmissionHandler(e) {
         e.preventDefault();
 
@@ -364,13 +363,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        if (allInputsValid) {
-            processSignIn()
-                .then(responseData => {
-                    playSuccessAudio();
-                    redirectToRolePage(responseData.user_role);
-                })
-                .catch(console.log);
+        if (validateFormOnSubmit()) {
+            if (allInputsValid) {
+                processSignIn()
+                    .then(responseData => {
+                        if (responseData && responseData.user_role) {
+                            playSuccessAudio();
+                            redirectToRolePage(responseData.user_role);
+                        } else {
+                            console.error('Unexpected responseData structure:', responseData);
+                        }
+                    })
+                    .catch(console.log);
+            }
         }
     }
 

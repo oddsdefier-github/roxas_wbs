@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 
 if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['designationSelectedSend'])) {
     $emailSEND = filter_var($_POST['emailSend'], FILTER_SANITIZE_EMAIL);
@@ -22,10 +25,9 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
             "emptyFields" => $emptyFields
         );
     } else {
-
-        include 'database/connection.php';
+        include './database/connection.php';
         $sql = "SELECT * FROM admin WHERE email = ?";
-        $stmt = mysqli_prepare($conn, $sql);
+        $stmt = $conn->prepareStatement($sql);
 
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "s", $emailSEND);
@@ -69,7 +71,7 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
 
                     $sign_in_log = "INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `description`, `date`, `time`, `datetime`) VALUES (NULL, '$log_id', '$role_db', '$admin_name', '$activity', '$description', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);";
 
-                    $result = mysqli_query($conn, $sign_in_log);
+                    $result = $conn->query($sign_in_log);
 
                     $response = array(
                         "valid" => true,
@@ -98,8 +100,7 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
                 "message" => "Database error."
             );
         }
-
-        mysqli_close($conn);
+        $conn->close();
     }
 
     echo json_encode($response);
