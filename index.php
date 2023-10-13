@@ -96,7 +96,7 @@
 	</section>
 	<div class="absolute w-screen h-screen z-50 pointer-events-none flex justify-start items-end">
 		<div class="max-w-sm absolute -bottom-16 -right-10">
-			<img src="./water-utility.png" alt="water-utility">
+			<img src="./water-utility.png" alt="water-utility" loading="lazy">
 		</div>
 	</div>
 	<!-- <div class="pointer-events-none absolute -bottom-20 -right-10 opacity-30">

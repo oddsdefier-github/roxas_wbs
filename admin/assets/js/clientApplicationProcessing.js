@@ -318,28 +318,6 @@ $(document).ready(function () {
 
                         window.open(`./print.php?id=${responseData['registration_id']}`, '_blank');
 
-                        // setTimeout(() => {
-                        //     console.log("Before AJAX request");
-                        //     $.ajax({
-                        //         url: "print.php",
-                        //         type: "POST",
-                        //         data: {
-                        //             data: responseData
-                        //         },
-                        //         success: function (data) {
-                        //             console.log("PDF was created.")
-                        //         },
-                        //         error: function (xhr, textStatus, errorThrown) {
-                        //             console.error("Error:", errorThrown);
-                        //         }
-                        //     });
-                        //     console.log("After AJAX request");
-                        // }, 500);
-
-
-                        // setTimeout(function () {
-                        //     window.location.reload();
-                        // }, 1000)
                     }
                 }
             },

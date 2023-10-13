@@ -15,7 +15,7 @@ $(document).ready(function () {
         $('.pagination-container').attr('data-table-name', tableName);
         $('.table-utilities-container').attr('data-table-name', tableName);
     }
-    // const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
+    const clientTable = new DataTableWithPagination("client_data", '#displayClientForBilling');
     // const clientAppTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
 
 });

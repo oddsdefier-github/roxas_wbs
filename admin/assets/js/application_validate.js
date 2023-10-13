@@ -42,8 +42,6 @@ $(document).ready(function () {
 
     addTrackingAttr()
 
-    console.log(addTrackingAttr())
-
     const cssClasses = {
         normalLabelClass: 'block text-sm font-medium leading-6 text-gray-600',
         errorLabelClass: 'block text-sm font-medium leading-6 text-red-600',
@@ -86,7 +84,6 @@ $(document).ready(function () {
         }
         function getAgeIntValue(ageInput) {
             age = ageInput.val().trim();
-            console.log(age);
             age = age.split(" ")[0]
             if (!isNaN(age)) {
                 return age;
@@ -146,30 +143,6 @@ $(document).ready(function () {
             }
         };
 
-        console.log("meterNumber:", formInput.meterNumber);
-        console.log("firstName:", formInput.firstName);
-        console.log("middleName:", formInput.middleName);
-        console.log("lastName:", formInput.lastName);
-        console.log("nameSuffix:", formInput.nameSuffix);
-        console.log("birthDate:", formInput.birthDate);
-        console.log("age:", formInput.age);
-        console.log("gender:", formInput.gender);
-        console.log("phoneNumber:", formInput.phoneNumber);
-        console.log("email:", formInput.email);
-        console.log("propertyType:", formInput.propertyType);
-        console.log("streetAddress:", formInput.streetAddress);
-        console.log("brgy:", formInput.brgy);
-        console.log("municipality:", formInput.municipality);
-        console.log("province:", formInput.province);
-        console.log("region:", formInput.region);
-        console.log("validID:", formInput.validID);
-        console.log("proofOfOwnership:", formInput.proofOfOwnership);
-        console.log("deedOfSale:", formInput.deedOfSale);
-        console.log("affidavit:", formInput.affidavit);
-        console.log("getFullNameWithInitial:", formInput.getFullNameWithInitial());
-        console.log("getFullAddress:", formInput.getFullAddress());
-
-
         $.ajax({
             url: "database_actions.php",
             type: "POST",
@@ -203,7 +176,6 @@ $(document).ready(function () {
             },
             success: function (data) {
                 responseData = data;
-                console.log(data)
 
                 if (responseData) {
                     if (responseData['status'] === 'error') {
@@ -243,22 +215,19 @@ $(document).ready(function () {
     $('#birthdate').on("keyup", function (event) {
         if (event.key === 'Enter') {
             validateAndCalculateAge();
+            $(this).trigger('blur')
         }
     });
 
     function validateAndCalculateAge() {
-        console.log("👩‍🎤");
         const dateText = $('#birthdate').val();
         const parts = dateText.split("/");
 
         if (parts.length === 3) {
             const birthdate = new Date(parts[2], parts[0] - 1, parts[1]);
-            console.log(birthdate)
             const today = new Date();
-            console.log(today)
 
             const age = today.getFullYear() - birthdate.getFullYear();
-            console.log(age)
 
             if (parseInt(today.getMonth() < birthdate.getMonth() || (today.getMonth() === birthdate.getMonth() && today.getDate() < birthdate.getDate()))) {
                 age--;
@@ -398,11 +367,7 @@ $(document).ready(function () {
 
 
         if (errorMessage) {
-            console.log(errorMessage)
             $(this).attr('data-input-track', 'error')
-
-
-            console.log($(this).attr('data-input-state'));
 
             $('#submit-application')
                 .text('Fill all fields')
@@ -446,12 +411,9 @@ $(document).ready(function () {
         let count = 0;
         $.each(inputs, function (index, item) {
             if (item.attr('data-input-track') === 'valid') {
-                console.log('👌')
                 count++
             }
-            console.log(count)
             if (count === inputs.length) {
-                console.log('🐓')
                 $('#submit-application')
                     .text("Submit")
                     .prop('disabled', false)

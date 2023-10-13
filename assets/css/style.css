@@ -5952,6 +5952,11 @@ input:checked + .toggle-bg {
   color: rgb(165 180 252 / var(--tw-text-opacity));
 }
 
+.peer:checked ~ .peer-checked\:border-green-400 {
+  --tw-border-opacity: 1;
+  border-color: rgb(49 196 141 / var(--tw-border-opacity));
+}
+
 .peer:checked ~ .peer-checked\:border-primary-600 {
   --tw-border-opacity: 1;
   border-color: rgb(79 70 229 / var(--tw-border-opacity));

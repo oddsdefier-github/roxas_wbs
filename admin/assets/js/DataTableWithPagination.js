@@ -43,7 +43,6 @@ export class DataTableWithPagination {
 
         // Bind pagination events
         this.elements.prevBtn.on("click", () => {
-            console.log(`[DEBUG] ${this.tableName} - prevBtn clicked`);
             this.handlePageChange("prev");
         });
 
@@ -54,7 +53,7 @@ export class DataTableWithPagination {
 
         this.elements.itemsPerPageSelector.change(() => {
             this.itemsPerPage = parseInt(this.elements.itemsPerPageSelector.val(), 10);
-            localStorage.setItem(this.itemsPerPageKey, this.itemsPerPage); 
+            localStorage.setItem(this.itemsPerPageKey, this.itemsPerPage);
             this.lastPageNumber = Math.ceil(this.totalItems / this.itemsPerPage);
 
             if (this.currentPageNumber > this.lastPageNumber) {
@@ -129,9 +128,6 @@ export class DataTableWithPagination {
                 this.firstItem = parseInt($('input[data-hidden-name="start"]').val(), 10) || 0;
                 this.lastItem = parseInt($('input[data-hidden-name="end"]').val(), 10) || 0;
 
-
-                console.log("Fetching data for pageNumber:", this.currentPageNumber);
-
                 $('#first_item').text(this.firstItem);
                 $('#last_item').text(this.lastItem);
                 $('#total_items').text(this.totalItems);
@@ -149,7 +145,6 @@ export class DataTableWithPagination {
     }
 
     handlePageChange(direction) {
-        console.log(`[${this.tableName}] Page change handled:`, direction);
         switch (direction) {
             case "prev":
                 if (this.currentPageNumber > 1) this.currentPageNumber--;
@@ -169,7 +164,6 @@ export class DataTableWithPagination {
         }
 
         localStorage.setItem(this.currentPageNumberKey, this.currentPageNumber);
-        console.log("LOCAL STORAGE: " + this.currentPageNumber)
         this.fetchTableData(this.elements.searchInput.val());
     }
 }

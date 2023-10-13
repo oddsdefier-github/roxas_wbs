@@ -137,13 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function preloadPages(pages) {
-        let loadedPages = {};
-
-        for (let page of pages) {
-            const data = await $.get(page);
-            loadedPages[page] = data;
-        }
-        return loadedPages;
+        let promises = pages.map(page => $.get(page));
+        let results = await Promise.all(promises);
+        return Object.fromEntries(pages.map((page, index) => [page, results[index]]));
     }
 
     async function redirectToRolePage(userRole) {
@@ -151,17 +147,16 @@ document.addEventListener("DOMContentLoaded", () => {
             "Admin": {
                 "redirect": "../admin/index.php",
                 "preload": [
-                    "clients.php",
-                    "dashboard.php",
-                    "clients_application.php",
-                    "logs.php",
-                    "client_application_review.php"
+                    "components/client_application_form.php",
+                    "components/dashboard_main.php",
+                    "components/clients_application_main.php",
+                    "components/logs_main.php",
+                    "components/client_application_review_main.php"
                 ]
             },
             "Cashier": {
                 "redirect": "../cashier/index.php",
                 "preload": [
-
                 ]
             },
             "Meter Reader": {
@@ -191,16 +186,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const baseDir = data.redirect.substring(0, data.redirect.lastIndexOf('/') + 1);
             const pagesToPreload = data.preload.map(page => baseDir + page);
 
+            console.log(pagesToPreload)
             await preloadPages(pagesToPreload);
 
             setTimeout(() => {
                 $('#loading-message').text('Loading the page, please wait....')
-            }, 100);
+            }, 200);
 
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 2000));
             loader.hide();
 
-            // Redirect to the appropriate role page
             window.location.href = data.redirect;
         } else {
             console.error('Unexpected user role:', userRole);
@@ -296,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             updateSubmitButtonState();
 
-            return false; // indicates the input is not valid
+            return false;
         } else {
             const inputLabel = inputElement.siblings('label');
             const inputParent = inputElement.parent();
@@ -318,7 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             updateSubmitButtonState();
 
-            return true; // indicates the input is valid
+            return true;
         }
     }
 
@@ -386,5 +381,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     eyeIcon.on("click", togglePasswordVisibility);
     signInForm.on("submit", formSubmissionHandler);
-
 });
