@@ -41,10 +41,6 @@ include 'database/connection.php';
 	<?php include './components/loader.php' ?>
 	<main class="flex flex-1 items-center justify-center">
 		<div class="flex w-full max-w-sm flex-col gap-5">
-			<!-- <div class="flex w-full items-center justify-center">
-				<div id="logo"> <img src="./assets/images/wbs-logo.png" alt="water-logo" class="aspect-square pointer-events-none w-14 select-none" />
-				</div>
-			</div> -->
 			<form id="form-signin" class="w-full max-w-md bg-white px-7 py-6 shadow-xl rounded-md transition-all duration-150">
 				<div class="mb-5 text-left">
 					<div>

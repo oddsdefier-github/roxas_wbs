@@ -1,4 +1,5 @@
 <?php
+
 include './database/connection.php';
 
 include './auth_guard.php';
@@ -32,8 +33,11 @@ include './auth_guard.php';
     </section>
 
     <?php include './layouts/scripts.php'; ?>
+    <script src="./assets/js/application_validate.js"></script>
     <script>
-        $("#subheader-title").text("Billing")
+        $("#subheader-title").text("Encode Billing Data");
+        $("#subheader-title").siblings("h5").text("Handle, Assess, or Encode Billing Data.")
+        $("#subheader-title").parent("div").siblings("div").hide()
     </script>
 </body>
 

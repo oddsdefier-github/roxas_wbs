@@ -6,7 +6,7 @@
                     <button class="inline-block p-4 text-blue-600 border-b-2 rounded-t-lg active" id="billing-tab" data-tabs-target="#billing" type="button" role="tab" aria-controls="billing" aria-selected="false">Billing</button>
                 </li>
                 <li class="mr-2" role="presentation">
-                    <button id="load-client-app" data-utils="load-table" data-current-page="1" class="inline-block p-4 text-blue-600 border-b-2 rounded-t-lg" id="dashboard-tab" data-tabs-target="#dashboard" type="button" role="tab" aria-controls="dashboard" aria-selected="false">Applicants</button>
+                    <button id="load-client-app" data-utils="load-table" data-current-page="1" class="inline-block p-4 text-blue-600 border-b-2 rounded-t-lg" id="dashboard-tab" data-tabs-target="#dashboard" type="button" role="tab" aria-controls="dashboard" aria-selected="false">Application Billing</button>
                 </li>
                 <li class="mr-2" role="presentation">
                     <button class="inline-block p-4 text-blue-600 border-b-2 rounded-t-lg" id="settings-tab" data-tabs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Recent</button>
