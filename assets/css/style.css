@@ -1768,8 +1768,16 @@ input:checked + .toggle-bg {
   grid-column: span 12 / span 12;
 }
 
+.col-span-4 {
+  grid-column: span 4 / span 4;
+}
+
 .col-span-full {
   grid-column: 1 / -1;
+}
+
+.col-span-2 {
+  grid-column: span 2 / span 2;
 }
 
 .float-right {
@@ -2204,6 +2212,10 @@ input:checked + .toggle-bg {
   width: 16rem;
 }
 
+.w-72 {
+  width: 18rem;
+}
+
 .w-8 {
   width: 2rem;
 }
@@ -2271,6 +2283,10 @@ input:checked + .toggle-bg {
 
 .shrink {
   flex-shrink: 1;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
 }
 
 .flex-grow {
@@ -2964,6 +2980,12 @@ input:checked + .toggle-bg {
   margin-bottom: calc(3rem * var(--tw-space-y-reverse));
 }
 
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+
 .space-y-6 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
@@ -3593,9 +3615,19 @@ input:checked + .toggle-bg {
   background-color: rgb(222 247 236 / var(--tw-bg-opacity));
 }
 
+.bg-green-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(49 196 141 / var(--tw-bg-opacity));
+}
+
 .bg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(14 159 110 / var(--tw-bg-opacity));
+}
+
+.bg-indigo-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(104 117 245 / var(--tw-bg-opacity));
 }
 
 .bg-indigo-600 {
@@ -3820,6 +3852,10 @@ input:checked + .toggle-bg {
 
 .p-2\.5 {
   padding: 0.625rem;
+}
+
+.p-3 {
+  padding: 0.75rem;
 }
 
 .p-4 {
@@ -4056,6 +4092,10 @@ input:checked + .toggle-bg {
 
 .align-super {
   vertical-align: super;
+}
+
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .text-2xl {
@@ -4310,6 +4350,11 @@ input:checked + .toggle-bg {
 .text-indigo-700 {
   --tw-text-opacity: 1;
   color: rgb(81 69 205 / var(--tw-text-opacity));
+}
+
+.text-indigo-800 {
+  --tw-text-opacity: 1;
+  color: rgb(66 56 157 / var(--tw-text-opacity));
 }
 
 .text-primary-100 {
@@ -5426,6 +5471,16 @@ input:checked + .toggle-bg {
   }
 }
 
+.placeholder\:text-sm::-moz-placeholder {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.placeholder\:text-sm::placeholder {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 .placeholder\:text-gray-400::-moz-placeholder {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
@@ -5454,6 +5509,90 @@ input:checked + .toggle-bg {
 .placeholder\:text-red-400::placeholder {
   --tw-text-opacity: 1;
   color: rgb(249 128 128 / var(--tw-text-opacity));
+}
+
+.font-inter .placeholder\:text-sm::-moz-placeholder, .placeholder\:text-sm .font-inter::-moz-placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: -0.006223544em;
+}
+
+.font-inter .placeholder\:text-sm::placeholder,.placeholder\:text-sm .font-inter::placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: -0.006223544em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-tighter::-moz-placeholder, .font-inter .placeholder\:text-sm.tracking-tighter::-moz-placeholder, .placeholder\:text-sm .font-inter .tracking-tighter::-moz-placeholder, .placeholder\:text-sm .font-inter.tracking-tighter::-moz-placeholder, .tracking-tighter .font-inter .placeholder\:text-sm::-moz-placeholder, .tracking-tighter .placeholder\:text-sm.font-inter::-moz-placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: -0.056223544em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-tighter::placeholder, .font-inter .placeholder\:text-sm.tracking-tighter::placeholder,.placeholder\:text-sm .font-inter .tracking-tighter::placeholder,.placeholder\:text-sm .font-inter.tracking-tighter::placeholder, .tracking-tighter .font-inter .placeholder\:text-sm::placeholder, .tracking-tighter .placeholder\:text-sm.font-inter::placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: -0.056223544em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-tight::-moz-placeholder, .font-inter .placeholder\:text-sm.tracking-tight::-moz-placeholder, .placeholder\:text-sm .font-inter .tracking-tight::-moz-placeholder, .placeholder\:text-sm .font-inter.tracking-tight::-moz-placeholder, .tracking-tight .font-inter .placeholder\:text-sm::-moz-placeholder, .tracking-tight .placeholder\:text-sm.font-inter::-moz-placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: -0.031223544em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-tight::placeholder, .font-inter .placeholder\:text-sm.tracking-tight::placeholder,.placeholder\:text-sm .font-inter .tracking-tight::placeholder,.placeholder\:text-sm .font-inter.tracking-tight::placeholder, .tracking-tight .font-inter .placeholder\:text-sm::placeholder, .tracking-tight .placeholder\:text-sm.font-inter::placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: -0.031223544em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-normal::-moz-placeholder, .font-inter .placeholder\:text-sm.tracking-normal::-moz-placeholder, .placeholder\:text-sm .font-inter .tracking-normal::-moz-placeholder, .placeholder\:text-sm .font-inter.tracking-normal::-moz-placeholder, .tracking-normal .font-inter .placeholder\:text-sm::-moz-placeholder, .tracking-normal .placeholder\:text-sm.font-inter::-moz-placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: -0.006223544em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-normal::placeholder, .font-inter .placeholder\:text-sm.tracking-normal::placeholder,.placeholder\:text-sm .font-inter .tracking-normal::placeholder,.placeholder\:text-sm .font-inter.tracking-normal::placeholder, .tracking-normal .font-inter .placeholder\:text-sm::placeholder, .tracking-normal .placeholder\:text-sm.font-inter::placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: -0.006223544em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-wide::-moz-placeholder, .font-inter .placeholder\:text-sm.tracking-wide::-moz-placeholder, .placeholder\:text-sm .font-inter .tracking-wide::-moz-placeholder, .placeholder\:text-sm .font-inter.tracking-wide::-moz-placeholder, .tracking-wide .font-inter .placeholder\:text-sm::-moz-placeholder, .tracking-wide .placeholder\:text-sm.font-inter::-moz-placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.018776456em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-wide::placeholder, .font-inter .placeholder\:text-sm.tracking-wide::placeholder,.placeholder\:text-sm .font-inter .tracking-wide::placeholder,.placeholder\:text-sm .font-inter.tracking-wide::placeholder, .tracking-wide .font-inter .placeholder\:text-sm::placeholder, .tracking-wide .placeholder\:text-sm.font-inter::placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.018776456em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-wider::-moz-placeholder, .font-inter .placeholder\:text-sm.tracking-wider::-moz-placeholder, .placeholder\:text-sm .font-inter .tracking-wider::-moz-placeholder, .placeholder\:text-sm .font-inter.tracking-wider::-moz-placeholder, .tracking-wider .font-inter .placeholder\:text-sm::-moz-placeholder, .tracking-wider .placeholder\:text-sm.font-inter::-moz-placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.043776456em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-wider::placeholder, .font-inter .placeholder\:text-sm.tracking-wider::placeholder,.placeholder\:text-sm .font-inter .tracking-wider::placeholder,.placeholder\:text-sm .font-inter.tracking-wider::placeholder, .tracking-wider .font-inter .placeholder\:text-sm::placeholder, .tracking-wider .placeholder\:text-sm.font-inter::placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.043776456em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-widest::-moz-placeholder, .font-inter .placeholder\:text-sm.tracking-widest::-moz-placeholder, .placeholder\:text-sm .font-inter .tracking-widest::-moz-placeholder, .placeholder\:text-sm .font-inter.tracking-widest::-moz-placeholder, .tracking-widest .font-inter .placeholder\:text-sm::-moz-placeholder, .tracking-widest .placeholder\:text-sm.font-inter::-moz-placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.093776456em;
+}
+
+.font-inter .placeholder\:text-sm .tracking-widest::placeholder, .font-inter .placeholder\:text-sm.tracking-widest::placeholder,.placeholder\:text-sm .font-inter .tracking-widest::placeholder,.placeholder\:text-sm .font-inter.tracking-widest::placeholder, .tracking-widest .font-inter .placeholder\:text-sm::placeholder, .tracking-widest .placeholder\:text-sm.font-inter::placeholder {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.093776456em;
 }
 
 .after\:absolute::after {
@@ -5574,9 +5713,19 @@ input:checked + .toggle-bg {
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-green-800:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(3 84 63 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-indigo-500:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(104 117 245 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-indigo-600:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(88 80 236 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-primary-400:hover {
@@ -5638,6 +5787,11 @@ input:checked + .toggle-bg {
   color: rgb(28 100 242 / var(--tw-text-opacity));
 }
 
+.hover\:text-gray-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+
 .hover\:text-gray-600:hover {
   --tw-text-opacity: 1;
   color: rgb(75 85 99 / var(--tw-text-opacity));
@@ -5676,6 +5830,11 @@ input:checked + .toggle-bg {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.hover\:text-red-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(240 82 82 / var(--tw-text-opacity));
 }
 
 .hover\:underline:hover {
@@ -5847,6 +6006,11 @@ input:checked + .toggle-bg {
   --tw-ring-color: rgb(107 114 128 / var(--tw-ring-opacity));
 }
 
+.focus\:ring-green-300:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(132 225 188 / var(--tw-ring-opacity));
+}
+
 .focus\:ring-green-500:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(14 159 110 / var(--tw-ring-opacity));
@@ -5855,6 +6019,11 @@ input:checked + .toggle-bg {
 .focus\:ring-indigo-200:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(205 219 254 / var(--tw-ring-opacity));
+}
+
+.focus\:ring-indigo-300:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(180 198 252 / var(--tw-ring-opacity));
 }
 
 .focus\:ring-indigo-500:focus {
@@ -6138,6 +6307,11 @@ input:checked + .toggle-bg {
   background-color: rgb(3 84 63 / var(--tw-bg-opacity));
 }
 
+:is(.dark .dark\:bg-green-900) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(1 71 55 / var(--tw-bg-opacity));
+}
+
 :is(.dark .dark\:bg-primary-600) {
   --tw-bg-opacity: 1;
   background-color: rgb(79 70 229 / var(--tw-bg-opacity));
@@ -6205,6 +6379,11 @@ input:checked + .toggle-bg {
 :is(.dark .dark\:text-green-200) {
   --tw-text-opacity: 1;
   color: rgb(188 240 218 / var(--tw-text-opacity));
+}
+
+:is(.dark .dark\:text-green-300) {
+  --tw-text-opacity: 1;
+  color: rgb(132 225 188 / var(--tw-text-opacity));
 }
 
 :is(.dark .dark\:text-indigo-500) {
@@ -6320,6 +6499,11 @@ input:checked + .toggle-bg {
 :is(.dark .dark\:focus\:ring-gray-600:focus) {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(75 85 99 / var(--tw-ring-opacity));
+}
+
+:is(.dark .dark\:focus\:ring-indigo-800:focus) {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(66 56 157 / var(--tw-ring-opacity));
 }
 
 :is(.dark .dark\:focus\:ring-primary-500:focus) {

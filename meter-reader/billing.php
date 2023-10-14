@@ -32,6 +32,9 @@ include './auth_guard.php';
         </main>
     </section>
 
+    <?php include './components/modal/encode_reading_data_modal.php'; ?>
+    <?php include './components/modal/view_reading_data_modal.php'; ?>
+
     <?php include './layouts/scripts.php'; ?>
     <script src="./assets/js/application_validate.js"></script>
     <script>

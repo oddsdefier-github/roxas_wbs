@@ -1,32 +1,12 @@
-import { DataTableWithPagination } from './DataTableWithPagination.js';
-class DeleteHandler {
-    constructor (delId, tableName) {
-        this.deleteModal = $('#deleteClientModal');
-        this.id = delId;
+class EncodeHandler {
+    constructor (clientID, tableName) {
+        this.encodeReadingDataModal = $('#encodeReadingDataModal');
+        this.id = clientID;
         this.tableName = tableName;
     }
 
-
     showModal() {
-        $.ajax({
-            url: "database_actions.php",
-            type: "post",
-            dataType: 'json',
-            data: {
-                action: "getName",
-                id: this.id,
-                tableName: this.tableName
-            },
-            success: (data) => {
-                const fullName = data.full_name;
-                $("span[data-delete-name]").text(fullName);
-            },
-            error: (error) => {
-                console.log("Error fetching name:", error);
-            }
-        });
-
-        this.deleteModal.css({
+        this.encodeReadingDataModal.css({
             'display': 'grid',
             'place-items': 'center',
             'justify-content': 'center',
@@ -36,7 +16,7 @@ class DeleteHandler {
 
 
     hideModal() {
-        this.deleteModal.css('display', 'none');
+        this.encodeReadingDataModal.css('display', 'none');
     }
 
     deleteItem() {
@@ -58,40 +38,57 @@ class DeleteHandler {
 }
 
 
-class EnhancedDeleteHandler extends DeleteHandler {
-    constructor (delId, tableName, tableInstance) {
-        super(delId, tableName);
-        this.tableInstance = tableInstance;
+class viewHandler {
+    constructor (clientID, tableName) {
+        this.viewReadingDataModal = $('#viewReadingDataModal');
+        this.id = clientID;
+        this.tableName = tableName;
     }
 
-    executeDeletion() {
-        $.ajax({
-            url: "database_actions.php",
-            type: "post",
-            data: {
-                action: "deleteItem",
-                id: this.id,
-                tableName: this.tableName
-            },
-            success: (data) => {
-                console.log(data);
+    showModal() {
+        this.viewReadingDataModal.css({
+            'display': 'grid',
+            'place-items': 'center',
+            'justify-content': 'center',
+            'align-items': 'center'
+        });
+    }
 
-                this.tableInstance.fetchTableData();
-            }
+
+    hideModal() {
+        this.viewReadingDataModal.css('display', 'none');
+    }
+
+    deleteItem() {
+        this.showModal();
+
+        $('.confirm-delete').off('click');
+        $('#cancelDeleteButton').off('click');
+
+        $('.confirm-delete').on('click', () => {
+            console.log("CONFIRMDELETEBUTTON IS BEING CLICKED");
+            this.executeDeletion();
+            this.hideModal();
+        });
+
+        $('#cancelDeleteButton').on('click', () => {
+            this.hideModal();
         });
     }
 }
 
-function deleteClient(delId, tableName) {
-    const clientTable = new DataTableWithPagination(tableName, '#displayClientDataTable');
-    const handler = new EnhancedDeleteHandler(delId, tableName, clientTable);
-    handler.deleteItem();
-}
-function deleteClientApplication(delId, tableName) {
-    const clientTable = new DataTableWithPagination(tableName, '#displayClientApplicationTable');
-    const handler = new EnhancedDeleteHandler(delId, tableName, clientTable);
+
+function encodeReadingData(clientID, tableName) {
+    const handler = new EncodeHandler(clientID, tableName, "client-data");
     handler.deleteItem();
 }
 
-window.deleteClient = deleteClient;
-window.deleteClientApplication = deleteClientApplication;
+function viewReadingData(clientID, tableName) {
+    const handler = new viewHandler(clientID, tableName, "client-data");
+    handler.deleteItem();
+}
+
+
+window.encodeReadingData = encodeReadingData;
+window.viewReadingData = viewReadingData;
+
