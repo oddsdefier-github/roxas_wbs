@@ -20,3 +20,4 @@ $database2 = $database2Config['db_name'];
 
 define('BASE_URL', 'http://localhost/wbs_zero_php/');
 define('HOME_URL', BASE_URL);
+define('METER_READER_FLAGS', BASE_URL . 'files/meter-reader-flags');

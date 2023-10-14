@@ -34,13 +34,18 @@
                     <div class="flex flex-col gap-2 mb-3">
                         <div class="mb-2">
                             <h4 class="client-name text-lg font-semibold flex justify-start items-center gap-2">
-                                <span class="font-bold">Jeffry James M. Paner</span>
+                                <span class="font-bold cursor-default text-primary-800">Jeffry James M. Paner</span>
+                                <span class="hover:bg-gray-200 rounded-full p-2 cursor-pointer" title="Link to client's profile">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                                        <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
                                 <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                     <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
                                     Active
                                 </span>
                             </h4>
-                            <h6 class="text-sm text-gray-600"><span class="uppercase font-semibold">Residential</span> • W-12323</h6>
+                            <h6 class="text-sm text-gray-600"><span class="cursor-default uppercase font-semibold" title="Property Type">Residential</span> • <span class="cursor-default" title="Meter No.">W-12323</span></h6>
                         </div>
                         <div class="py-4">
                             <div class="pb-4">
@@ -65,7 +70,7 @@
                                 </div>
 
                                 </label>
-                                <input type="text" id="large-input" class="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="">
+                                <input type="text" id="large-input" class="block w-full p-4 text-sm text-gray-400 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="Consumption will be automatically calculated">
                             </div>
                             <div class="mb-4">
                                 <label for="large-input" class="mb-2 flex items-center text-sm font-medium text-gray-600">Previous Reading
@@ -101,13 +106,24 @@
                                     <div data-popper-arrow></div>
                                 </div>
                                 <input type="text" id="large-input" class="block w-full rounded-lg border-0 p-4 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-500">
+
+                                <div>
+                                    <p class="validate-message"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div id="accordion-collapse" data-accordion="collapse">
                         <h2 id="accordion-collapse-heading-1">
                             <button type="button" class="flex items-center justify-between w-full p-2 py-3 font-medium text-left text-gray-500 border border-gray-200 focus:rounded-b-none-0 hover:bg-gray-100" data-accordion-target="#accordion-collapse-body-1" aria-expanded="false" aria-controls="accordion-collapse-body-1">
-                                <span class="text-sm font-bold">Report an issue?</span>
+                                <span class="text-sm font-bold  flex items-center gap-2">
+                                    <span class="inline-flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                                            <path d="M3.5 2.75a.75.75 0 00-1.5 0v14.5a.75.75 0 001.5 0v-4.392l1.657-.348a6.449 6.449 0 014.271.572 7.948 7.948 0 005.965.524l2.078-.64A.75.75 0 0018 12.25v-8.5a.75.75 0 00-.904-.734l-2.38.501a7.25 7.25 0 01-4.186-.363l-.502-.2a8.75 8.75 0 00-5.053-.439l-1.475.31V2.75z" />
+                                        </svg>
+                                    </span>
+                                    Report an issue?
+                                </span>
                                 <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5" />
                                 </svg>

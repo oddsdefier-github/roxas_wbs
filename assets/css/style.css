@@ -1768,16 +1768,8 @@ input:checked + .toggle-bg {
   grid-column: span 12 / span 12;
 }
 
-.col-span-4 {
-  grid-column: span 4 / span 4;
-}
-
 .col-span-full {
   grid-column: 1 / -1;
-}
-
-.col-span-2 {
-  grid-column: span 2 / span 2;
 }
 
 .float-right {
@@ -4377,6 +4369,11 @@ input:checked + .toggle-bg {
   color: rgb(79 70 229 / var(--tw-text-opacity));
 }
 
+.text-primary-800 {
+  --tw-text-opacity: 1;
+  color: rgb(55 48 163 / var(--tw-text-opacity));
+}
+
 .text-red-300 {
   --tw-text-opacity: 1;
   color: rgb(248 180 180 / var(--tw-text-opacity));
@@ -5830,11 +5827,6 @@ input:checked + .toggle-bg {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.hover\:text-red-500:hover {
-  --tw-text-opacity: 1;
-  color: rgb(240 82 82 / var(--tw-text-opacity));
 }
 
 .hover\:underline:hover {
