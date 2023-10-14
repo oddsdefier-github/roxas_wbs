@@ -1,4 +1,5 @@
 <?php
+
 include './database/connection.php';
 
 include './auth_guard.php';
@@ -17,25 +18,27 @@ include './auth_guard.php';
 
 <body class="flex h-screen w-screen overflow-hidden font-inter bg-gray-50">
     <?php include './components/alerts.php'; ?>
-    <?php include './components/notification.php'; ?>
     <?php include './components/modal/modal.php'; ?>
+    <?php include './components/notification.php'; ?>
     <?php include './components/logout_loader.php'; ?>
     <?php include './layouts/sidebar.php'; ?>
 
-    <section class="flex min-h-screen grow flex-col bg-gray-100">
+    <section class="flex min-h-screen grow flex-col bg-white">
         <?php include './layouts/header.php'; ?>
         <?php include './components/subheader.php'; ?>
-        <main class="relative flex flex-1 flex-col justify-start px-10 overflow-auto">
-            <div class="flex flex-col gap-5 bg-white p-5 rounded-md shadow-md mb-10">
-                <?php include './components/clients_table_utilities.php'; ?>
-                <?php include './components/clients_main.php'; ?>
+        <main class="relative flex flex-1 flex-col justify-start overflow-auto">
+            <div class="flex flex-col gap-5">
+                <?php include './components/billing_main.php'; ?>
             </div>
         </main>
     </section>
 
     <?php include './layouts/scripts.php'; ?>
+    <script src="./assets/js/application_validate.js"></script>
     <script>
-        $("#subheader-title").text("Billing")
+        $("#subheader-title").text("Billing");
+        $("#subheader-title").siblings("h5").text("Handle, Assess, Approve, or Decline Billing Requests.")
+        $("#subheader-title").parent("div").siblings("div").hide()
     </script>
 </body>
 
