@@ -71,28 +71,10 @@ function handleAction($action, $dbQueries, $dataTable)
 
 function handleRetrieveClientData($dbQueries)
 {
-    if (isset($_POST['updateId'])) {
-        $client_id = $_POST['updateId'];
+    if (isset($_POST['clientID'])) {
+        $client_id = $_POST['clientID'];
         $client_data = $dbQueries->retrieveClientData($client_id);
         echo json_encode($client_data);
-    }
-}
-
-function handleProcessClientApplication($dbQueries)
-{
-    if (isset($_POST['formData'])) {
-        $formData = $_POST['formData'];
-        $processResponse = $dbQueries->processClientApplication($formData);
-        echo json_encode($processResponse);
-    }
-}
-
-function handleApproveClientApplication($dbQueries)
-{
-    if (isset($_POST['formData'])) {
-        $formData = $_POST['formData'];
-        $processResponse = $dbQueries->approveClientApplication($formData);
-        echo json_encode($processResponse);
     }
 }
 

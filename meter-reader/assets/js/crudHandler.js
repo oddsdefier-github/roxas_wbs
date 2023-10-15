@@ -1,25 +1,46 @@
 class EncodeHandler {
-    constructor (clientID, tableName) {
+    constructor (clientID) {
         this.encodeReadingDataModal = $('#encodeReadingDataModal');
-        this.id = clientID;
-        this.tableName = tableName;
+        this.client_id = clientID;
     }
 
     showModal() {
+        const self = this
+        $.ajax({
+            url: "database_actions.php",
+            type: "post",
+            data: {
+                action: "retrieveClientData",
+                clientID: this.client_id,
+            },
+            success: function (data) {
+                const parsedData = JSON.parse(data);
+                self.handleData(parsedData);
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + ": " + error);
+            }
+        });
+
         this.encodeReadingDataModal.css({
             'display': 'grid',
             'place-items': 'center',
             'justify-content': 'center',
             'align-items': 'center'
         });
+
+
     }
 
+    handleData(responseData) {
+        console.log(responseData)
+    }
 
     hideModal() {
         this.encodeReadingDataModal.css('display', 'none');
     }
 
-    deleteItem() {
+    retrieveData() {
         this.showModal();
 
         $('.confirm-delete').off('click');
@@ -78,13 +99,14 @@ class viewHandler {
 }
 
 
-function encodeReadingData(clientID, tableName) {
-    const handler = new EncodeHandler(clientID, tableName, "client-data");
-    handler.deleteItem();
+function encodeReadingData(clientID) {
+    const handler = new EncodeHandler(clientID);
+    console.log(clientID)
+    handler.retrieveData();
 }
 
-function viewReadingData(clientID, tableName) {
-    const handler = new viewHandler(clientID, tableName, "client-data");
+function viewReadingData(clientID) {
+    const handler = new viewHandler(clientID);
     handler.deleteItem();
 }
 

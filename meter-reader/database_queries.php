@@ -20,35 +20,25 @@ class DatabaseQueries extends BaseQuery
     {
         $response = array();
 
-        $sql = "SELECT * FROM `clients` WHERE id = ?";
+        $sql = "SELECT * FROM client_data WHERE client_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
-        mysqli_stmt_bind_param($stmt, "i", $clientId);
-        mysqli_stmt_execute($stmt);
-        $result = $this->conn->getResultSet($stmt);
+        mysqli_stmt_bind_param($stmt, "s", $clientId);
 
-        $clientRow = mysqli_fetch_assoc($result);
-        if ($clientRow) {
-            $response['clientData'] = $clientRow;
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            if (mysqli_num_rows($result) == 1) {
+                $row = mysqli_fetch_assoc($result);
+                $response['full_name'] = $row['full_name'];
+                $response['meter_number'] = $row['meter_number'];
+                $response['status'] = $row['status'];
+                $response['property_type'] = $row['property_type'];
+            } else {
+                $response['error'] = "No client found with the provided ID.";
+            }
+        } else {
+            $response['error'] = "There was an error executing the statement.";
         }
-        mysqli_stmt_free_result($stmt);
         mysqli_stmt_close($stmt);
-
-        $addressArray = array();
-
-        $addressSql = "SELECT * FROM `address`";
-        $addressStmt = $this->conn->query($addressSql);
-        $addressResult = $this->conn->getResultSet($addressStmt);
-
-        $addressArray = array();
-
-        while ($addressRow = mysqli_fetch_assoc($addressResult)) {
-            $addressArray[] = $addressRow;
-        }
-
-        $this->conn->closeStatement($addressStmt);
-
-        $response['addressData'] = $addressArray;
-
         return $response;
     }
 
@@ -328,6 +318,7 @@ class DataTable extends BaseQuery
 
         while ($row = mysqli_fetch_assoc($result)) {
             $tableName = "client_data";
+            $client_id = $row['client_id'];
             $id = $row['id'];
             $meter_number = $row['meter_number'];
             $name = $row['full_name'];
@@ -343,7 +334,7 @@ class DataTable extends BaseQuery
             <td class="px-6 py-3 text-sm">' . $status . '</td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button  title="Encode Reading" onclick="encodeReadingData(' . $id . ', \'' . $tableName . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                <button  title="Encode Reading" onclick="encodeReadingData(\'' . $client_id . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
