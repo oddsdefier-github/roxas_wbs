@@ -17,10 +17,10 @@ export class DataTableWithPagination {
             clearSearch: $("#clear-input"),
             searchIcon: $("#search-icon"),
             tableContainer: $(tableContainerSelector),
-            prevBtn: $(`nav[data-table-name='${this.tableName}'] #prev`),
-            nextBtn: $(`nav[data-table-name='${this.tableName}'] #next`),
-            startBtn: $(`nav[data-table-name='${this.tableName}'] #start`),
-            endBtn: $(`nav[data-table-name='${this.tableName}'] #end`),
+            prevBtn: $(`nav[data-table-name='${this.tableName}'] .prev`),
+            nextBtn: $(`nav[data-table-name='${this.tableName}'] .next`),
+            startBtn: $(`nav[data-table-name='${this.tableName}'] .start`),
+            endBtn: $(`nav[data-table-name='${this.tableName}'] .end`),
             itemsPerPageSelector: $(`nav[data-table-name='${this.tableName}'] #item-per-page`)
         };
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);

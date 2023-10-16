@@ -207,12 +207,8 @@ $(document).ready(function () {
         validateAndCalculateAge();
     });
 
-    $('#birthdate').on("blur", function () {
-        validateAndCalculateAge();
-    });
 
-
-    $('#birthdate').on("keyup", function (event) {
+    birthDateInput.on("keyup", function (event) {
         if (event.key === 'Enter') {
             validateAndCalculateAge();
             $(this).trigger('blur')
@@ -220,7 +216,7 @@ $(document).ready(function () {
     });
 
     function validateAndCalculateAge() {
-        const dateText = $('#birthdate').val();
+        const dateText = birthDateInput.val();
         const parts = dateText.split("/");
 
         if (parts.length === 3) {
@@ -235,19 +231,18 @@ $(document).ready(function () {
 
             if (age < 18) {
                 alert("You must be at least 18 years old.");
-                $('#birthdate').val("");
-                $("#age").val("");
-
+                birthDateInput.val("");
+                $('input[name="age"]').val("");
             }
             else if (age > 100) {
                 alert("Invalid age input.");
-                $('#birthdate').val("");
-                $("#age").val("");
+                birthDateInput.val("");
+                $('input[name="age"]').val("");
             } else {
-                $("#age").val(age + " years old");
+                $('input[name="age"]').val(age + " years old");
             }
         } else {
-            $("#age").html('<span style="color: red;">Invalid date</span>');
+            $('input[name="age"]').html('<span style="color: red;">Invalid date</span>');
         }
     };
     /**

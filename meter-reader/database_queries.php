@@ -16,163 +16,112 @@ class BaseQuery
 
 class DatabaseQueries extends BaseQuery
 {
-    public function retrieveClientData($clientId)
+    public function retrieveClientData($regID)
     {
         $response = array();
 
-        $sql = "SELECT * FROM client_data WHERE client_id = ?";
-        $stmt = $this->conn->prepareStatement($sql);
-        mysqli_stmt_bind_param($stmt, "s", $clientId);
-
-        if (mysqli_stmt_execute($stmt)) {
-            $result = mysqli_stmt_get_result($stmt);
-            if (mysqli_num_rows($result) == 1) {
-                $row = mysqli_fetch_assoc($result);
-                $response['full_name'] = $row['full_name'];
-                $response['meter_number'] = $row['meter_number'];
-                $response['status'] = $row['status'];
-                $response['property_type'] = $row['property_type'];
+        $sqlClient = "SELECT * FROM client_data WHERE reg_id = ?";
+        try {
+            $stmt = $this->conn->prepareStatement($sqlClient);
+            $stmt->bind_param("s", $regID);
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                if ($result->num_rows == 1) {
+                    $row = $result->fetch_assoc();
+                    $response['full_name'] = $row['full_name'];
+                    $response['meter_number'] = $row['meter_number'];
+                    $response['status'] = $row['status'];
+                    $response['property_type'] = $row['property_type'];
+                    $response['reg_id'] = $row['reg_id'];
+                } else {
+                    $response['error'] = "No client found with the provided ID.";
+                }
             } else {
-                $response['error'] = "No client found with the provided ID.";
+                $response['error'] = "There was an error executing the client_data statement.";
             }
-        } else {
-            $response['error'] = "There was an error executing the statement.";
+            $stmt->close();
+        } catch (Exception $e) {
+            $response['error'] = "Exception caught: " . $e->getMessage();
         }
-        mysqli_stmt_close($stmt);
+
+        $sqlBilling = "SELECT * FROM billing_data WHERE reg_id = ? ORDER BY timestamp DESC LIMIT 1";
+        try {
+            $stmt = $this->conn->prepareStatement($sqlBilling);
+            $stmt->bind_param("s", $regID);
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                if ($result->num_rows == 1) {
+                    $row = $result->fetch_assoc();
+                    $response['recent_meter_reading'] = $row['meter_reading'];
+                }
+            } else {
+                $response['error'] = "There was an error executing the billing_data statement.";
+            }
+            $stmt->close();
+        } catch (Exception $e) {
+            $response['error'] = "Exception caught: " . $e->getMessage();
+        }
+
         return $response;
     }
 
 
-    public function processClientApplication($formData)
+    public function encodeCurrentReading($formData)
     {
         $response = array();
-        // Sanitize and validate input data
+        session_start();
+        $encoder = $_SESSION['admin_name'];
+        $billingID = "B" . time();
+        $readingType = 'current';
+        $dueDate = NULL;
+        $billingStatus = 'pending';
+        $month = date('M');
+        $year = date('Y');
+        $billingMonthAndYear = $month . '-' . $year;
+        $regID = $formData['regID'];
+        $meterReading = $formData['meterReading'];
+        $consumption = $formData['consumption'];
 
-        $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
-        $firstName = htmlspecialchars($formData['firstName'], ENT_QUOTES, 'UTF-8');
-        $middleName = htmlspecialchars($formData['middleName'], ENT_QUOTES, 'UTF-8');
-        $lastName = htmlspecialchars($formData['lastName'], ENT_QUOTES, 'UTF-8');
-        $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
-        $nameSuffix = htmlspecialchars($formData['nameSuffix'], ENT_QUOTES, 'UTF-8');
-        $birthDate = htmlspecialchars($formData['birthDate'], ENT_QUOTES, 'UTF-8');
-        $age = htmlspecialchars($formData['age'], ENT_QUOTES, 'UTF-8');
-        $email = htmlspecialchars($formData['email'], ENT_QUOTES, 'UTF-8');
-        $gender = htmlspecialchars($formData['gender'], ENT_QUOTES, 'UTF-8');
-        $phoneNumber = htmlspecialchars($formData['phoneNumber'], ENT_QUOTES, 'UTF-8');
-        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
-        $streetAddress = htmlspecialchars($formData['streetAddress'], ENT_QUOTES, 'UTF-8');
-        $brgy = htmlspecialchars($formData['brgy'], ENT_QUOTES, 'UTF-8');
-        $municipality = htmlspecialchars($formData['municipality'], ENT_QUOTES, 'UTF-8');
-        $province = htmlspecialchars($formData['province'], ENT_QUOTES, 'UTF-8');
-        $region = htmlspecialchars($formData['region'], ENT_QUOTES, 'UTF-8');
-        $fullAddress = htmlspecialchars($formData['fullAddress'], ENT_QUOTES, 'UTF-8');
-        $validID = htmlspecialchars($formData['validID'], ENT_QUOTES, 'UTF-8');
-        $proofOfOwnership = htmlspecialchars($formData['proofOfOwnership'], ENT_QUOTES, 'UTF-8');
-        $deedOfSale = htmlspecialchars($formData['deedOfSale'], ENT_QUOTES, 'UTF-8');
-        $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
 
-        $status = 'pending';
+        $this->conn->beginTransaction();
 
-        $checkDuplicateMeterNo = "SELECT meter_number FROM client_application WHERE meter_number = ?";
-        $stmt = $this->conn->prepareStatement($checkDuplicateMeterNo);
+        $updateSql = "UPDATE billing_data SET reading_type = 'previous' WHERE reg_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmt_update = $this->conn->prepareStatement($updateSql);
+        mysqli_stmt_bind_param($stmt_update, "s", $regID);
+        $updateResult = mysqli_stmt_execute($stmt_update);
+        mysqli_stmt_close($stmt_update);
 
-        if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "s", $meterNumber);
-
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_store_result($stmt);
-
-            if (mysqli_stmt_num_rows($stmt) > 0) {
-                $response = array(
-                    "status" => "error",
-                    "inputName" => "meterNumber",
-                    "message" => "Meter No: " . $meterNumber . " already exists in the database."
-                );
-            } else {
-                $checkDuplicate = "SELECT email FROM client_application WHERE email = ?";
-                $stmt = $this->conn->prepareStatement($checkDuplicate);
-
-                if ($stmt) {
-
-                    mysqli_stmt_bind_param($stmt, "s", $email);
-
-                    mysqli_stmt_execute($stmt);
-
-                    mysqli_stmt_store_result($stmt);
-
-                    if (mysqli_stmt_num_rows($stmt) > 0) {
-                        $response = array(
-                            "status" => "error",
-                            "inputName" => "email",
-                            "message" => $email . " already exists in the database."
-                        );
-                    } else {
-
-                        $applicationID = 'A' . date("YmdHis");
-                        $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, status, application_id, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
-
-                        $stmt = $this->conn->prepareStatement($sql);
-
-                        if ($stmt) {
-                            mysqli_stmt_bind_param(
-                                $stmt,
-                                "ssssssssssssssssssssssss",
-                                $meterNumber,
-                                $firstName,
-                                $middleName,
-                                $lastName,
-                                $nameSuffix,
-                                $fullName,
-                                $email,
-                                $phoneNumber,
-                                $birthDate,
-                                $age,
-                                $gender,
-                                $propertyType,
-                                $streetAddress,
-                                $brgy,
-                                $municipality,
-                                $province,
-                                $region,
-                                $fullAddress,
-                                $validID,
-                                $proofOfOwnership,
-                                $deedOfSale,
-                                $affidavit,
-                                $status,
-                                $applicationID
-                            );
-
-                            if (mysqli_stmt_execute($stmt)) {
-                                $response = array(
-                                    "applicant" => $firstName,
-                                    "status" => "success",
-                                    "message" => $firstName . "'s application submitted successfully."
-                                );
-                            } else {
-                                $response = array(
-                                    "status" => "error",
-                                    "message" => "Error executing the query: " . $this->conn->getErrorMessage()
-                                );
-                            }
-
-                            mysqli_stmt_close($stmt);
-                        } else {
-                            $response = array(
-                                "status" => "error",
-                                "message" => "Error preparing the statement: " . $this->conn->getErrorMessage()
-                            );
-                        }
-                    }
-                }
-            }
-            return $response;
-        } else {
-            $response = array(
-                "status" => "error",
-                "error" => "Error in preparing the statement: " . $this->conn->getErrorMessage()
-            );
+        if (!$updateResult) {
+            $this->conn->rollbackTransaction();
+            return array("status" => "error", "message" => "Error updating previous reading.");
         }
+
+        $insertSql = "INSERT INTO billing_data (billing_id, reg_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $stmt_insert = $this->conn->prepareStatement($insertSql);
+        mysqli_stmt_bind_param(
+            $stmt_insert,
+            "ssissssss",
+            $billingID,
+            $regID,
+            $meterReading,
+            $readingType,
+            $consumption,
+            $billingStatus,
+            $billingMonthAndYear,
+            $dueDate,
+            $encoder
+        );
+
+        if (mysqli_stmt_execute($stmt_insert)) {
+            $this->conn->commitTransaction();
+            $response["message"] = $billingID;
+        } else {
+            $this->conn->rollbackTransaction();
+            $response = array("status" => "error", "message" => "Error inserting initial reading: " . $stmt_insert->error);
+        }
+
+        mysqli_stmt_close($stmt_insert);
+
         return $response;
     }
 
@@ -289,7 +238,6 @@ class DataTable extends BaseQuery
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
-        // More efficient way to get total records
         $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
 
         if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
@@ -302,12 +250,11 @@ class DataTable extends BaseQuery
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b">
                 <th class="px-6 py-4">No.</th>
-                <th class="px-6 py-4">Meter No.</th>
+                <th class="px-6 py-4">Registration ID.</th>
                 <th class="px-6 py-4">Names&nbsp;&nbsp; 
                 <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
                 <th class="px-6 py-4">Property Type</th>
-                <th class="px-6 py-4">Previous Billing</th>
                 <th class="px-6 py-4">Status</th>
                 <th class="px-6 py-4">Action</th>
             </tr>
@@ -318,23 +265,22 @@ class DataTable extends BaseQuery
 
         while ($row = mysqli_fetch_assoc($result)) {
             $tableName = "client_data";
-            $client_id = $row['client_id'];
             $id = $row['id'];
             $meter_number = $row['meter_number'];
             $name = $row['full_name'];
             $property_type = $row['property_type'];
             $status = $row['status'];
+            $regID = $row['reg_id'];
 
-            $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
-            <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
+            <td class="px-6 py-3 text-sm">' . $regID . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
             <td class="px-6 py-3 text-sm">' . $property_type . '</td>
             <td class="px-6 py-3 text-sm">' . $status . '</td>
-            <td class="px-6 py-3 text-sm">' . $status . '</td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button  title="Encode Reading" onclick="encodeReadingData(\'' . $client_id . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                <button  title="Encode Reading" onclick="encodeReadingData(\'' . $regID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>

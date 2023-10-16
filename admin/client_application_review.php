@@ -38,8 +38,8 @@ include './auth_guard.php';
         </main>
     </section>
 
+    <?php include './components/modal/review_confirmation_modal.php'; ?>
     <?php include './components/notification.php'; ?>
-
     <?php include './layouts/scripts.php'; ?>
 
     <script>

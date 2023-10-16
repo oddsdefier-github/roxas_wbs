@@ -62,7 +62,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'deleteItem':
             handleDeleteItem($dbQueries);
             break;
-
+        case 'encodeMeterReadingData':
+            handleEncodeMeterReadingData($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -71,10 +73,10 @@ function handleAction($action, $dbQueries, $dataTable)
 
 function handleRetrieveClientData($dbQueries)
 {
-    if (isset($_POST['clientID'])) {
-        $client_id = $_POST['clientID'];
-        $client_data = $dbQueries->retrieveClientData($client_id);
-        echo json_encode($client_data);
+    if (isset($_POST['regID'])) {
+        $regID = $_POST['regID'];
+        $retrieveData = $dbQueries->retrieveClientData($regID);
+        echo json_encode($retrieveData);
     }
 }
 
@@ -144,5 +146,14 @@ function handleGetName($dbQueries)
         $tableName = $_POST['tableName'];
         $getName = $dbQueries->getName($id, $tableName);
         echo json_encode($getName);
+    }
+}
+
+function handleEncodeMeterReadingData($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $encodeMeterReadingData = $dbQueries->encodeCurrentReading($formData);
+        echo json_encode($encodeMeterReadingData);
     }
 }

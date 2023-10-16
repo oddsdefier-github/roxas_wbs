@@ -134,31 +134,12 @@
                         </div>
                     </div>
 
-                    <div class="sm:col-span-6 gap-x-6 gap-y-8">
+                    <div class="sm:col-span-6 gap-x-6 gap-y-8 mt-2">
                         <div class="sm:col-span-6 grid grid-cols-7 gap-x-6 gap-y-8">
                             <div class="sm:col-span-2">
-                                <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
+                                <label for="region" class="block text-sm font-medium leading-6 text-gray-900">Region</label>
                                 <div class="mt-2 relative">
-                                    <input data-input-state="error" type="text" name="streetAddress" id="street-address" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-
-                                </div>
-                                <div data-validate-input="streetAddress" class="validate-message"></div>
-                            </div>
-                            <div class="sm:col-span-2">
-                                <label for="brgy" class="block text-sm font-medium leading-6 text-gray-900">Barangay</label>
-                                <div class="mt-2 relative">
-                                    <select id="brgy" name="brgy" class="add_client_address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sm:col-span-6 gap-x-6 gap-y-8">
-                        <div class="sm:col-span-6 grid grid-cols-7 gap-x-6 gap-y-8">
-                            <div class="sm:col-span-2">
-                                <label for="municipality" class="block text-sm font-medium leading-6 text-gray-900">Municipality</label>
-                                <div class="mt-2 relative">
-                                    <input type="text" name="municipality" id="municipality" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="Roxas" readonly disabled>
+                                    <input type="text" name="region" id="region" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="REGION IV-B (MIMAROPA)" readonly disabled>
                                 </div>
                             </div>
                             <div class="sm:col-span-2">
@@ -168,11 +149,31 @@
                                 </div>
                             </div>
                             <div class="sm:col-span-2">
-                                <label for="region" class="block text-sm font-medium leading-6 text-gray-900">Region</label>
+                                <label for="municipality" class="block text-sm font-medium leading-6 text-gray-900">Municipality</label>
                                 <div class="mt-2 relative">
-                                    <input type="text" name="region" id="region" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="REGION IV-B (MIMAROPA)" readonly disabled>
+                                    <input type="text" name="municipality" id="municipality" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" value="Roxas" readonly disabled>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="sm:col-span-6 gap-x-6 gap-y-8 mt-2">
+                        <div class="sm:col-span-6 grid grid-cols-7 gap-x-6 gap-y-8">
+                            <div class="sm:col-span-2">
+                                <label for="brgy" class="block text-sm font-medium leading-6 text-gray-900">Barangay</label>
+                                <div class="mt-2 relative">
+                                    <select id="brgy" name="brgy" class="add_client_address block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
+                                <div class="mt-2 relative">
+                                    <input data-input-state="error" type="text" name="streetAddress" id="street-address" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+
+                                </div>
+                                <div data-validate-input="streetAddress" class="validate-message"></div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

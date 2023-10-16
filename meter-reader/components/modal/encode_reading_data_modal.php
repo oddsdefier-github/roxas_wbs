@@ -30,26 +30,29 @@
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
-                <div class="p-6">
+                <form class="encode_form p-6">
                     <div class="flex flex-col gap-2 mb-3">
                         <div class="mb-2">
                             <h4 class="client-name text-lg font-semibold flex justify-start items-center gap-2">
-                                <span class="font-bold cursor-default text-primary-800">Jeffry James M. Paner</span>
-                                <span class="hover:bg-gray-200 rounded-full p-2 cursor-pointer" title="Link to client's profile">
+                                <span class="full_name font-bold cursor-default text-primary-800">Jeffry James M. Paner</span>
+                                <a class="client_profile_link hover:bg-gray-200 rounded-full p-2 cursor-pointer" href="" target="_blank" title="Link to client's profile">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
                                         <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z" clip-rule="evenodd" />
                                     </svg>
-                                </span>
-                                <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-                                    <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
-                                    Active
+                                </a>
+                                <span class="status_badge">
+                                    <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+                                        Active
+                                    </span>
+
                                 </span>
                             </h4>
-                            <h6 class="text-sm text-gray-600"><span class="cursor-default uppercase font-semibold" title="Property Type">Residential</span> • <span class="cursor-default" title="Meter No.">W-12323</span></h6>
+                            <h6 class="text-sm text-gray-600"><span class="property_type cursor-default uppercase font-semibold" title="Property Type">Residential</span> • <span class="meter_number cursor-default" title="Meter No.">W-12323</span></h6>
                         </div>
                         <div class="py-4">
                             <div class="pb-4">
-                                <label for="large-input" class="mb-2 flex items-center text-sm font-semibold text-indigo-800 uppercase">Consumption
+                                <label for="consumption" class="mb-2 flex items-center text-sm font-semibold text-indigo-800 uppercase">Consumption
                                     <button data-popover-target="consumption-popover" data-popover-placement="bottom-end" type="button"><svg class="w-4 h-4 ml-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
                                         </svg><span class="sr-only">Show information</span>
@@ -69,8 +72,7 @@
                                     <div data-popper-arrow></div>
                                 </div>
 
-                                </label>
-                                <input type="text" id="large-input" class="block w-full p-4 text-sm text-gray-400 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="Consumption will be automatically calculated">
+                                <input type="text" id="consumption" class="block w-full p-4 text-sm text-gray-400 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="Consumption will be automatically calculated">
                             </div>
                             <div class="mb-4">
                                 <label for="large-input" class="mb-2 flex items-center text-sm font-medium text-gray-600">Previous Reading
@@ -87,7 +89,7 @@
                                     <div data-popper-arrow></div>
                                 </div>
 
-                                <input type="text" id="large-input" class="block w-full p-4 text-gray-600 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="98 cubic meter">
+                                <input type="text" id="prev-reading" class="block w-full p-4 text-gray-600 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="98 cubic meter">
                             </div>
                             <!-- CURRENT-READING-INPUT -->
                             <div>
@@ -105,8 +107,7 @@
                                     </div>
                                     <div data-popper-arrow></div>
                                 </div>
-                                <input type="text" id="large-input" class="block w-full rounded-lg border-0 p-4 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-500">
-
+                                <input type="text" id="curr-reading" class="block w-full rounded-lg border-0 p-4 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-500">
                                 <div>
                                     <p class="validate-message"></p>
                                 </div>
@@ -159,10 +160,9 @@
 
                     <div class=" flex justify-end items-center space-x-2 mt-4">
                         <button data-button-type="close-modal" type="button" class="text-gray-700 ring-1 ring-gray-300 bg-white hover:bg-gray-100 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Cancel</button>
-                        <button data-button-type="close-modal" type="button" class="text-white bg-indigo-500 hover:bg-indigo-600 focus:ring-2 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Encode</button>
+                        <button type="submit" class="submit_encode text-white bg-indigo-500 hover:bg-indigo-600 focus:ring-2 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Encode</button>
                     </div>
-                    <!-- <input type="hidden" id="delID-hidden"> -->
-                </div>
+                </form>
             </div>
         </div>
     </div>

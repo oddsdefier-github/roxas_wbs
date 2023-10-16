@@ -23,6 +23,9 @@ export class DataTableWithPagination {
             endBtn: $(`nav[data-table-name='${this.tableName}'] #end`),
             itemsPerPageSelector: $(`nav[data-table-name='${this.tableName}'] #item-per-page`)
         };
+
+
+        
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
         this.bindEvents();

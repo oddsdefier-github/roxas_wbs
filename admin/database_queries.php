@@ -265,9 +265,9 @@ class DatabaseQueries extends BaseQuery
                             "message" => $email . " already exists in the database."
                         );
                     } else {
-                        $status = "approved";
+                        $status = "active";
                         $registrationId = 'R' . date("YmdHis");
-                        $sql = "INSERT INTO client_data (reg_id, meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, status,application_id, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+                        $sql = "INSERT INTO client_data (reg_id, meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, status, application_id, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
                         $stmt = $this->conn->prepareStatement($sql);
 
@@ -484,6 +484,48 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
+
+    public function setInitialBillingData($regID)
+    {
+        $response = array();
+        $initialReading = 0;
+
+        session_start();
+        $encoder = $_SESSION['admin_name'];
+
+
+        $billingID = "B" . time();
+        $readingType = 'current';
+        $dueDate = NULL;
+        $billingStatus = NULL;
+        $consumption = NULL;
+        $month = date('M');
+        $year = date('Y');
+        $billingMonthAndYear = $month . '-' . $year;
+
+        $sql_billing = "INSERT INTO billing_data (billing_id, reg_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $stmt_billing = $this->conn->prepareStatement($sql_billing);
+
+        if ($stmt_billing) {
+            mysqli_stmt_bind_param($stmt_billing, "ssissssss", $billingID, $regID, $initialReading, $readingType, $consumption, $billingStatus, $billingMonthAndYear, $dueDate, $encoder);
+            if (mysqli_stmt_execute($stmt_billing)) {
+                $response["message"] = $billingID;
+            } else {
+                $response = array(
+                    "status" => "error",
+                    "message" => "Error inserting initial reading: " . $stmt_billing->error
+                );
+            }
+            $stmt_billing->close();
+        } else {
+            $response = array(
+                "status" => "error",
+                "message" => "Error preparing billing statement: " . $this->conn->getErrorMessage()
+            );
+        }
+
+        return $response;
+    }
 }
 
 
@@ -558,6 +600,8 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
+
+            
             $table .= '<tr data-id="' . $id . '" class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>

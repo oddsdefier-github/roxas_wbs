@@ -62,7 +62,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'deleteItem':
             handleDeleteItem($dbQueries);
             break;
-
+        case 'setInitialBillingData':
+            handleSetInitialBillingData($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -162,5 +164,13 @@ function handleGetName($dbQueries)
         $tableName = $_POST['tableName'];
         $getName = $dbQueries->getName($id, $tableName);
         echo json_encode($getName);
+    }
+}
+function handleSetInitialBillingData($dbQueries)
+{
+    if (isset($_POST['regID'])) {
+        $regID = $_POST['regID'];
+        $setInitialBillingData = $dbQueries->setInitialBillingData($regID);
+        echo json_encode($setInitialBillingData);
     }
 }
