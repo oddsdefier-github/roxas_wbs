@@ -1,9 +1,7 @@
 export class DataTableWithPagination {
-    constructor (tableName, tableContainerSelector = '#displayClientApplicationTable') {
-        this.tableName = tableName;
-
-        this.itemsPerPageKey = `${this.tableName}-itemsPerPage`;
-        this.currentPageNumberKey = `${this.tableName}-currentPageNumber`;
+    constructor (tableContainerSelector = '#displayClientForBilling') {
+        this.itemsPerPageKey = `itemsPerPage`;
+        this.currentPageNumberKey = `currentPageNumber`;
 
         this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 5;
 
@@ -17,11 +15,11 @@ export class DataTableWithPagination {
             clearSearch: $("#clear-input"),
             searchIcon: $("#search-icon"),
             tableContainer: $(tableContainerSelector),
-            prevBtn: $(`nav[data-table-name='${this.tableName}'] .prev`),
-            nextBtn: $(`nav[data-table-name='${this.tableName}'] .next`),
-            startBtn: $(`nav[data-table-name='${this.tableName}'] .start`),
-            endBtn: $(`nav[data-table-name='${this.tableName}'] .end`),
-            itemsPerPageSelector: $(`nav[data-table-name='${this.tableName}'] #item-per-page`)
+            prevBtn: $('.prev'),
+            nextBtn: $('.next'),
+            startBtn: $('.start'),
+            endBtn: $('.end'),
+            itemsPerPageSelector: $('#item-per-page')
         };
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
@@ -52,6 +50,7 @@ export class DataTableWithPagination {
 
 
         this.elements.itemsPerPageSelector.change(() => {
+            this.handlePageChange('start');
             this.itemsPerPage = parseInt(this.elements.itemsPerPageSelector.val(), 10);
             localStorage.setItem(this.itemsPerPageKey, this.itemsPerPage);
             this.lastPageNumber = Math.ceil(this.totalItems / this.itemsPerPage);
@@ -102,7 +101,7 @@ export class DataTableWithPagination {
         this.elements.nextBtn.prop("disabled", this.currentPageNumber >= this.lastPageNumber);
         this.elements.startBtn.prop("disabled", this.currentPageNumber <= 1);
         this.elements.endBtn.prop("disabled", this.currentPageNumber >= this.lastPageNumber);
-        $(`nav[data-table-name='${this.tableName}'] a[aria-current="page"]`).text(this.currentPageNumber);
+        $('a[aria-current="page"]').text(this.currentPageNumber);
     }
 
     fetchTableData(searchTerm = "") {
@@ -112,7 +111,7 @@ export class DataTableWithPagination {
             dataType: 'html',
             data: {
                 action: "getDataTable",
-                tableName: this.tableName,
+                tableName: "client_data",
                 dataTableParam: {
                     pageNumber: this.currentPageNumber,
                     itemPerPage: this.itemsPerPage,

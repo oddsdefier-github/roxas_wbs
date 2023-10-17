@@ -13,6 +13,7 @@
         }
     ],
     "require": {
-        "dompdf/dompdf": "^2.0"
+        "dompdf/dompdf": "^2.0",
+        "endroid/qr-code": "^5.0"
     }
 }

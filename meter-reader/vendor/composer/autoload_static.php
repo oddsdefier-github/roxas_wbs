@@ -20,10 +20,19 @@ class ComposerStaticInitbb183db32a6e4ae7aea6ddba93170c1f
         array (
             'FontLib\\' => 8,
         ),
+        'E' => 
+        array (
+            'Endroid\\QrCode\\' => 15,
+        ),
         'D' => 
         array (
             'Dompdf\\' => 7,
             'Dell\\Admin\\' => 11,
+            'DASPRiD\\Enum\\' => 13,
+        ),
+        'B' => 
+        array (
+            'BaconQrCode\\' => 12,
         ),
     );
 
@@ -44,6 +53,10 @@ class ComposerStaticInitbb183db32a6e4ae7aea6ddba93170c1f
         array (
             0 => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib',
         ),
+        'Endroid\\QrCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/endroid/qr-code/src',
+        ),
         'Dompdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/dompdf/src',
@@ -51,6 +64,14 @@ class ComposerStaticInitbb183db32a6e4ae7aea6ddba93170c1f
         'Dell\\Admin\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
+        ),
+        'DASPRiD\\Enum\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dasprid/enum/src',
+        ),
+        'BaconQrCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
     );
 

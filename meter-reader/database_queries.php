@@ -16,23 +16,24 @@ class BaseQuery
 
 class DatabaseQueries extends BaseQuery
 {
-    public function retrieveClientData($regID)
+    public function retrieveClientData($clientID)
     {
         $response = array();
 
-        $sqlClient = "SELECT * FROM client_data WHERE reg_id = ?";
+        $sqlClient = "SELECT * FROM client_data WHERE client_id = ?";
         try {
             $stmt = $this->conn->prepareStatement($sqlClient);
-            $stmt->bind_param("s", $regID);
+            $stmt->bind_param("s", $clientID);
             if ($stmt->execute()) {
                 $result = $stmt->get_result();
                 if ($result->num_rows == 1) {
                     $row = $result->fetch_assoc();
+
                     $response['full_name'] = $row['full_name'];
                     $response['meter_number'] = $row['meter_number'];
                     $response['status'] = $row['status'];
                     $response['property_type'] = $row['property_type'];
-                    $response['reg_id'] = $row['reg_id'];
+                    $response['client_id'] = $row['client_id'];
                 } else {
                     $response['error'] = "No client found with the provided ID.";
                 }
@@ -44,10 +45,10 @@ class DatabaseQueries extends BaseQuery
             $response['error'] = "Exception caught: " . $e->getMessage();
         }
 
-        $sqlBilling = "SELECT * FROM billing_data WHERE reg_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $sqlBilling = "SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
         try {
             $stmt = $this->conn->prepareStatement($sqlBilling);
-            $stmt->bind_param("s", $regID);
+            $stmt->bind_param("s", $clientID);
             if ($stmt->execute()) {
                 $result = $stmt->get_result();
                 if ($result->num_rows == 1) {
@@ -70,39 +71,58 @@ class DatabaseQueries extends BaseQuery
     {
         $response = array();
         session_start();
+
         $encoder = $_SESSION['admin_name'];
+
         $billingID = "B" . time();
         $readingType = 'current';
-        $dueDate = NULL;
-        $billingStatus = 'pending';
+
+        $dateTime = new DateTime();
+        $dateTime->modify('+7 days');
+        $dateTime->setTime(16, 0, 0);
+
+        $dayOfWeek = $dateTime->format('w');
+
+        if ($dayOfWeek == 6) {
+            $dateTime->modify('+2 days');
+        } elseif ($dayOfWeek == 0) {
+            $dateTime->modify('+1 day');
+        }
+
+        $dueDate = $dateTime->format('Y-m-d H:i:s');
+        $billingStatus = 'unpaid';
+
         $month = date('M');
         $year = date('Y');
+
         $billingMonthAndYear = $month . '-' . $year;
-        $regID = $formData['regID'];
+        $clientID = $formData['clientID'];
+
         $meterReading = $formData['meterReading'];
         $consumption = $formData['consumption'];
 
-
         $this->conn->beginTransaction();
 
-        $updateSql = "UPDATE billing_data SET reading_type = 'previous' WHERE reg_id = ? ORDER BY timestamp DESC LIMIT 1";
+
+        $updateSql = "UPDATE billing_data SET reading_type = 'previous' WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
         $stmt_update = $this->conn->prepareStatement($updateSql);
-        mysqli_stmt_bind_param($stmt_update, "s", $regID);
+        mysqli_stmt_bind_param($stmt_update, "s", $clientID);
         $updateResult = mysqli_stmt_execute($stmt_update);
         mysqli_stmt_close($stmt_update);
+
 
         if (!$updateResult) {
             $this->conn->rollbackTransaction();
             return array("status" => "error", "message" => "Error updating previous reading.");
         }
 
-        $insertSql = "INSERT INTO billing_data (billing_id, reg_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $insertSql = "INSERT INTO billing_data (billing_id, client_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
         $stmt_insert = $this->conn->prepareStatement($insertSql);
         mysqli_stmt_bind_param(
             $stmt_insert,
             "ssissssss",
             $billingID,
-            $regID,
+            $clientID,
             $meterReading,
             $readingType,
             $consumption,
@@ -115,6 +135,17 @@ class DatabaseQueries extends BaseQuery
         if (mysqli_stmt_execute($stmt_insert)) {
             $this->conn->commitTransaction();
             $response["message"] = $billingID;
+
+            $updateReadingStatus = "UPDATE client_data SET reading_status = 'read'  WHERE client_id = ?";
+            $stmt_update = $this->conn->prepareStatement($updateReadingStatus);
+            mysqli_stmt_bind_param($stmt_update, "s", $clientID);
+            $updateResult = mysqli_stmt_execute($stmt_update);
+            mysqli_stmt_close($stmt_update);
+
+            if (!$updateResult) {
+                $this->conn->rollbackTransaction();
+                return array("status" => "error", "message" => "Error client reading status.");
+            }
         } else {
             $this->conn->rollbackTransaction();
             $response = array("status" => "error", "message" => "Error inserting initial reading: " . $stmt_insert->error);
@@ -220,10 +251,10 @@ class DataTable extends BaseQuery
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data WHERE reading_status = 'pending'";
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?";
+            $sql .= " AND (full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
         }
         $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
 
@@ -266,6 +297,7 @@ class DataTable extends BaseQuery
         while ($row = mysqli_fetch_assoc($result)) {
             $tableName = "client_data";
             $id = $row['id'];
+            $clientID = $row['client_id'];
             $meter_number = $row['meter_number'];
             $name = $row['full_name'];
             $property_type = $row['property_type'];
@@ -280,7 +312,7 @@ class DataTable extends BaseQuery
             <td class="px-6 py-3 text-sm">' . $status . '</td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button  title="Encode Reading" onclick="encodeReadingData(\'' . $regID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -311,10 +343,10 @@ class DataTable extends BaseQuery
             if ($number > 1) {
                 echo $table;
             } else {
-                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client found</div>';
             }
         } else {
-            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">All clients has been read.</div>';
         }
 
         echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';

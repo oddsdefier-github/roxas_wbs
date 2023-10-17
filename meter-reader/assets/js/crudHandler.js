@@ -1,8 +1,7 @@
 class EncodeHandler {
-    constructor (regID) {
+    constructor (clientID) {
         this.encodeReadingDataModal = $('#encodeReadingDataModal');
-        this.reg_id = regID;
-
+        this.client_id = clientID;
 
         this.elements = {
             fullName: $('.full_name'),
@@ -46,11 +45,10 @@ class EncodeHandler {
             type: "post",
             data: {
                 action: "retrieveClientData",
-                regID: this.reg_id,
+                clientID: this.client_id,
             },
             success: function (data) {
                 const parsedData = JSON.parse(data);
-                const prevReading = parsedData.recent_meter_reading;
                 self.handleData(parsedData);
                 self.encodeCurrentReading(parsedData);
             },
@@ -85,38 +83,48 @@ class EncodeHandler {
         self.handleStatus(status);
     }
 
+    validateReadingInput() {
+        
+    }
     encodeCurrentReading(responseData) {
         const self = this;
 
         this.elements.encodeForm.off('submit').on('submit', function (e) {
             e.preventDefault();
-            console.log(responseData);
 
-            const regID = responseData.reg_id;
-            const meterReading = self.elements.currReadingInput.val();
-            let consumption = self.elements.consumptionInput.val();
-            consumption = consumption.split(" ")[0];
 
-            console.log(consumption);
+            if (self.elements.currReadingInput.val().trim() == '') {
+                console.log('EMPTYYY')
 
-            $.ajax({
-                url: "database_actions.php",
-                type: "post",
-                data: {
-                    action: "encodeMeterReadingData",
-                    formData: {
-                        regID: regID,
-                        meterReading: meterReading,
-                        consumption: consumption
+            } else {
+                console.log(responseData);
+                const clientID = responseData.client_id;
+                const meterReading = self.elements.currReadingInput.val();
+                let consumption = self.elements.consumptionInput.val();
+                consumption = consumption.split(" ")[0];
+
+                console.log(consumption);
+
+                $.ajax({
+                    url: "database_actions.php",
+                    type: "post",
+                    data: {
+                        action: "encodeMeterReadingData",
+                        formData: {
+                            clientID: clientID,
+                            meterReading: meterReading,
+                            consumption: consumption
+                        }
+                    },
+                    success: function (data) {
+                        console.log(data)
+                        self.elements.currReadingInput.val("")
+                        self.hideModal();
+                        window.location.reload()
                     }
-                },
-                success: function (data) {
-                    console.log(data)
-                    self.elements.currReadingInput.val("")
-                    self.hideModal();
-                    window.location.reload()
-                }
-            })
+                })
+            }
+
         });
     }
 
@@ -135,54 +143,54 @@ class EncodeHandler {
 }
 
 
-class viewHandler {
-    constructor (clientID, tableName) {
-        this.viewReadingDataModal = $('#viewReadingDataModal');
-        this.id = clientID;
-        this.tableName = tableName;
-    }
+// class viewHandler {
+//     constructor (clientID, tableName) {
+//         this.viewReadingDataModal = $('#viewReadingDataModal');
+//         this.id = clientID;
+//         this.tableName = tableName;
+//     }
 
-    showModal() {
-        this.viewReadingDataModal.css({
-            'display': 'grid',
-            'place-items': 'center',
-            'justify-content': 'center',
-            'align-items': 'center'
-        });
-    }
-
-
-    hideModal() {
-        this.viewReadingDataModal.css('display', 'none');
-    }
-
-    deleteItem() {
-        this.showModal();
-
-        $('.confirm-delete').off('click');
-        $('#cancelDeleteButton').off('click');
-
-        $('.confirm-delete').on('click', () => {
-            console.log("CONFIRMDELETEBUTTON IS BEING CLICKED");
-            this.executeDeletion();
-            this.hideModal();
-        });
-
-        $('#cancelDeleteButton').on('click', () => {
-            this.hideModal();
-        });
-    }
-}
+//     showModal() {
+//         this.viewReadingDataModal.css({
+//             'display': 'grid',
+//             'place-items': 'center',
+//             'justify-content': 'center',
+//             'align-items': 'center'
+//         });
+//     }
 
 
-function encodeReadingData(regID) {
-    const handler = new EncodeHandler(regID);
-    console.log(regID)
+//     hideModal() {
+//         this.viewReadingDataModal.css('display', 'none');
+//     }
+
+//     deleteItem() {
+//         this.showModal();
+
+//         $('.confirm-delete').off('click');
+//         $('#cancelDeleteButton').off('click');
+
+//         $('.confirm-delete').on('click', () => {
+//             console.log("CONFIRMDELETEBUTTON IS BEING CLICKED");
+//             this.executeDeletion();
+//             this.hideModal();
+//         });
+
+//         $('#cancelDeleteButton').on('click', () => {
+//             this.hideModal();
+//         });
+//     }
+// }
+
+
+function encodeReadingData(clientID) {
+    const handler = new EncodeHandler(clientID);
+    console.log(clientID)
     handler.showModal();
 }
 
-function viewReadingData(regID) {
-    const handler = new viewHandler(regID);
+function viewReadingData(clientID) {
+    const handler = new viewHandler(clientID);
     handler.deleteItem();
 }
 

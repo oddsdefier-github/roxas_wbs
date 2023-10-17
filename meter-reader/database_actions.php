@@ -73,9 +73,9 @@ function handleAction($action, $dbQueries, $dataTable)
 
 function handleRetrieveClientData($dbQueries)
 {
-    if (isset($_POST['regID'])) {
-        $regID = $_POST['regID'];
-        $retrieveData = $dbQueries->retrieveClientData($regID);
+    if (isset($_POST['clientID'])) {
+        $clientID = $_POST['clientID'];
+        $retrieveData = $dbQueries->retrieveClientData($clientID);
         echo json_encode($retrieveData);
     }
 }
