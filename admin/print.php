@@ -18,14 +18,14 @@ if (isset($_GET['id'])) {
         echo "Database connection failed.";
     }
 
-
-    $sql = "SELECT * FROM client_data WHERE reg_id = ?";
+    $sql = "SELECT * FROM client_data WHERE client_id = ?";
     $stmt = $dbConnection->prepareStatement($sql);
     mysqli_stmt_bind_param($stmt, "s", $id);
     mysqli_stmt_execute($stmt);
     $result = $dbConnection->getResultSet($stmt);
 
     $clientRow = mysqli_fetch_assoc($result);
+    
     if ($clientRow) {
         $data = $clientRow;
         $name = $data['full_name'];
@@ -41,10 +41,10 @@ if (isset($_GET['id'])) {
         $options->set('defaultFont', 'Helvetica');
         $options->set('isHtml5ParserEnabled', true);
 
-        $options->set('margin-top', '0mm'); // Top margin
-        $options->set('margin-right', '0mm'); // Right margin
-        $options->set('margin-bottom', '0mm'); // Bottom margin
-        $options->set('margin-left', '0mm'); // Left margin
+        $options->set('margin-top', '0mm');
+        $options->set('margin-right', '0mm');
+        $options->set('margin-bottom', '0mm');
+        $options->set('margin-left', '0mm');
 
         $dompdf = new Dompdf($options);
 
@@ -53,7 +53,7 @@ if (isset($_GET['id'])) {
 
         $html = file_get_contents("./templates/template.html");
 
-        $html = str_replace(["{{ name }}", "{{ address }}", "{{ meter_number }}", "{{ reg_id }}", "{{ date }}", " {{ property_type }}"], [$name, $address, $meterNumber, $regID, $date, $propertyType], $html);
+        $html = str_replace(["{{ name }}", "{{ address }}", "{{ meter_number }}", "{{ reg_id }}", "{{ client_id }}", "{{ date }}", " {{ property_type }}"], [$name, $address, $meterNumber, $regID, $id, $date, $propertyType], $html);
 
 
         $dompdf->loadHtml($html);

@@ -3,21 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        * {
+        /* * {
             outline: 1px solid red;
-        }
+        } */
     	body {
 		    font-family: "Helvetica", sans-serif;
+            margin-left: auto;
+            margin-right: auto;
+            width: 60%; /* or any specific width */
 		}
+        .main-container {
+            border: 1px dashed gray;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        th, td {
+        /* th, td {
             border: 1px solid black;
             padding: 4px;
             text-align: left;
-        }
+        } */
         .header {
         	border: 0;
         }
@@ -33,62 +39,222 @@
     </style>
 </head>
 <body>
+<div class="main-container">
+    <div style="margin: 20px;">
+    <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td class="header" style="text-align: center; vertical-align: middle; padding: 30px 0px;">
+                <h3 style="margin: 0;">Water Billing System Inc.</h3>
+                <h5 style="margin: 0;">Odiong, Roxas, Oriental Mindoro</h5>
+                <h5 style="margin: 0;">Email: waterbillingsystem@gmail.com</h5>
+                <h5 style="margin: 0;">Tel No.(043)289-7056</h5>
+            </td>
+        </tr> 
+    </table>
+    <table>
+        <tr>
+            <td class="header" style="text-align: center; vertical-align: middle; padding-bottom: 30px;">
+                <h2 style="margin: 0;"><strong>STATEMENT OF ACCOUNT</strong></h2>
+            </td>
+        </tr>
+        <tr>
+            <td class="header" style="text-align: left; vertical-align: middle;">
+                <h5 style="margin: 0; font-weight: lighter;">Account Number</h5>
+                <h4 style="margin: 0; padding-bottom: 10px; font-weight: bold; letter-spacing: 1px;">WBS-JJP-020101723</h4>
+                <h4 style="margin: 0;"><strong>PANER, JEFFRY JAMES</strong></h4>
+                <h4 style="margin: 0;"><strong>AMIHAN 2, SAN AQUILINO</strong></h4>
+            </td>
+        </tr>
+    </table> 
     
-<table width="100%" cellspacing="0" cellpadding="0">
-    <tr>
-        <td class="header" style="text-align: center; width: 100%;">
-            <img src="./quality.png" style="width: 50px; height: 50px;">
-        </td>
-    </tr>
-    <tr>
-        <td class="header" style="text-align: center; vertical-align: middle;">
-            <h3 style="margin: 0;">Water Billing System Inc.</h3>
-            <h6 style="margin: 0;">Odiong, Roxas, Oriental Mindoro</h6>
-            <h6 style="margin: 0;">Email: waterbillingsystem@gmail.com</h6>
-            <h6 style="margin: 0;">Tel No.(043)289-7056</h6>
-        </td>
-    </tr>  
-    <tr>
-        <td class="header" style="text-align: center; vertical-align: middle; padding: 10px 0px;">
-            <img src="{{qr_code_path}}" alt="QR Code" style="width: 150px; height: 150px;">
-        </td>
-    </tr>
-    <tr>
-        <td class="header" style="text-align: center; vertical-align: middle; padding: 0px 0px;">
-            <h2 style="margin: 0;"><strong>STATEMENT OF ACCOUNT</strong></h2>
-        </td>
+    <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td class="header" style="padding: 20px 0px; text-align: left; vertical-align: middle; width: 45%; padding-right: 10px ;">
 
-    </tr>
-    <tr>
-        <td class="header" style="text-align: left; vertical-align: middle;">
-            <h5 style="margin: 0; font-weight: lighter;">Account Number</h5>
-            <h4 style="margin: 0; padding-bottom: 10px; font-weight: bold; letter-spacing: 1px;">WBS-JJP-020101723</h4>
-            <h4 style="margin: 0;"><strong>PANER, JEFFRY JAMES</strong></h4>
-            <h4 style="margin: 0;"><strong>AMIHAN 2, SAN AQUILINO</strong></h4>
-        </td>
-    </tr>
+                <table>
+                    <tr>
+                        <td style="width: 45%;"> 
+                            <p style="margin: 0; text-align: left;">Billing Month</p>
+                        </td>
+                        <td style="width: 5%;"> 
+                            <p style="margin: 0; text-align: center;">:</p>
+                        </td>
+                        <td style="width: 50%;"> 
+                            <p style="margin: 0; text-align: right;">October 2023</p>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                         <td style="width: 45%;">  
+                            <p style="margin: 0; text-align: left;">Meter Number</p>
+                        </td>
+                        <td style="width: 5%;"> 
+                            <p style="margin: 0; text-align: center;">:</p>
+                        </td>
+                         <td style="width: 50%;"> 
+                            <p style="margin: 0; text-align: right;">W-12345</p>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                         <td style="width: 45%;">  
+                            <p style="margin: 0; text-align: left;">Period To</p>
+                        </td>
+                        <td style="width: 5%;">  
+                            <p style="margin: 0; text-align: center;">:</p>
+                        </td>
+                         <td style="width: 50%;"> 
+                            <p style="margin: 0; text-align: right;">09/01/2023</p>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                         <td style="width: 45%;">  
+                            <p style="margin: 0; text-align: left;">Period From</p>
+                        </td>
+                        <td style="width: 5%;">   
+                            <p style="margin: 0; text-align: center;">:</p>
+                        </td>
+                         <td style="width: 50%;"> 
+                            <p style="margin: 0; text-align: right;">10/01/2023</p>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+            <td class="header" style="padding: 20px 0px; text-align: left; vertical-align: middle; width: 45%; padding-left: 10px ;">
+
+                <table>
+                    <tr>
+                         <td style="width: 45%;">  
+                            <p style="margin: 0; text-align: left;">Rate Type</p>
+                        </td>
+                        <td style="width: 5%;">   
+                            <p style="margin: 0; text-align: center;">:</p>
+                        </td>
+                         <td style="width: 50%;"> 
+                            <p style="margin: 0; text-align: right;">COMMERCIAL</p>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                         <td style="width: 45%;">  
+                            <p style="margin: 0; text-align: left;">Curr Reading</p>
+                        </td>
+                        <td style="width: 5%;">   
+                            <p style="margin: 0; text-align: center;">:</p>
+                        </td>
+                         <td style="width: 50%;"> 
+                            <p style="margin: 0; text-align: right;">11123.00</p>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                         <td style="width: 45%;">  
+                            <p style="margin: 0; text-align: left;">Prev Reading</p>
+                        </td>
+                        <td style="width: 5%;">   
+                            <p style="margin: 0; text-align: center;">:</p>
+                        </td>
+                         <td style="width: 50%;"> 
+                            <p style="margin: 0; text-align: right;">98000.00</p>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                         <td style="width: 45%;">  
+                            <p style="margin: 0; text-align: left;">Consumption</p>
+                        </td>
+                        <td style="width: 5%;">   
+                            <p style="margin: 0; text-align: center;">:</p>
+                        </td>
+                         <td style="width: 50%;"> 
+                            <p style="margin: 0; text-align: right;">200.00</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td style="width: 50%; text-align: center;">
+                <p style="margin: 0;">RATE COMPONENTS</p>
+            </td>
+            <td style="width: 50%; text-align: right;">
+                <p style="margin: 0;">AMOUNT</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 50%; text-align: left;">
+                <p style="margin: 0;">CURRENT GROSS AMOUNT :</p>
+            </td>
+            <td style="width: 50%; text-align: right;">
+                <p style="margin: 0;">Php 5000.69</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 50%; text-align: left;">
+                <p style="margin: 0;">CURRENT GROSS AMOUNT :</p>
+            </td>
+            <td style="width: 50%; text-align: right;">
+                <p style="margin: 0;">Php 5000.69</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 50%; text-align: left;">
+                <p style="margin: 0;">CURRENT GROSS AMOUNT :</p>
+            </td>
+            <td style="width: 50%; text-align: right;">
+                <p style="margin: 0;">Php 5000.69</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 50%; text-align: left;">
+                <p>CURRENT GROSS AMOUNT :</p>
+            </td>
+            <td style="width: 50%; text-align: right;">
+                <p>Php 5000.69</p>
+            </td>
+        </tr>
+    </table>
+    <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td style="width: 100%; text-align: left;">
+                <h3 style="margin-bottom: 0; margin-top: 5px;">CURRENT MONTH BILL :</h3>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 100%; text-align: right;">
+                <h2 style="margin: 2px;">Php 5000.69</h2>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr style="padding: 20px 0px;">
+            <td class="header" style="text-align: center; vertical-align: middle;">
+                <h3 style="text-transform: uppercase; width: 100%;">Important Notice</h3>
+                <p style="width: 100%; text-align: justify;">Your current bill is due upon receipt. Prompt payment ensures continued service and avoids any unnecessary late fees. For inquiries or alternative payment arrangements, please reach out to us at 0912-345-6789 or email waterbillingsystem@gmail.com. Thank you for your attention to this matter.</p>
+            </td>
+        </tr>
+        <tr>
+            <td class="header" style="text-align: center; vertical-align: middle; padding: 10px 0px;">
+                <img src="{{qr_code_path}}" alt="QR Code" style="width: 150px; height: 150px;">
+            </td>
+        </tr>
+    </table>
+    </div>
+
+</div>
 
 
-    <tr>
-        <td class="header" style="vertical-align: middle;">
-            <p style="margin: 0; text-align: justify; width: 33%;">Your current bill is due upon receipt. Prompt payment ensures continued service and avoids any unnecessary late fees.</p>
-            <p style="margin: 0; text-align: justify; width: 33%;">Your current bill is due upon receipt. Prompt payment ensures continued service and avoids any unnecessary late fees.</p>
-            <p style="margin: 0; text-align: justify; width: 33%;">Your current bill is due upon receipt. Prompt payment ensures continued service and avoids any unnecessary late fees.</p>
-        </td>
-    </tr>
-    <tr>
-        <td class="header" style="text-align: center; vertical-align: middle;">
-            <h3 style="text-transform: uppercase; width: 50%;">Important Notice</h3>
-            <p style="width: 50%; text-align: justify;">Your current bill is due upon receipt. Prompt payment ensures continued service and avoids any unnecessary late fees. For inquiries or alternative payment arrangements, please reach out to us at 0912-345-6789 or email waterbillingsystem@gmail.com. Thank you for your attention to this matter.</p>
-        </td>
-    </tr>
-
-
-
-</table>
-    
-
-    
 </body>
 </html>
 

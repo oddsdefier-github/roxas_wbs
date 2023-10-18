@@ -374,7 +374,7 @@ $(document).ready(function () {
                 console.log(data)
 
                 if (responseData) {
-                    const regID = responseData['registration_id'];
+                    const clientID = responseData['client_id'];
 
                     if (responseData['status'] === 'error') {
                         alert(`${responseData['message']}`)
@@ -382,28 +382,8 @@ $(document).ready(function () {
 
                         alert(`${responseData['message']}`)
 
-                        function setInitialBillingValue() {
-                            $.ajax({
-                                url: 'database_actions.php',
-                                type: "post",
-                                data: {
-                                    action: "setInitialBillingData",
-                                    regID: regID,
-                                },
-                                success: function (data) {
-                                    console.log('Initial billing value set:', data);
-                                    window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application.php';
-                                },
-                                error: function (err) {
-                                    console.log('Error setting initial billing value:', err);
-                                }
-                            });
-                        }
-
-
-                        window.open(`./print.php?id=${regID}`, '_blank');
-                        setInitialBillingValue();
-
+                        window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application.php';
+                        window.open(`./print.php?id=${clientID}`, '_blank');
                     }
                 }
             },

@@ -211,6 +211,17 @@ if (isset($_GET['id'])) {
                             </div>
                             <div class="relative flex gap-x-3">
                                 <div class="flex h-6 items-center">
+                                    <input id="proofOfOwnership" name="proofOfOwnership" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                </div>
+                                <div class="text-sm leading-6">
+                                    <label for="proofOfOwnership" class="font-medium text-gray-900"><span class="font-bold text-primary-600">Proof of Ownership</span> <br>
+                                        <p class="text-gray-500">Presented a photocopy of Original Certificate of Title.</p>
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="relative flex gap-x-3">
+                                <div class="flex h-6 items-center">
                                     <input id="deedOfSale" name="deedOfSale" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                                 </div>
                                 <div class="text-sm leading-6">

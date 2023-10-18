@@ -203,7 +203,6 @@ class DatabaseQueries extends BaseQuery
     public function approveClientApplication($formData)
     {
         $response = array();
-        // Sanitize and validate input data
 
         $applicationID = htmlspecialchars($formData['applicationID'], ENT_QUOTES, 'UTF-8');
         $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
@@ -228,7 +227,6 @@ class DatabaseQueries extends BaseQuery
         $proofOfOwnership = htmlspecialchars($formData['proofOfOwnership'], ENT_QUOTES, 'UTF-8');
         $deedOfSale = htmlspecialchars($formData['deedOfSale'], ENT_QUOTES, 'UTF-8');
         $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
-
 
 
         $checkDuplicateMeterNo = "SELECT meter_number FROM client_data WHERE meter_number = ?";
@@ -265,40 +263,46 @@ class DatabaseQueries extends BaseQuery
                             "message" => $email . " already exists in the database."
                         );
                     } else {
+                        $totalClient = "SELECT COUNT(*) as total_clients FROM client_data";
+                        $query = $this->conn->query($totalClient);
+                        $result = mysqli_fetch_assoc($query);
+                        if ($result) {
+                            $total = $result['total_clients'];
+                            $total = $total + 1;
+                            $paddedTotal = str_pad($total, 3, '0', STR_PAD_LEFT);
+                        }
+                        $initials = $firstName[0] . $middleName[0] . $lastName[0];
+                        $currDate = date('mdy');
+                        $clientID = "WBS-" . $initials . "-" . $paddedTotal . $currDate;
+
+
                         $status = "active";
+                        $readingStatus = "pending";
+
                         $registrationId = 'R' . date("YmdHis");
-                        $sql = "INSERT INTO client_data (reg_id, meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, status, application_id, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+
+                        $sql = "INSERT INTO client_data (client_id, reg_id, meter_number, full_name, email, phone_number, birthdate, age, property_type, street, brgy, full_address, status, reading_status, application_id, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
                         $stmt = $this->conn->prepareStatement($sql);
 
                         if ($stmt) {
                             mysqli_stmt_bind_param(
                                 $stmt,
-                                "sssssssssssssssssssssssss",
+                                "sssssssssssssss",
+                                $clientID,
                                 $registrationId,
                                 $meterNumber,
-                                $firstName,
-                                $middleName,
-                                $lastName,
-                                $nameSuffix,
                                 $fullName,
                                 $email,
                                 $phoneNumber,
                                 $birthDate,
                                 $age,
-                                $gender,
                                 $propertyType,
                                 $streetAddress,
                                 $brgy,
-                                $municipality,
-                                $province,
-                                $region,
                                 $fullAddress,
-                                $validID,
-                                $proofOfOwnership,
-                                $deedOfSale,
-                                $affidavit,
                                 $status,
+                                $readingStatus,
                                 $applicationID
                             );
 
@@ -311,17 +315,86 @@ class DatabaseQueries extends BaseQuery
                                     $stmt->bind_param("ss", $status, $applicationID);
 
                                     if ($stmt->execute()) {
-                                        $response = array(
-                                            "status" => "success",
-                                            "message" => $firstName . "'s application has been approved.",
-                                            "name" => $fullName,
-                                            "address" => $fullAddress,
-                                            "age" => $age,
-                                            "property_type" => $propertyType,
-                                            "registration_id" => $registrationId,
-                                            "meter_number" => $meterNumber,
-                                            "date" => date('F j, Y')
-                                        );
+                                        $insert_sec_data = "INSERT INTO client_secondary_data (client_id, first_name, middle_name, last_name, name_suffix, gender, municipality, province, region, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+                                        $stmt = $this->conn->prepareStatement($insert_sec_data);
+
+                                        if ($stmt) {
+                                            mysqli_stmt_bind_param(
+                                                $stmt,
+                                                "sssssssssssss",
+                                                $clientID,
+                                                $firstName,
+                                                $middleName,
+                                                $lastName,
+                                                $nameSuffix,
+                                                $gender,
+                                                $municipality,
+                                                $province,
+                                                $region,
+                                                $validID,
+                                                $proofOfOwnership,
+                                                $deedOfSale,
+                                                $affidavit,
+                                            );
+                                            if (mysqli_stmt_execute($stmt)) {
+
+
+
+                                                $initialReading = 0;
+
+                                                session_start();
+                                                $encoder = $_SESSION['admin_name'];
+
+                                                $billingID = "B" . time();
+                                                $readingType = 'current';
+
+                                                $dueDate = NULL;
+                                                $billingStatus = NULL;
+                                                $consumption = NULL;
+
+                                                $month = date('M');
+                                                $year = date('Y');
+                                                $billingMonthAndYear = $month . '-' . $year;
+
+                                                $sql_billing = "INSERT INTO billing_data (billing_id, client_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+                                                $stmt_billing = $this->conn->prepareStatement($sql_billing);
+
+                                                if ($stmt_billing) {
+                                                    mysqli_stmt_bind_param($stmt_billing, "ssissssss", $billingID, $clientID, $initialReading, $readingType, $consumption, $billingStatus, $billingMonthAndYear, $dueDate, $encoder);
+
+                                                    if (mysqli_stmt_execute($stmt_billing)) {
+                                                        $response = array(
+                                                            "status" => "success",
+                                                            "message" => $firstName . "'s application has been approved.",
+                                                            "client_id" => $clientID,
+                                                            "reg_id" => $registrationId,
+                                                            "name" => $fullName,
+                                                            "address" => $fullAddress,
+                                                            "age" => $age,
+                                                            "property_type" => $propertyType,
+                                                            "meter_number" => $meterNumber,
+                                                            "date" => date('F j, Y')
+                                                        );
+                                                    } else {
+                                                        $response = array(
+                                                            "status" => "error",
+                                                            "message" => "Error inserting initial reading: " . $stmt_billing->error
+                                                        );
+                                                    }
+                                                    $stmt_billing->close();
+                                                } else {
+                                                    $response = array(
+                                                        "status" => "error",
+                                                        "message" => "Error preparing billing statement: " . $this->conn->getErrorMessage()
+                                                    );
+                                                }
+                                            }
+                                        } else {
+                                            $response = array(
+                                                "status" => "error",
+                                                "message" => "Error preparing statement: " . $this->conn->getErrorMessage()
+                                            );
+                                        }
                                     } else {
                                         $response = array(
                                             "status" => "error",
@@ -493,7 +566,6 @@ class DatabaseQueries extends BaseQuery
         session_start();
         $encoder = $_SESSION['admin_name'];
 
-
         $billingID = "B" . time();
         $readingType = 'current';
         $dueDate = NULL;
@@ -539,20 +611,23 @@ class DataTable extends BaseQuery
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application";
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application WHERE status = 'pending'";
+
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?";
+            $sql .= " AND (full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ?)";
         }
+
         $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
 
         if ($searchTerm) {
             $stmt = $this->conn->prepareStatement($sql);
-            mysqli_stmt_bind_param($stmt, "ssssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
+            mysqli_stmt_bind_param($stmt, "sssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
         } else {
             $stmt = $this->conn->prepareStatement($sql);
             mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
         }
+
 
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
@@ -601,7 +676,7 @@ class DataTable extends BaseQuery
             $readable_time = date("h:i A", strtotime($time));
 
 
-            
+
             $table .= '<tr data-id="' . $id . '" class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
