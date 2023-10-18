@@ -88,7 +88,7 @@ $(document).ready(function () {
         const proofOfOwnership = applicationData.proof_of_ownership
         const deedOfSale = applicationData.deed_of_sale
         const affidavit = applicationData.affidavit
-
+        const billingStatus = applicationData.billing_status
 
         $('.name-title').text(applicationData.full_name)
         $('.address-subtitle').text(applicationData.full_address)
@@ -97,13 +97,21 @@ $(document).ready(function () {
             approved: `<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
             <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
             Approved </span>`,
-            pending: `<span class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+            unconfirmed: `<span class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
             <span class="w-2 h-2 mr-1 bg-red-500 rounded-full"></span>
-            Pending </span>`
+            Unconfirmed </span>`
         };
 
-        status === 'approved' ? $('.status_badge').html(badgeElements.approved) : $('.status_badge').html(badgeElements.pending)
-        status === 'pending' ? $('#review-submit').prop('disabled', false) : $('#review-submit').prop('disabled', true);
+        status === 'approved' ? $('.status_badge').html(badgeElements.approved) : $('.status_badge').html(badgeElements.unconfirmed)
+
+        status === 'unconfirmed' ? $('#review-submit').prop('disabled', false) : $('#review-submit').prop('disabled', true);
+
+
+        status === 'unconfirmed' ? $('#review_confirm').show() : $('#review_confirm').hide()
+
+        billingStatus === 'unpaid' ? $('#approved_client').hide() : $('#approved_client').show()
+
+
         meterNumberInput.val(meterNumber);
         firstNameInput.val(firstName);
         middleNameInput.val(middleName);
@@ -610,17 +618,26 @@ $(document).ready(function () {
             $('#review_confirm').off('click')
             $('#confirm_review_check').on('change', function () {
                 if ($('#confirm_review_check').prop('checked') === true) {
+                    $('#approved_client').prop('disabled', false)
                     $('#review_confirm').prop('disabled', false)
                 } else {
+                    $('#approved_client').prop('disabled', true)
                     $('#review_confirm').prop('disabled', true)
                 }
-                $('#review_confirm').on("click", function () {
+                $('#approved_client').on("click", function () {
                     processApplication();
                     $('#reviewConfirmationModal').hide();
                 })
+                $('#review_confirm').on("click", function () {
+                    console.log('CLOSEEEE')
+                    /**
+                     * AJAX Request 
+                     * TODO : AJAX CALL THAT UPDATE THE CLIENT APP STATUS
+                     * 
+                     */
+                    $('#reviewConfirmationModal').hide();
+                })
             })
-
-
         }
     });
 

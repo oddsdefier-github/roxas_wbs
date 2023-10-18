@@ -16,6 +16,7 @@ export class DataTableWithPagination {
             searchInput: $("#table-search"),
             clearSearch: $("#clear-input"),
             searchIcon: $("#search-icon"),
+            checkboxesContainer: $("#filterDropdown"),
             tableContainer: $(tableContainerSelector),
             prevBtn: $(`nav[data-table-name='${this.tableName}'] #prev`),
             nextBtn: $(`nav[data-table-name='${this.tableName}'] #next`),
@@ -25,11 +26,12 @@ export class DataTableWithPagination {
         };
 
 
-        
+
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
+
         this.bindEvents();
-        // this.handlePageChange('start');
+        this.bindCheckboxEvents();
         this.fetchTableData();
         this.updateButtonsState();
     }
@@ -70,6 +72,14 @@ export class DataTableWithPagination {
             this.handleClearInput();
             this.handleSearch();
         })
+    }
+
+    bindCheckboxEvents() {
+        const checkboxes = this.elements.checkboxesContainer.find("input[type='checkbox']");
+
+        checkboxes.on('change', (event) => {
+            console.log(`Checkbox ${event.target.id} is ${event.target.checked ? "checked" : "unchecked"}`);
+        });
     }
 
     updateItemsPerPageOptions() {

@@ -637,18 +637,17 @@ class DataTable extends BaseQuery
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application WHERE status = 'pending'";
-
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application";
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $sql .= " AND (full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ?)";
+            $sql .= " WHERE (full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
         }
 
         $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
 
         if ($searchTerm) {
             $stmt = $this->conn->prepareStatement($sql);
-            mysqli_stmt_bind_param($stmt, "sssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
+            mysqli_stmt_bind_param($stmt, "ssssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
         } else {
             $stmt = $this->conn->prepareStatement($sql);
             mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
