@@ -16,38 +16,30 @@ class BaseQuery
 
 class DatabaseQueries extends BaseQuery
 {
-    public function retrieveClientData($clientId)
+    public function retrieveClientData($clientID)
     {
         $response = array();
-
-        $sql = "SELECT * FROM `clients` WHERE id = ?";
+        $sql = "SELECT * FROM client_data WHERE client_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
-        mysqli_stmt_bind_param($stmt, "i", $clientId);
-        mysqli_stmt_execute($stmt);
-        $result = $this->conn->getResultSet($stmt);
+        mysqli_stmt_bind_param($stmt, "s", $clientID);
 
-        $clientRow = mysqli_fetch_assoc($result);
-        if ($clientRow) {
-            $response['clientData'] = $clientRow;
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            $client_data_array = array();
+
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    array_push($client_data_array, $row);
+                }
+                $response['client_data'] = $client_data_array;
+            } else {
+                $response['error'] = "No client found with the provided ID.";
+            }
+        } else {
+            $response['error'] = "There was an error executing the statement.";
         }
-        mysqli_stmt_free_result($stmt);
+
         mysqli_stmt_close($stmt);
-
-        $addressArray = array();
-
-        $addressSql = "SELECT * FROM `address`";
-        $addressStmt = $this->conn->query($addressSql);
-        $addressResult = $this->conn->getResultSet($addressStmt);
-
-        $addressArray = array();
-
-        while ($addressRow = mysqli_fetch_assoc($addressResult)) {
-            $addressArray[] = $addressRow;
-        }
-
-        $this->conn->closeStatement($addressStmt);
-
-        $response['addressData'] = $addressArray;
 
         return $response;
     }
@@ -315,19 +307,22 @@ class DatabaseQueries extends BaseQuery
                                     $stmt->bind_param("ss", $status, $applicationID);
 
                                     if ($stmt->execute()) {
-                                        $insert_sec_data = "INSERT INTO client_secondary_data (client_id, first_name, middle_name, last_name, name_suffix, gender, municipality, province, region, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+                                        $insert_sec_data = "INSERT INTO client_secondary_data (client_id, first_name, middle_name, last_name, name_suffix, property_type, gender, street, brgy, municipality, province, region, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?,?, ?, ?,?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
                                         $stmt = $this->conn->prepareStatement($insert_sec_data);
 
                                         if ($stmt) {
                                             mysqli_stmt_bind_param(
                                                 $stmt,
-                                                "sssssssssssss",
+                                                "ssssssssssssssss",
                                                 $clientID,
                                                 $firstName,
                                                 $middleName,
                                                 $lastName,
                                                 $nameSuffix,
+                                                $propertyType,
                                                 $gender,
+                                                $streetAddress,
+                                                $brgy,
                                                 $municipality,
                                                 $province,
                                                 $region,
@@ -338,29 +333,57 @@ class DatabaseQueries extends BaseQuery
                                             );
                                             if (mysqli_stmt_execute($stmt)) {
 
-
-
-                                                $initialReading = 0;
-
                                                 session_start();
                                                 $encoder = $_SESSION['admin_name'];
+
+                                                $initialReading = 0;
+                                                $prevReading = 0;
 
                                                 $billingID = "B" . time();
                                                 $readingType = 'current';
 
                                                 $dueDate = NULL;
+
+                                                $currentDate = new DateTime();
+                                                $currentDate->setTime(0, 0, 0);
+                                                $periodTo = clone $currentDate;
+                                                $periodTo->modify('last day of this month');
+                                                $periodTo = $periodTo->format('Y-m-d');
+
+                                                $periodFrom = date("Y-m-d");
+
                                                 $billingStatus = NULL;
                                                 $consumption = NULL;
+                                                $rates = NULL;
+                                                $billingAmount = 0;
 
-                                                $month = date('M');
-                                                $year = date('Y');
-                                                $billingMonthAndYear = $month . '-' . $year;
+                                                $currentDate = new DateTime();
+                                                $billingMonthAndYear = $currentDate->format('F Y');
 
-                                                $sql_billing = "INSERT INTO billing_data (billing_id, client_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+                                                $sql_billing = "INSERT INTO billing_data (billing_id, client_id, prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_month, due_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
                                                 $stmt_billing = $this->conn->prepareStatement($sql_billing);
 
+                                                // HERE WERE USING THE SAME VALUE FOR PERIOD TO AND PERIOD FROM FRO INITIALIZATION
                                                 if ($stmt_billing) {
-                                                    mysqli_stmt_bind_param($stmt_billing, "ssissssss", $billingID, $clientID, $initialReading, $readingType, $consumption, $billingStatus, $billingMonthAndYear, $dueDate, $encoder);
+                                                    mysqli_stmt_bind_param(
+                                                        $stmt_billing,
+                                                        "ssiisssissssss",
+                                                        $billingID,
+                                                        $clientID,
+                                                        $prevReading,
+                                                        $initialReading,
+                                                        $readingType,
+                                                        $consumption,
+                                                        $rates,
+                                                        $billingAmount,
+                                                        $billingStatus,
+                                                        $billingMonthAndYear,
+                                                        $dueDate,
+                                                        $periodFrom,
+                                                        $periodFrom,
+                                                        $encoder
+                                                    );
+
 
                                                     if (mysqli_stmt_execute($stmt_billing)) {
                                                         $response = array(
@@ -558,46 +581,46 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 
-    public function setInitialBillingData($regID)
-    {
-        $response = array();
-        $initialReading = 0;
+    // public function setInitialBillingData($regID)
+    // {
+    //     $response = array();
+    //     $initialReading = 0;
 
-        session_start();
-        $encoder = $_SESSION['admin_name'];
+    //     session_start();
+    //     $encoder = $_SESSION['admin_name'];
 
-        $billingID = "B" . time();
-        $readingType = 'current';
-        $dueDate = NULL;
-        $billingStatus = NULL;
-        $consumption = NULL;
-        $month = date('M');
-        $year = date('Y');
-        $billingMonthAndYear = $month . '-' . $year;
+    //     $billingID = "B" . time();
+    //     $readingType = 'current';
+    //     $dueDate = NULL;
+    //     $billingStatus = NULL;
+    //     $consumption = NULL;
+    //     $month = date('M');
+    //     $year = date('Y');
+    //     $billingMonthAndYear = $month . '-' . $year;
 
-        $sql_billing = "INSERT INTO billing_data (billing_id, reg_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
-        $stmt_billing = $this->conn->prepareStatement($sql_billing);
+    //     $sql_billing = "INSERT INTO billing_data (billing_id, reg_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+    //     $stmt_billing = $this->conn->prepareStatement($sql_billing);
 
-        if ($stmt_billing) {
-            mysqli_stmt_bind_param($stmt_billing, "ssissssss", $billingID, $regID, $initialReading, $readingType, $consumption, $billingStatus, $billingMonthAndYear, $dueDate, $encoder);
-            if (mysqli_stmt_execute($stmt_billing)) {
-                $response["message"] = $billingID;
-            } else {
-                $response = array(
-                    "status" => "error",
-                    "message" => "Error inserting initial reading: " . $stmt_billing->error
-                );
-            }
-            $stmt_billing->close();
-        } else {
-            $response = array(
-                "status" => "error",
-                "message" => "Error preparing billing statement: " . $this->conn->getErrorMessage()
-            );
-        }
+    //     if ($stmt_billing) {
+    //         mysqli_stmt_bind_param($stmt_billing, "ssissssss", $billingID, $regID, $initialReading, $readingType, $consumption, $billingStatus, $billingMonthAndYear, $dueDate, $encoder);
+    //         if (mysqli_stmt_execute($stmt_billing)) {
+    //             $response["message"] = $billingID;
+    //         } else {
+    //             $response = array(
+    //                 "status" => "error",
+    //                 "message" => "Error inserting initial reading: " . $stmt_billing->error
+    //             );
+    //         }
+    //         $stmt_billing->close();
+    //     } else {
+    //         $response = array(
+    //             "status" => "error",
+    //             "message" => "Error preparing billing statement: " . $this->conn->getErrorMessage()
+    //         );
+    //     }
 
-        return $response;
-    }
+    //     return $response;
+    // }
 }
 
 
@@ -693,14 +716,14 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 <span class="sr-only">Icon description</span>
                 </a>
-                <button  onclick="deleteClientApplication(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                <button  onclick="deleteClientApplication(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-2 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16px" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
@@ -792,6 +815,7 @@ class DataTable extends BaseQuery
         while ($row = mysqli_fetch_assoc($result)) {
             $tableName = "client_data";
             $id = $row['id'];
+            $clientID = $row['client_id'];
             $meter_number = $row['meter_number'];
             $name = $row['full_name'];
             $street = $row['street'];
@@ -820,18 +844,26 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <button onclick="openViewClientModal(\'' . $clientID . '\')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 <span class="sr-only">Icon description</span>
-                </a>
-                <button onclick="deleteClient(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                </button>
+                <button onclick="deleteClient(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-2 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16px" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
                 <span class="sr-only">Icon description</span>
+                </button>
+
+                <button  onclick="clientActions(\'' . $clientID . '\')"  class="delete-client text-gray-800 bg-gray-200 hover:bg-gray-200 focus:ring-2 focus:outline-none focus:ring-gray-200 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
+                    </svg>
+                
+                    <span class="sr-only">Icon description</span>
                 </button>
             </td>
         </tr>';
@@ -950,14 +982,14 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 <span class="sr-only">Icon description</span>
                 </a>
-                <button  onclick="deleteClientApplication(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                <button  onclick="deleteClientApplication(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-2 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16px" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
@@ -1079,14 +1111,14 @@ class DataTable extends BaseQuery
                 </td>
     
                 <td class="flex items-center px-6 py-4 space-x-3">
-                    <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     <span class="sr-only">Icon description</span>
                     </a>
-                    <button  onclick="deleteClientApplication(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                    <button  onclick="deleteClientApplication(' . $id . ', \'' . $tableName . '\')" type="button" class="delete-client text-white bg-red-700 hover:bg-red-800 focus:ring-2 focus:outline-none focus:ring-red-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16px" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                         </svg>

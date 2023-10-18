@@ -16,4 +16,5 @@ $(document).ready(function () {
 
     const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
     const clientAppTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
+
 });

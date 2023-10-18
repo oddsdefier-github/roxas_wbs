@@ -13,3 +13,4 @@
 <script src="./assets/js/modalManager.js"></script>
 <script src="./assets/js/apexcharts.js"></script>
 <script src="./assets/js/pfpAPI.js"></script>
+<script src="./assets/js/clientActions.js"></script>

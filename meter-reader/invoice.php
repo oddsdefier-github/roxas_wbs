@@ -5,40 +5,35 @@ use Dompdf\Options;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 
-// Load dependencies and set up the autoload
 require './database_queries.php';
 require __DIR__ . "/vendor/autoload.php";
 
-// Configure Dompdf options
 $options = new Options;
 $options->setChroot(__DIR__);
 $options->setIsRemoteEnabled(true);
 $options->set('defaultFont', 'Helvetica');
 $options->set('isHtml5ParserEnabled', true);
 
-// Initialize Dompdf with the configured options
 $dompdf = new Dompdf($options);
 
-// SQL query to get all billing data
-$sql = "SELECT * FROM billing_data";
+$sql = "SELECT bd.*, sd.* 
+        FROM billing_data bd 
+        JOIN client_secondary_data sd ON bd.client_id = sd.client_id 
+        WHERE bd.billing_status = 'unpaid'";
+
 $stmt = $conn->prepareStatement($sql);
 
-// Initialize empty array to store billing data
 $billing_data = [];
 
-// Execute SQL query
 if (mysqli_stmt_execute($stmt)) {
     $result = mysqli_stmt_get_result($stmt);
-    // Fetch all rows and save them in the $billing_data array
     while ($row = mysqli_fetch_assoc($result)) {
         $billing_data[] = $row;
     }
-} else {
-    // Output error message if SQL query fails
     echo "Error executing statement: " . mysqli_stmt_error($stmt);
 }
 
-// Load HTML invoice template from a file
+
 $template = file_get_contents('templates/template.html');
 
 // Initialize empty string to store all invoices
@@ -55,9 +50,20 @@ foreach ($billing_data as $invoice) {
     $qrDataUri = $result->getDataUri();
 
     // Replace placeholders in the template with actual data
+
+    $accountNUmber = $invoice['client_id'];
+    $firstName = $invoice['first_name'];
+    $middleName = $invoice['middle_name'];
+    $lastName = $invoice['last_name'];
+    $street = $invoice['street'];
+    $brgy = $invoice['brgy'];
+    $municipality = $invoice['municipality'];
+
+    $propertyType = $invoice['property_type'];
+
     $invoiceHtml = str_replace(
-        ['{{client_id}}', '{{meter_reading}}', '{{qr_code_path}}'],
-        [$invoice['client_id'], $invoice['meter_reading'], $qrDataUri],
+        ['{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{meter_reading}}', '{{qr_code_path}}'],
+        [$accountNUmber, $lastName, $firstName, $brgy, $municipality, $invoice['meter_reading'], $qrDataUri],
         $template
     );
 

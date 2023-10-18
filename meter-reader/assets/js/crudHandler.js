@@ -84,7 +84,7 @@ class EncodeHandler {
     }
 
     validateReadingInput() {
-        
+
     }
     encodeCurrentReading(responseData) {
         const self = this;
@@ -99,7 +99,9 @@ class EncodeHandler {
             } else {
                 console.log(responseData);
                 const clientID = responseData.client_id;
-                const meterReading = self.elements.currReadingInput.val();
+                const propertyType = responseData.property_type;
+                const prevReading = self.elements.prevReadingInput.val();
+                const currReading = self.elements.currReadingInput.val();
                 let consumption = self.elements.consumptionInput.val();
                 consumption = consumption.split(" ")[0];
 
@@ -112,7 +114,9 @@ class EncodeHandler {
                         action: "encodeMeterReadingData",
                         formData: {
                             clientID: clientID,
-                            meterReading: meterReading,
+                            prevReading: prevReading,
+                            currReading: currReading,
+                            propertyType: propertyType,
                             consumption: consumption
                         }
                     },

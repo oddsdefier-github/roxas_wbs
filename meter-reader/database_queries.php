@@ -20,139 +20,183 @@ class DatabaseQueries extends BaseQuery
     {
         $response = array();
 
-        $sqlClient = "SELECT * FROM client_data WHERE client_id = ?";
-        try {
-            $stmt = $this->conn->prepareStatement($sqlClient);
-            $stmt->bind_param("s", $clientID);
-            if ($stmt->execute()) {
-                $result = $stmt->get_result();
-                if ($result->num_rows == 1) {
-                    $row = $result->fetch_assoc();
-
-                    $response['full_name'] = $row['full_name'];
-                    $response['meter_number'] = $row['meter_number'];
-                    $response['status'] = $row['status'];
-                    $response['property_type'] = $row['property_type'];
-                    $response['client_id'] = $row['client_id'];
-                } else {
-                    $response['error'] = "No client found with the provided ID.";
-                }
-            } else {
-                $response['error'] = "There was an error executing the client_data statement.";
-            }
-            $stmt->close();
-        } catch (Exception $e) {
-            $response['error'] = "Exception caught: " . $e->getMessage();
+        // Client Data Query
+        $stmt = $this->conn->prepareStatement("SELECT * FROM client_data WHERE client_id = ?");
+        if (!$stmt) {
+            return ['error' => 'Failed to prepare statement for client_data query.'];
         }
 
-        $sqlBilling = "SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
-        try {
-            $stmt = $this->conn->prepareStatement($sqlBilling);
-            $stmt->bind_param("s", $clientID);
-            if ($stmt->execute()) {
-                $result = $stmt->get_result();
-                if ($result->num_rows == 1) {
-                    $row = $result->fetch_assoc();
-                    $response['recent_meter_reading'] = $row['meter_reading'];
-                }
+        $stmt->bind_param("s", $clientID);
+        if (!$stmt->execute()) {
+            return ['error' => 'Error executing the client_data statement.'];
+        }
+
+        $result = $stmt->get_result();
+        $stmt->close();
+
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            $response = array_merge($response, [
+                'full_name' => $row['full_name'],
+                'meter_number' => $row['meter_number'],
+                'status' => $row['status'],
+                'property_type' => $row['property_type'],
+                'client_id' => $row['client_id'],
+            ]);
+        } else {
+            return ['error' => 'No client found with the provided ID.'];
+        }
+
+        // Billing Data Query
+        $stmt = $this->conn->prepareStatement("SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1");
+        if (!$stmt) {
+            return ['error' => 'Failed to prepare statement for billing_data query.'];
+        }
+
+        $stmt->bind_param("s", $clientID);
+        if (!$stmt->execute()) {
+            return ['error' => 'Error executing the billing_data statement.'];
+        }
+
+        $result = $stmt->get_result();
+        $stmt->close();
+
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            if ($row) {
+                $response['recent_meter_reading'] = $row['curr_reading'];
             } else {
-                $response['error'] = "There was an error executing the billing_data statement.";
+                $response['error'] = 'No billing data found for the provided ID.';
             }
-            $stmt->close();
-        } catch (Exception $e) {
-            $response['error'] = "Exception caught: " . $e->getMessage();
         }
 
         return $response;
     }
 
 
+
+
     public function encodeCurrentReading($formData)
     {
         $response = array();
         session_start();
-
         $encoder = $_SESSION['admin_name'];
-
         $billingID = "B" . time();
         $readingType = 'current';
 
+        // Initialize DateTime and set dueDate
         $dateTime = new DateTime();
-        $dateTime->modify('+7 days');
+        $dateTime->modify('+15 days');
         $dateTime->setTime(16, 0, 0);
-
         $dayOfWeek = $dateTime->format('w');
-
         if ($dayOfWeek == 6) {
             $dateTime->modify('+2 days');
         } elseif ($dayOfWeek == 0) {
             $dateTime->modify('+1 day');
         }
-
         $dueDate = $dateTime->format('Y-m-d H:i:s');
+
         $billingStatus = 'unpaid';
 
-        $month = date('M');
-        $year = date('Y');
+        $currentDate = new DateTime();
+        $billingMonthAndYear = $currentDate->format('F Y');
 
-        $billingMonthAndYear = $month . '-' . $year;
         $clientID = $formData['clientID'];
-
-        $meterReading = $formData['meterReading'];
+        $prevReading = $formData['prevReading'];
+        $currReading = $formData['currReading'];
         $consumption = $formData['consumption'];
-
+        $propertyType = $formData['propertyType'];
         $this->conn->beginTransaction();
 
+        // Fetch rates
+        $query_rates = "SELECT * FROM rates WHERE property_type = ? AND billing_month = ?";
+        $stmt = $this->conn->prepareStatement($query_rates);
+        mysqli_stmt_bind_param($stmt, "ss", $propertyType, $billingMonthAndYear);
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            $row = mysqli_fetch_assoc($result);
+            $rates = $row['rates'];
+        }
 
+        $billingAmount = $consumption * $rates;
+
+        // Determine periodTo
+        $currentDate = new DateTime();
+        $currentDate->setTime(0, 0, 0);
+        $periodTo = clone $currentDate;
+        $periodTo->modify('last day of this month');
+        $periodTo = $periodTo->format('Y-m-d');
+
+        // Fetch periodFrom
+        $selectBillingData = "SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmt_select = $this->conn->prepareStatement($selectBillingData);
+        mysqli_stmt_bind_param($stmt_select, "s", $clientID);
+        if (mysqli_stmt_execute($stmt_select)) {
+            $result_select = mysqli_stmt_get_result($stmt_select);
+            if ($row = mysqli_fetch_assoc($result_select)) {
+                $periodFrom = $row['period_to'];
+
+                $date = new DateTime($periodFrom);
+                $date->modify('+1 day');
+                $periodFrom = $date->format('Y-m-d');
+            }
+            mysqli_stmt_close($stmt_select);
+        }
+
+        // Update previous reading
         $updateSql = "UPDATE billing_data SET reading_type = 'previous' WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
         $stmt_update = $this->conn->prepareStatement($updateSql);
         mysqli_stmt_bind_param($stmt_update, "s", $clientID);
         $updateResult = mysqli_stmt_execute($stmt_update);
         mysqli_stmt_close($stmt_update);
-
-
         if (!$updateResult) {
             $this->conn->rollbackTransaction();
             return array("status" => "error", "message" => "Error updating previous reading.");
         }
 
-        $insertSql = "INSERT INTO billing_data (billing_id, client_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
-        $stmt_insert = $this->conn->prepareStatement($insertSql);
-        mysqli_stmt_bind_param(
-            $stmt_insert,
-            "ssissssss",
-            $billingID,
-            $clientID,
-            $meterReading,
-            $readingType,
-            $consumption,
-            $billingStatus,
-            $billingMonthAndYear,
-            $dueDate,
-            $encoder
-        );
+        // Insert current reading
+        $sql_billing = "INSERT INTO billing_data (billing_id, client_id, prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_month, due_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $stmt_billing = $this->conn->prepareStatement($sql_billing);
+        if ($stmt_billing) {
+            mysqli_stmt_bind_param(
+                $stmt_billing,
+                "ssiisssissssss",
+                $billingID,
+                $clientID,
+                $prevReading,
+                $currReading,
+                $readingType,
+                $consumption,
+                $rates,
+                $billingAmount,
+                $billingStatus,
+                $billingMonthAndYear,
+                $dueDate,
+                $periodTo,
+                $periodFrom,
+                $encoder
+            );
 
-        if (mysqli_stmt_execute($stmt_insert)) {
-            $this->conn->commitTransaction();
-            $response["message"] = $billingID;
+            if (mysqli_stmt_execute($stmt_billing)) {
+                $this->conn->commitTransaction();
+                $response["message"] = $billingID;
+                $updateReadingStatus = "UPDATE client_data SET reading_status = 'read'  WHERE client_id = ?";
+                $stmt_update = $this->conn->prepareStatement($updateReadingStatus);
+                mysqli_stmt_bind_param($stmt_update, "s", $clientID);
+                $updateResult = mysqli_stmt_execute($stmt_update);
+                mysqli_stmt_close($stmt_update);
 
-            $updateReadingStatus = "UPDATE client_data SET reading_status = 'read'  WHERE client_id = ?";
-            $stmt_update = $this->conn->prepareStatement($updateReadingStatus);
-            mysqli_stmt_bind_param($stmt_update, "s", $clientID);
-            $updateResult = mysqli_stmt_execute($stmt_update);
-            mysqli_stmt_close($stmt_update);
-
-            if (!$updateResult) {
+                if (!$updateResult) {
+                    $this->conn->rollbackTransaction();
+                    return array("status" => "error", "message" => "Error client reading status.");
+                }
+            } else {
                 $this->conn->rollbackTransaction();
-                return array("status" => "error", "message" => "Error client reading status.");
+                $response = array("status" => "error", "message" => "Error inserting initial reading: " . $stmt_billing->error);
             }
-        } else {
-            $this->conn->rollbackTransaction();
-            $response = array("status" => "error", "message" => "Error inserting initial reading: " . $stmt_insert->error);
         }
 
-        mysqli_stmt_close($stmt_insert);
-
+        mysqli_stmt_close($stmt_billing);
         return $response;
     }
 

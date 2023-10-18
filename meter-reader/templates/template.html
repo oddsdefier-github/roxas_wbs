@@ -19,11 +19,6 @@
             width: 100%;
             border-collapse: collapse;
         }
-        /* th, td {
-            border: 1px solid black;
-            padding: 4px;
-            text-align: left;
-        } */
         .header {
         	border: 0;
         }
@@ -60,9 +55,9 @@
         <tr>
             <td class="header" style="text-align: left; vertical-align: middle;">
                 <h5 style="margin: 0; font-weight: lighter;">Account Number</h5>
-                <h4 style="margin: 0; padding-bottom: 10px; font-weight: bold; letter-spacing: 1px;">WBS-JJP-020101723</h4>
-                <h4 style="margin: 0;"><strong>PANER, JEFFRY JAMES</strong></h4>
-                <h4 style="margin: 0;"><strong>AMIHAN 2, SAN AQUILINO</strong></h4>
+                <h4 style="margin: 0; padding-bottom: 10px; font-weight: bold; letter-spacing: 1px;">{{client_id}}</h4>
+                <h4 style="margin: 0; text-transform: uppercase;"><strong><span>{{last_name}}</span>, <span>{{first_name}}</span></strong></h4>
+                <h4 style="margin: 0; text-transform: uppercase;"><strong><span>{{brgy}}</span>, {{municipality}}</strong></h4>
             </td>
         </tr>
     </table> 
@@ -119,7 +114,7 @@
                             <p style="margin: 0; text-align: center;">:</p>
                         </td>
                          <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">10/01/2023</p>
+                            <p style="margin: 0; text-align: right;">08/01/2023</p>
                         </td>
                     </tr>
                 </table>

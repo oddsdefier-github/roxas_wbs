@@ -2233,6 +2233,10 @@ input:checked + .toggle-bg {
   width: 100vw;
 }
 
+.w-\[45rem\] {
+  width: 45rem;
+}
+
 .max-w-2xl {
   max-width: 42rem;
 }
@@ -2243,6 +2247,10 @@ input:checked + .toggle-bg {
 
 .max-w-5xl {
   max-width: 64rem;
+}
+
+.max-w-lg {
+  max-width: 32rem;
 }
 
 .max-w-md {
@@ -2976,6 +2984,12 @@ input:checked + .toggle-bg {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
 }
 
 .space-y-4 > :not([hidden]) ~ :not([hidden]) {
@@ -5843,6 +5857,12 @@ input:checked + .toggle-bg {
   text-decoration-line: underline;
 }
 
+.hover\:shadow:hover {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .before\:hover\:text-center:hover::before {
   content: var(--tw-content);
   text-align: center;
@@ -6437,6 +6457,11 @@ input:checked + .toggle-bg {
   background-color: rgb(26 86 219 / var(--tw-bg-opacity));
 }
 
+:is(.dark .dark\:hover\:bg-gray-500:hover) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity));
+}
+
 :is(.dark .dark\:hover\:bg-gray-600:hover) {
   --tw-bg-opacity: 1;
   background-color: rgb(75 85 99 / var(--tw-bg-opacity));
@@ -6691,6 +6716,22 @@ input:checked + .toggle-bg {
     height: auto;
   }
 
+  .md\:w-\[\] {
+    width: ;
+  }
+
+  .md\:w-\[75rem\] {
+    width: 75rem;
+  }
+
+  .md\:w-\[50rem\] {
+    width: 50rem;
+  }
+
+  .md\:w-\[65rem\] {
+    width: 65rem;
+  }
+
   .md\:max-w-4xl {
     max-width: 56rem;
   }
@@ -6706,9 +6747,60 @@ input:checked + .toggle-bg {
 }
 
 @media (min-width: 1024px) {
+  .lg\:w-\[75rem\] {
+    width: 75rem;
+  }
+
   .lg\:px-64 {
     padding-left: 16rem;
     padding-right: 16rem;
+  }
+
+  .lg\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .font-inter .lg\:text-xl,.lg\:text-xl .font-inter {
+    line-height: 1.75rem;
+    font-size: 1.25rem;
+    letter-spacing: -0.016657339em;
+  }
+
+  .font-inter .lg\:text-xl .tracking-tighter, .font-inter .lg\:text-xl.tracking-tighter,.lg\:text-xl .font-inter .tracking-tighter,.lg\:text-xl .font-inter.tracking-tighter, .tracking-tighter .font-inter .lg\:text-xl, .tracking-tighter .lg\:text-xl.font-inter {
+    line-height: 1.75rem;
+    font-size: 1.25rem;
+    letter-spacing: -0.066657339em;
+  }
+
+  .font-inter .lg\:text-xl .tracking-tight, .font-inter .lg\:text-xl.tracking-tight,.lg\:text-xl .font-inter .tracking-tight,.lg\:text-xl .font-inter.tracking-tight, .tracking-tight .font-inter .lg\:text-xl, .tracking-tight .lg\:text-xl.font-inter {
+    line-height: 1.75rem;
+    font-size: 1.25rem;
+    letter-spacing: -0.041657339em;
+  }
+
+  .font-inter .lg\:text-xl .tracking-normal, .font-inter .lg\:text-xl.tracking-normal,.lg\:text-xl .font-inter .tracking-normal,.lg\:text-xl .font-inter.tracking-normal, .tracking-normal .font-inter .lg\:text-xl, .tracking-normal .lg\:text-xl.font-inter {
+    line-height: 1.75rem;
+    font-size: 1.25rem;
+    letter-spacing: -0.016657339em;
+  }
+
+  .font-inter .lg\:text-xl .tracking-wide, .font-inter .lg\:text-xl.tracking-wide,.lg\:text-xl .font-inter .tracking-wide,.lg\:text-xl .font-inter.tracking-wide, .tracking-wide .font-inter .lg\:text-xl, .tracking-wide .lg\:text-xl.font-inter {
+    line-height: 1.75rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.008342661em;
+  }
+
+  .font-inter .lg\:text-xl .tracking-wider, .font-inter .lg\:text-xl.tracking-wider,.lg\:text-xl .font-inter .tracking-wider,.lg\:text-xl .font-inter.tracking-wider, .tracking-wider .font-inter .lg\:text-xl, .tracking-wider .lg\:text-xl.font-inter {
+    line-height: 1.75rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.033342661em;
+  }
+
+  .font-inter .lg\:text-xl .tracking-widest, .font-inter .lg\:text-xl.tracking-widest,.lg\:text-xl .font-inter .tracking-widest,.lg\:text-xl .font-inter.tracking-widest, .tracking-widest .font-inter .lg\:text-xl, .tracking-widest .lg\:text-xl.font-inter {
+    line-height: 1.75rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.083342661em;
   }
 
   :is(.dark .dark\:lg\:hover\:\[paint-order\:markers\]:hover) {

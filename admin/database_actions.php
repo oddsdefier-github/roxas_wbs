@@ -73,8 +73,8 @@ function handleAction($action, $dbQueries, $dataTable)
 
 function handleRetrieveClientData($dbQueries)
 {
-    if (isset($_POST['updateId'])) {
-        $client_id = $_POST['updateId'];
+    if (isset($_POST['clientID'])) {
+        $client_id = $_POST['clientID'];
         $client_data = $dbQueries->retrieveClientData($client_id);
         echo json_encode($client_data);
     }
