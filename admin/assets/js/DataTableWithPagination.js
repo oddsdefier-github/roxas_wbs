@@ -29,7 +29,6 @@ export class DataTableWithPagination {
 
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
-
         this.bindEvents();
         this.bindCheckboxEvents();
         this.fetchTableData();
@@ -76,10 +75,10 @@ export class DataTableWithPagination {
 
     bindCheckboxEvents() {
         const checkboxes = this.elements.checkboxesContainer.find("input[type='checkbox']");
-
         checkboxes.on('change', (event) => {
             console.log(`Checkbox ${event.target.id} is ${event.target.checked ? "checked" : "unchecked"}`);
         });
+        console.log("test")
     }
 
     updateItemsPerPageOptions() {
