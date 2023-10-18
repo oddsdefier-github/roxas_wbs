@@ -340,6 +340,7 @@ class DatabaseQueries extends BaseQuery
                                                 $prevReading = 0;
 
                                                 $billingID = "B" . time();
+                                                $billingID = "B-" . $meterNumber . "-" . time();
                                                 $readingType = 'current';
 
                                                 $dueDate = NULL;

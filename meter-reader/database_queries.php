@@ -81,7 +81,7 @@ class DatabaseQueries extends BaseQuery
         $response = array();
         session_start();
         $encoder = $_SESSION['admin_name'];
-        $billingID = "B" . time();
+
         $readingType = 'current';
 
         // Initialize DateTime and set dueDate
@@ -109,6 +109,8 @@ class DatabaseQueries extends BaseQuery
         $currReading = $formData['currReading'];
         $consumption = $formData['consumption'];
         $propertyType = $formData['propertyType'];
+        $meterNumber = $formData['meterNumber'];
+        $billingID = "B-" . $meterNumber . "-" . time();
         $this->conn->beginTransaction();
 
         // Fetch rates

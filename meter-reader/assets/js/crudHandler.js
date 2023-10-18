@@ -100,6 +100,7 @@ class EncodeHandler {
                 console.log(responseData);
                 const clientID = responseData.client_id;
                 const propertyType = responseData.property_type;
+                const meterNumber = responseData.meter_number;
                 const prevReading = self.elements.prevReadingInput.val();
                 const currReading = self.elements.currReadingInput.val();
                 let consumption = self.elements.consumptionInput.val();
@@ -117,6 +118,7 @@ class EncodeHandler {
                             prevReading: prevReading,
                             currReading: currReading,
                             propertyType: propertyType,
+                            meterNumber: meterNumber,
                             consumption: consumption
                         }
                     },
