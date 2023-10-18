@@ -8,6 +8,9 @@ use Endroid\QrCode\Writer\PngWriter;
 require './database_queries.php';
 require __DIR__ . "/vendor/autoload.php";
 
+session_start();
+$meterReader = $_SESSION['admin_name'];
+
 $options = new Options;
 $options->setChroot(__DIR__);
 $options->setIsRemoteEnabled(true);
@@ -16,10 +19,12 @@ $options->set('isHtml5ParserEnabled', true);
 
 $dompdf = new Dompdf($options);
 
-$sql = "SELECT bd.*, sd.* 
-        FROM billing_data bd 
-        JOIN client_secondary_data sd ON bd.client_id = sd.client_id 
+$sql = "SELECT cd.*, bd.*, sd.* 
+        FROM client_data cd 
+        JOIN billing_data bd ON cd.client_id = bd.client_id 
+        JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
         WHERE bd.billing_status = 'unpaid'";
+
 
 $stmt = $conn->prepareStatement($sql);
 
@@ -34,7 +39,7 @@ if (mysqli_stmt_execute($stmt)) {
 }
 
 
-$template = file_get_contents('templates/template.html');
+$template = file_get_contents('templates/invoice-billing.html');
 
 // Initialize empty string to store all invoices
 $all_invoices = "";
@@ -42,7 +47,7 @@ $all_invoices = "";
 // Process each invoice
 foreach ($billing_data as $invoice) {
     // Generate QR code for the invoice using Endroid library
-    $qrCode = new QrCode(json_encode($invoice));
+    $qrCode = new QrCode($invoice['billing_id']);
     $writer = new PngWriter();
     $result = $writer->write($qrCode);
 
@@ -50,20 +55,35 @@ foreach ($billing_data as $invoice) {
     $qrDataUri = $result->getDataUri();
 
     // Replace placeholders in the template with actual data
-
+    $billingID = $invoice['billing_id'];
     $accountNUmber = $invoice['client_id'];
+    $meterNumber = $invoice['meter_number'];
+    $propertyType = $invoice['property_type'];
     $firstName = $invoice['first_name'];
     $middleName = $invoice['middle_name'];
     $lastName = $invoice['last_name'];
-    $street = $invoice['street'];
     $brgy = $invoice['brgy'];
     $municipality = $invoice['municipality'];
-
     $propertyType = $invoice['property_type'];
+    $billingMonth = $invoice['billing_month'];
+    $currReading = $invoice['curr_reading'];
+    $prevReading = $invoice['prev_reading'];
+    $consumption = $invoice['consumption'];
+    $rates = $invoice['rates'];
+    $billingAmount = $invoice['billing_amount'];
+    $periodTo = $invoice['period_to'];
+    $periodFrom = $invoice['period_from'];
+    $dueDate = $invoice['due_date'];
+    $disconnectionDate = $invoice['disconnection_date'];
+    $timestamp = $invoice['timestamp'];
+
+    $timestamp = $invoice['timestamp'];
+    $date = new DateTime($timestamp, new DateTimeZone('Asia/Manila'));  // Explicitly specify the original timezone
+    $formattedDate = $date->format('D M d, Y h:i A');  // Format the date
 
     $invoiceHtml = str_replace(
-        ['{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{meter_reading}}', '{{qr_code_path}}'],
-        [$accountNUmber, $lastName, $firstName, $brgy, $municipality, $invoice['meter_reading'], $qrDataUri],
+        ['{{billing_id}}', '{{datetime}}', '{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{curr_reading}}', '{{prev_reading}}', '{{consumption}}', '{{rates}}', '{{billing_amount}}', '{{billing_month}}', '{{meter_number}}', '{{property_type}}', '{{period_to}}', '{{period_from}}', '{{due_date}}', '{{disconnection_date}}', '{{meter_reader}}', '{{qr_code_path}}'],
+        [$billingID, $formattedDate, $accountNUmber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $rates, $billingAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
         $template
     );
 
@@ -75,7 +95,7 @@ foreach ($billing_data as $invoice) {
 $dompdf->loadHtml($all_invoices);
 
 // Set paper size (Half Letter size in this case)
-$dompdf->setPaper('letter');
+$dompdf->setPaper('legal');
 
 // Generate PDF
 $dompdf->render();

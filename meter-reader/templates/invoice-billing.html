@@ -31,6 +31,14 @@
         	font-family: "Helvetica", sans-serif;
         }
 
+        hr {
+            width: 80%;
+            border-top: 1px dashed #000;  /* 1px thickness and dashed */
+            border-bottom: none; /* Remove bottom border */
+            border-left: none;  /* Remove left border */
+            border-right: none;  /* Remove right border */
+        }
+
     </style>
 </head>
 <body>
@@ -48,8 +56,16 @@
     </table>
     <table>
         <tr>
-            <td class="header" style="text-align: center; vertical-align: middle; padding-bottom: 30px;">
+            <td class="header" style="text-align: center; vertical-align: middle; padding-bottom: 10px;">
                 <h2 style="margin: 0;"><strong>STATEMENT OF ACCOUNT</strong></h2>
+            </td>
+        </tr>
+        <tr>
+            <td class="header" style="text-align: center; vertical-align: middle; padding-bottom: 15px;">
+                <hr>
+                <h2 style="margin: 0;">{{billing_id}}</h2>
+                <hr>
+                <h6 style="margin: 0;">{{datetime}}</h6>
             </td>
         </tr>
         <tr>
@@ -75,7 +91,7 @@
                             <p style="margin: 0; text-align: center;">:</p>
                         </td>
                         <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">October 2023</p>
+                            <p style="margin: 0; text-align: right;">{{billing_month}}</p>
                         </td>
                     </tr>
                 </table>
@@ -88,7 +104,7 @@
                             <p style="margin: 0; text-align: center;">:</p>
                         </td>
                          <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">W-12345</p>
+                            <p style="margin: 0; text-align: right;">{{meter_number}}</p>
                         </td>
                     </tr>
                 </table>
@@ -101,7 +117,7 @@
                             <p style="margin: 0; text-align: center;">:</p>
                         </td>
                          <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">09/01/2023</p>
+                            <p style="margin: 0; text-align: right;">{{period_to}}</p>
                         </td>
                     </tr>
                 </table>
@@ -114,7 +130,7 @@
                             <p style="margin: 0; text-align: center;">:</p>
                         </td>
                          <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">08/01/2023</p>
+                            <p style="margin: 0; text-align: right;">{{period_from}}</p>
                         </td>
                     </tr>
                 </table>
@@ -131,7 +147,7 @@
                             <p style="margin: 0; text-align: center;">:</p>
                         </td>
                          <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">COMMERCIAL</p>
+                            <p style="margin: 0; text-align: right; text-transform: uppercase;">{{property_type}}</p>
                         </td>
                     </tr>
                 </table>
@@ -144,7 +160,7 @@
                             <p style="margin: 0; text-align: center;">:</p>
                         </td>
                          <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">11123.00</p>
+                            <p style="margin: 0; text-align: right;">{{curr_reading}}</p>
                         </td>
                     </tr>
                 </table>
@@ -157,7 +173,7 @@
                             <p style="margin: 0; text-align: center;">:</p>
                         </td>
                          <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">98000.00</p>
+                            <p style="margin: 0; text-align: right;">{{prev_reading}}</p>
                         </td>
                     </tr>
                 </table>
@@ -170,7 +186,7 @@
                             <p style="margin: 0; text-align: center;">:</p>
                         </td>
                          <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">200.00</p>
+                            <p style="margin: 0; text-align: right;">{{consumption}}</p>
                         </td>
                     </tr>
                 </table>
@@ -179,69 +195,130 @@
     </table>
     <table cellspacing="0" cellpadding="0">
         <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 50%; text-align: left;">
                 <p style="margin: 0;">RATE COMPONENTS</p>
             </td>
-            <td style="width: 50%; text-align: right;">
+            <td style="width: 5%; text-align: center;">
+                <p style="margin: 0;">:</p>
+            </td>
+            <td style="width: 45%; text-align: right;">
                 <p style="margin: 0;">AMOUNT</p>
             </td>
         </tr>
         <tr>
             <td style="width: 50%; text-align: left;">
-                <p style="margin: 0;">CURRENT GROSS AMOUNT :</p>
+                <p style="margin: 0;">Charging fee per cubic meter</p>
             </td>
-            <td style="width: 50%; text-align: right;">
-                <p style="margin: 0;">Php 5000.69</p>
+            <td style="width: 5%; text-align: center;">
+                <p style="margin: 0;">:</p>
             </td>
-        </tr>
-        <tr>
-            <td style="width: 50%; text-align: left;">
-                <p style="margin: 0;">CURRENT GROSS AMOUNT :</p>
-            </td>
-            <td style="width: 50%; text-align: right;">
-                <p style="margin: 0;">Php 5000.69</p>
+            <td style="width: 45%; text-align: right;">
+                <p style="margin: 0;"><span>{{rates}}</span>.00</p>
             </td>
         </tr>
         <tr>
             <td style="width: 50%; text-align: left;">
-                <p style="margin: 0;">CURRENT GROSS AMOUNT :</p>
+                <p>CURRENT GROSS AMOUNT</p>
             </td>
-            <td style="width: 50%; text-align: right;">
-                <p style="margin: 0;">Php 5000.69</p>
+            <td style="width: 5%; text-align: center;">
+                <p style="margin: 0;">:</p>
             </td>
-        </tr>
-        <tr>
-            <td style="width: 50%; text-align: left;">
-                <p>CURRENT GROSS AMOUNT :</p>
-            </td>
-            <td style="width: 50%; text-align: right;">
-                <p>Php 5000.69</p>
+            <td style="width: 45%; text-align: right;">
+                <p>Php <span>{{billing_amount}}</span>.00</p>
             </td>
         </tr>
     </table>
     <table cellspacing="0" cellpadding="0">
         <tr>
-            <td style="width: 100%; text-align: left;">
-                <h3 style="margin-bottom: 0; margin-top: 5px;">CURRENT MONTH BILL :</h3>
+            <td style="width: 55%; text-align: left;">
+                <h3 style="margin-bottom: 0; margin-top: 5px;">CURRENT MONTH BILL</h3>
+            </td>
+            <td style="width: 5%; text-align: center;">
+                <h4 style="margin-bottom: 0; margin-top: 5px;">:</h4>
+            </td>
+            <td style="width: 40%; text-align: right;">
+                <h2 style="margin: 2px;">Php <span>{{billing_amount}}</span>.00</h2>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr style="padding: 20px 0px;">
+            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
+                <h5 style="margin: 0; margin-top: 15px; text-transform: uppercase; width: 100%; font-weight: bolder;">Important Notice</h5>
+                <p style="margin: 0; width: 100%; text-align: justify;">Your current bill is due upon receipt. Prompt payment ensures continued service and avoids any unnecessary late fees. For inquiries or alternative payment arrangements, please reach out to us at 0912-345-6789 or email waterbillingsystem@gmail.com. Thank you for your attention to this matter.</p>
+            </td>
+        </tr>
+
+        <tr style="padding: 20px 0px;">
+            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
+                <table cellspacing="0" cellpadding="0">
+                    <tr style="padding: 20px 0px;">
+                        <td style="width: 60%; padding: 10px; text-align: center;">
+                            <h3 style="margin-bottom: 0; margin-top: 5px;">DUE DATE</h3>
+                        </td>
+                        <td style="width: 5%; padding: 10px; text-align: center;">
+                            <h3 style="margin-bottom: 0; margin-top: 5px;">:</h3>
+                        </td>
+                        <td style="width: 35%; padding: 10px; text-align: center;">
+                            <h3 style="margin: 2px;"><span>{{due_date}}</span></h3>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr style="padding: 20px 0px;">
+            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
+                <h5 style="margin: 0; margin-top: 15px; text-transform: uppercase; width: 100%; font-weight: bolder;">Disconnection Notice</h5>
+                <p style="margin: 0; width: 100%; text-align: justify;">
+                    Your current bill is due upon receipt and must be settled within 30 days to avoid service disconnection. Late payments will incur additional fees. For inquiries or alternative payment arrangements, please reach out to us at 0912-345-6789 or email waterbillingsystem@gmail.com. Thank you for your immediate attention to this matter.
+                </p>
+            </td>
+        </tr>
+
+        <tr style="padding: 20px 0px;">
+            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
+                <table cellspacing="0" cellpadding="0">
+                    <tr style="padding: 20px 0px;">
+                        <td style="width: 60%; padding: 10px; text-align: center;">
+                            <h3 style="margin-bottom: 0; margin-top: 5px;">DISCONNECTION DATE</h3>
+                        </td>
+                        <td style="width: 5%; padding: 10px; text-align: center;">
+                            <h3 style="margin-bottom: 0; margin-top: 5px;">:</h3>
+                        </td>
+                        <td style="width: 35%; padding: 10px; text-align: center;">
+                            <h3 style="margin: 2px;"><span>{{disconnection_date}}</span></h3>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
         <tr>
-            <td style="width: 100%; text-align: right;">
-                <h2 style="margin: 2px;">Php 5000.69</h2>
+            <td class="header" style="text-align: center; vertical-align: middle; padding: 10px 0px;">
+                <img src="{{qr_code_path}}" alt="QR Code" style="width: 120px; height: 120px;">
             </td>
         </tr>
     </table>
 
     <table>
         <tr style="padding: 20px 0px;">
-            <td class="header" style="text-align: center; vertical-align: middle;">
-                <h3 style="text-transform: uppercase; width: 100%;">Important Notice</h3>
-                <p style="width: 100%; text-align: justify;">Your current bill is due upon receipt. Prompt payment ensures continued service and avoids any unnecessary late fees. For inquiries or alternative payment arrangements, please reach out to us at 0912-345-6789 or email waterbillingsystem@gmail.com. Thank you for your attention to this matter.</p>
+            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
+                <h5 style="margin: 0; margin-top: 15px; text-transform: uppercase; width: 100%; font-weight: bolder;">
+                    ** PLEASE PRESENT THIS UPON PAYMENT **
+                </h5>
             </td>
+            
         </tr>
-        <tr>
-            <td class="header" style="text-align: center; vertical-align: middle; padding: 10px 0px;">
-                <img src="{{qr_code_path}}" alt="QR Code" style="width: 150px; height: 150px;">
+    </table>
+    <table>
+        <tr style="padding-top: 20px;">
+            <td style="width: 45%; padding-top: 10px; text-align: right;">
+                <p style="margin: 0;">Meter Reader</p>
+            </td>
+            <td style="width: 5%; padding-top: 10px; text-align: center;">
+                <p style="margin: 0;">:</p>
+            </td>
+            <td style="width: 45%;padding-top: 10px; text-align: left;">
+                <p style="margin: 0;"><span>{{meter_reader}}</span></p>
             </td>
         </tr>
     </table>

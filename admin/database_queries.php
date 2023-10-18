@@ -343,6 +343,7 @@ class DatabaseQueries extends BaseQuery
                                                 $readingType = 'current';
 
                                                 $dueDate = NULL;
+                                                $disconnectionDate = NULL;
 
                                                 $currentDate = new DateTime();
                                                 $currentDate->setTime(0, 0, 0);
@@ -360,14 +361,14 @@ class DatabaseQueries extends BaseQuery
                                                 $currentDate = new DateTime();
                                                 $billingMonthAndYear = $currentDate->format('F Y');
 
-                                                $sql_billing = "INSERT INTO billing_data (billing_id, client_id, prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_month, due_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+                                                $sql_billing = "INSERT INTO billing_data (billing_id, client_id, prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
                                                 $stmt_billing = $this->conn->prepareStatement($sql_billing);
 
                                                 // HERE WERE USING THE SAME VALUE FOR PERIOD TO AND PERIOD FROM FRO INITIALIZATION
                                                 if ($stmt_billing) {
                                                     mysqli_stmt_bind_param(
                                                         $stmt_billing,
-                                                        "ssiisssissssss",
+                                                        "ssiisssisssssss",
                                                         $billingID,
                                                         $clientID,
                                                         $prevReading,
@@ -379,6 +380,7 @@ class DatabaseQueries extends BaseQuery
                                                         $billingStatus,
                                                         $billingMonthAndYear,
                                                         $dueDate,
+                                                        $disconnectionDate,
                                                         $periodFrom,
                                                         $periodFrom,
                                                         $encoder
