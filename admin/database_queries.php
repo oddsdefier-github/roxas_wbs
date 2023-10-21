@@ -637,27 +637,43 @@ class DataTable extends BaseQuery
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application";
+        $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+        $conditions = [];
+        $params = [];
+        $types = "";
+
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $sql .= " WHERE (full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
+            $conditions[] = "(full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "ssssss";
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $filter) {
+                $conditions[] = "{$filter['column']} = ?";
+                $params[] = $filter['value'];
+                $types .= "s";  // Assuming all filter values are strings, adjust if not
+            }
+        }
+
+        if (!empty($conditions)) {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application WHERE " . implode(" AND ", $conditions);
+        } else {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application";
         }
 
         $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
+        $params = array_merge($params, [$itemPerPage, $offset]);
+        $types .= "ii";
 
-        if ($searchTerm) {
-            $stmt = $this->conn->prepareStatement($sql);
-            mysqli_stmt_bind_param($stmt, "ssssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
-        } else {
-            $stmt = $this->conn->prepareStatement($sql);
-            mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
-        }
-
-
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
         mysqli_stmt_execute($stmt);
+
+
         $result = mysqli_stmt_get_result($stmt);
 
-        // More efficient way to get total records
         $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
 
         if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
@@ -749,10 +765,10 @@ class DataTable extends BaseQuery
             if ($number > 1) {
                 echo $table;
             } else {
-                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client found</div>';
             }
         } else {
-            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client found</div>';
         }
 
         echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
@@ -885,10 +901,10 @@ class DataTable extends BaseQuery
             if ($number > 1) {
                 echo $table;
             } else {
-                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
             }
         } else {
-            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4">No client found</div>';
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
         }
 
         echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';

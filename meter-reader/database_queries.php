@@ -304,13 +304,13 @@ class DataTable extends BaseQuery
         $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data WHERE reading_status = 'pending'";
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $sql .= " AND (full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
+            $sql .= " AND (full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status = 'active')";
         }
-        $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
+        $sql .= "AND status = 'active' ORDER BY timestamp DESC LIMIT ? OFFSET ?";
 
         if ($searchTerm) {
             $stmt = $this->conn->prepareStatement($sql);
-            mysqli_stmt_bind_param($stmt, "ssssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
+            mysqli_stmt_bind_param($stmt, "sssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
         } else {
             $stmt = $this->conn->prepareStatement($sql);
             mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);

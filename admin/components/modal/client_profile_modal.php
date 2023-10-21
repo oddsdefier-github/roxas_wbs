@@ -26,7 +26,7 @@
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
-                <div>
+                <div class="">
                     <span class="content"></span>
                 </div>
             </div>

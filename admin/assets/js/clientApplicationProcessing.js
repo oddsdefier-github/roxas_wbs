@@ -107,9 +107,9 @@ $(document).ready(function () {
         status === 'unconfirmed' ? $('#review-submit').prop('disabled', false) : $('#review-submit').prop('disabled', true);
 
 
-        status === 'unconfirmed' ? $('#review_confirm').show() : $('#review_confirm').hide()
+        // status === 'unconfirmed' ? $('#review_confirm').show() : $('#review_confirm').hide()
 
-        billingStatus === 'unpaid' ? $('#approved_client').hide() : $('#approved_client').show()
+        // billingStatus === 'unpaid' ? $('#approved_client').hide() : $('#approved_client').show()
 
 
         meterNumberInput.val(meterNumber);

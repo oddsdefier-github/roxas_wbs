@@ -16,7 +16,8 @@ export class DataTableWithPagination {
             searchInput: $("#table-search"),
             clearSearch: $("#clear-input"),
             searchIcon: $("#search-icon"),
-            checkboxesContainer: $("#filterDropdown"),
+            radioDropDownContainer: $("#statusFilterDropDown"),
+            statusFilterBtn: $("#statusFilter"),
             tableContainer: $(tableContainerSelector),
             prevBtn: $(`nav[data-table-name='${this.tableName}'] #prev`),
             nextBtn: $(`nav[data-table-name='${this.tableName}'] #next`),
@@ -37,9 +38,7 @@ export class DataTableWithPagination {
     bindEvents() {
         let debounceTimeout;
         this.elements.searchInput.on("keyup", () => {
-
             this.handleClearInput();
-
             clearTimeout(debounceTimeout);
             debounceTimeout = setTimeout(() => this.handleSearch(), 300);
 
@@ -54,7 +53,6 @@ export class DataTableWithPagination {
         this.elements.startBtn.on("click", () => this.handlePageChange("start"));
         this.elements.endBtn.on("click", () => this.handlePageChange("end"));
 
-
         this.elements.itemsPerPageSelector.change(() => {
             this.itemsPerPage = parseInt(this.elements.itemsPerPageSelector.val(), 10);
             localStorage.setItem(this.itemsPerPageKey, this.itemsPerPage);
@@ -63,7 +61,17 @@ export class DataTableWithPagination {
             if (this.currentPageNumber > this.lastPageNumber) {
                 this.currentPageNumber = this.lastPageNumber;
             }
-            this.fetchTableData(this.elements.searchInput.val());
+
+            this.currentPageNumber = 1;
+
+            const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+            const currentFilters = radios.map((_, radio) => {
+                return {
+                    column: $(radio).data('column'),
+                    value: radio.value
+                };
+            }).get();
+            this.fetchTableData(this.elements.searchInput.val(), currentFilters);
         });
 
         this.elements.clearSearch.on("click", () => {
@@ -73,12 +81,29 @@ export class DataTableWithPagination {
         })
     }
 
+    applyFilter() {
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+        const selectedFilters = radios.map((_, radio) => {
+            return {
+                column: $(radio).data('column'),
+                value: radio.value
+            };
+        }).get();
+
+        console.log(`Applying filters:`, selectedFilters);
+        this.currentPageNumber = 1;
+        this.fetchTableData(this.elements.searchInput.val(), selectedFilters);
+    }
+
+
     bindCheckboxEvents() {
-        const checkboxes = this.elements.checkboxesContainer.find("input[type='checkbox']");
-        checkboxes.on('change', (event) => {
-            console.log(`Checkbox ${event.target.id} is ${event.target.checked ? "checked" : "unchecked"}`);
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
+        radios.on('change', () => {
+            this.applyFilter();
+            const selectedValue = event.currentTarget.value;
+            // Update the button text with the selected value
+            $(".status-text").text(selectedValue);
         });
-        console.log("test")
     }
 
     updateItemsPerPageOptions() {
@@ -117,7 +142,7 @@ export class DataTableWithPagination {
         $(`nav[data-table-name='${this.tableName}'] a[aria-current="page"]`).text(this.currentPageNumber);
     }
 
-    fetchTableData(searchTerm = "") {
+    fetchTableData(searchTerm = "", filters = [{ column: "status", value: "Unconfirmed" }]) {
         $.ajax({
             url: "database_actions.php",
             type: 'post',
@@ -128,7 +153,8 @@ export class DataTableWithPagination {
                 dataTableParam: {
                     pageNumber: this.currentPageNumber,
                     itemPerPage: this.itemsPerPage,
-                    searchTerm: searchTerm
+                    searchTerm: searchTerm,
+                    filters: filters
                 }
             },
             success: (data, status) => {
@@ -176,7 +202,19 @@ export class DataTableWithPagination {
         }
 
         localStorage.setItem(this.currentPageNumberKey, this.currentPageNumber);
-        this.fetchTableData(this.elements.searchInput.val());
+
+        // Fetch currently applied filters
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+        const currentFilters = radios.map((_, radio) => {
+            return {
+                column: $(radio).data('column'),
+                value: radio.value
+            };
+        }).get();
+
+        // Pass the filters to fetchTableData
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters);
     }
+
 }
 
