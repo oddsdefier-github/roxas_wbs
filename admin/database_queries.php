@@ -693,7 +693,7 @@ class DataTable extends BaseQuery
                 <th class="px-6 py-4">Property Type</th>
                 <th class="px-6 py-4">Address</th>
                 <th class="px-6 py-4">Status</th>
-                <th class="px-6 py-4">DateTime</th>
+                <th class="px-6 py-4">Applied Date</th>
                 <th class="px-6 py-4">Action</th>
             </tr>
         </thead>';
@@ -716,7 +716,10 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-
+            $approvedBadge = '<span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Approved</span>';
+            $unconfirmedBadge = '<span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Unconfirmed</span>';
+            $confirmedBadge = '<span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Confirmed</span>';
+            $statusBadge = ($status === 'approved') ? $approvedBadge : (($status === 'confirmed') ? $confirmedBadge : ($status === 'unconfirmed' ? $unconfirmedBadge : ''));
 
             $table .= '<tr data-id="' . $id . '" class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
@@ -727,7 +730,7 @@ class DataTable extends BaseQuery
                 <span class="font-medium text-sm">' . $brgy . '</span> </br>
                 <span class="text-xs text-gray-400">' . $street . '</span>
             </td>
-            <td class="px-6 py-3 text-sm">' . $status . '</td>
+            <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>

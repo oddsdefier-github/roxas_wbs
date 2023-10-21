@@ -26,8 +26,6 @@ export class DataTableWithPagination {
             itemsPerPageSelector: $(`nav[data-table-name='${this.tableName}'] #item-per-page`)
         };
 
-
-
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
         this.bindEvents();
@@ -90,7 +88,6 @@ export class DataTableWithPagination {
             };
         }).get();
 
-        console.log(`Applying filters:`, selectedFilters);
         this.currentPageNumber = 1;
         this.fetchTableData(this.elements.searchInput.val(), selectedFilters);
     }
@@ -120,7 +117,15 @@ export class DataTableWithPagination {
 
     handleSearch() {
         this.currentPageNumber = 1;
-        this.fetchTableData(this.elements.searchInput.val());
+
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+        const currentFilters = radios.map((_, radio) => {
+            return {
+                column: $(radio).data('column'),
+                value: radio.value
+            };
+        }).get();
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters);
     }
 
     handleClearInput() {

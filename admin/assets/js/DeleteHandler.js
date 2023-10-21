@@ -75,7 +75,6 @@ class EnhancedDeleteHandler extends DeleteHandler {
             },
             success: (data) => {
                 console.log(data);
-
                 this.tableInstance.fetchTableData();
             }
         });
