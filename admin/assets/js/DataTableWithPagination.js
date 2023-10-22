@@ -16,7 +16,7 @@ export class DataTableWithPagination {
             searchInput: $("#table-search"),
             clearSearch: $("#clear-input"),
             searchIcon: $("#search-icon"),
-            radioDropDownContainer: $("#statusFilterDropDown"),
+            radioDropDownContainer: $(".dropdown-container"),
             statusFilterBtn: $("#statusFilter"),
             tableContainer: $(tableContainerSelector),
             prevBtn: $(`nav[data-table-name='${this.tableName}'] #prev`),
@@ -87,7 +87,7 @@ export class DataTableWithPagination {
                 value: radio.value
             };
         }).get();
-
+        console.log(selectedFilters)
         this.currentPageNumber = 1;
         this.fetchTableData(this.elements.searchInput.val(), selectedFilters);
     }
@@ -147,7 +147,7 @@ export class DataTableWithPagination {
         $(`nav[data-table-name='${this.tableName}'] a[aria-current="page"]`).text(this.currentPageNumber);
     }
 
-    fetchTableData(searchTerm = "", filters = [{ column: "status", value: "Unconfirmed" }]) {
+    fetchTableData(searchTerm = "", filters = []) {
         $.ajax({
             url: "database_actions.php",
             type: 'post',

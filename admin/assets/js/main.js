@@ -17,4 +17,7 @@ $(document).ready(function () {
     const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
     const clientAppTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
 
+
+    filename === 'clients_application.php' ? $("#clientAppStatusFilter").show() : $("#clientAppStatusFilter").hide();
+    filename === 'clients.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
 });

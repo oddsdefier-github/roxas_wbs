@@ -73,7 +73,7 @@ class DatabaseQueries extends BaseQuery
         $deedOfSale = htmlspecialchars($formData['deedOfSale'], ENT_QUOTES, 'UTF-8');
         $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
 
-        $status = 'pending';
+        $status = 'unconfirmed';
 
         $checkDuplicateMeterNo = "SELECT meter_number FROM client_application WHERE meter_number = ?";
         $stmt = $this->conn->prepareStatement($checkDuplicateMeterNo);
@@ -583,47 +583,6 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
-
-    // public function setInitialBillingData($regID)
-    // {
-    //     $response = array();
-    //     $initialReading = 0;
-
-    //     session_start();
-    //     $encoder = $_SESSION['admin_name'];
-
-    //     $billingID = "B" . time();
-    //     $readingType = 'current';
-    //     $dueDate = NULL;
-    //     $billingStatus = NULL;
-    //     $consumption = NULL;
-    //     $month = date('M');
-    //     $year = date('Y');
-    //     $billingMonthAndYear = $month . '-' . $year;
-
-    //     $sql_billing = "INSERT INTO billing_data (billing_id, reg_id, meter_reading, reading_type, consumption, billing_status, billing_month, due_date, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
-    //     $stmt_billing = $this->conn->prepareStatement($sql_billing);
-
-    //     if ($stmt_billing) {
-    //         mysqli_stmt_bind_param($stmt_billing, "ssissssss", $billingID, $regID, $initialReading, $readingType, $consumption, $billingStatus, $billingMonthAndYear, $dueDate, $encoder);
-    //         if (mysqli_stmt_execute($stmt_billing)) {
-    //             $response["message"] = $billingID;
-    //         } else {
-    //             $response = array(
-    //                 "status" => "error",
-    //                 "message" => "Error inserting initial reading: " . $stmt_billing->error
-    //             );
-    //         }
-    //         $stmt_billing->close();
-    //     } else {
-    //         $response = array(
-    //             "status" => "error",
-    //             "message" => "Error preparing billing statement: " . $this->conn->getErrorMessage()
-    //         );
-    //     }
-
-    //     return $response;
-    // }
 }
 
 
@@ -787,22 +746,40 @@ class DataTable extends BaseQuery
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data";
+        $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+        $conditions = [];
+        $params = [];
+        $types = "";
+
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $sql .= " WHERE full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?";
+            $conditions[] = "(full_name LIKE ? OR client_id LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "sssssss";
         }
-        $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
 
-        if ($searchTerm) {
-            $stmt = $this->conn->prepareStatement($sql);
-            mysqli_stmt_bind_param($stmt, "ssssssii", $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $itemPerPage, $offset);
+        if (!empty($filters)) {
+            foreach ($filters as $filter) {
+                $conditions[] = "{$filter['column']} = ?";
+                $params[] = $filter['value'];
+                $types .= "s";  // Assuming all filter values are strings, adjust if not
+            }
+        }
+
+        if (!empty($conditions)) {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data WHERE " . implode(" AND ", $conditions);
         } else {
-            $stmt = $this->conn->prepareStatement($sql);
-            mysqli_stmt_bind_param($stmt, "ii", $itemPerPage, $offset);
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data";
         }
 
+        $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
+        $params = array_merge($params, [$itemPerPage, $offset]);
+        $types .= "ii";
+
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
         mysqli_stmt_execute($stmt);
+
         $result = mysqli_stmt_get_result($stmt);
 
         // More efficient way to get total records
@@ -818,6 +795,7 @@ class DataTable extends BaseQuery
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b">
                 <th class="px-6 py-4">No.</th>
+                <th class="px-6 py-4">Client ID</th>
                 <th class="px-6 py-4">Meter No.</th>
                 <th class="px-6 py-4">Names&nbsp;&nbsp; 
                 <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
@@ -849,8 +827,13 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
+            $activeBadge = '<span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Active</span>';
+            $inactiveBadge = '<span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Inactive</span>';
+            $statusBadge = ($status === 'active') ? $activeBadge : (($status === 'inactive' ? $inactiveBadge : ''));
+
             $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
+            <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
             <td class="px-6 py-3 text-sm">' . $property_type . '</td>
@@ -858,7 +841,7 @@ class DataTable extends BaseQuery
                 <span class="font-medium text-sm">' . $brgy . '</span> </br>
                 <span class="text-xs text-gray-400">' . $street . '</span>
             </td>
-            <td class="px-6 py-3 text-sm">' . $status . '</td>
+            <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>

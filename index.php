@@ -19,7 +19,7 @@
 
 		<header class="container z-10">
 			<nav class="flex h-16 items-center justify-between border-b border-gray-200">
-				<div class="flex gap-3">
+				<div class="flex gap-2">
 					<img src="./assets/quality.png" alt="water-logo" class="aspect-square pointer-events-none w-8 select-none" />
 					<h1 class="font-semibold text-gray-600 text-2xl">wbs.</h1>
 				</div>
