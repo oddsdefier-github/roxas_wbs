@@ -1,8 +1,5 @@
-
-console.log(window.location.pathname)
 let loc = window.location.pathname.split('/');
 let currLoc = loc[loc.length - 1];
-console.log(currLoc)
 if (currLoc === 'dashboard.php') {
     var options = {
         chart: {

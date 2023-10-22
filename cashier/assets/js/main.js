@@ -9,17 +9,15 @@ $(document).ready(function () {
     let parts = window.location.pathname.split('/');
     let filename = parts[parts.length - 1];
     let tableName = urlToTableNameMapping[filename];
-    console.log(tableName)
-    console.log(filename)
     if (tableName) {
         $('.pagination-container').attr('data-table-name', tableName);
         $('.table-utilities-container').attr('data-table-name', tableName);
     }
+
     const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
     const clientAppTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
 
-    console.log(clientTable);
-    console.log(clientAppTable);
 
-
+    filename === 'clients_application.php' ? $("#clientAppStatusFilter").show() : $("#clientAppStatusFilter").hide();
+    filename === 'clients.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
 });

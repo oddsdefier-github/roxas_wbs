@@ -1,6 +1,6 @@
 <?php
 
-namespace Cashier\Database;
+namespace Admin\Database;
 
 class DatabaseConnection
 {

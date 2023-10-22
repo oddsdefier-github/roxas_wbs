@@ -7,7 +7,7 @@ if (!isset($_SESSION['loggedin'])) {
     exit;
 }
 
-if ($_SESSION['user_role'] != "Admin") {
+if ($_SESSION['user_role'] != "Cashier") {
     echo '<script>alert("You\'re not allowed here!");</script>';
     $_SESSION = array();
     session_unset();

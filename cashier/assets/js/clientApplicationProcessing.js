@@ -70,6 +70,7 @@ $(document).ready(function () {
 
     applicantID = $('#review-id-hidden').val();
     retrieveClientApplicationData(applicantID, function (applicationData) {
+        const status = applicationData.status;
         const meterNumber = applicationData.meter_number
         const firstName = applicationData.first_name
         const middleName = applicationData.middle_name
@@ -87,22 +88,41 @@ $(document).ready(function () {
         const proofOfOwnership = applicationData.proof_of_ownership
         const deedOfSale = applicationData.deed_of_sale
         const affidavit = applicationData.affidavit
-
+        const billingStatus = applicationData.billing_status
 
         $('.name-title').text(applicationData.full_name)
         $('.address-subtitle').text(applicationData.full_address)
+
+        const badgeElements = {
+            approved: `<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+            <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+            Approved </span>`,
+            unconfirmed: `<span class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+            <span class="w-2 h-2 mr-1 bg-red-500 rounded-full"></span>
+            Unconfirmed </span>`
+        };
+
+        status === 'approved' ? $('.status_badge').html(badgeElements.approved) : $('.status_badge').html(badgeElements.unconfirmed)
+
+        status === 'unconfirmed' ? $('#review-submit').prop('disabled', false) : $('#review-submit').prop('disabled', true);
+
+
+        // status === 'unconfirmed' ? $('#review_confirm').show() : $('#review_confirm').hide()
+
+        // billingStatus === 'unpaid' ? $('#approved_client').hide() : $('#approved_client').show()
+
 
         meterNumberInput.val(meterNumber);
         firstNameInput.val(firstName);
         middleNameInput.val(middleName);
         lastNameInput.val(lastName);
-        nameSuffixInput.find(':selected').text(nameSuffix);
+        nameSuffixInput.val(nameSuffix);
         birthDateInput.val(birthDate);
         ageInput.val(age + (parseInt(age) > 1 ? ' years old' : ' year old'));
-        genderInput.find(':selected').text(gender)
+        genderInput.val(gender);
         phoneNumberInput.val(phoneNumber);
         emailInput.val(email);
-        propertyTypeInput.find(':selected').text(propertyType)
+        propertyTypeInput.val(propertyType);
         streetAddressInput.val(streetAddress);
 
         $("#application-id-hidden").val(applicationData.application_id)
@@ -146,6 +166,58 @@ $(document).ready(function () {
     });
 
 
+    /**
+         * TODO: Fix the date picker functionality
+         * TODO: Manage the input validation -> submit form
+         * ? Just include the form for review and apply, use only one form / div
+         * * The age should be automatically calculated when date is set
+         */
+
+    birthDateInput.on("blur", function () {
+        validateAndCalculateAge();
+    });
+
+
+    birthDateInput.on("keyup", function (event) {
+        if (event.key === 'Enter') {
+            validateAndCalculateAge();
+            $(this).trigger('blur')
+        }
+    });
+
+    function validateAndCalculateAge() {
+        const dateText = birthDateInput.val();
+        const parts = dateText.split("/");
+
+        if (parts.length === 3) {
+            const birthdate = new Date(parts[2], parts[0] - 1, parts[1]);
+            const today = new Date();
+
+            const age = today.getFullYear() - birthdate.getFullYear();
+
+            if (parseInt(today.getMonth() < birthdate.getMonth() || (today.getMonth() === birthdate.getMonth() && today.getDate() < birthdate.getDate()))) {
+                age--;
+            }
+
+            if (age < 18) {
+                alert("You must be at least 18 years old.");
+                birthDateInput.val("");
+                $('input[name="age"]').val("");
+            }
+            else if (age > 100) {
+                alert("Invalid age input.");
+                birthDateInput.val("");
+                $('input[name="age"]').val("");
+            } else {
+                $('input[name="age"]').val(age + " years old");
+            }
+        } else {
+            $('input[name="age"]').html('<span style="color: red;">Invalid date</span>');
+        }
+    };
+    /**
+     * ! End of Date picker code
+     */
 
     const cssClasses = {
         normalLabelClass: 'block text-sm font-medium leading-6 text-gray-600',
@@ -310,36 +382,16 @@ $(document).ready(function () {
                 console.log(data)
 
                 if (responseData) {
+                    const clientID = responseData['client_id'];
+
                     if (responseData['status'] === 'error') {
                         alert(`${responseData['message']}`)
                     } else if ((responseData['status'] === 'success')) {
-                        console.log(JSON.stringify(responseData));
+
                         alert(`${responseData['message']}`)
 
-                        window.open(`./print.php?id=${responseData['registration_id']}`, '_blank');
-
-                        // setTimeout(() => {
-                        //     console.log("Before AJAX request");
-                        //     $.ajax({
-                        //         url: "print.php",
-                        //         type: "POST",
-                        //         data: {
-                        //             data: responseData
-                        //         },
-                        //         success: function (data) {
-                        //             console.log("PDF was created.")
-                        //         },
-                        //         error: function (xhr, textStatus, errorThrown) {
-                        //             console.error("Error:", errorThrown);
-                        //         }
-                        //     });
-                        //     console.log("After AJAX request");
-                        // }, 500);
-
-
-                        // setTimeout(function () {
-                        //     window.location.reload();
-                        // }, 1000)
+                        window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application.php';
+                        window.open(`./print.php?id=${clientID}`, '_blank');
                     }
                 }
             },
@@ -507,12 +559,6 @@ $(document).ready(function () {
 
             console.log($(this).attr('data-input-state'));
 
-            // $('#review-submit')
-            //     .text('Fill all fields')
-            //     .prop('disabled', true)
-            //     .attr('title', 'Complete the fields to unlock!')
-            //     .removeClass(cssClasses.normalSubmitClass).addClass(cssClasses.errorSubmitClass);
-
             console.log($('#review-submit').prop('disabled'))
 
 
@@ -552,25 +598,6 @@ $(document).ready(function () {
         }
     })
 
-    let totalFee = 0;
-    let allChecked = true;
-
-
-    const paymentCheckboxes = [
-        { name: 'application-fee', value: 50 },
-        { name: 'inspection-fee', value: 250 },
-        { name: 'registration-fee', value: 100 },
-        { name: 'connection-fee', value: 4100 },
-        { name: 'installation-fee', value: 400 }
-    ];
-
-
-    function areAllCheckboxesChecked() {
-        return paymentCheckboxes.every(function (checkbox) {
-            return $('#' + checkbox.name).prop('checked');
-        });
-    }
-
 
     reviewForm.on('submit', function (e) {
         e.preventDefault();
@@ -578,38 +605,42 @@ $(document).ready(function () {
         if ($('#validId').prop('checked') === false) {
             alert('Please upload a Valid ID!')
         } else {
-            if (!areAllCheckboxesChecked()) {
-                alert('Please Pay First.');
-            } else {
-                console.log('SUBMITTED!!!!')
-                processApplication();
-            }
+            console.log('SUBMITTED!!!!')
+            // processApplication();
+
+            $('#reviewConfirmationModal').css({
+                'display': 'grid',
+                'place-items': 'center',
+                'justify-content': 'center',
+                'align-items': 'center'
+            })
+
+            $('#review_confirm').off('click')
+            $('#confirm_review_check').on('change', function () {
+                if ($('#confirm_review_check').prop('checked') === true) {
+                    $('#approved_client').prop('disabled', false)
+                    $('#review_confirm').prop('disabled', false)
+                } else {
+                    $('#approved_client').prop('disabled', true)
+                    $('#review_confirm').prop('disabled', true)
+                }
+                $('#approved_client').on("click", function () {
+                    processApplication();
+                    $('#reviewConfirmationModal').hide();
+                })
+                $('#review_confirm').on("click", function () {
+                    console.log('CLOSEEEE')
+                    /**
+                     * AJAX Request 
+                     * TODO : AJAX CALL THAT UPDATE THE CLIENT APP STATUS
+                     * 
+                     */
+                    $('#reviewConfirmationModal').hide();
+                })
+            })
         }
     });
 
-    paymentCheckboxes.forEach(function (checkbox) {
-        const checkboxElement = $('#' + checkbox.name);
-
-        checkboxElement.on('change', function () {
-            if (checkboxElement.prop('checked')) {
-                console.log(`The checkbox named ${checkbox.name} is checked`);
-                console.log(`You need to pay ${checkbox.value}`);
-                totalFee += parseInt(checkbox.value);
-                $('#total-fee').text(`${totalFee} PHP`);
-            } else {
-                totalFee -= parseInt(checkbox.value);
-                $('#total-fee').text(`${totalFee} PHP`);
-            }
-
-            allChecked = areAllCheckboxesChecked();
-
-            if (allChecked) {
-                console.log("All checkboxes are checked!");
-            } else {
-                console.log('Payment first!')
-            }
-        });
-    });
 
 
 });
