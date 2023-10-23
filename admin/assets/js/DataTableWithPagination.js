@@ -1,7 +1,7 @@
 export class DataTableWithPagination {
-    constructor (tableName, tableContainerSelector = '#displayClientApplicationTable') {
+    constructor (tableName, tableContainerSelector = '#displayClientApplicationTable', filter) {
         this.tableName = tableName;
-
+        this.filter = filter;
         this.itemsPerPageKey = `${this.tableName}-itemsPerPage`;
         this.currentPageNumberKey = `${this.tableName}-currentPageNumber`;
 
@@ -147,7 +147,7 @@ export class DataTableWithPagination {
         $(`nav[data-table-name='${this.tableName}'] a[aria-current="page"]`).text(this.currentPageNumber);
     }
 
-    fetchTableData(searchTerm = "", filters = []) {
+    fetchTableData(searchTerm = "", filters = this.filter) {
         $.ajax({
             url: "database_actions.php",
             type: 'post',

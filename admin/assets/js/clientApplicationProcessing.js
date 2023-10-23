@@ -94,20 +94,40 @@ $(document).ready(function () {
         $('.address-subtitle').text(applicationData.full_address)
 
         const badgeElements = {
-            approved: `<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+            approved: `<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
             <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
             Approved </span>`,
-            unconfirmed: `<span class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
-            <span class="w-2 h-2 mr-1 bg-red-500 rounded-full"></span>
-            Unconfirmed </span>`
+            unconfirmed: `<span class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
+            Unconfirmed </span>`,
+            confirmed: `<span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span>
+            Confirmed </span>`
         };
 
-        status === 'approved' ? $('.status_badge').html(badgeElements.approved) : $('.status_badge').html(badgeElements.unconfirmed)
-
-        status === 'unconfirmed' ? $('#review-submit').prop('disabled', false) : $('#review-submit').prop('disabled', true);
-
-
-        // status === 'unconfirmed' ? $('#review_confirm').show() : $('#review_confirm').hide()
+        if (status === 'confirmed') {
+            $('.status_badge').html(badgeElements.confirmed);
+            $('#review_confirm')
+                .prop('disabled', true)
+                .hide();
+            $("#approved_client").show();
+            $("#review-submit")
+                .prop("disabled", false)
+                .text("Approve");
+        } else if (status === 'unconfirmed') {
+            $('.status_badge').html(badgeElements.unconfirmed);
+            $('#review_confirm')
+                .show();
+            $("#approved_client").hide();
+            $("#review-submit").prop("disabled", false);
+        } else {
+            $('.status_badge').html(badgeElements.approved);
+            $("#review-submit").prop("disabled", true);
+            $('#review_confirm')
+                .prop('disabled', true)
+                .hide();
+            $("#approved_client").hide();
+        }
 
         // billingStatus === 'unpaid' ? $('#approved_client').hide() : $('#approved_client').show()
 
@@ -615,7 +635,6 @@ $(document).ready(function () {
                 'align-items': 'center'
             })
 
-            $('#review_confirm').off('click')
             $('#confirm_review_check').on('change', function () {
                 if ($('#confirm_review_check').prop('checked') === true) {
                     $('#approved_client').prop('disabled', false)
@@ -623,18 +642,28 @@ $(document).ready(function () {
                 } else {
                     $('#approved_client').prop('disabled', true)
                     $('#review_confirm').prop('disabled', true)
-                }
+                };
+
+                $("#review_confirm").on("click", function () {
+                    $.ajax({
+                        url: "database_actions.php",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            action: "updatedClientAppStatus",
+                            applicantID: applicantID
+                        },
+                        success: function (data) {
+                            $('#reviewConfirmationModal').hide();
+                            console.log(data);
+                            alert(data.message);
+                            window.location.reload()
+
+                        }
+                    })
+                });
                 $('#approved_client').on("click", function () {
                     processApplication();
-                    $('#reviewConfirmationModal').hide();
-                })
-                $('#review_confirm').on("click", function () {
-                    console.log('CLOSEEEE')
-                    /**
-                     * AJAX Request 
-                     * TODO : AJAX CALL THAT UPDATE THE CLIENT APP STATUS
-                     * 
-                     */
                     $('#reviewConfirmationModal').hide();
                 })
             })

@@ -583,6 +583,25 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
+    public function updatedClientAppStatus($applicantID)
+    {
+        $sql = "UPDATE client_application SET status = 'confirmed' WHERE id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        $stmt->bind_param('s', $applicantID); // Assuming that applicantID is an integer
+
+        if ($stmt->execute()) {
+            return [
+                'status' => 'success',
+                'message' => 'Successfully updated the client application status.'
+            ];
+        } else {
+            return [
+                'status' => 'error',
+                'message' => 'Failed to update the client application status.'
+            ];
+        }
+    }
 }
 
 

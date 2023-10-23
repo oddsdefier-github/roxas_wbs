@@ -65,6 +65,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'setInitialBillingData':
             handleSetInitialBillingData($dbQueries);
             break;
+        case 'updatedClientAppStatus':
+            handleUpdatedClientAppStatus($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -172,5 +175,14 @@ function handleSetInitialBillingData($dbQueries)
         $regID = $_POST['regID'];
         $setInitialBillingData = $dbQueries->setInitialBillingData($regID);
         echo json_encode($setInitialBillingData);
+    }
+}
+
+function  handleUpdatedClientAppStatus($dbQueries)
+{
+    if (isset($_POST['applicantID'])) {
+        $applicantID = $_POST['applicantID'];
+        $updateClientAppStatus = $dbQueries->updatedClientAppStatus($applicantID);
+        echo json_encode($updateClientAppStatus);
     }
 }

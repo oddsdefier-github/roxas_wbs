@@ -14,8 +14,24 @@ $(document).ready(function () {
         $('.table-utilities-container').attr('data-table-name', tableName);
     }
 
-    const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
-    const clientAppTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
+    const filterConfig = {
+        clientTable:
+            [
+                {
+                    column: "status",
+                    value: "Active"
+                }
+            ],
+        clientAppTable:
+            [
+                {
+                    column: "status",
+                    value: "Unconfirmed"
+                }
+            ]
+    }
+    const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable', filterConfig.clientTable);
+    const clientAppTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable', filterConfig.clientAppTable);
 
 
     filename === 'clients_application.php' ? $("#clientAppStatusFilter").show() : $("#clientAppStatusFilter").hide();
