@@ -26,6 +26,7 @@ include './auth_guard.php';
         <?php include './components/subheader.php'; ?>
         <main class="relative flex flex-1 flex-col justify-start overflow-auto">
             <div class="flex flex-col gap-5">
+                <?php include './components/payments_main.php'; ?>
             </div>
         </main>
     </section>

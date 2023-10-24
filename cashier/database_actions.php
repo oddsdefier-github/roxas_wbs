@@ -38,12 +38,6 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'retrieveClientData':
             handleRetrieveClientData($dbQueries);
             break;
-        case 'processClientApplication':
-            handleProcessClientApplication($dbQueries);
-            break;
-        case 'approveClientApplication':
-            handleApproveClientApplication($dbQueries);
-            break;
         case 'getDataTable':
             handleGetDataTable($dataTable);
             break;
@@ -53,18 +47,10 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'getName':
             handleGetName($dbQueries);
             break;
-        case 'getClientApplicationData':
-            handleGetClientApplicationData($dbQueries);
-            break;
         case 'getAddressData':
             handleGetAddressData($dbQueries);
             break;
-        case 'deleteItem':
-            handleDeleteItem($dbQueries);
-            break;
-        case 'setInitialBillingData':
-            handleSetInitialBillingData($dbQueries);
-            break;
+
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -80,23 +66,6 @@ function handleRetrieveClientData($dbQueries)
     }
 }
 
-function handleProcessClientApplication($dbQueries)
-{
-    if (isset($_POST['formData'])) {
-        $formData = $_POST['formData'];
-        $processResponse = $dbQueries->processClientApplication($formData);
-        echo json_encode($processResponse);
-    }
-}
-
-function handleApproveClientApplication($dbQueries)
-{
-    if (isset($_POST['formData'])) {
-        $formData = $_POST['formData'];
-        $processResponse = $dbQueries->approveClientApplication($formData);
-        echo json_encode($processResponse);
-    }
-}
 
 function handleGetDataTable($dataTable)
 {
@@ -132,45 +101,10 @@ function handleGetTotalItem($dbQueries)
     }
 }
 
-
-function handleGetClientApplicationData($dbQueries)
-{
-    if (isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $getClientApplicationData = $dbQueries->retrieveClientApplicationData($id);
-        echo json_encode($getClientApplicationData);
-    }
-}
 function handleGetAddressData($dbQueries)
 {
     $getAddressData = $dbQueries->fetchAddressData();
     echo json_encode($getAddressData);
 }
 
-function handleDeleteItem($dbQueries)
-{
-    if (isset($_POST['id']) && isset($_POST['tableName'])) {
-        $id = $_POST['id'];
-        $tableName = $_POST['tableName'];
-        $deleteItem = $dbQueries->deleteItem($id, $tableName);
-        echo json_encode($deleteItem);
-    }
-}
 
-function handleGetName($dbQueries)
-{
-    if (isset($_POST['id']) && isset($_POST['tableName'])) {
-        $id = $_POST['id'];
-        $tableName = $_POST['tableName'];
-        $getName = $dbQueries->getName($id, $tableName);
-        echo json_encode($getName);
-    }
-}
-function handleSetInitialBillingData($dbQueries)
-{
-    if (isset($_POST['regID'])) {
-        $regID = $_POST['regID'];
-        $setInitialBillingData = $dbQueries->setInitialBillingData($regID);
-        echo json_encode($setInitialBillingData);
-    }
-}
