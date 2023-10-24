@@ -69,7 +69,7 @@
                             </a>
                         </li>
                         <li class="my-2">
-                            <a href="billing.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
+                            <a href="transactions.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
                                 <span class="flex items-center gap-2">
 
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
@@ -87,7 +87,7 @@
                             </a>
                         </li>
                         <li class="my-2">
-                            <a href="logs.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
+                            <a href="payments.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
                                 <span class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -103,7 +103,7 @@
                             </a>
                         </li>
                         <li class="my-2">
-                            <a href="logs.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
+                            <a href="notification.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
                                 <span class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -119,7 +119,7 @@
                             </a>
                         </li>
                         <li class="my-2">
-                            <a href="logs.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
+                            <a href="reports.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
                                 <span class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">

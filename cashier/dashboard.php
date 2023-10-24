@@ -39,6 +39,7 @@ include './auth_guard.php';
 	<?php include './layouts/scripts.php'; ?>
 	<script>
 		$("#subheader-title").text("Dashboard")
+		$("#subheader-title").siblings("h5").text("View, and Manage Dashboard.")
 	</script>
 </body>
 
