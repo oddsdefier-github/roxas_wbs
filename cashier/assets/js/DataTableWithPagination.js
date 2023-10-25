@@ -1,14 +1,13 @@
 export class DataTableWithPagination {
-    constructor (tableName, tableContainerSelector = '#displayClientApplicationTable') {
+    constructor (tableName, tableContainerSelector = '#displayBillingTable', filter = []) {
         this.tableName = tableName;
-
-        this.itemsPerPageKey = `${this.tableName}-itemsPerPage`;
-        this.currentPageNumberKey = `${this.tableName}-currentPageNumber`;
+        this.filter = filter;
+        this.tableContainerSelector = tableContainerSelector;
+        this.itemsPerPageKey = `${this.tableContainerSelector}-itemsPerPage`;
+        this.currentPageNumberKey = `${this.tableContainerSelector}-currentPageNumber`;
 
         this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 5;
-
         this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
-
         this.totalItems = 0;
         this.lastPageNumber = 0;
 
@@ -19,11 +18,11 @@ export class DataTableWithPagination {
             radioDropDownContainer: $(".dropdown-container"),
             statusFilterBtn: $("#statusFilter"),
             tableContainer: $(tableContainerSelector),
-            prevBtn: $(`nav[data-table-name='${this.tableName}'] #prev`),
-            nextBtn: $(`nav[data-table-name='${this.tableName}'] #next`),
-            startBtn: $(`nav[data-table-name='${this.tableName}'] #start`),
-            endBtn: $(`nav[data-table-name='${this.tableName}'] #end`),
-            itemsPerPageSelector: $(`nav[data-table-name='${this.tableName}'] #item-per-page`)
+            prevBtn: $('#prev'),
+            nextBtn: $('#next'),
+            startBtn: $('#start'),
+            endBtn: $('#end'),
+            itemsPerPageSelector: $('#item-per-page')
         };
 
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
@@ -104,8 +103,10 @@ export class DataTableWithPagination {
     }
 
     updateItemsPerPageOptions() {
-        this.elements.itemsPerPageSelector.find('option').each((index, option) => {
+        this.elements.itemsPerPageSelector.find('option').each((_, option) => {
             let value = parseInt($(option).val(), 10);
+            console.log("VALUE: " + value)
+            console.log(this.totalItems + " THIS IS THE TOTAL ITEMS")
             if (value > this.totalItems) {
                 $(option).prop("disabled", true);
             } else {
@@ -113,7 +114,6 @@ export class DataTableWithPagination {
             }
         });
     }
-
 
     handleSearch() {
         this.currentPageNumber = 1;
@@ -144,7 +144,7 @@ export class DataTableWithPagination {
         this.elements.nextBtn.prop("disabled", this.currentPageNumber >= this.lastPageNumber);
         this.elements.startBtn.prop("disabled", this.currentPageNumber <= 1);
         this.elements.endBtn.prop("disabled", this.currentPageNumber >= this.lastPageNumber);
-        $(`nav[data-table-name='${this.tableName}'] a[aria-current="page"]`).text(this.currentPageNumber);
+        $('a[aria-current="page"]').text(this.currentPageNumber);
     }
 
     fetchTableData(searchTerm = "", filters = []) {
@@ -162,9 +162,8 @@ export class DataTableWithPagination {
                     filters: filters
                 }
             },
-            success: (data, status) => {
+            success: (data) => {
                 this.elements.tableContainer.html(data);
-
                 // Properly parse the hidden values
                 this.totalItems = parseInt($('#totalItemsHidden').val(), 10) || 0;
                 this.updateItemsPerPageOptions();

@@ -10,7 +10,7 @@ include './auth_guard.php';
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Payments</title>
+    <title>Application Payments</title>
     <?php include './layouts/links.php'; ?>
 </head>
 
@@ -26,7 +26,7 @@ include './auth_guard.php';
         <?php include './components/subheader.php'; ?>
         <main class="relative flex flex-1 flex-col justify-start overflow-auto">
             <div class="flex flex-col gap-5">
-                <?php include './components/payments_main.php'; ?>
+                <?php include './components/application_payments_main.php'; ?>
             </div>
         </main>
     </section>

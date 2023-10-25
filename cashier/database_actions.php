@@ -1,6 +1,6 @@
 <?php
 
-use Admin\Database\DatabaseConnection;
+use Cashier\Database\DatabaseConnection;
 
 require './database_queries.php';
 
@@ -35,37 +35,14 @@ if (isset($_POST['action'])) {
 function handleAction($action, $dbQueries, $dataTable)
 {
     switch ($action) {
-        case 'retrieveClientData':
-            handleRetrieveClientData($dbQueries);
-            break;
         case 'getDataTable':
             handleGetDataTable($dataTable);
             break;
-        case 'getTotalItem':
-            handleGetTotalItem($dbQueries);
-            break;
-        case 'getName':
-            handleGetName($dbQueries);
-            break;
-        case 'getAddressData':
-            handleGetAddressData($dbQueries);
-            break;
-
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
     }
 }
-
-function handleRetrieveClientData($dbQueries)
-{
-    if (isset($_POST['clientID'])) {
-        $client_id = $_POST['clientID'];
-        $client_data = $dbQueries->retrieveClientData($client_id);
-        echo json_encode($client_data);
-    }
-}
-
 
 function handleGetDataTable($dataTable)
 {
@@ -74,37 +51,14 @@ function handleGetDataTable($dataTable)
         $tableName = $_POST['tableName'];
 
         switch ($tableName) {
+            case "billing_data":
+                $dataTable->billingTable($dataTableParam);
+                break;
             case "client_application":
-                $dataTable->clientApplicationTable($dataTableParam);
+                $dataTable->clientAppBillingTable($dataTableParam);
                 break;
-            case "client_data":
-                $dataTable->clientTable($dataTableParam);
-                break;
-                // Add more cases if you have more tables with similar functionality.
-                // case "another_table":
-                //     $dataTable->anotherTableFunction($dataTableParam);
-                //     break;
             default:
                 echo "Invalid table name provided.";
         }
     }
 }
-
-function handleGetTotalItem($dbQueries)
-{
-    if (isset($_POST['tableName'])) {
-        $tableName = $_POST['tableName'];
-        $searchTerm = isset($_POST['searchTerm']) ? $_POST['searchTerm'] : "";
-
-        $getTotal = $dbQueries->getTotalItem($tableName, $searchTerm);
-        echo json_encode($getTotal);
-    }
-}
-
-function handleGetAddressData($dbQueries)
-{
-    $getAddressData = $dbQueries->fetchAddressData();
-    echo json_encode($getAddressData);
-}
-
-
