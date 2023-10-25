@@ -169,7 +169,7 @@ class DataTable extends BaseQuery
 
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $conditions[] = "(billing_id LIKE ? OR client_id LIKE ? OR consumption LIKE ? OR billing_amount LIKE ?)";
+            $conditions[] = "(full_name LIKE ? OR meter_number LIKE ? OR property_type LIKE ? OR application_id LIKE ?)";
             $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm]);
             $types .= "ssss";
         }
