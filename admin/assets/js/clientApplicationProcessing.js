@@ -733,9 +733,6 @@ $(document).ready(function () {
         if (!isChecked) {
             alert('Please upload valid documents!');
         } else {
-            console.log('SUBMITTED!!!!')
-            // processApplication();
-
             $('#reviewConfirmationModal').css({
                 'display': 'grid',
                 'place-items': 'center',
@@ -751,33 +748,12 @@ $(document).ready(function () {
                     $('#review_confirm').prop('disabled', true)
                 };
 
-                $("#review_confirm").on("click", function () {
-                    $.ajax({
-                        url: "database_actions.php",
-                        type: "post",
-                        dataType: "json",
-                        data: {
-                            action: "updatedClientAppStatus",
-                            applicantID: applicantID,
-                            documentsData: {
-                                validID: "Yes",
-                                proofOfOwnership: "Yes",
-                                deedOfSale: "Yes",
-                                affidavit: affidavit.prop('checked') ? "Yes" : "No"
-                            }
-                        },
-                        success: function (data) {
-                            $('#reviewConfirmationModal').hide();
-                            console.log(data);
-                            alert(data.message);
-                            window.location.reload()
+                confirmUpdateApplication()
 
-                        }
-                    })
-                });
                 $('#approved_client').on("click", function () {
-                    processApplication();
                     $('#reviewConfirmationModal').hide();
+                    processApplication();
+
                 })
             })
         }
