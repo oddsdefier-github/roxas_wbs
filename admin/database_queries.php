@@ -583,12 +583,17 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
-    public function updatedClientAppStatus($applicantID)
+    public function updatedClientAppStatus($applicantID, $documentsData)
     {
-        $sql = "UPDATE client_application SET status = 'confirmed' WHERE id = ?";
+        $validID = $documentsData['validID'];
+        $proofOfOwnership = $documentsData['proofOfOwnership'];
+        $deedOfSale = $documentsData['deedOfSale'];
+        $affidavit = $documentsData['affidavit'];
+
+        $sql = "UPDATE client_application SET status = 'confirmed', valid_id = ?, proof_of_ownership = ?, deed_of_sale = ?, affidavit = ?, timestamp = CURRENT_TIMESTAMP WHERE id = ?";
         $stmt = $this->conn->prepareStatement($sql);
 
-        $stmt->bind_param('s', $applicantID); // Assuming that applicantID is an integer
+        $stmt->bind_param('sssss', $validID, $proofOfOwnership, $deedOfSale, $affidavit, $applicantID);
 
         if ($stmt->execute()) {
             return [

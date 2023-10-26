@@ -1,6 +1,4 @@
 $(document).ready(function () {
-
-
     const reviewForm = $('.review-form');
     const meterNumberInput = $('input[name="meterNumber"]');
     const firstNameInput = $('input[name="firstName"]');
@@ -102,7 +100,13 @@ $(document).ready(function () {
             Unconfirmed </span>`,
             confirmed: `<span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
             <span class="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span>
-            Confirmed </span>`
+            Confirmed </span>`,
+            paid: `<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+            Paid </span>`,
+            unpaid: `<span class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
+            Unpaid </span>`,
         };
 
         if (status === 'confirmed') {
@@ -114,6 +118,13 @@ $(document).ready(function () {
             $("#review-submit")
                 .prop("disabled", false)
                 .text("Approve");
+            if (billingStatus === 'unpaid') {
+                $('.billing_status_badge').html(badgeElements.unpaid);
+                $("#review-submit").hide()
+            } else {
+                $('.billing_status_badge').html(badgeElements.paid);
+                $("#review-submit").show()
+            }
         } else if (status === 'unconfirmed') {
             $('.status_badge').html(badgeElements.unconfirmed);
             $('#review_confirm')
@@ -340,30 +351,6 @@ $(document).ready(function () {
                 return `${this.streetAddress}, ${this.brgy}, ${this.municipality}, ${this.province}, ${this.region}, Philippines`;
             }
         };
-
-        console.log("meterNumber:", formInput.meterNumber);
-        console.log("firstName:", formInput.firstName);
-        console.log("middleName:", formInput.middleName);
-        console.log("lastName:", formInput.lastName);
-        console.log("nameSuffix:", formInput.nameSuffix);
-        console.log("birthDate:", formInput.birthDate);
-        console.log("age:", formInput.age);
-        console.log("gender:", formInput.gender);
-        console.log("phoneNumber:", formInput.phoneNumber);
-        console.log("email:", formInput.email);
-        console.log("propertyType:", formInput.propertyType);
-        console.log("streetAddress:", formInput.streetAddress);
-        console.log("brgy:", formInput.brgy);
-        console.log("municipality:", formInput.municipality);
-        console.log("province:", formInput.province);
-        console.log("region:", formInput.region);
-        console.log("validID:", formInput.validID);
-        console.log("proofOfOwnership:", formInput.proofOfOwnership);
-        console.log("deedOfSale:", formInput.deedOfSale);
-        console.log("affidavit:", formInput.affidavit);
-        console.log("getFullNameWithInitial:", formInput.getFullNameWithInitial());
-        console.log("getFullAddress:", formInput.getFullAddress());
-
 
         $.ajax({
             url: "database_actions.php",
@@ -620,10 +607,18 @@ $(document).ready(function () {
 
 
     reviewForm.on('submit', function (e) {
+        const validID = $('#validId');
+        const proofOfOwnership = $('#proofOfOwnership');
+        const deedOfSale = $('#deedOfSale');
+        const affidavit = $('#affidavit');
         e.preventDefault();
 
-        if ($('#validId').prop('checked') === false) {
-            alert('Please upload a Valid ID!')
+        let isChecked =
+            validID.prop('checked') &&
+            proofOfOwnership.prop('checked') &&
+            deedOfSale.prop('checked')
+        if (!isChecked) {
+            alert('Please upload valid documents!');
         } else {
             console.log('SUBMITTED!!!!')
             // processApplication();
@@ -634,7 +629,6 @@ $(document).ready(function () {
                 'justify-content': 'center',
                 'align-items': 'center'
             })
-
             $('#confirm_review_check').on('change', function () {
                 if ($('#confirm_review_check').prop('checked') === true) {
                     $('#approved_client').prop('disabled', false)
@@ -651,7 +645,13 @@ $(document).ready(function () {
                         dataType: "json",
                         data: {
                             action: "updatedClientAppStatus",
-                            applicantID: applicantID
+                            applicantID: applicantID,
+                            documentsData: {
+                                validID: "Yes",
+                                proofOfOwnership: "Yes",
+                                deedOfSale: "Yes",
+                                affidavit: affidavit.prop('checked') ? "Yes" : "No"
+                            }
                         },
                         success: function (data) {
                             $('#reviewConfirmationModal').hide();

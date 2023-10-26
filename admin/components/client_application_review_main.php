@@ -22,7 +22,7 @@ if (isset($_GET['id'])) {
         <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
                 <div class="border-b border-gray-900/10 py-3">
-                    <h2 class="name-title inline-flex text-base font-semibold leading-7 text-gray-900">Personal Information </h2><span class="status_badge ml-2"></span>
+                    <h2 class="name-title inline-flex text-base font-semibold leading-7 text-gray-900">Personal Information </h2><span class="status_badge ml-2"></span><span class="billing_status_badge ml-2"></span>
                     <p class="address-subtitle mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
                 </div>
                 <div class="mt-10 grid sm:grid-cols-6 grid-cols-1 gap-x-6 gap-y-8 ">
