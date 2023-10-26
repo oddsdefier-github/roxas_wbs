@@ -541,9 +541,7 @@ $(document).ready(function () {
 
     let count = inputs.length;
     console.log(`Count: ${count}`)
-
     //add tracking data attr
-
 
     inputFields.on("input", function () {
         const fieldName = $(this).attr("name");
@@ -604,6 +602,121 @@ $(document).ready(function () {
 
         }
     })
+
+    function confirmUpdateApplication() {
+        function getSelectedItemValue(selectEl) {
+            let value = selectEl.find(':selected').text();
+            selectEl.on('change', function () {
+                value = selectEl.find(':selected').text();
+                return value;
+            });
+            return value;
+        }
+        function getAgeIntValue(ageInput) {
+            age = ageInput.val().trim();
+            console.log(age);
+            age = age.split(" ")[0]
+            if (!isNaN(age)) {
+                return age;
+            } else {
+                return null;
+            }
+        }
+
+        function getCheckedItemValue(checkboxEl) {
+            return checkboxEl.is(':checked') ? 'Yes' : 'No';
+        }
+
+        function formatName(name) {
+            name = name.toLowerCase();
+            if (name.length > 0) {
+                const words = name.split(' ');
+
+                for (let i = 0; i < words.length; i++) {
+                    if (words[i].length > 0) {
+                        words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+                    }
+                }
+                formattedName = words.join(' ');
+                return formattedName;
+            }
+            return name;
+        }
+
+        const formInput = {
+            applicationID: $("#application-id-hidden").val(),
+            meterNumber: meterNumberInput.val().toUpperCase(),
+            firstName: formatName(firstNameInput.val()),
+            middleName: formatName(middleNameInput.val()),
+            lastName: formatName(lastNameInput.val()),
+            nameSuffix: getSelectedItemValue(nameSuffixInput),
+            birthDate: birthDateInput.val(),
+            age: getAgeIntValue(ageInput),
+            gender: getSelectedItemValue(genderInput),
+            phoneNumber: phoneNumberInput.val(),
+            email: emailInput.val(),
+            propertyType: getSelectedItemValue(propertyTypeInput),
+            streetAddress: formatName(streetAddressInput.val()),
+            brgy: getSelectedItemValue(brgyInput),
+            municipality: municipalityInput.val(),
+            province: provinceInput.val(),
+            region: regionInput.val(),
+            validID: getCheckedItemValue(validIdCheck),
+            proofOfOwnership: getCheckedItemValue(proofOfOwnershipCheck),
+            deedOfSale: getCheckedItemValue(deedOfSaleCheck),
+            affidavit: getCheckedItemValue(affidavitCheck),
+            getFullNameWithInitial: function () {
+                const middleInitial = this.middleName.length > 0 ? this.middleName.charAt(0) + '.' : '';
+                const suffix = this.nameSuffix ? ' ' + this.nameSuffix : '';
+                return `${this.firstName} ${middleInitial} ${this.lastName}${suffix}`;
+            },
+            getFullAddress: function () {
+                return `${this.streetAddress}, ${this.brgy}, ${this.municipality}, ${this.province}, ${this.region}, Philippines`;
+            }
+        };
+
+        $("#review_confirm").on("click", function () {
+            $.ajax({
+                url: "database_actions.php",
+                type: "post",
+                dataType: "json",
+                data: {
+                    action: "updatedClientAppStatus",
+                    applicantID: applicantID,
+                    documentsData: {
+                        meterNumber: formInput.meterNumber,
+                        firstName: formInput.firstName,
+                        middleName: formInput.middleName,
+                        lastName: formInput.lastName,
+                        fullName: formInput.getFullNameWithInitial(),
+                        nameSuffix: formInput.nameSuffix,
+                        birthDate: formInput.birthDate,
+                        age: formInput.age,
+                        gender: formInput.gender,
+                        phoneNumber: formInput.phoneNumber,
+                        email: formInput.email,
+                        propertyType: formInput.propertyType,
+                        streetAddress: formInput.streetAddress,
+                        brgy: formInput.brgy,
+                        municipality: formInput.municipality,
+                        province: formInput.province,
+                        region: formInput.region,
+                        fullAddress: formInput.getFullAddress(),
+                        validID: formInput.validID,
+                        proofOfOwnership: formInput.proofOfOwnership,
+                        deedOfSale: formInput.deedOfSale,
+                        affidavit: formInput.affidavit
+                    }
+                },
+                success: function (data) {
+                    $('#reviewConfirmationModal').hide();
+                    console.log(data);
+                    alert(data.message);
+                    window.location.reload()
+                }
+            })
+        });
+    };
 
 
     reviewForm.on('submit', function (e) {

@@ -585,15 +585,75 @@ class DatabaseQueries extends BaseQuery
     }
     public function updatedClientAppStatus($applicantID, $documentsData)
     {
-        $validID = $documentsData['validID'];
-        $proofOfOwnership = $documentsData['proofOfOwnership'];
-        $deedOfSale = $documentsData['deedOfSale'];
-        $affidavit = $documentsData['affidavit'];
+        $meterNumber = htmlspecialchars($documentsData['meterNumber'], ENT_QUOTES, 'UTF-8');
+        $firstName = htmlspecialchars($documentsData['firstName'], ENT_QUOTES, 'UTF-8');
+        $middleName = htmlspecialchars($documentsData['middleName'], ENT_QUOTES, 'UTF-8');
+        $lastName = htmlspecialchars($documentsData['lastName'], ENT_QUOTES, 'UTF-8');
+        $fullName = htmlspecialchars($documentsData['fullName'], ENT_QUOTES, 'UTF-8');
+        $nameSuffix = htmlspecialchars($documentsData['nameSuffix'], ENT_QUOTES, 'UTF-8');
+        $birthDate = htmlspecialchars($documentsData['birthDate'], ENT_QUOTES, 'UTF-8');
+        $age = htmlspecialchars($documentsData['age'], ENT_QUOTES, 'UTF-8');
+        $email = htmlspecialchars($documentsData['email'], ENT_QUOTES, 'UTF-8');
+        $gender = htmlspecialchars($documentsData['gender'], ENT_QUOTES, 'UTF-8');
+        $phoneNumber = htmlspecialchars($documentsData['phoneNumber'], ENT_QUOTES, 'UTF-8');
+        $propertyType = htmlspecialchars($documentsData['propertyType'], ENT_QUOTES, 'UTF-8');
+        $streetAddress = htmlspecialchars($documentsData['streetAddress'], ENT_QUOTES, 'UTF-8');
+        $brgy = htmlspecialchars($documentsData['brgy'], ENT_QUOTES, 'UTF-8');
+        $fullAddress = htmlspecialchars($documentsData['fullAddress'], ENT_QUOTES, 'UTF-8');
+        $validID = htmlspecialchars($documentsData['validID'], ENT_QUOTES, 'UTF-8');
+        $proofOfOwnership = htmlspecialchars($documentsData['proofOfOwnership'], ENT_QUOTES, 'UTF-8');
+        $deedOfSale = htmlspecialchars($documentsData['deedOfSale'], ENT_QUOTES, 'UTF-8');
+        $affidavit = htmlspecialchars($documentsData['affidavit'], ENT_QUOTES, 'UTF-8');
 
-        $sql = "UPDATE client_application SET status = 'confirmed', valid_id = ?, proof_of_ownership = ?, deed_of_sale = ?, affidavit = ?, timestamp = CURRENT_TIMESTAMP WHERE id = ?";
+
+        $sql = "UPDATE client_application SET 
+                status = 'confirmed',
+                meter_number = ?,
+                first_name = ?,
+                middle_name = ?,
+                last_name = ?,
+                full_name = ?,
+                name_suffix = ?,
+                birthdate = ?,
+                age = ?,
+                email = ?,
+                gender = ?,
+                phone_number = ?,
+                property_type = ?,
+                street = ?,
+                brgy = ?,
+                full_address = ?,
+                valid_id = ?,
+                proof_of_ownership = ?, 
+                deed_of_sale = ?, 
+                affidavit = ?,
+                timestamp = CURRENT_TIMESTAMP 
+                WHERE id = ?";
         $stmt = $this->conn->prepareStatement($sql);
 
-        $stmt->bind_param('sssss', $validID, $proofOfOwnership, $deedOfSale, $affidavit, $applicantID);
+        $stmt->bind_param(
+            'ssssssssssssssssssss',
+            $meterNumber,
+            $firstName,
+            $middleName,
+            $lastName,
+            $fullName,
+            $nameSuffix,
+            $birthDate,
+            $age,
+            $email,
+            $gender,
+            $phoneNumber,
+            $propertyType,
+            $streetAddress,
+            $brgy,
+            $fullAddress,
+            $validID,
+            $proofOfOwnership,
+            $deedOfSale,
+            $affidavit,
+            $applicantID
+        );
 
         if ($stmt->execute()) {
             return [
