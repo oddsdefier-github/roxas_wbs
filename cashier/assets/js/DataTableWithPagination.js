@@ -18,11 +18,11 @@ export class DataTableWithPagination {
             radioDropDownContainer: $(".dropdown-container"),
             statusFilterBtn: $("#statusFilter"),
             tableContainer: $(tableContainerSelector),
-            prevBtn: $('#prev'),
-            nextBtn: $('#next'),
-            startBtn: $('#start'),
-            endBtn: $('#end'),
-            itemsPerPageSelector: $('#item-per-page')
+            prevBtn: $("#prev"),
+            nextBtn: $("#next"),
+            startBtn: $("#start"),
+            endBtn: $("#end"),
+            itemsPerPageSelector: $("#item-per-page")
         };
 
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
@@ -42,10 +42,7 @@ export class DataTableWithPagination {
         });
 
         // Bind pagination events
-        this.elements.prevBtn.on("click", () => {
-            this.handlePageChange("prev");
-        });
-
+        this.elements.prevBtn.on("click", () => this.handlePageChange("prev"));
         this.elements.nextBtn.on("click", () => this.handlePageChange("next"));
         this.elements.startBtn.on("click", () => this.handlePageChange("start"));
         this.elements.endBtn.on("click", () => this.handlePageChange("end"));
@@ -97,7 +94,6 @@ export class DataTableWithPagination {
         radios.on('change', () => {
             this.applyFilter();
             const selectedValue = event.currentTarget.value;
-            // Update the button text with the selected value
             $(".status-text").text(selectedValue);
         });
     }

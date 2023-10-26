@@ -1,14 +1,13 @@
 export class DataTableWithPagination {
-    constructor (tableName, tableContainerSelector = '#displayClientApplicationTable', filter) {
+    constructor (tableName, tableContainerSelector = '#displayClientApplicationTable', filter = []) {
         this.tableName = tableName;
         this.filter = filter;
-        this.itemsPerPageKey = `${this.tableName}-itemsPerPage`;
-        this.currentPageNumberKey = `${this.tableName}-currentPageNumber`;
+        this.tableContainerSelector = tableContainerSelector;
+        this.itemsPerPageKey = `${this.tableContainerSelector}-itemsPerPage`;
+        this.currentPageNumberKey = `${this.tableContainerSelector}-currentPageNumber`;
 
         this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 5;
-
         this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
-
         this.totalItems = 0;
         this.lastPageNumber = 0;
 
@@ -19,11 +18,11 @@ export class DataTableWithPagination {
             radioDropDownContainer: $(".dropdown-container"),
             statusFilterBtn: $("#statusFilter"),
             tableContainer: $(tableContainerSelector),
-            prevBtn: $(`nav[data-table-name='${this.tableName}'] #prev`),
-            nextBtn: $(`nav[data-table-name='${this.tableName}'] #next`),
-            startBtn: $(`nav[data-table-name='${this.tableName}'] #start`),
-            endBtn: $(`nav[data-table-name='${this.tableName}'] #end`),
-            itemsPerPageSelector: $(`nav[data-table-name='${this.tableName}'] #item-per-page`)
+            prevBtn: $("#prev"),
+            nextBtn: $("#next"),
+            startBtn: $("#start"),
+            endBtn: $("#end"),
+            itemsPerPageSelector: $("#item-per-page")
         };
 
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
@@ -43,10 +42,7 @@ export class DataTableWithPagination {
         });
 
         // Bind pagination events
-        this.elements.prevBtn.on("click", () => {
-            this.handlePageChange("prev");
-        });
-
+        this.elements.prevBtn.on("click", () => this.handlePageChange("prev"));
         this.elements.nextBtn.on("click", () => this.handlePageChange("next"));
         this.elements.startBtn.on("click", () => this.handlePageChange("start"));
         this.elements.endBtn.on("click", () => this.handlePageChange("end"));
@@ -63,13 +59,19 @@ export class DataTableWithPagination {
             this.currentPageNumber = 1;
 
             const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
-            const currentFilters = radios.map((_, radio) => {
-                return {
-                    column: $(radio).data('column'),
-                    value: radio.value
-                };
-            }).get();
+            let currentFilters = [];
+
+            if (radios.length > 0) {
+                currentFilters = radios.map((_, radio) => {
+                    return {
+                        column: $(radio).data('column'),
+                        value: radio.value
+                    };
+                }).get();
+            }
+
             this.fetchTableData(this.elements.searchInput.val(), currentFilters);
+
         });
 
         this.elements.clearSearch.on("click", () => {
@@ -144,7 +146,7 @@ export class DataTableWithPagination {
         this.elements.nextBtn.prop("disabled", this.currentPageNumber >= this.lastPageNumber);
         this.elements.startBtn.prop("disabled", this.currentPageNumber <= 1);
         this.elements.endBtn.prop("disabled", this.currentPageNumber >= this.lastPageNumber);
-        $(`nav[data-table-name='${this.tableName}'] a[aria-current="page"]`).text(this.currentPageNumber);
+        $('a[aria-current="page"]').text(this.currentPageNumber);
     }
 
     fetchTableData(searchTerm = "", filters = this.filter) {

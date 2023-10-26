@@ -108,8 +108,21 @@ $(document).ready(function () {
             <span class="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
             Unpaid </span>`,
         };
-
+        function disableInput(elementsArray) {
+            elementsArray.forEach((el) => {
+                el.prop("disabled", true)
+            });
+        }
+        const inputs = $('input');
+        const selects = $('select');
+        function enableInput(elementsArray) {
+            elementsArray.forEach((el) => {
+                el.prop("disabled", false)
+            });
+        }
         if (status === 'confirmed') {
+            disableInput([inputs, selects])
+
             $('.status_badge').html(badgeElements.confirmed);
             $('#review_confirm')
                 .prop('disabled', true)
@@ -120,11 +133,18 @@ $(document).ready(function () {
                 .text("Approve");
             if (billingStatus === 'unpaid') {
                 $('.billing_status_badge').html(badgeElements.unpaid);
-                $("#review-submit").hide()
-            } else {
+                $("#review-submit")
+                    .prop("disabled", true)
+                    .text("Waiting for Payment");
+            } else if (billingStatus === 'paid') {
                 $('.billing_status_badge').html(badgeElements.paid);
                 $("#review-submit").show()
+                enableInput([inputs, selects])
+            } else {
+                $('.billing_status_badge').html('');
+                $("#review-submit").hide()
             }
+
         } else if (status === 'unconfirmed') {
             $('.status_badge').html(badgeElements.unconfirmed);
             $('#review_confirm')
@@ -133,14 +153,16 @@ $(document).ready(function () {
             $("#review-submit").prop("disabled", false);
         } else {
             $('.status_badge').html(badgeElements.approved);
-            $("#review-submit").prop("disabled", true);
+            $("#review-submit")
+                .prop("disabled", true)
+                .text("Already Approved");
             $('#review_confirm')
                 .prop('disabled', true)
-                .hide();
+                .hide()
             $("#approved_client").hide();
+            disableInput([inputs, selects])
         }
 
-        // billingStatus === 'unpaid' ? $('#approved_client').hide() : $('#approved_client').show()
 
 
         meterNumberInput.val(meterNumber);
@@ -397,7 +419,7 @@ $(document).ready(function () {
 
                         alert(`${responseData['message']}`)
 
-                        window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application.php';
+                        window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application_table.php';
                         window.open(`./print.php?id=${clientID}`, '_blank');
                     }
                 }

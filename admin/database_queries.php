@@ -74,7 +74,7 @@ class DatabaseQueries extends BaseQuery
         $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
 
         $status = 'unconfirmed';
-
+        $billingStatus = 'unpaid';
         $checkDuplicateMeterNo = "SELECT meter_number FROM client_application WHERE meter_number = ?";
         $stmt = $this->conn->prepareStatement($checkDuplicateMeterNo);
 
@@ -111,14 +111,14 @@ class DatabaseQueries extends BaseQuery
                     } else {
 
                         $applicationID = 'A' . date("YmdHis");
-                        $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, status, application_id, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+                        $sql = "INSERT INTO client_application (meter_number, first_name, middle_name, last_name, name_suffix, full_name, email, phone_number, birthdate, age, gender, property_type, street, brgy, municipality, province, region, full_address, valid_id, proof_of_ownership, deed_of_sale, affidavit, billing_status, status, application_id, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
                         $stmt = $this->conn->prepareStatement($sql);
 
                         if ($stmt) {
                             mysqli_stmt_bind_param(
                                 $stmt,
-                                "ssssssssssssssssssssssss",
+                                "sssssssssssssssssssssssss",
                                 $meterNumber,
                                 $firstName,
                                 $middleName,
@@ -141,6 +141,7 @@ class DatabaseQueries extends BaseQuery
                                 $proofOfOwnership,
                                 $deedOfSale,
                                 $affidavit,
+                                $billingStatus,
                                 $status,
                                 $applicationID
                             );
@@ -627,6 +628,7 @@ class DatabaseQueries extends BaseQuery
                 proof_of_ownership = ?, 
                 deed_of_sale = ?, 
                 affidavit = ?,
+                billing_status = 'unpaid',
                 timestamp = CURRENT_TIMESTAMP 
                 WHERE id = ?";
         $stmt = $this->conn->prepareStatement($sql);
@@ -687,9 +689,9 @@ class DataTable extends BaseQuery
 
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $conditions[] = "(full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
-            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
-            $types .= "ssssss";
+            $conditions[] = "(full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ? OR billing_status LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "sssssss";
         }
 
         if (!empty($filters)) {

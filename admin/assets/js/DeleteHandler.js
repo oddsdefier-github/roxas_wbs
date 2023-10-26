@@ -63,7 +63,6 @@ class EnhancedDeleteHandler extends DeleteHandler {
         super(delId, tableName);
         this.tableInstance = tableInstance;
     }
-
     executeDeletion() {
         $.ajax({
             url: "database_actions.php",
@@ -75,19 +74,37 @@ class EnhancedDeleteHandler extends DeleteHandler {
             },
             success: (data) => {
                 console.log(data);
-                this.tableInstance.fetchTableData();
+                this.tableInstance.fetchTableData('', [{ column: "status", value: "Unconfirmed" }]);
             }
         });
     }
 }
 
+const filterConfig = {
+    clientTable:
+        [
+            {
+                column: "status",
+                value: "Active"
+            }
+        ],
+    clientAppTable:
+        [
+            {
+                column: "status",
+                value: "Unconfirmed"
+            }
+        ]
+}
+
+
 function deleteClient(delId, tableName) {
-    const clientTable = new DataTableWithPagination(tableName, '#displayClientDataTable');
+    const clientTable = new DataTableWithPagination(tableName, '#displayClientDataTable', filterConfig.clientTable);
     const handler = new EnhancedDeleteHandler(delId, tableName, clientTable);
     handler.deleteItem();
 }
 function deleteClientApplication(delId, tableName) {
-    const clientTable = new DataTableWithPagination(tableName, '#displayClientApplicationTable');
+    const clientTable = new DataTableWithPagination(tableName, '#displayClientApplicationTable', filterConfig.clientAppTable);
     const handler = new EnhancedDeleteHandler(delId, tableName, clientTable);
     handler.deleteItem();
 }

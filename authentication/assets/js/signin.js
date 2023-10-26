@@ -147,9 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "Admin": {
                 "redirect": "../admin/index.php",
                 "preload": [
-                    "components/client_application_form.php",
                     "components/dashboard_main.php",
-                    "components/clients_application_main.php",
                     "components/logs_main.php",
                     "components/client_application_review_main.php"
                 ]

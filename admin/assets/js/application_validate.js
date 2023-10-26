@@ -182,10 +182,12 @@ $(document).ready(function () {
                         alert(`${responseData['message']}`)
                     } else if ((responseData['status'] === 'success')) {
                         alert(`${responseData['applicant']}'s application has been added.`)
-                        window.location.reload();
-                        // setTimeout(function () {
-                        //     window.location.reload();
-                        // }, 1000)
+                        let currentPath = window.location.pathname;
+                        let pathComponents = currentPath.split("/");
+                        pathComponents[pathComponents.length - 1] = "clients_application_table.php";
+                        let newPath = pathComponents.join("/");
+                        window.location.href = window.location.origin + newPath;
+
                     }
                 }
             },

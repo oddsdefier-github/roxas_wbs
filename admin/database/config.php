@@ -22,4 +22,4 @@ define('BASE_URL', 'http://localhost/wbs_zero_php/');
 define('HOME_URL', BASE_URL);
 define('CLIENTS_URL', BASE_URL . 'admin/clients.php');
 define('DASHBOARD_URL', BASE_URL . 'admin/dashboard.php');
-define('CLIENTS_APPLICATION_URL', BASE_URL . 'admin/clients_application.php');
+define('CLIENTS_APPLICATION_URL', BASE_URL . 'admin/clients_application_table.php');

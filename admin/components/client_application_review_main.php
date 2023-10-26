@@ -30,7 +30,7 @@ if (isset($_GET['id'])) {
                         <div class="sm:col-span-1">
                             <label for="meter-number" class="block text-sm font-medium leading-6 text-gray-900">Meter No.</label>
                             <div class="mt-2 relative">
-                                <input data-input-state="error" type="text" name="meterNumber" id="meter-number" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="W-" readonly disabled>
+                                <input data-input-state="error" type="text" name="meterNumber" id="meter-number" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="W-">
                             </div>
                             <div data-validate-input="meterNumber" class="validate-message"></div>
                         </div>
@@ -89,7 +89,6 @@ if (isset($_GET['id'])) {
                                 </select>
 
                             </div>
-                            <div data-validate-input="lastName" class="validate-message"></div>
                         </div>
                     </div>
 

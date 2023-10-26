@@ -5,6 +5,7 @@
         <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Debug</span>
     </label>
 </div>
+<script src="./assets/libs/jquery/dist/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
         const toggle = $('input[type="checkbox"]');

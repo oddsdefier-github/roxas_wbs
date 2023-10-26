@@ -1,5 +1,5 @@
 <?php
-include 'add_client_modal.php';
+
 include 'delete_client_modal.php';
 include 'client_actions_modal.php';
 include 'client_profile_modal.php';
