@@ -1664,8 +1664,16 @@ input:checked + .toggle-bg {
   right: -2.5rem;
 }
 
+.-right-2 {
+  right: -0.5rem;
+}
+
 .-top-2 {
   top: -0.5rem;
+}
+
+.-top-3 {
+  top: -0.75rem;
 }
 
 .-top-40 {

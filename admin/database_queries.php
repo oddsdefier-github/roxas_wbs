@@ -44,6 +44,30 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 
+    public function markNotificationAsRead($applicationID)
+    {
+        $sqlSelect = "SELECT id FROM client_application WHERE application_id = ?";
+        $stmtSelect = $this->conn->prepareStatement($sqlSelect);
+        $stmtSelect->bind_param("s", $applicationID);
+
+        if ($stmtSelect->execute()) {
+            $result = $stmtSelect->get_result();
+            $row = $result->fetch_assoc();
+            $id = $row['id'];
+
+            $sqlUpdate = "UPDATE notifications SET status = 'read' WHERE reference_id = ?";
+            $stmtUpdate = $this->conn->prepareStatement($sqlUpdate);
+            $stmtUpdate->bind_param("i", $id);
+
+            if ($stmtUpdate->execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
     public function processClientApplication($formData)
     {
@@ -300,9 +324,11 @@ class DatabaseQueries extends BaseQuery
                             );
 
                             if (mysqli_stmt_execute($stmt)) {
+                                $this->markNotificationAsRead($applicationID);
                                 $status = 'approved';
                                 $sql = "UPDATE client_application SET status = ? WHERE application_id = ?";
                                 $stmt = $this->conn->prepareStatement($sql);
+
 
                                 if ($stmt) {
                                     $stmt->bind_param("ss", $status, $applicationID);
@@ -670,28 +696,46 @@ class DatabaseQueries extends BaseQuery
         }
     }
 
-
     public function loadNotificationHtml($limit)
     {
         $limit = isset($_POST['limit']) ? $_POST['limit'] : 10;
         if ($limit === 'all') {
-            $sql = "SELECT * FROM notifications ORDER BY created_at DESC";
+            $sql = "SELECT * FROM notifications WHERE status = 'unread' ORDER BY created_at DESC";
         } else {
-            $sql = "SELECT * FROM notifications ORDER BY created_at DESC LIMIT $limit";
+            $sql = "SELECT * FROM notifications WHERE status = 'unread' ORDER BY created_at DESC LIMIT $limit";
         }
         $result = $this->conn->query($sql);
 
+        $notifCount = 0;
         $output = "";
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-
+                $notifCount++;
                 $icon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBjbGFzcz0idy02IGgtNiI+DQogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTTEwLjEyNSAyLjI1aC00LjVjLS42MjEgMC0xLjEyNS41MDQtMS4xMjUgMS4xMjV2MTcuMjVjMCAuNjIxLjUwNCAxLjEyNSAxLjEyNSAxLjEyNWgxMi43NWMuNjIxIDAgMS4xMjUtLjUwNCAxLjEyNS0xLjEyNXYtOU0xMC4xMjUgMi4yNWguMzc1YTkgOSAwIDAxOSA5di4zNzVNMTAuMTI1IDIuMjVBMy4zNzUgMy4zNzUgMCAwMTEzLjUgNS42MjV2MS41YzAgLjYyMS41MDQgMS4xMjUgMS4xMjUgMS4xMjVoMS41YTMuMzc1IDMuMzc1IDAgMDEzLjM3NSAzLjM3NU05IDE1bDIuMjUgMi4yNUwxNSAxMiIgLz4NCjwvc3ZnPg0K"; // Your SVG data
                 $notificationContent = $row['message'];
                 $adminID = $row['admin_id'];
                 $referenceID = $row['reference_id'];
                 $url = BASE_URL . 'admin/client_application_review.php?id=' . $referenceID;
-                $timeAgo = "a few moments ago";
+
+                // Calculate time ago
+                $currentDateTime = new DateTime(); // Current time
+                $notificationDateTime = new DateTime($row['created_at'], new DateTimeZone('Asia/Manila'));
+                $interval = $notificationDateTime->diff($currentDateTime); // Difference between the two times
+
+                if ($interval->y > 0) {
+                    $timeAgo = $interval->y . " year" . ($interval->y > 1 ? "s" : "") . " ago";
+                } elseif ($interval->m > 0) {
+                    $timeAgo = $interval->m . " month" . ($interval->m > 1 ? "s" : "") . " ago";
+                } elseif ($interval->d > 0) {
+                    $timeAgo = $interval->d . " day" . ($interval->d > 1 ? "s" : "") . " ago";
+                } elseif ($interval->h > 0) {
+                    $timeAgo = $interval->h . " hour" . ($interval->h > 1 ? "s" : "") . " ago";
+                } elseif ($interval->i > 0) {
+                    $timeAgo = $interval->i . " minute" . ($interval->i > 1 ? "s" : "") . " ago";
+                } else {
+                    $timeAgo = "a few moments ago";
+                }
 
                 $output .= "
                     <a href=\"$url\" target=\"_blank\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
@@ -708,7 +752,34 @@ class DatabaseQueries extends BaseQuery
         } else {
             $output .= "<div class=\"flex justify-center items-center px-4 py-3 hover:bg-gray-100\">None</div>";
         }
-        echo $output; // This will return our generated HTML to wherever you call the function
+        $output = '<input id="notif_count_hidden" type="hidden" value="' . $notifCount . '">' . $output;
+        echo $output;
+    }
+
+    public function countUnreadNotifications()
+    {
+        $sql = "SELECT COUNT(*) as unread_count FROM notifications WHERE status = 'unread'";
+        $response = array();
+
+        $result = $this->conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $unread_count = $row['unread_count'];
+
+            if ($unread_count > 0) {
+                $response['status'] = 'success';
+                $response['unread_count'] = $unread_count;
+            } else {
+                $response['status'] = 'empty';
+                $response['unread_count'] = 0;
+            }
+        } else {
+            $response['status'] = 'error';
+            $response['message'] = 'Unable to fetch data';
+        }
+
+        return json_encode($response);
     }
 }
 

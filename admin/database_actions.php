@@ -71,6 +71,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'loadNotification':
             handleLoadNotification($dbQueries);
             break;
+        case 'countUnreadNotifications':
+            handleCountUnreadNotification($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -198,4 +201,10 @@ function handleLoadNotification($dbQueries)
         $limit = $_POST['limit'];
         $dbQueries->loadNotificationHtml($limit);
     }
+}
+
+function handleCountUnreadNotification($dbQueries)
+{
+    $count = $dbQueries->countUnreadNotifications();
+    echo $count;
 }

@@ -130,15 +130,18 @@ $(document).ready(function () {
             $("#approved_client").show();
             $("#review-submit")
                 .prop("disabled", false)
-                .text("Approve");
             if (billingStatus === 'unpaid') {
                 $('.billing_status_badge').html(badgeElements.unpaid);
                 $("#review-submit")
                     .prop("disabled", true)
-                    .text("Waiting for Payment");
+                $(".review-submit-text").text("Waiting for Payment");
+                $(".btn-status-spinner").removeClass('hidden')
             } else if (billingStatus === 'paid') {
                 $('.billing_status_badge').html(badgeElements.paid);
-                $("#review-submit").show()
+                $("#review-submit")
+                    .show()
+                $(".review-submit-text").text("Waiting for Approval");
+                $(".btn-status-spinner").removeClass('hidden')
                 enableInput([inputs, selects])
             } else {
                 $('.billing_status_badge').html('');
@@ -411,7 +414,7 @@ $(document).ready(function () {
                 console.log(data)
 
                 if (responseData) {
-                    const clientID = responseData['client_id'];
+                    const clientID = responseData['client_id']; //for printing its not the id in the url
 
                     if (responseData['status'] === 'error') {
                         alert(`${responseData['message']}`)
@@ -419,7 +422,7 @@ $(document).ready(function () {
 
                         alert(`${responseData['message']}`)
 
-                        // window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application_table.php';
+                        window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application_table.php';
                         window.open(`http://localhost/wbs_zero_php/admin/print.php?id=${clientID}`, '_blank');
                     }
                 }
