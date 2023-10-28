@@ -738,6 +738,7 @@ class DataTable extends BaseQuery
                 <th class="px-6 py-4">Property Type</th>
                 <th class="px-6 py-4">Address</th>
                 <th class="px-6 py-4">Status</th>
+                <th class="px-6 py-4">Billing Status</th>
                 <th class="px-6 py-4">Applied Date</th>
                 <th class="px-6 py-4">Action</th>
             </tr>
@@ -755,6 +756,7 @@ class DataTable extends BaseQuery
             $brgy = $row['brgy'];
             $property_type = $row['property_type'];
             $status = $row['status'];
+            $billingStatus = $row['billing_status'];
             $time = $row['time'];
             $date = $row['date'];
 
@@ -776,6 +778,7 @@ class DataTable extends BaseQuery
                 <span class="text-xs text-gray-400">' . $street . '</span>
             </td>
             <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
+            <td class="px-6 py-3 text-sm">' . $billingStatus . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>

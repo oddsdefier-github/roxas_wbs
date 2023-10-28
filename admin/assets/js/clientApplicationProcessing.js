@@ -419,8 +419,8 @@ $(document).ready(function () {
 
                         alert(`${responseData['message']}`)
 
-                        window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application_table.php';
-                        window.open(`./print.php?id=${clientID}`, '_blank');
+                        // window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application_table.php';
+                        window.open(`http://localhost/wbs_zero_php/admin/print.php?id=${clientID}`, '_blank');
                     }
                 }
             },
@@ -773,8 +773,8 @@ $(document).ready(function () {
                 confirmUpdateApplication()
 
                 $('#approved_client').on("click", function () {
-                    $('#reviewConfirmationModal').hide();
                     processApplication();
+                    $('#reviewConfirmationModal').hide();
 
                 })
             })
