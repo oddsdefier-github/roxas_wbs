@@ -13,6 +13,7 @@
         </div>
         <div class="flex h-full items-center justify-center gap-5">
             <?php include 'toggle_outline.php'; ?>
+            <?php include './components/notification.php'; ?>
             <div>
                 <img data-profile-picture id="avatarButton" type="button" data-dropdown-toggle="userDropdown" data-dropdown-placement="bottom-start" class=" w-10 h-10 rounded-full cursor-pointer" src="<?php echo BASE_URL ?>/cat.png" alt="User dropdown">
 

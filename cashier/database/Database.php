@@ -27,6 +27,22 @@ class DatabaseConnection
   {
     return mysqli_stmt_get_result($stmt);
   }
+  public function beginTransaction()
+  {
+    return $this->connection->begin_transaction();
+  }
+
+  public function commitTransaction()
+  {
+    return $this->connection->commit();
+  }
+
+  public function rollbackTransaction()
+  {
+    return $this->connection->rollback();
+  }
+
+
   public function closeStatement($stmt)
   {
     mysqli_stmt_close($stmt);
@@ -40,7 +56,6 @@ class DatabaseConnection
     $this->connection->close();
   }
 }
-
 class BaseQuery extends DatabaseConnection
 {
   public function __construct($host, $username, $password, $database)

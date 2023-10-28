@@ -36,6 +36,7 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
 
             if ($row = mysqli_fetch_assoc($result)) {
                 $pass_db = $row["password"];
+                $admin_id = $row["admin_id"];
                 $admin_name = $row["admin_name"];
                 $email_db = $row["email"];
                 $role_db = $row["designation"];
@@ -45,6 +46,7 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
                     session_start();
 
                     $_SESSION['loggedin'] = true;
+                    $_SESSION['admin_id'] = $admin_id;
                     $_SESSION['admin_name'] = $admin_name;
                     $_SESSION['user_role'] = $role_db;
 

@@ -12,3 +12,5 @@
 <script src="./assets/js/apexcharts.js"></script>
 <script src="./assets/js/pfpAPI.js"></script>
 <script src="./assets/js/clientActions.js"></script>
+<script type="module" src="./assets/js/acceptPayments.js"></script>
+<script src="./assets/js/notificationHandler.js"></script>

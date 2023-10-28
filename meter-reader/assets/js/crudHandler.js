@@ -126,7 +126,7 @@ class EncodeHandler {
                         console.log(data)
                         self.elements.currReadingInput.val("")
                         self.hideModal();
-                        window.location.reload()
+                        // window.location.reload()
                     }
                 })
             }

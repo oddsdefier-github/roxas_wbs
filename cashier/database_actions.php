@@ -38,6 +38,15 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'getDataTable':
             handleGetDataTable($dataTable);
             break;
+        case 'confirmAppPayment':
+            handleConfirmAppPayment($dbQueries);
+            break;
+        case 'confirmBillPayment':
+            handleConfirmAppPayment($dbQueries);
+            break;
+        case 'loadNotification':
+            handleLoadNotification($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -61,4 +70,26 @@ function handleGetDataTable($dataTable)
                 echo "Invalid table name provided.";
         }
     }
+}
+
+function handleConfirmAppPayment($dbQueries)
+{
+    if (isset($_POST['id'])) {
+        $id = $_POST['id'];
+        $confirmAppPayment = $dbQueries->confirmAppPayment($id);
+        echo json_encode($confirmAppPayment);
+    }
+}
+function handleConfirmBillPayment($dbQueries)
+{
+    if (isset($_POST['id'])) {
+        $id = $_POST['id'];
+        $confirmBillPayment = $dbQueries->confirmBillPayment($id);
+        echo json_encode($confirmBillPayment);
+    }
+}
+
+function handleLoadNotification($dbQueries)
+{
+    $dbQueries->loadNotificationHtml();
 }

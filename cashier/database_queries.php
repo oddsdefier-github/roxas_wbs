@@ -16,6 +16,125 @@ class BaseQuery
 
 class DatabaseQueries extends BaseQuery
 {
+    public function addNotification($admin_id, $message, $type, $reference_id = null)
+    {
+        $sql = "INSERT INTO notifications (admin_id, message, type, reference_id) VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        mysqli_stmt_bind_param($stmt, "ssss", $admin_id, $message, $type, $reference_id);
+
+        if (mysqli_stmt_execute($stmt)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function notificationExists($admin_id, $type, $reference_id)
+    {
+        $sql = "SELECT id FROM notifications WHERE admin_id = ? AND type = ? AND reference_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        mysqli_stmt_bind_param($stmt, "ssi", $admin_id, $type, $reference_id);
+
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if (mysqli_num_rows($result) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // public function markAllNotificationsAsRead()
+    // {
+    //     $sql = "UPDATE notifications SET status = 'read' WHERE admin_id = ? AND status = 'unread'";
+    //     $stmt = $this->conn->prepareStatement($sql);
+
+    //     session_start();
+    //     $admin_id = $_SESSION['admin_id'];
+    //     mysqli_stmt_bind_param($stmt, "s", $admin_id);
+
+    //     if (mysqli_stmt_execute($stmt)) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    public function confirmAppPayment($id)
+    {
+        $response = array();
+        $this->conn->beginTransaction();
+
+        try {
+            $sql = "UPDATE client_application SET billing_status = 'paid' WHERE id = ?";
+            $stmt = $this->conn->prepareStatement($sql);
+
+            mysqli_stmt_bind_param($stmt, "i", $id);
+
+            if (!mysqli_stmt_execute($stmt)) {
+                throw new Exception("Failed to confirm payment. Error: " . mysqli_stmt_error($stmt));
+            }
+
+            session_start();
+            $admin_id = $_SESSION['admin_id'];
+            $message = "Payment confirmed for application ID: " . $id;
+            $type = "payment_confirmation";
+
+            if ($this->notificationExists($admin_id, $type, $id)) {
+                throw new Exception("Notification already exists for application ID: " . $id);
+            }
+
+            if (!$this->addNotification($admin_id, $message, $type, $id)) {
+                throw new Exception("Failed to add notification.");
+            }
+
+            // Commit the transaction
+            $this->conn->commitTransaction();
+
+            $response["status"] = "success";
+            $response["message"] = "Payment confirmed successfully.";
+        } catch (Exception $e) {
+            $this->conn->rollbackTransaction();
+
+            $response["status"] = "error";
+            $response["message"] = $e->getMessage();
+        }
+
+        return $response;
+    }
+    public function handleLoadNotification()
+    {
+
+        $sql = "SELECT * FROM notifications ORDER BY timestamp DESC LIMIT 10";
+        $result = $this->conn->query($sql);
+
+        $output = "";
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $url = "https://www.facebook.com";
+                $icon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBjbGFzcz0idy02IGgtNiI+DQogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTTEwLjEyNSAyLjI1aC00LjVjLS42MjEgMC0xLjEyNS41MDQtMS4xMjUgMS4xMjV2MTcuMjVjMCAuNjIxLjUwNCAxLjEyNSAxLjEyNSAxLjEyNWgxMi43NWMuNjIxIDAgMS4xMjUtLjUwNCAxLjEyNS0xLjEyNXYtOU0xMC4xMjUgMi4yNWguMzc1YTkgOSAwIDAxOSA5di4zNzVNMTAuMTI1IDIuMjVBMy4zNzUgMy4zNzUgMCAwMTEzLjUgNS42MjV2MS41YzAgLjYyMS41MDQgMS4xMjUgMS4xMjUgMS4xMjVoMS41YTMuMzc1IDMuMzc1IDAgMDEzLjM3NSAzLjM3NU05IDE1bDIuMjUgMi4yNUwxNSAxMiIgLz4NCjwvc3ZnPg0K"; // Your SVG data
+                $notificationContent = $row['content'];
+                $userName = $row['user_name'];
+                $timeAgo = "a few moments ago";
+
+                $output .= "
+                    <a href=\"$url\" target=\"_blank\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
+                        <div class=\"flex-shrink-0\">
+                            <img class=\"rounded-full w-11 h-11\" src='$icon' alt=\"Confirm Icon\">
+                        </div>
+                        <div class=\"w-full pl-3\">
+                            <div class=\"text-gray-500 text-sm mb-1.5 dark:text-gray-400\">$notificationContent <span class=\"font-semibold text-gray-900 dark:text-white\">$userName</span></div>
+                            <div class=\"text-xs text-blue-600 dark:text-blue-500\">$timeAgo</div>
+                        </div>
+                    </a>
+                ";
+            }
+        }
+
+        return $output; // This will return our generated HTML to wherever you call the function
+    }
 }
 
 
@@ -117,7 +236,7 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <button title="Accept Payment" onclick="acceptClientBillingPayment(' . $id . ')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Payment
                 </button>
             </td>
@@ -235,7 +354,7 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $applicationID . '</td>
             <td  class="px-6 py-3 text-sm">' . $name . '</td>
@@ -246,8 +365,8 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                    Payment
+                <button title="Accept Payment" onclick="acceptClientAppPayment(' . $id . ')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Payment
                 </button>
             </td>
         </tr>';

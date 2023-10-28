@@ -68,6 +68,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'updatedClientAppStatus':
             handleUpdatedClientAppStatus($dbQueries);
             break;
+        case 'loadNotification':
+            handleLoadNotification($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -185,5 +188,14 @@ function  handleUpdatedClientAppStatus($dbQueries)
         $documentsData = $_POST['documentsData'];
         $updateClientAppStatus = $dbQueries->updatedClientAppStatus($applicantID, $documentsData);
         echo json_encode($updateClientAppStatus);
+    }
+}
+
+
+function handleLoadNotification($dbQueries)
+{
+    if (isset($_POST['limit'])) {
+        $limit = $_POST['limit'];
+        $dbQueries->loadNotificationHtml($limit);
     }
 }
