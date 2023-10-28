@@ -6,7 +6,7 @@ export class DataTableWithPagination {
         this.itemsPerPageKey = `${this.tableContainerSelector}-itemsPerPage`;
         this.currentPageNumberKey = `${this.tableContainerSelector}-currentPageNumber`;
 
-        this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 5;
+        this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 10;
         this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
         this.totalItems = 0;
         this.lastPageNumber = 0;
