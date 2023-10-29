@@ -2,19 +2,33 @@ import { DataTableWithPagination } from './DataTableWithPagination.js';
 
 
 function retrieveChargingFees() {
-    return {}
+    const feesDescription = $(".fees-desc");
+    $.ajax({
+        url: "database_actions.php",
+        type: "post",
+        data: {
+            action: "retrieveChargingFees",
+            type: "client_application_fees"
+        },
+        success: function (data) {
+            feesDescription.html(data)
+        }
+    })
+
 }
 function acceptClientAppPayment(id) {
+    const acceptClientAppPayment = $("#acceptAppPaymentModal");
+    const confirmAppPayment = $("#confirm-app-payment");
     console.log(id)
     $("#client_app_payment_id").val(id)
-    $("#acceptAppPaymentModal").css({
+    acceptClientAppPayment.css({
         'display': 'grid',
         'place-items': 'center',
         'justify-content': 'center',
         'align-items': 'center'
     });
-    $("#confirm-app-payment").off("click");
-    $("#confirm-app-payment").on("click", function (e) {
+    confirmAppPayment.off("click");
+    confirmAppPayment.on("click", function (e) {
         e.preventDefault()
         $.ajax({
             url: "database_actions.php",
@@ -27,7 +41,7 @@ function acceptClientAppPayment(id) {
                 console.log(data)
                 alert(JSON.parse(data).message)
                 const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientAppBillingTable');
-                $("#acceptAppPaymentModal").hide();
+                acceptClientAppPayment.hide();
             }
         })
     })

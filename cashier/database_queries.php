@@ -135,6 +135,12 @@ class DatabaseQueries extends BaseQuery
 
         return $output; // This will return our generated HTML to wherever you call the function
     }
+
+    
+    public function retrieveClientAppChargingFees($table)
+    {
+        $sql = "SELECT * FROM $table";
+    }
 }
 
 

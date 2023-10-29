@@ -34,7 +34,7 @@
             <!-- Modal body -->
             <form action="#">
                 <input type="hidden" id="client_app_payment_id">
-                <div>
+                <div class="fees-desc">
                     <div>Application Fee: </div>
                     <div>Inspection Fee: </div>
                     <div>Registration Fee : </div>

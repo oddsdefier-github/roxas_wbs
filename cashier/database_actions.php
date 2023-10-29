@@ -47,6 +47,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'loadNotification':
             handleLoadNotification($dbQueries);
             break;
+        case 'retrieveChargingFees':
+            handleRetrieveChargingFees($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -92,4 +95,15 @@ function handleConfirmBillPayment($dbQueries)
 function handleLoadNotification($dbQueries)
 {
     $dbQueries->loadNotificationHtml();
+}
+
+function handleRetrieveChargingFees($dbQueries)
+{
+    if (isset($_POST['type'])) {
+        $table = $_POST['type'];
+        if ($table === 'client_application_fees') {
+            $clientApplicationChargingFees =  $dbQueries->retrieveClientAppChargingFees($table);
+            echo json_encode($clientApplicationChargingFees);
+        }
+    }
 }
