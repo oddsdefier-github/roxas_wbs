@@ -16,12 +16,12 @@ class BaseQuery
 
 class DatabaseQueries extends BaseQuery
 {
-    public function addNotification($admin_id, $message, $type, $reference_id = null)
+    public function addNotification($user_id, $message, $type, $reference_id = null)
     {
-        $sql = "INSERT INTO notifications (admin_id, message, type, reference_id) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO notifications (user_id, message, type, reference_id) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepareStatement($sql);
 
-        mysqli_stmt_bind_param($stmt, "ssss", $admin_id, $message, $type, $reference_id);
+        mysqli_stmt_bind_param($stmt, "ssss", $user_id, $message, $type, $reference_id);
 
         if (mysqli_stmt_execute($stmt)) {
             return true;
@@ -29,12 +29,12 @@ class DatabaseQueries extends BaseQuery
             return false;
         }
     }
-    public function notificationExists($admin_id, $type, $reference_id)
+    public function notificationExists($user_id, $type, $reference_id)
     {
-        $sql = "SELECT id FROM notifications WHERE admin_id = ? AND type = ? AND reference_id = ?";
+        $sql = "SELECT id FROM notifications WHERE user_id = ? AND type = ? AND reference_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
 
-        mysqli_stmt_bind_param($stmt, "ssi", $admin_id, $type, $reference_id);
+        mysqli_stmt_bind_param($stmt, "ssi", $user_id, $type, $reference_id);
 
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
@@ -47,12 +47,12 @@ class DatabaseQueries extends BaseQuery
     }
     // public function markAllNotificationsAsRead()
     // {
-    //     $sql = "UPDATE notifications SET status = 'read' WHERE admin_id = ? AND status = 'unread'";
+    //     $sql = "UPDATE notifications SET status = 'read' WHERE user_id = ? AND status = 'unread'";
     //     $stmt = $this->conn->prepareStatement($sql);
 
     //     session_start();
-    //     $admin_id = $_SESSION['admin_id'];
-    //     mysqli_stmt_bind_param($stmt, "s", $admin_id);
+    //     $user_id = $_SESSION['user_id'];
+    //     mysqli_stmt_bind_param($stmt, "s", $user_id);
 
     //     if (mysqli_stmt_execute($stmt)) {
     //         return true;
@@ -77,15 +77,15 @@ class DatabaseQueries extends BaseQuery
             }
 
             session_start();
-            $admin_id = $_SESSION['admin_id'];
+            $user_id = $_SESSION['user_id'];
             $message = "Payment confirmed for application ID: " . $id;
             $type = "payment_confirmation";
 
-            if ($this->notificationExists($admin_id, $type, $id)) {
+            if ($this->notificationExists($user_id, $type, $id)) {
                 throw new Exception("Notification already exists for application ID: " . $id);
             }
 
-            if (!$this->addNotification($admin_id, $message, $type, $id)) {
+            if (!$this->addNotification($user_id, $message, $type, $id)) {
                 throw new Exception("Failed to add notification.");
             }
 

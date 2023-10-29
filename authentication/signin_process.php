@@ -26,7 +26,7 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
         );
     } else {
         include './database/connection.php';
-        $sql = "SELECT * FROM admin WHERE email = ?";
+        $sql = "SELECT * FROM users WHERE email = ?";
         $stmt = $conn->prepareStatement($sql);
 
         if ($stmt) {
@@ -36,8 +36,8 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
 
             if ($row = mysqli_fetch_assoc($result)) {
                 $pass_db = $row["password"];
-                $admin_id = $row["admin_id"];
-                $admin_name = $row["admin_name"];
+                $user_id = $row["user_id"];
+                $user_name = $row["user_name"];
                 $email_db = $row["email"];
                 $role_db = $row["designation"];
 
@@ -46,17 +46,17 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
                     session_start();
 
                     $_SESSION['loggedin'] = true;
-                    $_SESSION['admin_id'] = $admin_id;
-                    $_SESSION['admin_name'] = $admin_name;
+                    $_SESSION['user_id'] = $user_id;
+                    $_SESSION['user_name'] = $user_name;
                     $_SESSION['user_role'] = $role_db;
 
 
                     $currentDateTime = date("YmdHis");
 
-                    $admin_name = $_SESSION['admin_name'];
+                    $user_name = $_SESSION['user_name'];
                     $role_db = $_SESSION['user_role'];
 
-                    $name = explode(" ", $admin_name);
+                    $name = explode(" ", $user_name);
 
                     $initials_name = "";
                     foreach ($name as $n) {
@@ -69,16 +69,16 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
                     $log_id = "SI" . $initials_role_db . $initials_name . $currentDateTime;
 
                     $activity = "Sign in";
-                    $description = $admin_name . " has been signed in.";
+                    $description = $user_name . " has been signed in.";
 
-                    $sign_in_log = "INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `description`, `date`, `time`, `datetime`) VALUES (NULL, '$log_id', '$role_db', '$admin_name', '$activity', '$description', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);";
+                    $sign_in_log = "INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `description`, `date`, `time`, `datetime`) VALUES (NULL, '$log_id', '$role_db', '$user_name', '$activity', '$description', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);";
 
                     $result = $conn->query($sign_in_log);
 
                     $response = array(
                         "valid" => true,
                         "message" => "User is valid.",
-                        "admin_name" => $_SESSION['admin_name'],
+                        "user_name" => $_SESSION['user_name'],
                         "user_role" => $_SESSION['user_role']
                     );
                 } else {

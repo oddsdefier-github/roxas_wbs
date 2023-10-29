@@ -41,7 +41,7 @@
                     <img data-profile-picture class=" w-10 h-10 rounded-full cursor-pointer p-1 ring-2 ring-primary-300" src="<?php echo BASE_URL ?>/cat.png" alt="User dropdown">
                 </div>
                 <div class="flex flex-col justify-center items-start">
-                    <h5 class="font-medium text-xs truncate"><?php echo $_SESSION['admin_name']; ?></h5>
+                    <h5 class="font-medium text-xs truncate"><?php echo $_SESSION['user_name']; ?></h5>
                     <h6 class="font-medium text-xs" style="color: #a5b4fc;"><?php echo $_SESSION['user_role']; ?></h6>
                 </div>
             </div>

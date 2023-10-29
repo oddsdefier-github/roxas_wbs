@@ -21,7 +21,7 @@
                 <div id="userDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
                     <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
                         <div>
-                            <h5 class="font-medium"><?php echo $_SESSION['admin_name']; ?></h5>
+                            <h5 class="font-medium"><?php echo $_SESSION['user_name']; ?></h5>
                         </div>
                         <div class="font-medium truncate">
                             <h6 class="font-medium text-xs text-gray-400"><?php echo $_SESSION['user_role']; ?></h6>

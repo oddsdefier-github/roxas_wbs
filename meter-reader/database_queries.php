@@ -80,7 +80,7 @@ class DatabaseQueries extends BaseQuery
     {
         $response = array();
         session_start();
-        $encoder = $_SESSION['admin_name'];
+        $encoder = $_SESSION['user_name'];
 
         $readingType = 'current';
 

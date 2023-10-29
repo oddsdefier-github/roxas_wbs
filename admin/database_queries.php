@@ -361,7 +361,7 @@ class DatabaseQueries extends BaseQuery
                                             if (mysqli_stmt_execute($stmt)) {
 
                                                 session_start();
-                                                $encoder = $_SESSION['admin_name'];
+                                                $encoder = $_SESSION['user_name'];
 
                                                 $initialReading = 0;
                                                 $prevReading = 0;
@@ -714,7 +714,7 @@ class DatabaseQueries extends BaseQuery
                 $notifCount++;
                 $icon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBjbGFzcz0idy02IGgtNiI+DQogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTTEwLjEyNSAyLjI1aC00LjVjLS42MjEgMC0xLjEyNS41MDQtMS4xMjUgMS4xMjV2MTcuMjVjMCAuNjIxLjUwNCAxLjEyNSAxLjEyNSAxLjEyNWgxMi43NWMuNjIxIDAgMS4xMjUtLjUwNCAxLjEyNS0xLjEyNXYtOU0xMC4xMjUgMi4yNWguMzc1YTkgOSAwIDAxOSA5di4zNzVNMTAuMTI1IDIuMjVBMy4zNzUgMy4zNzUgMCAwMTEzLjUgNS42MjV2MS41YzAgLjYyMS41MDQgMS4xMjUgMS4xMjUgMS4xMjVoMS41YTMuMzc1IDMuMzc1IDAgMDEzLjM3NSAzLjM3NU05IDE1bDIuMjUgMi4yNUwxNSAxMiIgLz4NCjwvc3ZnPg0K"; // Your SVG data
                 $notificationContent = $row['message'];
-                $adminID = $row['admin_id'];
+                $userID = $row['user_id'];
                 $referenceID = $row['reference_id'];
                 $url = BASE_URL . 'admin/client_application_review.php?id=' . $referenceID;
 
@@ -743,7 +743,7 @@ class DatabaseQueries extends BaseQuery
                             <img class=\"rounded-full w-11 h-11\" src='$icon' alt=\"Confirm Icon\">
                         </div>
                         <div class=\"w-full pl-3\">
-                            <div class=\"text-gray-500 text-sm mb-1.5 dark:text-gray-400\">$notificationContent <span class=\"font-semibold text-gray-900 dark:text-white\">$adminID</span></div>
+                            <div class=\"text-gray-500 text-sm mb-1.5 dark:text-gray-400\">$notificationContent <span class=\"font-semibold text-gray-900 dark:text-white\">$userID</span></div>
                             <div class=\"text-xs text-blue-600 dark:text-blue-500\">$timeAgo</div>
                         </div>
                     </a>
