@@ -31,8 +31,9 @@ include './auth_guard.php';
     </section>
 
     <?php include './layouts/scripts.php'; ?>
+    <script src="./assets/js/ratesChargesHandler.js"></script>
     <script>
-        $("#subheader-title").text("Rates");
+        $("#subheader-title").text("Rates & Charging Fees");
         $("#subheader-title").siblings("h5").text("Manage, and Update Rate and Charges");
     </script>
 </body>

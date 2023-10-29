@@ -34,7 +34,7 @@ $(document).ready(function () {
     ]
 
     function addTrackingAttr() {
-        $.each(inputs, function (index, item) {
+        $.each(inputs, function (_, item) {
             item.attr('data-input-track', 'error')
         })
         return `tracking attribute added for the ${inputs.length} inputs`
@@ -262,7 +262,7 @@ $(document).ready(function () {
 
     function validateField(fieldName, fieldValue) {
         const validationRules = {
-            meterNumber: {
+            meter_umber: {
                 presence: {
                     allowEmpty: false,
                     message: "cannot be empty"
@@ -406,7 +406,7 @@ $(document).ready(function () {
         }
 
         let count = 0;
-        $.each(inputs, function (index, item) {
+        $.each(inputs, function (_, item) {
             if (item.attr('data-input-track') === 'valid') {
                 count++
             }

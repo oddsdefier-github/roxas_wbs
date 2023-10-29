@@ -1,13 +1,27 @@
-<div class="px-10 mb-10 container">
+<style>
+    .validate-message p {
+        margin-top: 5px;
+        margin-left: 5px;
+        color: #f87171;
+        line-height: 1rem;
+        font-size: 0.725rem;
+    }
+</style>
+<div class="px-5 mb-10 container">
     <div>
         <?php include './layouts/rates_charges_nav.php' ?>
     </div>
     <div class="mt-2">
-        <div class="p-5 grid grid-cols-4 gap-5">
+        <div class="p-5 grid grid-cols-6 gap-5">
             <div class="col-span-2">
+                <div class="col-span-2 bg-red-50 p-5 rounded">
+                    Rates Summary for Oct 2023 </br>
 
-                <form id="application_fee-form">
-                    <div class="space-y-6 shadow p-5 px-5 bg-indigo-50">
+                    Commercial: 42 </br>
+                    Residential: 27
+                </div>
+                <form id="application_fee_form">
+                    <div class="space-y-6 shadow pb-5 px-5">
                         <div>
                             <div class="border-b border-gray-900/10 py-5 mb-5">
                                 <h2 class="text-base font-semibold leading-7 text-gray-900">Application Fees</h2>
@@ -35,11 +49,9 @@
 
 
                                         <div class="mt-2 relative">
-                                            <input data-input-state="error" type="text" name="application-fee" id="application-fee" class="validate-input block bg-indigo-50 w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="50.00">
+                                            <input data-input-state="error" type="text" name="applicationFee" id="applicationFee" class="validate-application-fee-input block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="50.00">
                                         </div>
-                                        <div data-validate-input="application-fee" class="validate-message"></div>
-
-
+                                        <div data-validate-input="applicationFee" class="validate-message"></div>
 
                                     </div>
                                 </div>
@@ -63,10 +75,9 @@
                                         </div>
 
                                         <div class="mt-2 relative">
-                                            <input data-input-state="error" type="text" name="" id="" class="validate-input block bg-indigo-50 w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="250.00">
+                                            <input data-input-state="error" type="text" name="inspectionFee" id="inspectionFee" class="validate-application-fee-input block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="250.00">
                                         </div>
-                                        <div data-validate-input="" class="validate-message"></div>
-
+                                        <div data-validate-input="inspectionFee" class="validate-message"></div>
 
                                     </div>
                                 </div>
@@ -90,9 +101,9 @@
                                         </div>
 
                                         <div class="mt-2 relative">
-                                            <input data-input-state="error" type="text" name="" id="" class="validate-input block bg-indigo-50 w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="100.00">
+                                            <input data-input-state="error" type="text" name="registrationFee" id="registrationFee" class="validate-application-fee-input block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="100.00">
                                         </div>
-                                        <div data-validate-input="" class="validate-message"></div>
+                                        <div data-validate-input="registrationFee" class="validate-message"></div>
                                     </div>
                                 </div>
                                 <div class="sm:col-span-6 grid sm:grid-cols-6">
@@ -115,9 +126,9 @@
                                         </div>
 
                                         <div class="mt-2 relative">
-                                            <input data-input-state="error" type="text" name="" id="" class="validate-input block bg-indigo-50 w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="4100.00">
+                                            <input data-input-state="error" type="text" name="connectionFee" id="connectionFee" class="validate-application-fee-input block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="4100.00">
                                         </div>
-                                        <div data-validate-input="" class="validate-message"></div>
+                                        <div data-validate-input="connectionFee" class="validate-message"></div>
                                     </div>
                                 </div>
                                 <div class="sm:col-span-6 grid sm:grid-cols-6">
@@ -140,27 +151,32 @@
                                         </div>
 
                                         <div class="mt-2 relative">
-                                            <input data-input-state="error" type="text" name="" id="" class="validate-input block bg-indigo-50 w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="400.00">
+                                            <input data-input-state="error" type="text" name="installationFee" id="installationFee" class="validate-application-fee-input block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="400.00">
                                         </div>
-                                        <div data-validate-input="" class="validate-message"></div>
+                                        <div data-validate-input="installationFee" class="validate-message"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="flex items-center justify-end gap-x-6">
-                            <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
-                            <button id="submit-application" type="submit" class="rounded-md bg-indigo-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" disabled>
-                                Update
+                            <button id="applicationFeeSubmit" type="submit" class="rounded-md bg-indigo-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Edit
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="col-span-2">
+                <div class="col-span-2 bg-red-50 p-5 rounded">
+                    Rates Summary for Oct 2023 </br>
+
+                    Commercial: 42 </br>
+                    Residential: 27
+                </div>
                 <form id="penalty_fee_form">
-                    <div class="space-y-6 shadow p-5 px-5 bg-yellow-50">
+                    <div class="space-y-6 shadow p-5 px-5">
                         <div>
-                            <div class="border-b border-gray-900/10 py-5 mb-5">
+                            <div class="border-b border-gray-900/10 pb-5 mb-5">
                                 <h2 class="text-base font-semibold leading-7 text-gray-900">Penalty Fees</h2>
                                 <p class="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
                             </div>
@@ -184,9 +200,9 @@
                                     </div>
 
                                     <div class="mt-2 relative">
-                                        <input data-input-state="error" type="text" name="late-payment-fee" id="late-payment-fee" class="validate-input bg-yellow-50 block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="250.00">
+                                        <input data-input-state="error" type="text" name="latePaymentFee" id="latePaymentFee" class="validate-penalty-fee-input block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="250.00">
                                     </div>
-                                    <div data-validate-input="" class="validate-message"></div>
+                                    <div data-validate-input="latePaymentFee" class="validate-message"></div>
 
 
                                 </div>
@@ -214,17 +230,17 @@
 
 
                                     <div class="mt-2 relative">
-                                        <input data-input-state="error" type="text" name="disconnection-fee" id="disconnection-fee" class="validate-input bg-yellow-50 block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="12.00%">
+                                        <input data-input-state="error" type="text" name="disconnectionFee" id="disconnectionFee" class="validate-penalty-fee-input block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="12.00%">
                                     </div>
-                                    <div data-validate-input="disconnection-fee" class="validate-message"></div>
+                                    <div data-validate-input="disconnectionFee" class="validate-message"></div>
 
                                 </div>
                             </div>
                         </div>
                         <div class="flex items-center justify-end gap-x-6">
                             <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
-                            <button id="submit-application" type="submit" class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" disabled>
-                                Update
+                            <button id="submit-application" type="submit" class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Edit
                             </button>
                         </div>
                     </div>
