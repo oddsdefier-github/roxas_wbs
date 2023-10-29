@@ -218,8 +218,6 @@
                                     </div>
                                     <div data-validate-input="disconnection-fee" class="validate-message"></div>
 
-
-
                                 </div>
                             </div>
                         </div>
