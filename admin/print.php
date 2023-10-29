@@ -25,7 +25,7 @@ if (isset($_GET['id'])) {
     $result = $dbConnection->getResultSet($stmt);
 
     $clientRow = mysqli_fetch_assoc($result);
-    
+
     if ($clientRow) {
         $data = $clientRow;
         $name = $data['full_name'];
@@ -51,7 +51,7 @@ if (isset($_GET['id'])) {
         $dompdf->setPaper("A4", "portrait");
 
 
-        $html = file_get_contents("./templates/template.html");
+        $html = file_get_contents("./templates/reg-template.html");
 
         $html = str_replace(["{{ name }}", "{{ address }}", "{{ meter_number }}", "{{ reg_id }}", "{{ client_id }}", "{{ date }}", " {{ property_type }}"], [$name, $address, $meterNumber, $regID, $id, $date, $propertyType], $html);
 

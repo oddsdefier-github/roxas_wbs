@@ -3,14 +3,10 @@
         <?php include './layouts/rates_charges_nav.php' ?>
     </div>
     <div class="mt-5">
-        <div class="mb-5">
-            <?php include 'table_utilities.php' ?>
-        </div>
         <div class="shadow">
             <div>
                 <div id="displayClientDataTable"></div>
             </div>
-            <?php include 'pagination.php' ?>
         </div>
     </div>
 </div>

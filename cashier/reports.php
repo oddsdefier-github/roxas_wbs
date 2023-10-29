@@ -16,7 +16,6 @@ include './auth_guard.php';
 
 <body class="flex h-screen w-screen overflow-hidden font-inter bg-gray-50">
     <?php include './components/alerts.php'; ?>
-    <?php include './components/notification.php'; ?>
     <?php include './components/modal/modal.php'; ?>
     <?php include './components/logout_loader.php'; ?>
     <?php include './layouts/sidebar.php'; ?>
@@ -30,7 +29,6 @@ include './auth_guard.php';
         </main>
     </section>
     <?php include './layouts/scripts.php'; ?>
-    <script src="./assets/js/clientProfile.js"></script>
     <script>
         $("#subheader-title").text("Reports");
         $("#subheader-title").siblings("h5").text("Generate, and Print Reports.")
