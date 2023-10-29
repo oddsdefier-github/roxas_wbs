@@ -22,6 +22,7 @@ $(document).ready(function () {
     const affidavitCheck = $('input[name="affidavit"]');
     const inputFields = $('.validate-input');
 
+    const folderName = 'wbs_zero_php';
 
     function retrieveClientApplicationData(applicantId, callback) {
         $.ajax({
@@ -422,8 +423,9 @@ $(document).ready(function () {
 
                         alert(`${responseData['message']}`)
 
-                        window.location.href = 'http://localhost/wbs_zero_php/admin/clients_application_table.php';
-                        window.open(`http://localhost/wbs_zero_php/admin/print.php?id=${clientID}`, '_blank');
+                        // window.location.href = `http://localhost/${folderName}/admin/clients_application_table.php`;
+                        window.location.reload();
+                        window.open(`http://localhost/${folderName}/admin/print.php?id=${clientID}`, '_blank');
                     }
                 }
             },
@@ -735,9 +737,9 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     $('#reviewConfirmationModal').hide();
+                    window.location.reload();
                     console.log(data);
-                    alert(data.message);
-                    window.location.reload()
+                    // alert(data.message);
                 }
             })
         });

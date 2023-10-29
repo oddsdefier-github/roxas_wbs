@@ -85,11 +85,6 @@
                 </ul>
             </div>
 
-
-
-
-
-
             <div class="text-sm uppercase text-gray-400">
                 <select id="item-per-page" data-table-utilities="itemPerPage" name="recordsPerPage" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200">
                     <option value="10">10</option>

@@ -2164,6 +2164,26 @@ input:checked + .toggle-bg {
   max-height: 100%;
 }
 
+.max-h-96 {
+  max-height: 24rem;
+}
+
+.max-h-\[90vh\] {
+  max-height: 90vh;
+}
+
+.max-h-\[70vh\] {
+  max-height: 70vh;
+}
+
+.max-h-\[60vh\] {
+  max-height: 60vh;
+}
+
+.max-h-\[50vh\] {
+  max-height: 50vh;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -2283,6 +2303,10 @@ input:checked + .toggle-bg {
 
 .max-w-xs {
   max-width: 20rem;
+}
+
+.max-w-\[60vh\] {
+  max-width: 60vh;
 }
 
 .flex-1 {
@@ -2567,6 +2591,14 @@ input:checked + .toggle-bg {
 
 .snap-always {
   scroll-snap-stop: always;
+}
+
+.scroll-m-1 {
+  scroll-margin: 0.25rem;
+}
+
+.scroll-p-0 {
+  scroll-padding: 0px;
 }
 
 .list-inside {
@@ -5706,6 +5738,10 @@ input:checked + .toggle-bg {
 
 .focus-within\:ring-offset-2:focus-within {
   --tw-ring-offset-width: 2px;
+}
+
+.hover\:scroll-auto:hover {
+  scroll-behavior: auto;
 }
 
 .hover\:border-gray-300:hover {
