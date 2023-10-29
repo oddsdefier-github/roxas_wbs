@@ -25,17 +25,15 @@ include './auth_guard.php';
         <?php include './components/subheader.php'; ?>
         <main class="relative flex flex-1 flex-col justify-start overflow-auto">
             <div class="flex flex-col gap-5">
-                <?php include './components/clients_main.php'; ?>
+                <?php include './components/charges_main.php'; ?>
             </div>
         </main>
     </section>
+
     <?php include './layouts/scripts.php'; ?>
-    <script src="./assets/js/clientProfile.js"></script>
     <script>
-        $("#subheader-title").siblings("h5").text("Manage, Update, or Delete Client.");
-        $("#subheader-title").parent("div").siblings("div").css({
-            "display": "flex",
-        })
+        $("#subheader-title").text("Rates");
+        $("#subheader-title").siblings("h5").text("Manage, and Update Rate and Charges");
     </script>
 </body>
 

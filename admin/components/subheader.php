@@ -7,7 +7,7 @@
                 <h6 class="text-sm font-medium">
                 </h6>
             </div>
-            <div class="flex justify-end">
+            <div class="hidden">
                 <div class="flex justify-center items-center gap-4">
                     <a href="./clients_application.php" class="shadow-sm inline-flex items-center text-white bg-primary-600 border border-primary-400 focus:outline-none hover:bg-primary-700 focus:ring-4 focus:ring-primary-200 font-medium rounded-lg text-sm px-4 py-2" type="button">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#e2e8f0" class="w-5 h-5 mr-2.5 ">
