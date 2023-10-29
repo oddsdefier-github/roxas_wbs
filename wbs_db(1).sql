@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 28, 2023 at 06:27 PM
+-- Generation Time: Oct 29, 2023 at 06:10 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -59,69 +59,6 @@ INSERT INTO `address` (`id`, `barangay`) VALUES
 (20, 'San Vicente'),
 (21, 'San Jose'),
 (22, 'Maraska');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `admin`
---
-
-CREATE TABLE `admin` (
-  `id` int(11) NOT NULL,
-  `admin_id` varchar(50) NOT NULL,
-  `admin_name` varchar(50) NOT NULL,
-  `designation` varchar(255) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `admin`
---
-
-INSERT INTO `admin` (`id`, `admin_id`, `admin_name`, `designation`, `email`, `password`) VALUES
-(1, 'ADMIN_01', 'Jeffry James Paner', 'Admin', 'jeffrypaner@gmail.com', 'jeffry123'),
-(2, 'ADMIN_02', 'Rogene Vito', 'Meter Reader', 'meterreader@gmail.com', 'meterreader'),
-(3, 'ADMIN_03', 'test', 'Admin', 'test', 'test'),
-(4, 'ADMIN_04', 'Anthony Galang', 'Cashier', 'anthonygalang@gmail.com', 'anthony'),
-(5, 'ADMIN_05', 'CASHIER', 'Cashier', 'cashier@gmail.com', 'cashier123'),
-(6, 'ADMIN_06', 'rogene', 'Admin', 'rogene', 'rogene'),
-(7, 'ADMIN_07', 'anthony', 'Admin', 'anthony', 'anthony');
-
---
--- Triggers `admin`
---
-DELIMITER $$
-CREATE TRIGGER `admin` BEFORE INSERT ON `admin` FOR EACH ROW BEGIN
-	INSERT INTO admin_id VALUES (NULL);
-    SET NEW.admin_id = CONCAT("ADMIN_",
-LPAD(LAST_INSERT_ID(), 2, "0"));
-END
-$$
-DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `admin_id`
---
-
-CREATE TABLE `admin_id` (
-  `id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `admin_id`
---
-
-INSERT INTO `admin_id` (`id`) VALUES
-(1),
-(2),
-(3),
-(4),
-(5),
-(6),
-(7);
 
 -- --------------------------------------------------------
 
@@ -183,7 +120,44 @@ INSERT INTO `billing_data` (`id`, `billing_id`, `client_id`, `prev_reading`, `cu
 (25, 'B-W-81698-1698509727', 'WBS-ALL-022102823', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-28', '2023-10-28', 'Jeffry James Paner', '00:15:27', '2023-10-29', '2023-10-28 16:15:27'),
 (26, 'B-W-76674-1698509753', 'WBS-RJH-023102823', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-28', '2023-10-28', 'Jeffry James Paner', '00:15:53', '2023-10-29', '2023-10-28 16:15:53'),
 (27, 'B-W-59880-1698509770', 'WBS-PDJ-024102823', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-28', '2023-10-28', 'Jeffry James Paner', '00:16:10', '2023-10-29', '2023-10-28 16:16:10'),
-(28, 'B-W-52809-1698510439', 'WBS-GKW-025102823', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-28', '2023-10-28', 'Jeffry James Paner', '00:27:19', '2023-10-29', '2023-10-28 16:27:19');
+(28, 'B-W-52809-1698510439', 'WBS-GKW-025102823', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-28', '2023-10-28', 'Jeffry James Paner', '00:27:19', '2023-10-29', '2023-10-28 16:27:19'),
+(29, 'B-W-16777-1698510557', 'WBS-MSP-026102823', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-28', '2023-10-28', 'Jeffry James Paner', '00:29:17', '2023-10-29', '2023-10-28 16:29:17'),
+(30, 'B-W-24442-1698510572', 'WBS-DJG-027102823', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-28', '2023-10-28', 'Jeffry James Paner', '00:29:32', '2023-10-29', '2023-10-28 16:29:32'),
+(31, 'B-W-35292-1698510581', 'WBS-JJR-028102823', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-28', '2023-10-28', 'Jeffry James Paner', '00:29:41', '2023-10-29', '2023-10-28 16:29:41'),
+(32, 'B-W-13754-1698510603', 'WBS-CSK-029102823', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-28', '2023-10-28', 'Jeffry James Paner', '00:30:03', '2023-10-29', '2023-10-28 16:30:03'),
+(33, 'B-W-26675-1698548737', 'WBS-ARM-030102923', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-29', '2023-10-29', 'Jeffry James Paner', '11:05:37', '2023-10-29', '2023-10-29 03:05:37'),
+(34, 'B-W-69874-1698548810', 'WBS-JMG-031102923', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-29', '2023-10-29', 'Jeffry James Paner', '11:06:50', '2023-10-29', '2023-10-29 03:06:50'),
+(35, 'B-W-24307-1698549106', 'WBS-MJS-032102923', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-29', '2023-10-29', 'Jeffry James Paner', '11:11:46', '2023-10-29', '2023-10-29 03:11:46'),
+(36, 'B-W-71168-1698549134', 'WBS-JMS-033102923', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-29', '2023-10-29', 'Jeffry James Paner', '11:12:14', '2023-10-29', '2023-10-29 03:12:14'),
+(37, 'B-W-72118-1698549144', 'WBS-LES-034102923', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-29', '2023-10-29', 'Jeffry James Paner', '11:12:24', '2023-10-29', '2023-10-29 03:12:24'),
+(38, 'B-W-33961-1698550594', 'WBS-BHM-035102923', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-29', '2023-10-29', 'Jeffry James Paner', '11:36:34', '2023-10-29', '2023-10-29 03:36:34'),
+(39, 'B-W-47836-1698550629', 'WBS-ADB-036102923', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-29', '2023-10-29', 'Jeffry James Paner', '11:37:09', '2023-10-29', '2023-10-29 03:37:09'),
+(40, 'B-W-13595-1698550666', 'WBS-NMP-037102923', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-29', '2023-10-29', 'Jeffry James Paner', '11:37:46', '2023-10-29', '2023-10-29 03:37:46'),
+(41, 'B-W-95905-1698550707', 'WBS-JPL-038102923', '0', '0', 'current', NULL, NULL, '0', NULL, 'October 2023', NULL, NULL, '2023-10-29', '2023-10-29', 'Jeffry James Paner', '11:38:27', '2023-10-29', '2023-10-29 03:38:27');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `charging_fees`
+--
+
+CREATE TABLE `charging_fees` (
+  `id` int(11) NOT NULL,
+  `type` enum('client_application','penalty') NOT NULL,
+  `description` text NOT NULL,
+  `amount` varchar(20) NOT NULL,
+  `time` time NOT NULL,
+  `date` date NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `charging_fee` enum('application_fee','inspection_fee','reg_fee','connection_fee','installation_fee','late_payment_fee') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `charging_fees`
+--
+
+INSERT INTO `charging_fees` (`id`, `type`, `description`, `amount`, `time`, `date`, `created_at`, `charging_fee`) VALUES
+(1, 'client_application', 'Covers the inspection related costs.', '50', '12:03:45', '2023-10-29', '2023-10-29 04:05:11', '');
 
 -- --------------------------------------------------------
 
@@ -352,51 +326,50 @@ INSERT INTO `client_application` (`id`, `meter_number`, `first_name`, `middle_na
 (49, 'W-27442', 'Mario', 'Claudia', 'Taylor', 'II', 'Mario C. Taylor II', 'greencolleen@example.org', '096875152515', '12/02/1925', 98, 'Female', 'Residential', 'Amber Avenue', 'Little Tanauan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Amber Avenue, Little Tanauan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AhTZPsVCrkaPli', '04:52:02', '2023-10-01', '2023-10-28 15:45:06'),
 (50, 'W-59880', 'Patricia', 'David', 'Jenkins', 'IV', 'Patricia D. Jenkins IV', 'castromichael@example.net', '091920058275', '11/11/2013', 10, 'Female', 'Commercial', 'Pao Avenue', 'Little Tanauan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Pao Avenue, Little Tanauan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AKFJXhbTcExZsr', '12:29:43', '2017-10-13', '2023-10-28 15:45:17'),
 (51, 'W-81698', 'Amanda', 'Lauren', 'Lopez', 'CPA', 'Amanda L. Lopez CPA', 'isaachancock@example.org', '098132287605', '05/10/2000', 23, 'Female', 'Residential', '65th Avenue', 'San Jose', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', '65th Avenue, San Jose, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AestOtbUXtejTw', '09:57:28', '1985-08-22', '2023-10-28 15:45:30'),
-(52, 'W-26675', 'Ashley', 'Ryan', 'Morgan', 'MBA', 'Ashley R. Morgan MBA', 'katherinechristian@example.org', '095934196483', '08/15/1992', 31, 'Male', 'Residential', 'Amethyst Drive', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Amethyst Drive, Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AcNESwwUGmeIJA', '19:06:29', '2020-01-06', '2023-10-28 15:45:43'),
+(52, 'W-26675', 'Ashley', 'Ryan', 'Morgan', 'MBA', 'Ashley R. Morgan MBA', 'katherinechristian@example.org', '095934196483', '08/15/1992', 31, 'Male', 'Residential', 'Amethyst Drive', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Amethyst Drive, Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AcNESwwUGmeIJA', '19:06:29', '2020-01-06', '2023-10-28 15:45:43'),
 (53, 'W-76674', 'Ronnie', 'John', 'Howe', 'II', 'Ronnie J. Howe II', 'eric72@example.com', '098151439876', '04/04/1967', 56, 'Female', 'Commercial', 'Gomez Road', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Gomez Road, Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AhHlrmZwISjfHH', '04:48:27', '1978-11-14', '2023-10-28 15:50:45'),
 (54, 'W-52809', 'Gary', 'Katie', 'Wagner', '', 'Gary K. Wagner', 'william38@example.net', '092362253506', '05/09/1916', 107, 'Female', 'Commercial', 'Galaxy Street', 'Odiong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Galaxy Street, Odiong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AhIjRkzsXlKKtV', '23:42:27', '1976-08-08', '2023-10-28 16:16:23'),
-(55, 'W-16777', 'Michelle', 'Scott', 'Parrish', 'III', 'Michelle S. Parrish III', 'gbrooks@example.org', '094220256524', '09/06/1988', 35, 'Male', 'Commercial', 'Narra Road', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Narra Road, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'ApKvwPdxPBgAIg', '01:31:33', '1974-08-29', '2023-10-28 16:17:07'),
-(56, 'W-24442', 'Dana', 'Janet', 'Gross', 'Jr.', 'Dana J. Gross Jr.', 'janiceguzman@example.net', '093618888753', '04/22/1965', 58, 'Female', 'Residential', 'Cordillera Drive Extension', 'Libertad', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Cordillera Drive Extension, Libertad, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AzgOgIfOaziVSv', '22:57:57', '1983-06-12', '2023-10-28 16:23:49'),
-(57, 'W-35292', 'Jacqueline', 'Jonathan', 'Ryan', 'MBA', 'Jacqueline J. Ryan MBA', 'antonio34@example.com', '092669824925', '10/13/1930', 93, 'Female', 'Residential', 'Tabayoc Street', 'Maraska', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Tabayoc Street, Maraska, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AzHDuevGglCzIL', '14:37:13', '2008-09-08', '2023-10-28 16:24:12'),
-(58, 'W-13754', 'Cody', 'Shawn', 'Kelly', 'Jr.', 'Cody S. Kelly Jr.', 'wcallahan@example.org', '093453155781', '12/24/2019', 4, 'Female', 'Residential', 'Caraballo Avenue', 'Paclasan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Caraballo Avenue, Paclasan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AYlsyzSSYUmxnU', '06:19:28', '2013-10-27', '2023-10-28 16:24:26'),
-(59, 'W-69874', 'John', 'Michael', 'Goodwin', 'PhD', 'John Michael Goodwin PhD', 'patelmatthew@example.org', '097988383176', '04/29/1978', 45, 'Female', 'Commercial', 'Jasper Extension', 'San Mariano', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Mariano, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'AbTqkdqUDjAGKF', '17:27:06', '2008-04-08', '2023-10-26 04:35:55'),
-(60, 'W-92783', 'Michael', 'Andrea', 'Byrd', 'II', 'Michael Andrea Byrd II', 'alexandrabryan@example.org', '091914119577', '10/14/1970', 53, 'Female', 'Residential', 'Taylor Road', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'APUcROYWpHooUG', '21:12:19', '1990-08-07', '2023-10-26 04:35:55'),
-(61, 'W-68887', 'Evelyn', 'Jamie', 'Sullivan', 'MBA', 'Evelyn Jamie Sullivan MBA', 'duncangarrett@example.org', '092816429185', '01/23/2005', 18, 'Male', 'Commercial', 'Calantas Drive', 'Little Tanauan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Little Tanauan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'AwxYJsCCVtDUap', '08:15:16', '1999-05-19', '2023-10-26 04:35:55'),
-(62, 'W-43440', 'Michael', 'Matthew', 'Schroeder', 'Ph.D.', 'Michael Matthew Schroeder Ph.D.', 'graycynthia@example.com', '092596154174', '03/15/2023', 0, 'Male', 'Residential', 'Capricorn Street', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'Yes', 'No', 'unconfirmed', 'unpaid', 'AJBSruuvMzUxtC', '07:05:48', '1971-12-16', '2023-10-26 04:35:55'),
-(63, 'W-33081', 'Jill', 'Michelle', 'Brown', 'Sr.', 'Jill Michelle Brown Sr.', 'zrice@example.org', '094346949157', '07/06/1931', 92, 'Male', 'Residential', 'Matumtum Street', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AvLNYhKwfKKfXH', '23:31:47', '1989-10-30', '2023-10-26 04:35:55'),
-(64, 'W-24307', 'Margaret', 'Jennifer', 'Swanson', 'Sr.', 'Margaret Jennifer Swanson Sr.', 'mwilson@example.net', '095711732838', '04/18/1968', 55, 'Female', 'Residential', 'Thompson Street', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AKGdanPDwFAjZb', '10:37:21', '2011-03-03', '2023-10-26 04:35:55'),
-(65, 'W-71168', 'John', 'Madison', 'Santos', 'CPA', 'John Madison Santos CPA', 'gwelch@example.org', '094563104219', '05/21/1964', 59, 'Female', 'Commercial', 'Topaz Extension', 'Cantil', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Cantil, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AkKoDgqxWnnWxr', '13:32:54', '2004-06-21', '2023-10-26 04:35:55'),
-(66, 'W-72118', 'Lisa', 'Elizabeth', 'Stewart', 'Ph.D.', 'Lisa Elizabeth Stewart Ph.D.', 'pchambers@example.com', '097643206766', '12/05/1940', 83, 'Male', 'Commercial', 'Sardonyx Avenue', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'No', 'Yes', 'unconfirmed', 'unpaid', 'ABtsEepWIFFJyJ', '15:23:53', '1998-12-18', '2023-10-26 04:35:55'),
-(67, 'W-48082', 'Samantha', 'William', 'Gomez', 'M.D.', 'Samantha William Gomez M.D.', 'isantos@example.org', '096817889177', '11/08/1967', 56, 'Male', 'Residential', 'Calantas Road', 'San Isidro', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Isidro, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'AatDUKtvLzGVeb', '00:33:04', '2015-12-20', '2023-10-26 04:35:55'),
-(68, 'W-42117', 'Benjamin', 'Yolanda', 'Myers', 'PhD', 'Benjamin Yolanda Myers PhD', 'tgonzales@example.net', '094485301903', '07/16/2023', 0, 'Male', 'Residential', 'Sierra Madre Street', 'Uyao', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Uyao, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'AwklVhllnKIaix', '02:18:35', '1991-12-25', '2023-10-26 04:35:55'),
-(69, 'W-24433', 'Ashley', 'Erika', 'Alexander', 'III', 'Ashley Erika Alexander III', 'ann80@example.net', '092093510726', '09/30/1951', 72, 'Male', 'Commercial', 'Dita Highway', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'No', 'No', 'unconfirmed', 'unpaid', 'ABmxxoUTXHNgNy', '13:43:51', '2000-08-07', '2023-10-26 04:35:55'),
-(70, 'W-93890', 'Daniel', 'Kimberly', 'Collins', 'II', 'Daniel Kimberly Collins II', 'james12@example.net', '093724879440', '05/03/1955', 68, 'Male', 'Commercial', '98th Drive', 'Odiong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Odiong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'No', 'No', 'unconfirmed', 'unpaid', 'AfTByOmQlZOrei', '19:19:26', '2009-04-01', '2023-10-26 04:35:55'),
-(71, 'W-32012', 'Sylvia', 'Robert', 'Hardy', 'Sr.', 'Sylvia Robert Hardy Sr.', 'fisherchristopher@example.org', '094470932873', '06/10/1932', 91, 'Female', 'Residential', 'Peridot Drive Extension', 'Bagumbayan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Bagumbayan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'No', 'No', 'unconfirmed', 'unpaid', 'AwOrUOnRtAqtJc', '00:03:11', '2022-12-24', '2023-10-26 04:35:55'),
-(72, 'W-13576', 'Christopher', 'James', 'Baker', 'Sr.', 'Christopher James Baker Sr.', 'wmahoney@example.org', '091434784275', '12/17/1962', 61, 'Female', 'Residential', 'Halcon Road', 'Mabuhay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Mabuhay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'ADMFsVdqyZRNoh', '10:48:02', '2018-06-19', '2023-10-26 04:35:55'),
-(73, 'W-76853', 'David', 'Amanda', 'Campbell', 'CPA', 'David Amanda Campbell CPA', 'kathryn56@example.net', '093032755076', '04/12/1980', 43, 'Male', 'Residential', '70th Road Extension', 'San Jose', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Jose, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AjZjPmfSGdlljB', '22:26:22', '2019-09-10', '2023-10-26 04:35:55'),
-(74, 'W-82744', 'Andrew', 'Katie', 'Bradley', 'IV', 'Andrew Katie Bradley IV', 'carriebrooks@example.com', '093197583030', '08/27/2000', 23, 'Female', 'Commercial', 'Milky Way Avenue', 'Odiong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Odiong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AZOEGCvwxUEDUe', '16:04:07', '1995-01-18', '2023-10-26 04:35:55'),
-(75, 'W-15886', 'Christine', 'Jessica', 'Bruce', 'PhD', 'Christine Jessica Bruce PhD', 'johngrimes@example.com', '099135890180', '10/26/2005', 18, 'Female', 'Commercial', 'Galaxy Avenue', 'San Mariano', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Mariano, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'No', 'No', 'unconfirmed', 'unpaid', 'ADMOUiTyStyIRV', '04:58:14', '1977-03-27', '2023-10-26 04:35:55'),
-(76, 'W-77675', 'Monica', 'Michael', 'Hoffman', '', 'Monica Michael Hoffman ', 'davissamuel@example.net', '095687589766', '10/19/1976', 47, 'Female', 'Commercial', 'Venus Road', 'Victoria', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Victoria, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'No', 'No', 'unconfirmed', 'unpaid', 'AqzOxwKFJzjxMG', '10:59:36', '1999-11-23', '2023-10-26 04:35:55'),
-(77, 'W-31196', 'Tiffany', 'Caleb', 'Taylor', 'III', 'Tiffany Caleb Taylor III', 'julie64@example.com', '098249428553', '10/10/1973', 50, 'Female', 'Residential', 'Ruby Road', 'Happy Valley', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Happy Valley, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AJRBkuWQCDcCeR', '21:02:39', '2015-02-09', '2023-10-26 04:35:55'),
-(78, 'W-69047', 'Cynthia', 'Mark', 'Diaz', 'Jr.', 'Cynthia Mark Diaz Jr.', 'kpollard@example.com', '095277589727', '04/03/1952', 71, 'Female', 'Commercial', 'Hydra Street', 'San Rafael', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Rafael, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'AZfcQTTvkjTtSD', '21:24:18', '1979-02-21', '2023-10-26 04:35:55'),
-(80, 'W-19481', 'Thomas', 'Kristi', 'King', 'PhD', 'Thomas Kristi King PhD', 'caitlin86@example.com', '093824187886', '03/09/1957', 66, 'Female', 'Residential', '2nd Drive', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'ApITcZzfkeUifR', '13:00:26', '1978-07-30', '2023-10-26 04:35:55'),
-(81, 'W-75207', 'William', 'Heather', 'Ray', 'M.D.', 'William Heather Ray M.D.', 'gardnercarlos@example.net', '091205937975', '01/07/1947', 76, 'Male', 'Commercial', 'Makiling Drive', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'Yes', 'No', 'unconfirmed', 'unpaid', 'ALxlqRqxRYwYne', '15:25:17', '1981-11-29', '2023-10-26 04:35:55'),
-(82, 'W-90455', 'Brenda', 'Paul', 'Robinson', 'II', 'Brenda Paul Robinson II', 'williamlopez@example.net', '099657551513', '08/27/1987', 36, 'Female', 'Residential', '67th Road Extension', 'San Isidro', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Isidro, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'APYlSWREcTpvIO', '23:35:09', '2018-12-28', '2023-10-26 04:35:55'),
-(83, 'W-66937', 'Kimberly', 'Michael', 'Allen', 'Ph.D.', 'Kimberly Michael Allen Ph.D.', 'maciaskimberly@example.net', '099998581781', '06/16/1954', 69, 'Male', 'Commercial', 'Jupiter Drive Extension', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'Yes', 'No', 'unconfirmed', 'unpaid', 'AxAziSwNsfRUvd', '12:37:41', '2018-11-26', '2023-10-26 04:35:55'),
-(84, 'W-93955', 'Misty', 'Samantha', 'Anderson', 'Jr.', 'Misty Samantha Anderson Jr.', 'brian35@example.com', '093878707382', '08/25/1933', 90, 'Female', 'Commercial', 'Sicaba Street', 'San Isidro', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Isidro, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'No', 'No', 'unconfirmed', 'unpaid', 'AzUFRJwepvNGnC', '20:42:02', '1978-08-21', '2023-10-26 04:35:55'),
-(85, 'W-10199', 'Katherine', 'Juan', 'Conrad', 'PhD', 'Katherine Juan Conrad PhD', 'anthony59@example.org', '092157634135', '12/13/1907', 116, 'Male', 'Commercial', '46th Road Extension', 'Little Tanauan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Little Tanauan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'Yes', 'No', 'unconfirmed', 'unpaid', 'AduOgaMYrBxAwT', '21:11:17', '2002-06-10', '2023-10-26 04:35:55'),
-(86, 'W-38869', 'Clayton', 'Lisa', 'Baker', 'Ph.D.', 'Clayton Lisa Baker Ph.D.', 'chanamanda@example.net', '093627077394', '08/29/1959', 64, 'Female', 'Residential', 'Jacaranda Avenue', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'No', 'unconfirmed', 'unpaid', 'AKDJZEouXoqErt', '00:42:12', '1978-09-24', '2023-10-26 04:35:55'),
-(87, 'W-41434', 'James', 'Lisa', 'Lopez', 'CPA', 'James Lisa Lopez CPA', 'taylorbarbara@example.org', '091029665271', '07/30/1975', 48, 'Female', 'Commercial', 'Aquamarine Avenue', 'San Isidro', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Isidro, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'No', 'No', 'unconfirmed', 'unpaid', 'AOvJaUvkLcfuIH', '08:30:42', '2023-06-05', '2023-10-26 04:35:55'),
-(88, 'W-10900', 'Logan', 'Brianna', 'Hines', '', 'Logan Brianna Hines ', 'katie76@example.com', '092113519775', '11/17/1943', 80, 'Male', 'Commercial', 'Andromeda Road', 'Libtong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Libtong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'No', 'unconfirmed', 'unpaid', 'AigehOtvXfXWbt', '18:04:35', '2001-11-14', '2023-10-26 04:35:55'),
-(89, 'W-45867', 'Daniel', 'Renee', 'Green', 'PhD', 'Daniel Renee Green PhD', 'joshua67@example.net', '095829225916', '06/17/1961', 62, 'Female', 'Commercial', 'Caraballo Avenue', 'Uyao', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Uyao, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'Yes', 'No', 'unconfirmed', 'unpaid', 'AgundmjFiZxUsf', '08:54:20', '1970-05-26', '2023-10-26 04:35:55'),
-(90, 'W-76830', 'Robert', 'Christopher', 'Mercer', 'PhD', 'Robert Christopher Mercer PhD', 'vperez@example.com', '092509507740', '12/20/1942', 81, 'Female', 'Residential', 'Neptune Road', 'Mabuhay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Mabuhay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AqsWtjAYJFICHu', '05:30:29', '2000-05-05', '2023-10-26 04:35:55'),
-(91, 'W-31629', 'Tracy', 'Sylvia', 'Mccann', 'II', 'Tracy Sylvia Mccann II', 'hughesjoshua@example.net', '092606323306', '04/06/1935', 88, 'Male', 'Residential', 'Caraballo Road Extension', 'San Rafael', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Rafael, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AivfJivDVpbLAE', '22:27:01', '2018-07-22', '2023-10-26 04:35:55'),
-(92, 'W-33961', 'Bryan', 'Henry', 'Moore', '', 'Bryan Henry Moore ', 'browncrystal@example.net', '094501430902', '08/28/2002', 21, 'Female', 'Commercial', 'Libra Road', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'No', 'unconfirmed', 'unpaid', 'AudwTerXqWPHGN', '15:34:24', '2004-10-21', '2023-10-26 04:35:55'),
-(93, 'W-47836', 'Aaron', 'Derek', 'Benjamin', 'IV', 'Aaron Derek Benjamin IV', 'bullockmary@example.org', '097532231195', '09/01/1926', 97, 'Female', 'Commercial', '87th Street', 'Uyao', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Uyao, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'No', 'No', 'unconfirmed', 'unpaid', 'AwGPmmhyKrdEVg', '11:56:47', '1978-11-29', '2023-10-26 04:35:55'),
-(94, 'W-13595', 'Natalie', 'Matthew', 'Palmer', 'PhD', 'Natalie Matthew Palmer PhD', 'anthony07@example.net', '095805980952', '07/12/1940', 83, 'Male', 'Residential', 'Caraballo Road', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'AFDorcoezcwRXX', '13:37:02', '1970-07-24', '2023-10-26 04:35:55'),
-(95, 'W-95905', 'John', 'Peggy', 'Lee', 'PhD', 'John Peggy Lee PhD', 'davisanne@example.org', '099965501543', '08/10/1921', 102, 'Male', 'Commercial', 'Aries Extension', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AEsvgfeZttnYAq', '00:10:24', '2000-04-18', '2023-10-26 04:35:55'),
-(96, 'W-88009', 'Angela', 'Andre', 'Vasquez', 'M.D.', 'Angela Andre Vasquez M.D.', 'banksedward@example.net', '098509857310', '02/16/1999', 24, 'Female', 'Commercial', '25th Road', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'No', 'unconfirmed', 'unpaid', 'AzwAMvTfERneBC', '02:42:40', '1987-01-19', '2023-10-26 04:35:55'),
-(97, 'W-68779', 'Jason', 'Debra', 'Murphy', 'CPA', 'Jason Debra Murphy CPA', 'mfranco@example.net', '099106054512', '04/16/1917', 106, 'Male', 'Residential', 'Mercury Street', 'Paclasan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Paclasan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'AKGMuBeYsZLAhd', '11:07:48', '2012-11-29', '2023-10-26 04:35:55'),
+(55, 'W-16777', 'Michelle', 'Scott', 'Parrish', 'III', 'Michelle S. Parrish III', 'gbrooks@example.org', '094220256524', '09/06/1988', 35, 'Male', 'Commercial', 'Narra Road', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Narra Road, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'ApKvwPdxPBgAIg', '01:31:33', '1974-08-29', '2023-10-28 16:17:07'),
+(56, 'W-24442', 'Dana', 'Janet', 'Gross', 'Jr.', 'Dana J. Gross Jr.', 'janiceguzman@example.net', '093618888753', '04/22/1965', 58, 'Female', 'Residential', 'Cordillera Drive Extension', 'Libertad', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Cordillera Drive Extension, Libertad, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AzgOgIfOaziVSv', '22:57:57', '1983-06-12', '2023-10-28 16:23:49'),
+(57, 'W-35292', 'Jacqueline', 'Jonathan', 'Ryan', 'MBA', 'Jacqueline J. Ryan MBA', 'antonio34@example.com', '092669824925', '10/13/1930', 93, 'Female', 'Residential', 'Tabayoc Street', 'Maraska', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Tabayoc Street, Maraska, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AzHDuevGglCzIL', '14:37:13', '2008-09-08', '2023-10-28 16:24:12'),
+(58, 'W-13754', 'Cody', 'Shawn', 'Kelly', 'Jr.', 'Cody S. Kelly Jr.', 'wcallahan@example.org', '093453155781', '12/24/2019', 4, 'Female', 'Residential', 'Caraballo Avenue', 'Paclasan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Caraballo Avenue, Paclasan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AYlsyzSSYUmxnU', '06:19:28', '2013-10-27', '2023-10-28 16:24:26'),
+(59, 'W-69874', 'John', 'Michael', 'Goodwin', '', 'John M. Goodwin', 'patelmatthew@example.org', '097988383176', '04/29/1978', 45, 'Male', 'Commercial', 'Jasper Extension', 'San Mariano', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Jasper Extension, San Mariano, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AbTqkdqUDjAGKF', '17:27:06', '2008-04-08', '2023-10-29 02:56:38'),
+(60, 'W-92783', 'Michael', 'Andrea', 'Byrd', 'II', 'Michael A. Byrd II', 'alexandrabryan@example.org', '091914119577', '10/14/1970', 53, 'Female', 'Residential', 'Taylor Road', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Taylor Road, Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'APUcROYWpHooUG', '21:12:19', '1990-08-07', '2023-10-29 03:00:51'),
+(61, 'W-68887', 'Evelyn', 'Jamie', 'Sullivan', 'MBA', 'Evelyn J. Sullivan MBA', 'duncangarrett@example.org', '092816429185', '01/23/2005', 18, 'Male', 'Commercial', 'Calantas Drive', 'Little Tanauan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Calantas Drive, Little Tanauan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AwxYJsCCVtDUap', '08:15:16', '1999-05-19', '2023-10-29 03:01:20'),
+(62, 'W-43440', 'Michael', 'Matthew', 'Schroeder', 'Ph.D.', 'Michael M. Schroeder Ph.D.', 'graycynthia@example.com', '092596154174', '03/15/2023', 0, 'Male', 'Residential', 'Capricorn Street', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Capricorn Street, San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AJBSruuvMzUxtC', '07:05:48', '1971-12-16', '2023-10-29 03:01:48'),
+(63, 'W-33081', 'Jill', 'Michelle', 'Brown', 'Sr.', 'Jill M. Brown Sr.', 'zrice@example.org', '094346949157', '07/06/1931', 92, 'Male', 'Residential', 'Matumtum Street', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Matumtum Street, Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AvLNYhKwfKKfXH', '23:31:47', '1989-10-30', '2023-10-29 03:02:02'),
+(64, 'W-24307', 'Margaret', 'Jennifer', 'Swanson', 'Sr.', 'Margaret J. Swanson Sr.', 'mwilson@example.net', '095711732838', '04/18/1968', 55, 'Female', 'Commercial', 'Thompson Street', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Thompson Street, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AKGdanPDwFAjZb', '10:37:21', '2011-03-03', '2023-10-29 03:07:32'),
+(65, 'W-71168', 'John', 'Madison', 'Santos', 'CPA', 'John M. Santos CPA', 'gwelch@example.org', '094563104219', '05/21/1967', 56, 'Female', 'Commercial', 'Topaz Extension', 'Cantil', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Topaz Extension, Cantil, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AkKoDgqxWnnWxr', '13:32:54', '2004-06-21', '2023-10-29 03:08:06'),
+(66, 'W-72118', 'Lisa', 'Elizabeth', 'Stewart', 'Ph.D.', 'Lisa E. Stewart Ph.D.', 'pchambers@example.com', '097643206766', '12/05/1940', 83, 'Male', 'Commercial', 'Sardonyx Avenue', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Sardonyx Avenue, Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'ABtsEepWIFFJyJ', '15:23:53', '1998-12-18', '2023-10-29 03:08:14'),
+(67, 'W-48082', 'Samantha', 'William', 'Gomez', 'M.D.', 'Samantha W. Gomez M.D.', 'isantos@example.org', '096817889177', '11/08/1967', 56, 'Male', 'Residential', 'Calantas Road', 'San Isidro', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Calantas Road, San Isidro, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AatDUKtvLzGVeb', '00:33:04', '2015-12-20', '2023-10-29 03:08:22'),
+(68, 'W-42117', 'Benjamin', 'Yolanda', 'Myers', '', 'Benjamin Y. Myers', 'tgonzales@example.net', '094485301903', '07/16/2023', 0, 'Male', 'Residential', 'Sierra Madre Street', 'Uyao', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Sierra Madre Street, Uyao, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AwklVhllnKIaix', '02:18:35', '1991-12-25', '2023-10-29 03:08:30'),
+(69, 'W-24433', 'Ashley', 'Erika', 'Alexander', 'III', 'Ashley E. Alexander III', 'ann80@example.net', '092093510726', '09/30/1951', 72, 'Male', 'Commercial', 'Dita Highway', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Dita Highway, Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'ABmxxoUTXHNgNy', '13:43:51', '2000-08-07', '2023-10-29 03:08:38'),
+(70, 'W-93890', 'Daniel', 'Kimberly', 'Collins', 'II', 'Daniel K. Collins II', 'james12@example.net', '093724879440', '05/03/1955', 68, 'Male', 'Commercial', '98th Drive', 'Odiong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', '98th Drive, Odiong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AfTByOmQlZOrei', '19:19:26', '2009-04-01', '2023-10-29 03:08:46'),
+(71, 'W-32012', 'Sylvia', 'Robert', 'Hardy', 'Sr.', 'Sylvia R. Hardy Sr.', 'fisherchristopher@example.org', '094470932873', '06/10/1932', 91, 'Female', 'Residential', 'Peridot Drive Extension', 'Bagumbayan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Peridot Drive Extension, Bagumbayan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AwOrUOnRtAqtJc', '00:03:11', '2022-12-24', '2023-10-29 03:08:55'),
+(72, 'W-13576', 'Christopher', 'James', 'Baker', 'Sr.', 'Christopher J. Baker Sr.', 'wmahoney@example.org', '091434784275', '12/17/1962', 61, 'Female', 'Residential', 'Halcon Road', 'Mabuhay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Halcon Road, Mabuhay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'ADMFsVdqyZRNoh', '10:48:02', '2018-06-19', '2023-10-29 03:09:04'),
+(73, 'W-76853', 'David', 'Amanda', 'Campbell', 'CPA', 'David A. Campbell CPA', 'kathryn56@example.net', '093032755076', '04/12/1980', 43, 'Male', 'Residential', '70th Road Extension', 'San Jose', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', '70th Road Extension, San Jose, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AjZjPmfSGdlljB', '22:26:22', '2019-09-10', '2023-10-29 03:14:17'),
+(74, 'W-82744', 'Andrew', 'Katie', 'Bradley', 'IV', 'Andrew K. Bradley IV', 'carriebrooks@example.com', '093197583030', '08/27/2000', 23, 'Female', 'Commercial', 'Milky Way Avenue', 'Odiong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Milky Way Avenue, Odiong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AZOEGCvwxUEDUe', '16:04:07', '1995-01-18', '2023-10-29 03:14:26'),
+(75, 'W-15886', 'Christine', 'Jessica', 'Bruce', '', 'Christine J. Bruce', 'johngrimes@example.com', '099135890180', '10/26/2005', 18, 'Female', 'Commercial', 'Galaxy Avenue', 'San Mariano', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Galaxy Avenue, San Mariano, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'ADMOUiTyStyIRV', '04:58:14', '1977-03-27', '2023-10-29 03:14:37'),
+(76, 'W-77675', 'Monica', 'Michael', 'Hoffman', '', 'Monica M. Hoffman', 'davissamuel@example.net', '095687589766', '10/19/1976', 47, 'Female', 'Commercial', 'Venus Road', 'Victoria', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Venus Road, Victoria, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AqzOxwKFJzjxMG', '10:59:36', '1999-11-23', '2023-10-29 03:14:46'),
+(77, 'W-31196', 'Tiffany', 'Caleb', 'Taylor', 'III', 'Tiffany C. Taylor III', 'julie64@example.com', '098249428553', '10/10/1973', 50, 'Female', 'Residential', 'Ruby Road', 'Happy Valley', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Ruby Road, Happy Valley, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AJRBkuWQCDcCeR', '21:02:39', '2015-02-09', '2023-10-29 03:14:54'),
+(78, 'W-69047', 'Cynthia', 'Mark', 'Diaz', 'Jr.', 'Cynthia M. Diaz Jr.', 'kpollard@example.com', '095277589727', '04/03/1952', 71, 'Female', 'Commercial', 'Hydra Street', 'San Rafael', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Hydra Street, San Rafael, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AZfcQTTvkjTtSD', '21:24:18', '1979-02-21', '2023-10-29 03:15:00'),
+(80, 'W-19481', 'Thomas', 'Kristi', 'King', '', 'Thomas K. King', 'caitlin86@example.com', '093824187886', '03/09/1957', 66, 'Female', 'Residential', '2nd Drive', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', '2nd Drive, Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'ApITcZzfkeUifR', '13:00:26', '1978-07-30', '2023-10-29 03:15:09'),
+(81, 'W-75207', 'William', 'Heather', 'Ray', 'M.D.', 'William H. Ray M.D.', 'gardnercarlos@example.net', '091205937975', '01/07/1947', 76, 'Male', 'Commercial', 'Makiling Drive', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Makiling Drive, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'ALxlqRqxRYwYne', '15:25:17', '1981-11-29', '2023-10-29 03:15:18'),
+(82, 'W-90455', 'Brenda', 'Paul', 'Robinson', 'II', 'Brenda P. Robinson II', 'williamlopez@example.net', '099657551513', '08/27/1987', 36, 'Female', 'Residential', '67th Road Extension', 'San Isidro', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', '67th Road Extension, San Isidro, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'APYlSWREcTpvIO', '23:35:09', '2018-12-28', '2023-10-29 03:15:28'),
+(83, 'W-66937', 'Kimberly', 'Michael', 'Allen', 'Ph.D.', 'Kimberly M. Allen Ph.D.', 'maciaskimberly@example.net', '099998581781', '06/16/1954', 69, 'Male', 'Commercial', 'Jupiter Drive Extension', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Jupiter Drive Extension, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AxAziSwNsfRUvd', '12:37:41', '2018-11-26', '2023-10-29 03:15:43'),
+(84, 'W-93955', 'Misty', 'Samantha', 'Anderson', 'Jr.', 'Misty S. Anderson Jr.', 'brian35@example.com', '093878707382', '08/25/1933', 90, 'Female', 'Commercial', 'Sicaba Street', 'San Isidro', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Sicaba Street, San Isidro, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AzUFRJwepvNGnC', '20:42:02', '1978-08-21', '2023-10-29 03:15:59'),
+(85, 'W-10199', 'Katherine', 'Juan', 'Conrad', '', 'Katherine J. Conrad', 'anthony59@example.org', '092157634135', '12/13/1907', 116, 'Male', 'Commercial', '46th Road Extension', 'Little Tanauan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', '46th Road Extension, Little Tanauan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AduOgaMYrBxAwT', '21:11:17', '2002-06-10', '2023-10-29 03:16:06'),
+(86, 'W-38869', 'Clayton', 'Lisa', 'Baker', 'Ph.D.', 'Clayton L. Baker Ph.D.', 'chanamanda@example.net', '093627077394', '08/29/1959', 64, 'Female', 'Residential', 'Jacaranda Avenue', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Jacaranda Avenue, San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AKDJZEouXoqErt', '00:42:12', '1978-09-24', '2023-10-29 03:16:14'),
+(87, 'W-41434', 'James', 'Lisa', 'Lopez', 'CPA', 'James L. Lopez CPA', 'taylorbarbara@example.org', '091029665271', '07/30/1975', 48, 'Female', 'Commercial', 'Aquamarine Avenue', 'San Isidro', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Aquamarine Avenue, San Isidro, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AOvJaUvkLcfuIH', '08:30:42', '2023-06-05', '2023-10-29 03:20:02'),
+(88, 'W-10900', 'Logan', 'Brianna', 'Hines', '', 'Logan B. Hines', 'katie76@example.com', '092113519775', '11/17/1943', 80, 'Male', 'Commercial', 'Andromeda Road', 'Libtong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Andromeda Road, Libtong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AigehOtvXfXWbt', '18:04:35', '2001-11-14', '2023-10-29 03:20:46'),
+(89, 'W-45867', 'Daniel', 'Renee', 'Green', '', 'Daniel R. Green', 'joshua67@example.net', '095829225916', '06/17/1961', 62, 'Female', 'Commercial', 'Caraballo Avenue', 'Uyao', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Caraballo Avenue, Uyao, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'unpaid', 'AgundmjFiZxUsf', '08:54:20', '1970-05-26', '2023-10-29 03:21:16'),
+(90, 'W-76830', 'Robert', 'Christopher', 'Mercer', '', 'Robert C. Mercer', 'vperez@example.com', '092509507740', '12/20/1942', 81, 'Female', 'Residential', 'Neptune Road', 'Mabuhay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Neptune Road, Mabuhay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AqsWtjAYJFICHu', '05:30:29', '2000-05-05', '2023-10-29 03:22:20'),
+(91, 'W-31629', 'Tracy', 'Sylvia', 'Mccann', 'II', 'Tracy S. Mccann II', 'hughesjoshua@example.net', '092606323306', '04/06/1935', 88, 'Male', 'Residential', 'Caraballo Road Extension', 'San Rafael', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Caraballo Road Extension, San Rafael, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AivfJivDVpbLAE', '22:27:01', '2018-07-22', '2023-10-29 03:23:08'),
+(92, 'W-33961', 'Bryan', 'Henry', 'Moore', '', 'Bryan H. Moore', 'browncrystal@example.net', '094501430902', '08/28/2002', 21, 'Female', 'Commercial', 'Libra Road', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Libra Road, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AudwTerXqWPHGN', '15:34:24', '2004-10-21', '2023-10-29 03:23:39'),
+(93, 'W-47836', 'Aaron', 'Derek', 'Benjamin', 'IV', 'Aaron D. Benjamin IV', 'bullockmary@example.org', '097532231195', '09/01/1926', 97, 'Female', 'Commercial', '87th Street', 'Uyao', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', '87th Street, Uyao, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AwGPmmhyKrdEVg', '11:56:47', '1978-11-29', '2023-10-29 03:24:05'),
+(94, 'W-13595', 'Natalie', 'Matthew', 'Palmer', '', 'Natalie M. Palmer', 'anthony07@example.net', '095805980952', '07/12/1940', 83, 'Male', 'Residential', 'Caraballo Road', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Caraballo Road, Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AFDorcoezcwRXX', '13:37:02', '1970-07-24', '2023-10-29 03:24:39'),
+(95, 'W-95905', 'John', 'Peggy', 'Lee', '', 'John P. Lee', 'davisanne@example.org', '099965501543', '08/10/1921', 102, 'Male', 'Commercial', 'Aries Extension', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Aries Extension, Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'approved', 'paid', 'AEsvgfeZttnYAq', '00:10:24', '2000-04-18', '2023-10-29 03:24:51'),
+(96, 'W-88009', 'Angela', 'Andre', 'Vasquez', 'M.D.', 'Angela A. Vasquez M.D.', 'banksedward@example.net', '098509857310', '02/16/1999', 24, 'Female', 'Commercial', '25th Road', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', '25th Road, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'Yes', 'Yes', 'Yes', 'Yes', 'confirmed', 'paid', 'AzwAMvTfERneBC', '02:42:40', '1987-01-19', '2023-10-29 03:37:39'),
 (98, 'W-10721', 'Jason', 'Sarah', 'Jackson', 'Jr.', 'Jason Sarah Jackson Jr.', 'brittany85@example.com', '098889824461', '12/22/2009', 14, 'Female', 'Commercial', 'Anonas Road', 'Little Tanauan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Little Tanauan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'AYoNVgcyiySdkc', '14:02:17', '2023-06-27', '2023-10-26 04:35:55'),
 (99, 'W-46132', 'Darlene', 'Brian', 'Morris', 'Jr.', 'Darlene Brian Morris Jr.', 'anthonynorris@example.net', '097588465540', '11/09/1968', 55, 'Female', 'Commercial', 'Planet Road Extension', 'Bagumbayan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Bagumbayan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'ALJiTtvcOqvKyr', '04:39:41', '1998-11-23', '2023-10-26 04:35:55'),
 (100, 'W-21505', 'Gary', 'Linda', 'Stewart', 'Sr.', 'Gary Linda Stewart Sr.', 'dpalmer@example.com', '098645807652', '10/13/1936', 87, 'Male', 'Residential', 'Kanlaon Street', 'Little Tanauan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Little Tanauan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'ALwRdiCinoPgAM', '23:24:13', '1971-08-16', '2023-10-26 04:35:55'),
@@ -453,9 +426,9 @@ INSERT INTO `client_application` (`id`, `meter_number`, `first_name`, `middle_na
 (156, 'W-34975', 'Brian', 'Brady', 'Fletcher', 'PhD', 'Brian Brady Fletcher PhD', 'twilliamson@example.net', '098933374681', '01/19/1981', 42, 'Male', 'Residential', 'Woodard Street', 'San Aquilino', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Aquilino, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'No', 'Yes', 'unconfirmed', 'unpaid', 'ALjaUVUsltYbju', '20:06:38', '2001-05-19', '2023-10-26 04:35:55'),
 (157, 'W-80477', 'Michael', 'Catherine', 'Baker', 'II', 'Michael Catherine Baker II', 'christinacook@example.net', '094681268183', '11/16/1911', 112, 'Female', 'Residential', 'Apo Street', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'No', 'No', 'unconfirmed', 'unpaid', 'AsxuHORKwWRQiA', '06:03:22', '2018-06-10', '2023-10-26 04:35:55'),
 (158, 'W-29900', 'Lisa', 'Elizabeth', 'Gilmore', 'Jr.', 'Lisa Elizabeth Gilmore Jr.', 'lauriejensen@example.com', '092908503004', '11/10/1936', 87, 'Female', 'Commercial', 'Halcon Avenue', 'Cantil', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Cantil, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AxztJHPKSSZsiO', '04:58:13', '1981-04-22', '2023-10-26 04:35:55'),
-(159, 'W-93007', 'Aaron', 'Vernon', 'Randall', 'IV', 'Aaron Vernon Randall IV', 'michaelsmith@example.org', '099107597402', '12/31/1985', 38, 'Female', 'Commercial', 'Herman Road', 'Cantil', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Cantil, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'ASNFDlACKEaTCs', '09:42:32', '1995-01-05', '2023-10-26 04:35:55'),
-(160, 'W-22592', 'Robert', 'Rebecca', 'Lopez', 'Jr.', 'Robert Rebecca Lopez Jr.', 'michael58@example.org', '095960310442', '10/15/1996', 27, 'Female', 'Residential', 'Malinao Road', 'Uyao', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Uyao, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'ACjuXQJRonHeKt', '06:42:23', '2016-02-02', '2023-10-26 04:35:55');
+(159, 'W-93007', 'Aaron', 'Vernon', 'Randall', 'IV', 'Aaron Vernon Randall IV', 'michaelsmith@example.org', '099107597402', '12/31/1985', 38, 'Female', 'Commercial', 'Herman Road', 'Cantil', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Cantil, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'ASNFDlACKEaTCs', '09:42:32', '1995-01-05', '2023-10-26 04:35:55');
 INSERT INTO `client_application` (`id`, `meter_number`, `first_name`, `middle_name`, `last_name`, `name_suffix`, `full_name`, `email`, `phone_number`, `birthdate`, `age`, `gender`, `property_type`, `street`, `brgy`, `municipality`, `province`, `region`, `full_address`, `valid_id`, `proof_of_ownership`, `deed_of_sale`, `affidavit`, `status`, `billing_status`, `application_id`, `time`, `date`, `timestamp`) VALUES
+(160, 'W-22592', 'Robert', 'Rebecca', 'Lopez', 'Jr.', 'Robert Rebecca Lopez Jr.', 'michael58@example.org', '095960310442', '10/15/1996', 27, 'Female', 'Residential', 'Malinao Road', 'Uyao', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Uyao, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'No', 'Yes', 'unconfirmed', 'unpaid', 'ACjuXQJRonHeKt', '06:42:23', '2016-02-02', '2023-10-26 04:35:55'),
 (161, 'W-75375', 'April', 'Lauren', 'Barry', 'M.D.', 'April Lauren Barry M.D.', 'breannamorgan@example.net', '093460655756', '03/30/1980', 43, 'Male', 'Commercial', 'Neptune Street', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'Yes', 'No', 'Yes', 'unconfirmed', 'unpaid', 'AMohrGbjtMsWDH', '00:00:30', '2010-02-11', '2023-10-26 04:35:55'),
 (162, 'W-47558', 'Samuel', 'Lisa', 'Nelson', 'Jr.', 'Samuel Lisa Nelson Jr.', 'oconnoramanda@example.com', '093532020871', '06/08/2011', 12, 'Female', 'Commercial', 'Gemini Street', 'Libtong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Libtong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'Yes', 'No', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'AXclZmiCZhzvPU', '12:27:32', '2023-09-23', '2023-10-26 04:35:55'),
 (163, 'W-71819', 'Cheryl', 'Matthew', 'Smith', 'MBA', 'Cheryl Matthew Smith MBA', 'alvarezrobert@example.com', '092260799535', '10/29/2012', 11, 'Female', 'Residential', 'Orchid Street', 'Mabuhay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Mabuhay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA)', 'No', 'No', 'Yes', 'Yes', 'unconfirmed', 'unpaid', 'ANPkQHShjbHeyz', '04:48:49', '2008-08-10', '2023-10-26 04:35:55'),
@@ -554,7 +527,21 @@ INSERT INTO `client_data` (`id`, `client_id`, `reg_id`, `meter_number`, `full_na
 (69, 'WBS-ALL-022102823', 'R20231028181527', 'W-81698', 'Amanda L. Lopez CPA', 'isaachancock@example.org', '098132287605', '05/10/2000', 23, 'Residential', '65th Avenue', 'San Jose', '65th Avenue, San Jose, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AestOtbUXtejTw', '00:15:27', '2023-10-29', '2023-10-28 16:15:27'),
 (70, 'WBS-RJH-023102823', 'R20231028181553', 'W-76674', 'Ronnie J. Howe II', 'eric72@example.com', '098151439876', '04/04/1967', 56, 'Commercial', 'Gomez Road', 'Dangay', 'Gomez Road, Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AhHlrmZwISjfHH', '00:15:53', '2023-10-29', '2023-10-28 16:15:53'),
 (71, 'WBS-PDJ-024102823', 'R20231028181610', 'W-59880', 'Patricia D. Jenkins IV', 'castromichael@example.net', '091920058275', '11/11/2013', 10, 'Commercial', 'Pao Avenue', 'Little Tanauan', 'Pao Avenue, Little Tanauan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AKFJXhbTcExZsr', '00:16:10', '2023-10-29', '2023-10-28 16:16:10'),
-(72, 'WBS-GKW-025102823', 'R20231028182719', 'W-52809', 'Gary K. Wagner', 'william38@example.net', '092362253506', '05/09/1916', 107, 'Commercial', 'Galaxy Street', 'Odiong', 'Galaxy Street, Odiong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AhIjRkzsXlKKtV', '00:27:19', '2023-10-29', '2023-10-28 16:27:19');
+(72, 'WBS-GKW-025102823', 'R20231028182719', 'W-52809', 'Gary K. Wagner', 'william38@example.net', '092362253506', '05/09/1916', 107, 'Commercial', 'Galaxy Street', 'Odiong', 'Galaxy Street, Odiong, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AhIjRkzsXlKKtV', '00:27:19', '2023-10-29', '2023-10-28 16:27:19'),
+(73, 'WBS-MSP-026102823', 'R20231028182917', 'W-16777', 'Michelle S. Parrish III', 'gbrooks@example.org', '094220256524', '09/06/1988', 35, 'Commercial', 'Narra Road', 'San Vicente', 'Narra Road, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'ApKvwPdxPBgAIg', '00:29:17', '2023-10-29', '2023-10-28 16:29:17'),
+(74, 'WBS-DJG-027102823', 'R20231028182932', 'W-24442', 'Dana J. Gross Jr.', 'janiceguzman@example.net', '093618888753', '04/22/1965', 58, 'Residential', 'Cordillera Drive Extension', 'Libertad', 'Cordillera Drive Extension, Libertad, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AzgOgIfOaziVSv', '00:29:32', '2023-10-29', '2023-10-28 16:29:32'),
+(75, 'WBS-JJR-028102823', 'R20231028182941', 'W-35292', 'Jacqueline J. Ryan MBA', 'antonio34@example.com', '092669824925', '10/13/1930', 93, 'Residential', 'Tabayoc Street', 'Maraska', 'Tabayoc Street, Maraska, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AzHDuevGglCzIL', '00:29:41', '2023-10-29', '2023-10-28 16:29:41'),
+(76, 'WBS-CSK-029102823', 'R20231028183002', 'W-13754', 'Cody S. Kelly Jr.', 'wcallahan@example.org', '093453155781', '12/24/2019', 4, 'Residential', 'Caraballo Avenue', 'Paclasan', 'Caraballo Avenue, Paclasan, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AYlsyzSSYUmxnU', '00:30:02', '2023-10-29', '2023-10-28 16:30:02'),
+(77, 'WBS-ARM-030102923', 'R20231029040537', 'W-26675', 'Ashley R. Morgan MBA', 'katherinechristian@example.org', '095934196483', '08/15/1992', 31, 'Residential', 'Amethyst Drive', 'Dalahican', 'Amethyst Drive, Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AcNESwwUGmeIJA', '11:05:37', '2023-10-29', '2023-10-29 03:05:37'),
+(78, 'WBS-JMG-031102923', 'R20231029040650', 'W-69874', 'John M. Goodwin', 'patelmatthew@example.org', '097988383176', '04/29/1978', 45, 'Commercial', 'Jasper Extension', 'San Mariano', 'Jasper Extension, San Mariano, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AbTqkdqUDjAGKF', '11:06:50', '2023-10-29', '2023-10-29 03:06:50'),
+(79, 'WBS-MJS-032102923', 'R20231029041146', 'W-24307', 'Margaret J. Swanson Sr.', 'mwilson@example.net', '095711732838', '04/18/1968', 55, 'Commercial', 'Thompson Street', 'San Vicente', 'Thompson Street, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AKGdanPDwFAjZb', '11:11:46', '2023-10-29', '2023-10-29 03:11:46'),
+(80, 'WBS-JMS-033102923', 'R20231029041214', 'W-71168', 'John M. Santos CPA', 'gwelch@example.org', '094563104219', '05/21/1967', 56, 'Commercial', 'Topaz Extension', 'Cantil', 'Topaz Extension, Cantil, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AkKoDgqxWnnWxr', '11:12:14', '2023-10-29', '2023-10-29 03:12:14'),
+(81, 'WBS-LES-034102923', 'R20231029041224', 'W-72118', 'Lisa E. Stewart Ph.D.', 'pchambers@example.com', '097643206766', '12/05/1940', 83, 'Commercial', 'Sardonyx Avenue', 'Dalahican', 'Sardonyx Avenue, Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'ABtsEepWIFFJyJ', '11:12:24', '2023-10-29', '2023-10-29 03:12:24'),
+(82, 'WBS-BHM-035102923', 'R20231029043633', 'W-33961', 'Bryan H. Moore', 'browncrystal@example.net', '094501430902', '08/28/2002', 21, 'Commercial', 'Libra Road', 'San Vicente', 'Libra Road, San Vicente, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AudwTerXqWPHGN', '11:36:33', '2023-10-29', '2023-10-29 03:36:33'),
+(83, 'WBS-ADB-036102923', 'R20231029043709', 'W-47836', 'Aaron D. Benjamin IV', 'bullockmary@example.org', '097532231195', '09/01/1926', 97, 'Commercial', '87th Street', 'Uyao', '87th Street, Uyao, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AwGPmmhyKrdEVg', '11:37:09', '2023-10-29', '2023-10-29 03:37:09'),
+(84, 'WBS-NMP-037102923', 'R20231029043746', 'W-13595', 'Natalie M. Palmer', 'anthony07@example.net', '095805980952', '07/12/1940', 83, 'Residential', 'Caraballo Road', 'Dalahican', 'Caraballo Road, Dalahican, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AFDorcoezcwRXX', '11:37:46', '2023-10-29', '2023-10-29 03:37:46'),
+(85, 'WBS-JPL-038102923', 'R20231029043827', 'W-95905', 'John P. Lee', 'davisanne@example.org', '099965501543', '08/10/1921', 102, 'Commercial', 'Aries Extension', 'Dangay', 'Aries Extension, Dangay, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AEsvgfeZttnYAq', '11:38:27', '2023-10-29', '2023-10-29 03:38:27'),
+(86, 'WBS-SWG-039102923', 'R20231029055754', 'W-48082', 'Samantha W. Gomez M.D.', 'isantos@example.org', '096817889177', '11/08/1967', 56, 'Residential', 'Calantas Road', 'San Isidro', 'Calantas Road, San Isidro, Roxas, Oriental Mindoro, REGION IV-B (MIMAROPA), Philippines', 'active', 'pending', 'AatDUKtvLzGVeb', '12:57:54', '2023-10-29', '2023-10-29 04:57:54');
 
 -- --------------------------------------------------------
 
@@ -625,7 +612,21 @@ INSERT INTO `client_secondary_data` (`id`, `client_id`, `first_name`, `middle_na
 (33, 'WBS-ALL-022102823', 'Amanda', 'Lauren', 'Lopez', 'CPA', 'Residential', 'Female', '65th Avenue', 'San Jose', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '00:15:27', '2023-10-29', '2023-10-28 16:15:27'),
 (34, 'WBS-RJH-023102823', 'Ronnie', 'John', 'Howe', 'II', 'Commercial', 'Female', 'Gomez Road', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '00:15:53', '2023-10-29', '2023-10-28 16:15:53'),
 (35, 'WBS-PDJ-024102823', 'Patricia', 'David', 'Jenkins', 'IV', 'Commercial', 'Female', 'Pao Avenue', 'Little Tanauan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '00:16:10', '2023-10-29', '2023-10-28 16:16:10'),
-(36, 'WBS-GKW-025102823', 'Gary', 'Katie', 'Wagner', '', 'Commercial', 'Female', 'Galaxy Street', 'Odiong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '00:27:19', '2023-10-29', '2023-10-28 16:27:19');
+(36, 'WBS-GKW-025102823', 'Gary', 'Katie', 'Wagner', '', 'Commercial', 'Female', 'Galaxy Street', 'Odiong', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '00:27:19', '2023-10-29', '2023-10-28 16:27:19'),
+(37, 'WBS-MSP-026102823', 'Michelle', 'Scott', 'Parrish', 'III', 'Commercial', 'Male', 'Narra Road', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '00:29:17', '2023-10-29', '2023-10-28 16:29:17'),
+(38, 'WBS-DJG-027102823', 'Dana', 'Janet', 'Gross', 'Jr.', 'Residential', 'Female', 'Cordillera Drive Extension', 'Libertad', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '00:29:32', '2023-10-29', '2023-10-28 16:29:32'),
+(39, 'WBS-JJR-028102823', 'Jacqueline', 'Jonathan', 'Ryan', 'MBA', 'Residential', 'Female', 'Tabayoc Street', 'Maraska', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '00:29:41', '2023-10-29', '2023-10-28 16:29:41'),
+(40, 'WBS-CSK-029102823', 'Cody', 'Shawn', 'Kelly', 'Jr.', 'Residential', 'Female', 'Caraballo Avenue', 'Paclasan', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '00:30:03', '2023-10-29', '2023-10-28 16:30:03'),
+(41, 'WBS-ARM-030102923', 'Ashley', 'Ryan', 'Morgan', 'MBA', 'Residential', 'Male', 'Amethyst Drive', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '11:05:37', '2023-10-29', '2023-10-29 03:05:37'),
+(42, 'WBS-JMG-031102923', 'John', 'Michael', 'Goodwin', '', 'Commercial', 'Male', 'Jasper Extension', 'San Mariano', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '11:06:50', '2023-10-29', '2023-10-29 03:06:50'),
+(43, 'WBS-MJS-032102923', 'Margaret', 'Jennifer', 'Swanson', 'Sr.', 'Commercial', 'Female', 'Thompson Street', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '11:11:46', '2023-10-29', '2023-10-29 03:11:46'),
+(44, 'WBS-JMS-033102923', 'John', 'Madison', 'Santos', 'CPA', 'Commercial', 'Female', 'Topaz Extension', 'Cantil', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '11:12:14', '2023-10-29', '2023-10-29 03:12:14'),
+(45, 'WBS-LES-034102923', 'Lisa', 'Elizabeth', 'Stewart', 'Ph.D.', 'Commercial', 'Male', 'Sardonyx Avenue', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '11:12:24', '2023-10-29', '2023-10-29 03:12:24'),
+(46, 'WBS-BHM-035102923', 'Bryan', 'Henry', 'Moore', '', 'Commercial', 'Female', 'Libra Road', 'San Vicente', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '11:36:34', '2023-10-29', '2023-10-29 03:36:34'),
+(47, 'WBS-ADB-036102923', 'Aaron', 'Derek', 'Benjamin', 'IV', 'Commercial', 'Female', '87th Street', 'Uyao', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '11:37:09', '2023-10-29', '2023-10-29 03:37:09'),
+(48, 'WBS-NMP-037102923', 'Natalie', 'Matthew', 'Palmer', '', 'Residential', 'Male', 'Caraballo Road', 'Dalahican', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '11:37:46', '2023-10-29', '2023-10-29 03:37:46'),
+(49, 'WBS-JPL-038102923', 'John', 'Peggy', 'Lee', '', 'Commercial', 'Male', 'Aries Extension', 'Dangay', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '11:38:27', '2023-10-29', '2023-10-29 03:38:27'),
+(50, 'WBS-SWG-039102923', 'Samantha', 'William', 'Gomez', 'M.D.', 'Residential', 'Male', 'Calantas Road', 'San Isidro', 'Roxas', 'Oriental Mindoro', 'REGION IV-B (MIMAROPA)', 'Yes', 'Yes', 'Yes', 'Yes', '12:57:54', '2023-10-29', '2023-10-29 04:57:54');
 
 -- --------------------------------------------------------
 
@@ -1130,7 +1131,25 @@ INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `
 (723, 'SOCC20231028174956', 'Cashier', 'CASHIER', 'Sign out', 0, 'CASHIER has been signed out.', '2023-10-28', '23:49:56', '2023-10-28 23:49:56'),
 (724, 'SIAJJP20231028175001', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-28', '23:50:01', '2023-10-28 23:50:01'),
 (725, 'SIAJJP20231028180411', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '00:04:11', '2023-10-29 00:04:11'),
-(726, 'SIAJJP20231028180830', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '00:08:30', '2023-10-29 00:08:30');
+(726, 'SIAJJP20231028180830', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '00:08:30', '2023-10-29 00:08:30'),
+(727, 'SIAJJP20231029042030', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '11:20:30', '2023-10-29 11:20:30'),
+(728, 'SIAJJP20231029042808', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '11:28:08', '2023-10-29 11:28:08'),
+(729, 'SICC20231029042949', 'Cashier', 'CASHIER', 'Sign in', 0, 'CASHIER has been signed in.', '2023-10-29', '11:29:49', '2023-10-29 11:29:49'),
+(730, 'SOCC20231029042956', 'Cashier', 'CASHIER', 'Sign out', 0, 'CASHIER has been signed out.', '2023-10-29', '11:29:56', '2023-10-29 11:29:56'),
+(731, 'SIAJJP20231029043000', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '11:30:00', '2023-10-29 11:30:00'),
+(732, 'SIAJJP20231029044046', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '11:40:46', '2023-10-29 11:40:46'),
+(733, 'SICC20231029052430', 'Cashier', 'CASHIER', 'Sign in', 0, 'CASHIER has been signed in.', '2023-10-29', '12:24:30', '2023-10-29 12:24:30'),
+(734, 'SOCC20231029052439', 'Cashier', 'CASHIER', 'Sign out', 0, 'CASHIER has been signed out.', '2023-10-29', '12:24:39', '2023-10-29 12:24:39'),
+(735, 'SIAJJP20231029052444', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '12:24:44', '2023-10-29 12:24:44'),
+(736, 'SIAJJP20231029053831', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '12:38:31', '2023-10-29 12:38:31'),
+(737, 'SOAJJP20231029055843', 'Admin', 'Jeffry James Paner', 'Sign out', 0, 'Jeffry James Paner has been signed out.', '2023-10-29', '12:58:43', '2023-10-29 12:58:43'),
+(738, 'SIAJJP20231029055847', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '12:58:47', '2023-10-29 12:58:47'),
+(739, 'SOAJJP20231029060445', 'Admin', 'Jeffry James Paner', 'Sign out', 0, 'Jeffry James Paner has been signed out.', '2023-10-29', '13:04:45', '2023-10-29 13:04:45'),
+(740, 'SICC20231029060449', 'Cashier', 'CASHIER', 'Sign in', 0, 'CASHIER has been signed in.', '2023-10-29', '13:04:49', '2023-10-29 13:04:49'),
+(741, 'SOCC20231029060608', 'Cashier', 'CASHIER', 'Sign out', 0, 'CASHIER has been signed out.', '2023-10-29', '13:06:08', '2023-10-29 13:06:08'),
+(742, 'SICC20231029060612', 'Cashier', 'CASHIER', 'Sign in', 0, 'CASHIER has been signed in.', '2023-10-29', '13:06:12', '2023-10-29 13:06:12'),
+(743, 'SOCC20231029060634', 'Cashier', 'CASHIER', 'Sign out', 0, 'CASHIER has been signed out.', '2023-10-29', '13:06:34', '2023-10-29 13:06:34'),
+(744, 'SIAJJP20231029060638', 'Admin', 'Jeffry James Paner', 'Sign in', 0, 'Jeffry James Paner has been signed in.', '2023-10-29', '13:06:38', '2023-10-29 13:06:38');
 
 -- --------------------------------------------------------
 
@@ -1140,7 +1159,7 @@ INSERT INTO `logs` (`id`, `log_id`, `user_role`, `user_name`, `user_activity`, `
 
 CREATE TABLE `notifications` (
   `id` int(11) NOT NULL,
-  `admin_id` varchar(20) NOT NULL,
+  `user_id` varchar(20) NOT NULL,
   `message` varchar(255) NOT NULL,
   `type` enum('payment_confirmation','new_message','other') NOT NULL,
   `reference_id` varchar(20) DEFAULT NULL,
@@ -1153,13 +1172,13 @@ CREATE TABLE `notifications` (
 -- Dumping data for table `notifications`
 --
 
-INSERT INTO `notifications` (`id`, `admin_id`, `message`, `type`, `reference_id`, `created_at`, `read_at`, `status`) VALUES
+INSERT INTO `notifications` (`id`, `user_id`, `message`, `type`, `reference_id`, `created_at`, `read_at`, `status`) VALUES
 (14, 'ADMIN_05', 'Payment confirmed for application ID: 46', 'payment_confirmation', '46', '2023-10-28 22:57:16', NULL, 'read'),
 (15, 'ADMIN_05', 'Payment confirmed for application ID: 45', 'payment_confirmation', '45', '2023-10-28 22:57:19', NULL, 'read'),
 (16, 'ADMIN_05', 'Payment confirmed for application ID: 44', 'payment_confirmation', '44', '2023-10-28 22:57:22', NULL, 'read'),
 (17, 'ADMIN_05', 'Payment confirmed for application ID: 43', 'payment_confirmation', '43', '2023-10-28 22:57:25', NULL, 'read'),
 (18, 'ADMIN_05', 'Payment confirmed for application ID: 42', 'payment_confirmation', '42', '2023-10-28 22:57:27', NULL, 'read'),
-(19, 'ADMIN_05', 'Payment confirmed for application ID: 52', 'payment_confirmation', '52', '2023-10-28 23:46:20', NULL, 'unread'),
+(19, 'ADMIN_05', 'Payment confirmed for application ID: 52', 'payment_confirmation', '52', '2023-10-28 23:46:20', NULL, 'read'),
 (20, 'ADMIN_05', 'Payment confirmed for application ID: 51', 'payment_confirmation', '51', '2023-10-28 23:46:23', NULL, 'read'),
 (21, 'ADMIN_05', 'Payment confirmed for application ID: 50', 'payment_confirmation', '50', '2023-10-28 23:46:25', NULL, 'read'),
 (22, 'ADMIN_05', 'Payment confirmed for application ID: 49', 'payment_confirmation', '49', '2023-10-28 23:46:27', NULL, 'read'),
@@ -1167,11 +1186,32 @@ INSERT INTO `notifications` (`id`, `admin_id`, `message`, `type`, `reference_id`
 (24, 'ADMIN_05', 'Payment confirmed for application ID: 47', 'payment_confirmation', '47', '2023-10-28 23:46:31', NULL, 'read'),
 (25, 'ADMIN_05', 'Payment confirmed for application ID: 41', 'payment_confirmation', '41', '2023-10-28 23:46:34', NULL, 'read'),
 (26, 'ADMIN_05', 'Payment confirmed for application ID: 53', 'payment_confirmation', '53', '2023-10-28 23:52:14', NULL, 'read'),
-(27, 'ADMIN_05', 'Payment confirmed for application ID: 58', 'payment_confirmation', '58', '2023-10-29 00:24:39', NULL, 'unread'),
-(28, 'ADMIN_05', 'Payment confirmed for application ID: 57', 'payment_confirmation', '57', '2023-10-29 00:24:42', NULL, 'unread'),
-(29, 'ADMIN_05', 'Payment confirmed for application ID: 56', 'payment_confirmation', '56', '2023-10-29 00:24:44', NULL, 'unread'),
-(30, 'ADMIN_05', 'Payment confirmed for application ID: 55', 'payment_confirmation', '55', '2023-10-29 00:24:46', NULL, 'unread'),
-(31, 'ADMIN_05', 'Payment confirmed for application ID: 54', 'payment_confirmation', '54', '2023-10-29 00:24:48', NULL, 'read');
+(27, 'ADMIN_05', 'Payment confirmed for application ID: 58', 'payment_confirmation', '58', '2023-10-29 00:24:39', NULL, 'read'),
+(28, 'ADMIN_05', 'Payment confirmed for application ID: 57', 'payment_confirmation', '57', '2023-10-29 00:24:42', NULL, 'read'),
+(29, 'ADMIN_05', 'Payment confirmed for application ID: 56', 'payment_confirmation', '56', '2023-10-29 00:24:44', NULL, 'read'),
+(30, 'ADMIN_05', 'Payment confirmed for application ID: 55', 'payment_confirmation', '55', '2023-10-29 00:24:46', NULL, 'read'),
+(31, 'ADMIN_05', 'Payment confirmed for application ID: 54', 'payment_confirmation', '54', '2023-10-29 00:24:48', NULL, 'read'),
+(32, 'ADMIN_05', 'Payment confirmed for application ID: 63', 'payment_confirmation', '63', '2023-10-29 11:06:04', NULL, 'unread'),
+(33, 'ADMIN_05', 'Payment confirmed for application ID: 62', 'payment_confirmation', '62', '2023-10-29 11:06:06', NULL, 'unread'),
+(34, 'ADMIN_05', 'Payment confirmed for application ID: 61', 'payment_confirmation', '61', '2023-10-29 11:06:09', NULL, 'unread'),
+(35, 'ADMIN_05', 'Payment confirmed for application ID: 60', 'payment_confirmation', '60', '2023-10-29 11:06:11', NULL, 'unread'),
+(36, 'ADMIN_05', 'Payment confirmed for application ID: 59', 'payment_confirmation', '59', '2023-10-29 11:06:13', NULL, 'read'),
+(37, 'ADMIN_05', 'Payment confirmed for application ID: 72', 'payment_confirmation', '72', '2023-10-29 11:10:53', NULL, 'unread'),
+(38, 'ADMIN_05', 'Payment confirmed for application ID: 71', 'payment_confirmation', '71', '2023-10-29 11:10:57', NULL, 'unread'),
+(39, 'ADMIN_05', 'Payment confirmed for application ID: 70', 'payment_confirmation', '70', '2023-10-29 11:10:59', NULL, 'unread'),
+(40, 'ADMIN_05', 'Payment confirmed for application ID: 69', 'payment_confirmation', '69', '2023-10-29 11:11:01', NULL, 'unread'),
+(41, 'ADMIN_05', 'Payment confirmed for application ID: 68', 'payment_confirmation', '68', '2023-10-29 11:11:04', NULL, 'unread'),
+(42, 'ADMIN_05', 'Payment confirmed for application ID: 67', 'payment_confirmation', '67', '2023-10-29 11:11:06', NULL, 'read'),
+(43, 'ADMIN_05', 'Payment confirmed for application ID: 66', 'payment_confirmation', '66', '2023-10-29 11:11:08', NULL, 'read'),
+(44, 'ADMIN_05', 'Payment confirmed for application ID: 65', 'payment_confirmation', '65', '2023-10-29 11:11:10', NULL, 'read'),
+(45, 'ADMIN_05', 'Payment confirmed for application ID: 64', 'payment_confirmation', '64', '2023-10-29 11:11:13', NULL, 'read'),
+(46, 'ADMIN_05', 'Payment confirmed for application ID: 95', 'payment_confirmation', '95', '2023-10-29 11:26:15', NULL, 'read'),
+(47, 'ADMIN_05', 'Payment confirmed for application ID: 94', 'payment_confirmation', '94', '2023-10-29 11:26:18', NULL, 'read'),
+(48, 'ADMIN_05', 'Payment confirmed for application ID: 93', 'payment_confirmation', '93', '2023-10-29 11:26:20', NULL, 'read'),
+(49, 'ADMIN_05', 'Payment confirmed for application ID: 92', 'payment_confirmation', '92', '2023-10-29 11:26:22', NULL, 'read'),
+(50, 'ADMIN_05', 'Payment confirmed for application ID: 96', 'payment_confirmation', '96', '2023-10-29 13:05:55', NULL, 'unread'),
+(51, 'ADMIN_05', 'Payment confirmed for application ID: 91', 'payment_confirmation', '91', '2023-10-29 13:05:58', NULL, 'unread'),
+(52, 'ADMIN_05', 'Payment confirmed for application ID: 90', 'payment_confirmation', '90', '2023-10-29 13:06:05', NULL, 'unread');
 
 -- --------------------------------------------------------
 
@@ -1189,6 +1229,69 @@ CREATE TABLE `rates` (
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `user_id` varchar(50) NOT NULL,
+  `user_name` varchar(50) NOT NULL,
+  `designation` varchar(255) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='This is a table for users who use the system.';
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `user_id`, `user_name`, `designation`, `email`, `password`) VALUES
+(1, 'ADMIN_01', 'Jeffry James Paner', 'Admin', 'jeffrypaner@gmail.com', 'jeffry123'),
+(2, 'ADMIN_02', 'Rogene Vito', 'Meter Reader', 'meterreader@gmail.com', 'meterreader'),
+(3, 'ADMIN_03', 'test', 'Admin', 'test', 'test'),
+(4, 'ADMIN_04', 'Anthony Galang', 'Cashier', 'anthonygalang@gmail.com', 'anthony'),
+(5, 'ADMIN_05', 'CASHIER', 'Cashier', 'cashier@gmail.com', 'cashier123'),
+(6, 'ADMIN_06', 'rogene', 'Admin', 'rogene', 'rogene'),
+(7, 'ADMIN_07', 'anthony', 'Admin', 'anthony', 'anthony');
+
+--
+-- Triggers `users`
+--
+DELIMITER $$
+CREATE TRIGGER `users` BEFORE INSERT ON `users` FOR EACH ROW BEGIN
+	INSERT INTO user_id VALUES (NULL);
+    SET NEW.user_id = CONCAT("ADMIN_",
+LPAD(LAST_INSERT_ID(), 2, "0"));
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_id`
+--
+
+CREATE TABLE `user_id` (
+  `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_id`
+--
+
+INSERT INTO `user_id` (`id`) VALUES
+(1),
+(2),
+(3),
+(4),
+(5),
+(6),
+(7);
+
 --
 -- Indexes for dumped tables
 --
@@ -1200,24 +1303,17 @@ ALTER TABLE `address`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `admin`
---
-ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`,`email`);
-
---
--- Indexes for table `admin_id`
---
-ALTER TABLE `admin_id`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `billing_data`
 --
 ALTER TABLE `billing_data`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `client_id` (`client_id`);
+
+--
+-- Indexes for table `charging_fees`
+--
+ALTER TABLE `charging_fees`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `clients_archive`
@@ -1256,12 +1352,25 @@ ALTER TABLE `logs`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `admin_id` (`admin_id`);
+  ADD KEY `admin_id` (`user_id`);
 
 --
 -- Indexes for table `rates`
 --
 ALTER TABLE `rates`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`,`email`);
+
+--
+-- Indexes for table `user_id`
+--
+ALTER TABLE `user_id`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1275,22 +1384,16 @@ ALTER TABLE `address`
   MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT for table `admin`
---
-ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `admin_id`
---
-ALTER TABLE `admin_id`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
 -- AUTO_INCREMENT for table `billing_data`
 --
 ALTER TABLE `billing_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+
+--
+-- AUTO_INCREMENT for table `charging_fees`
+--
+ALTER TABLE `charging_fees`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `clients_archive`
@@ -1308,31 +1411,43 @@ ALTER TABLE `client_application`
 -- AUTO_INCREMENT for table `client_data`
 --
 ALTER TABLE `client_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT for table `client_secondary_data`
 --
 ALTER TABLE `client_secondary_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=727;
+  MODIFY `id` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=745;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `rates`
 --
 ALTER TABLE `rates`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `user_id`
+--
+ALTER TABLE `user_id`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
