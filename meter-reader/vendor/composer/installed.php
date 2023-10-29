@@ -3,7 +3,7 @@
         'name' => 'dell/admin',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '16505a7da6f94085f4d4ed89bff72df4cbea0386',
+        'reference' => '0acc74ce7ab115fe37125a5fb88664b46fbb26b8',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -31,7 +31,7 @@
         'dell/admin' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '16505a7da6f94085f4d4ed89bff72df4cbea0386',
+            'reference' => '0acc74ce7ab115fe37125a5fb88664b46fbb26b8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

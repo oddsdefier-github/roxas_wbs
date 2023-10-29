@@ -9,7 +9,7 @@ require './database_queries.php';
 require __DIR__ . "/vendor/autoload.php";
 
 session_start();
-$meterReader = $_SESSION['admin_name'];
+$meterReader = $_SESSION['user_name'];
 
 $options = new Options;
 $options->setChroot(__DIR__);
@@ -23,7 +23,7 @@ $sql = "SELECT cd.*, bd.*, sd.*
         FROM client_data cd 
         JOIN billing_data bd ON cd.client_id = bd.client_id 
         JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
-        WHERE bd.billing_status = 'unpaid'";
+        WHERE bd.billing_status = 'unpaid' AND bd.billing_type = 'actual'";
 
 
 $stmt = $conn->prepareStatement($sql);
@@ -77,7 +77,6 @@ foreach ($billing_data as $invoice) {
     $disconnectionDate = $invoice['disconnection_date'];
     $timestamp = $invoice['timestamp'];
 
-    $timestamp = $invoice['timestamp'];
     $date = new DateTime($timestamp, new DateTimeZone('Asia/Manila'));  // Explicitly specify the original timezone
     $formattedDate = $date->format('D M d, Y h:i A');  // Format the date
 
