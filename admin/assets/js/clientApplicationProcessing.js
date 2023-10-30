@@ -545,7 +545,7 @@ $(document).ready(function () {
      * ? Initialize the input to all have a data-input-track = "valid"
      * * 
      */
-    inputs = [
+    const inputs = [
         meterNumberInput,
         firstNameInput,
         middleNameInput,

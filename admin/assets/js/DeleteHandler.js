@@ -64,6 +64,16 @@ class EnhancedDeleteHandler extends DeleteHandler {
         this.tableInstance = tableInstance;
     }
     executeDeletion() {
+        
+        const currentPath = window.location.pathname;
+        const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
+
+        let filterValue = '';
+        if (filename === 'clients.php') {
+            filterValue = "Active"
+        } else if (filename === 'clients_application_table.php') {
+            filterValue = "Unconfirmed"
+        }
         $.ajax({
             url: "database_actions.php",
             type: "post",
@@ -73,8 +83,8 @@ class EnhancedDeleteHandler extends DeleteHandler {
                 tableName: this.tableName
             },
             success: (data) => {
-                console.log(data);
-                this.tableInstance.fetchTableData('', [{ column: "status", value: "Unconfirmed" }]);
+                alert(data);
+                this.tableInstance.fetchTableData('', [{ column: "status", value: filterValue }]);
             }
         });
     }

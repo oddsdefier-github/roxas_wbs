@@ -23,7 +23,7 @@ $(document).ready(function () {
     const inputFields = $('.validate-input');
 
 
-    inputs = [
+    const inputs = [
         meterNumberInput,
         firstNameInput,
         middleNameInput,
@@ -181,7 +181,7 @@ $(document).ready(function () {
                     if (responseData['status'] === 'error') {
                         alert(`${responseData['message']}`)
                     } else if ((responseData['status'] === 'success')) {
-                        alert(`${responseData['applicant']}'s application has been added.`)
+                        alert(`${responseData['message']}`)
                         let currentPath = window.location.pathname;
                         let pathComponents = currentPath.split("/");
                         pathComponents[pathComponents.length - 1] = "clients_application_table.php";
@@ -262,7 +262,7 @@ $(document).ready(function () {
 
     function validateField(fieldName, fieldValue) {
         const validationRules = {
-            meter_umber: {
+            meterNumber: {
                 presence: {
                     allowEmpty: false,
                     message: "cannot be empty"

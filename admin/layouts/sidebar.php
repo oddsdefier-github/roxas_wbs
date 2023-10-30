@@ -145,7 +145,7 @@
 
                             <ul class="px-3 submenu-container">
                                 <li class="my-2">
-                                    <a href="client_application_form.php" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
+                                    <a href="" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
                                         <span class="gap-2 flex items-center">
                                             <div class="p-1 rounded-md">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
@@ -157,7 +157,7 @@
                                     </a>
                                 </li>
                                 <li class="my-2">
-                                    <a href="clients_application_table.php" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
+                                    <a href="" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
                                         <span class="gap-2 flex items-center">
                                             <div class="p-1 rounded-md">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
