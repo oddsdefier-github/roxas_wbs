@@ -34,8 +34,8 @@ include './auth_guard.php';
 
     <?php include './layouts/scripts.php'; ?>
     <script>
-        $("#subheader-title").text("Clients Application");
-        $("#subheader-title").siblings("h5").text("Manage, Evaluate, Approve, or Decline Client Applications.")
+    $("#subheader-title").text("Clients Application");
+    $("#subheader-title").siblings("h5").text("Manage, Evaluate, Approve, or Decline Client Applications.")
     </script>
 </body>
 

@@ -62,10 +62,10 @@ class DatabaseQueries extends BaseQuery
             if ($stmtUpdate->execute()) {
                 return true;
             } else {
-                return false;
+                return "Error: " . $this->conn->getErrorMessage();
             }
         } else {
-            return false;
+            return "Error: " . $this->conn->getErrorMessage();
         }
     }
 
@@ -136,10 +136,10 @@ class DatabaseQueries extends BaseQuery
             if (mysqli_stmt_execute($stmt)) {
                 return true;
             } else {
-                return false;
+                return "Error: " . mysqli_stmt_error($stmt);
             }
         } else {
-            return false;
+            return "Error: " . $this->conn->getErrorMessage();
         }
     }
 
@@ -188,10 +188,17 @@ class DatabaseQueries extends BaseQuery
             return $response;
         }
 
-        if ($this->insertIntoClientApplication($formData)) {
+        $insertResult = $this->insertIntoClientApplication($formData);
+        if ($insertResult === true) {
             $response = array(
                 "status" => "success",
                 "message" => $fullName . "'s application has successfully processed.",
+            );
+            return $response;
+        } else {
+            $response = array(
+                "status" => "error",
+                "message" => $insertResult
             );
             return $response;
         }
@@ -214,9 +221,6 @@ class DatabaseQueries extends BaseQuery
     {
         $applicationID = htmlspecialchars($formData['applicationID'], ENT_QUOTES, 'UTF-8');
         $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
-        $firstName = htmlspecialchars($formData['firstName'], ENT_QUOTES, 'UTF-8');
-        $middleName = htmlspecialchars($formData['middleName'], ENT_QUOTES, 'UTF-8');
-        $lastName = htmlspecialchars($formData['lastName'], ENT_QUOTES, 'UTF-8');
         $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
         $birthDate = htmlspecialchars($formData['birthDate'], ENT_QUOTES, 'UTF-8');
         $age = htmlspecialchars($formData['age'], ENT_QUOTES, 'UTF-8');
@@ -256,12 +260,25 @@ class DatabaseQueries extends BaseQuery
         );
 
         if (mysqli_stmt_execute($stmt)) {
-            $this->markNotificationAsRead($applicationID);
-            $this->insertIntoClientSecondaryData($formData, $clientID);
-            $this->insertIntoBillingData($formData, $registrationId, $clientID);
+
+            $markNotificationAsRead =  $this->markNotificationAsRead($applicationID);
+            if (!$markNotificationAsRead) {
+                return "Error: " . $markNotificationAsRead;
+            }
+
+            $insertIntoClientSecondaryData =  $this->insertIntoClientSecondaryData($formData, $clientID);
+            if (!$insertIntoClientSecondaryData) {
+                return "Error: " . $insertIntoClientSecondaryData;
+            }
+
+            $insertIntoBillingData = $this->insertIntoBillingData($formData, $registrationId, $clientID);
+            if (!$insertIntoBillingData) {
+                return "Error: " . $insertIntoBillingData;
+            }
+
             return true;
         } else {
-            return $this->conn->getErrorMessage();
+            return "Error: " . $this->conn->getErrorMessage();
         }
     }
 
@@ -316,7 +333,7 @@ class DatabaseQueries extends BaseQuery
             if (mysqli_stmt_execute($stmt)) {
                 return true;
             } else {
-                return $this->conn->getErrorMessage();
+                return "Error: " . $this->conn->getErrorMessage();
             }
         }
     }
@@ -384,20 +401,9 @@ class DatabaseQueries extends BaseQuery
         );
 
         if (mysqli_stmt_execute($stmt_billing)) {
-            $response = array(
-                "status" => "success",
-                "message" => $firstName . "'s application has been approved.",
-                "client_id" => $clientID,
-                "reg_id" => $registrationId,
-                "name" => $fullName,
-                "address" => $fullAddress,
-                "property_type" => $propertyType,
-                "meter_number" => $meterNumber,
-                "date" => date('F j, Y')
-            );
-            return $response;
+            return true;
         } else {
-            return $this->conn->getErrorMessage();
+            return "Error: " . $this->conn->getErrorMessage();
         }
     }
 
@@ -443,7 +449,8 @@ class DatabaseQueries extends BaseQuery
             return $response;
         };
 
-        if ($this->insertIntoClientData($formData, $clientID)) {
+        $insertIntoClientData = $this->insertIntoClientData($formData, $clientID);
+        if ($insertIntoClientData === true) {
             $response = array(
                 "status" => "success",
                 "client_id" => $clientID,
@@ -453,7 +460,7 @@ class DatabaseQueries extends BaseQuery
         } else {
             $response = array(
                 "status" => "error",
-                "message" => "Failed: " . $this->conn->getErrorMessage()
+                "message" => "Failed: " . $insertIntoClientData
             );
             return $response;
         }
@@ -798,14 +805,14 @@ class DatabaseQueries extends BaseQuery
 
 
         $latePaymentFee = filter_var($formData['latePaymentFee'], FILTER_VALIDATE_FLOAT);
-        $disconnectionFee = filter_var($formData['disconnectionFee'], FILTER_VALIDATE_FLOAT);
+        $reconnectionFee = filter_var($formData['reconnectionFee'], FILTER_VALIDATE_FLOAT);
         $reference_id = $user_id;
 
 
-        $sql = "INSERT into penalty_fees(late_payment_fee, disconnection_fee, reference_id, time, date, timestamp) VALUES(?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $sql = "INSERT into penalty_fees(late_payment_fee, reconnection_fee, reference_id, time, date, timestamp) VALUES( ?, ?,?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
         $stmt = $this->conn->prepareStatement($sql);
 
-        $stmt->bind_param("dds", $latePaymentFee, $disconnectionFee, $reference_id);
+        $stmt->bind_param("dds", $latePaymentFee, $reconnectionFee, $reference_id);
 
 
         if ($stmt->execute()) {

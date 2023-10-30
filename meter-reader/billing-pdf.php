@@ -39,15 +39,15 @@ if (mysqli_stmt_execute($stmt)) {
 }
 
 
-$template = file_get_contents('templates/invoice-billing.html');
+$template = file_get_contents('templates/billing-template.html');
 
-// Initialize empty string to store all invoices
-$all_invoices = "";
+// Initialize empty string to store all billings
+$all_billings = "";
 
-// Process each invoice
-foreach ($billing_data as $invoice) {
-    // Generate QR code for the invoice using Endroid library
-    $qrCode = new QrCode($invoice['billing_id']);
+// Process each billing
+foreach ($billing_data as $billing) {
+    // Generate QR code for the billing using Endroid library
+    $qrCode = new QrCode($billing['billing_id']);
     $writer = new PngWriter();
     $result = $writer->write($qrCode);
 
@@ -55,43 +55,43 @@ foreach ($billing_data as $invoice) {
     $qrDataUri = $result->getDataUri();
 
     // Replace placeholders in the template with actual data
-    $billingID = $invoice['billing_id'];
-    $accountNUmber = $invoice['client_id'];
-    $meterNumber = $invoice['meter_number'];
-    $propertyType = $invoice['property_type'];
-    $firstName = $invoice['first_name'];
-    $middleName = $invoice['middle_name'];
-    $lastName = $invoice['last_name'];
-    $brgy = $invoice['brgy'];
-    $municipality = $invoice['municipality'];
-    $propertyType = $invoice['property_type'];
-    $billingMonth = $invoice['billing_month'];
-    $currReading = $invoice['curr_reading'];
-    $prevReading = $invoice['prev_reading'];
-    $consumption = $invoice['consumption'];
-    $rates = $invoice['rates'];
-    $billingAmount = $invoice['billing_amount'];
-    $periodTo = $invoice['period_to'];
-    $periodFrom = $invoice['period_from'];
-    $dueDate = $invoice['due_date'];
-    $disconnectionDate = $invoice['disconnection_date'];
-    $timestamp = $invoice['timestamp'];
+    $billingID = $billing['billing_id'];
+    $accountNUmber = $billing['client_id'];
+    $meterNumber = $billing['meter_number'];
+    $propertyType = $billing['property_type'];
+    $firstName = $billing['first_name'];
+    $middleName = $billing['middle_name'];
+    $lastName = $billing['last_name'];
+    $brgy = $billing['brgy'];
+    $municipality = $billing['municipality'];
+    $propertyType = $billing['property_type'];
+    $billingMonth = $billing['billing_month'];
+    $currReading = $billing['curr_reading'];
+    $prevReading = $billing['prev_reading'];
+    $consumption = $billing['consumption'];
+    $rates = $billing['rates'];
+    $billingAmount = number_format($billing['billing_amount']);
+    $periodTo = $billing['period_to'];
+    $periodFrom = $billing['period_from'];
+    $dueDate = $billing['due_date'];
+    $disconnectionDate = $billing['disconnection_date'];
+    $timestamp = $billing['timestamp'];
 
     $date = new DateTime($timestamp, new DateTimeZone('Asia/Manila'));  // Explicitly specify the original timezone
     $formattedDate = $date->format('D M d, Y h:i A');  // Format the date
 
-    $invoiceHtml = str_replace(
+    $billingHtml = str_replace(
         ['{{billing_id}}', '{{datetime}}', '{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{curr_reading}}', '{{prev_reading}}', '{{consumption}}', '{{rates}}', '{{billing_amount}}', '{{billing_month}}', '{{meter_number}}', '{{property_type}}', '{{period_to}}', '{{period_from}}', '{{due_date}}', '{{disconnection_date}}', '{{meter_reader}}', '{{qr_code_path}}'],
         [$billingID, $formattedDate, $accountNUmber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $rates, $billingAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
         $template
     );
 
-    // Append individual invoice HTML to all invoices
-    $all_invoices .= $invoiceHtml;
+    // Append individual billing HTML to all billings
+    $all_billings .= $billingHtml;
 }
 
-// Load combined invoices to Dompdf
-$dompdf->loadHtml($all_invoices);
+// Load combined billings to Dompdf
+$dompdf->loadHtml($all_billings);
 
 // Set paper size (Half Letter size in this case)
 $dompdf->setPaper('legal');
@@ -103,10 +103,10 @@ $dompdf->render();
 $dompdf->addInfo("Title", "Billing");
 
 // Stream PDF to client
-$fileName = "invoices.pdf";
+$fileName = "billings.pdf";
 $dompdf->stream($fileName, ["Attachment" => 0]);
 
 // Save PDF to file system
 $output = $dompdf->output();
-$fileName = "/invoices.pdf";
+$fileName = "/billings.pdf";
 file_put_contents($fileName, $output);

@@ -737,9 +737,10 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     $('#reviewConfirmationModal').hide();
-                    window.location.reload();
+                 
                     console.log(data);
-                    // alert(data.message);
+                    alert(data.message);
+                       window.location.reload();
                 }
             })
         });

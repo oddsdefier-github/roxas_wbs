@@ -14,8 +14,7 @@ const installationFeeInput = $("#installationFee");
 const connectionFeeInput = $("#connectionFee");
 
 const latePaymentFeeInput = $("#latePaymentFee");
-const disconnectionFeeInput = $("#disconnectionFee");
-
+const reconnectionFeeInout = $("#reconnectionFee");
 
 const ratesInput = $("#rates");
 const propertyTypeSelect = $("#propertyType");
@@ -25,15 +24,15 @@ function extractInputsVal(inputs) {
     console.log("Function called with inputs:", inputs);
     const inputFieldsValues = {
         applicationFeeInputs: {
-            applicationFee: +applicationFeeInput.val(),
-            inspectionFee: +inspectionFeeInput.val(),
-            registrationFee: +registrationFeeInput.val(),
-            installationFee: +installationFeeInput.val(),
-            connectionFee: +connectionFeeInput.val()
+            applicationFee: applicationFeeInput.val(),
+            inspectionFee: inspectionFeeInput.val(),
+            registrationFee: registrationFeeInput.val(),
+            installationFee: installationFeeInput.val(),
+            connectionFee: connectionFeeInput.val()
         },
         penaltyInputs: {
             latePaymentFee: latePaymentFeeInput.val(),
-            disconnectionFee: disconnectionFeeInput.val()
+            reconnectionFee: reconnectionFeeInout.val()
         },
         ratesInputs: {
             propertyType: propertyTypeSelect.val(),
@@ -149,7 +148,7 @@ function validateField(fieldName, fieldValue) {
             },
             numericality: true
         },
-        disconnectionFee: {
+                reconnectionFee: {
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty"

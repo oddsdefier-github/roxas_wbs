@@ -3,7 +3,9 @@ import { DataTableWithPagination } from './DataTableWithPagination.js';
 const applicationFeeTable = "client_application_fees";
 const penaltyTable = "penalty_fees";
 
-function retrieveApplicationFees(id, table, htmlContainer) {
+
+
+function retrieveApplicationFees(id, table) {
     $.ajax({
         url: "database_actions.php",
         type: "post",
@@ -13,16 +15,40 @@ function retrieveApplicationFees(id, table, htmlContainer) {
             type: table
         },
         success: function (data) {
-            console.log(data)
-            htmlContainer.html(data)
+            /**
+             * Appends data to modal.
+             * @param {string} data - The data to be appended to the modal.
+             */
+            function appendDataToModal(data) {
+                const { fees } = JSON.parse(data);
+                const { application_fee, inspection_fee, registration_fee, connection_fee, installation_fee } = fees;
+
+                const total_fee = parseFloat(application_fee) + parseFloat(inspection_fee) + parseFloat(registration_fee) + parseFloat(connection_fee) + parseFloat(installation_fee);
+                
+                const formatNumber = (num) => {
+                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                };
+                $(".application-fee").text("₱" + formatNumber(application_fee));
+                $(".inspection-fee").text("₱" + formatNumber(inspection_fee));
+                $(".registration-fee").text("₱" + formatNumber(registration_fee));
+                $(".connection-fee").text("₱" + formatNumber(connection_fee));
+                $(".installation-fee").text("₱" + formatNumber(installation_fee));
+                $(".total-fee").text("₱" + formatNumber(total_fee));
+
+                window.total_fee = total_fee;
+            }
+
+            appendDataToModal(data);
         }
     })
 }
 
-
+/**
+ * Accepts payment for a client application.
+ * @param {number} id - The ID of the client application.
+ */
 function acceptClientAppPayment(id) {
-    const feeSDescContainer = $(".application-fees-desc");
-    retrieveApplicationFees(id, applicationFeeTable, feeSDescContainer);
+    retrieveApplicationFees(id, applicationFeeTable);
     const acceptClientAppPayment = $("#acceptAppPaymentModal");
     const confirmAppPayment = $("#confirm-app-payment");
     console.log(id)
@@ -40,7 +66,8 @@ function acceptClientAppPayment(id) {
             type: "post",
             data: {
                 action: "confirmAppPayment",
-                id: id
+                id: id,
+                total_fee: window.total_fee 
             },
             success: function (data) {
                 console.log(data)
@@ -51,6 +78,7 @@ function acceptClientAppPayment(id) {
         })
     })
 }
+
 
 
 function acceptClientBillingPayment(id) {
