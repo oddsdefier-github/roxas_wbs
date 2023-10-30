@@ -11,7 +11,7 @@
                 Residential: 27
             </div>
             <div class="col-span-2 row-start-2">
-                <form id="application_fee-form">
+                <form id="rates_form">
                     <div class="space-y-6 shadow p-5 px-5">
                         <div>
                             <div class="border-b border-gray-900/10 py-5 mb-5">
@@ -52,18 +52,17 @@
                                         <div data-popper-arrow></div>
                                     </div>
 
-
                                     <div class="mt-2 relative">
-                                        <input data-input-state="error" type="text" name="disconnection-fee" id="disconnection-fee" class="validate-input block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="42.00">
+                                        <input data-input-state="error" type="text" name="rates" id="rates" class="validate-input block w-full rounded-md border-0 py-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" placeholder="42.00">
                                     </div>
-                                    <div data-validate-input="disconnection-fee" class="validate-message"></div>
+                                    <div data-validate-input="rates" class="validate-message"></div>
 
                                 </div>
                             </div>
                         </div>
                         <div class="flex items-center justify-end gap-x-6">
                             <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
-                            <button id="submit-application" type="submit" class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" disabled>
+                            <button id="submit-application" type="submit" class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 Update
                             </button>
                         </div>

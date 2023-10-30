@@ -1,9 +1,11 @@
 const applicationFeeForm = $("#application_fee_form");
 const penaltyFeeForm = $("#penalty_fee_form");
+const ratesForm = $("#rates_form");
 
 const applicationFeeFormInputs = $(".validate-application-fee-input");
 const penaltyFeeFormInputs = $(".validate-penalty-fee-input");
 const applicationFeeSubmit = $("#applicationFeeSubmit");
+const ratesSubmit = $("#rates_submit");
 
 const applicationFeeInput = $("#applicationFee");
 const inspectionFeeInput = $("#inspectionFee");
@@ -15,37 +17,48 @@ const latePaymentFeeInput = $("#latePaymentFee");
 const disconnectionFeeInput = $("#disconnectionFee");
 
 
+const ratesInput = $("#rates");
+const propertyTypeSelect = $("#propertyType");
+
+
 function extractInputsVal(inputs) {
+    console.log("Function called with inputs:", inputs);
     const inputFieldsValues = {
         applicationFeeInputs: {
-            applicationFee: applicationFeeInput.val(),
-            inspectionFee: inspectionFeeInput.val(),
-            registrationFee: registrationFeeInput.val(),
-            installationFee: installationFeeInput.val(),
-            connectionFee: connectionFeeInput.val()
+            applicationFee: +applicationFeeInput.val(),
+            inspectionFee: +inspectionFeeInput.val(),
+            registrationFee: +registrationFeeInput.val(),
+            installationFee: +installationFeeInput.val(),
+            connectionFee: +connectionFeeInput.val()
         },
         penaltyInputs: {
             latePaymentFee: latePaymentFeeInput.val(),
             disconnectionFee: disconnectionFeeInput.val()
+        },
+        ratesInputs: {
+            propertyType: propertyTypeSelect.val(),
+            rates: ratesInput.val()
         }
     }
 
     if (inputFieldsValues.hasOwnProperty(inputs)) {
         return inputFieldsValues[inputs]
     } else {
-        return null
+        return "null"
     }
 }
 
+
 function submitFormData(action, inputs) {
     const formData = extractInputsVal(inputs);
-    if (formData !==) {
+    console.log(JSON.stringify(formData))
+    if (formData !== null) {
         $.ajax({
             url: "database_actions.php",
             type: "post",
             data: {
                 action: action,
-                formData: JSON.stringify(formData)
+                formData: formData
             },
             success: function (response) {
                 console.log(response)
@@ -67,6 +80,8 @@ $.each(applicationFeeFormInputs, function (_, element) {
 $.each(penaltyFeeFormInputs, function (_, element) {
     $(element).attr('data-input-track', 'error');
 });
+
+ratesInput.attr('data-input-track', 'error');
 
 const cssClasses = {
     normalLabelClass: 'flex items-center text-sm font-medium leading-6 text-gray-600',
@@ -97,64 +112,57 @@ function validateField(fieldName, fieldValue) {
                 allowEmpty: false,
                 message: "cannot be empty"
             },
-            numericality: {
-                onlyInteger: true
-            }
+            numericality: true
         },
         inspectionFee: {
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty"
             },
-            numericality: {
-                onlyInteger: true
-            }
+            numericality: true
         },
         registrationFee: {
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty"
             },
-            numericality: {
-                onlyInteger: true
-            }
+            numericality: true
         },
         connectionFee: {
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty"
             },
-            numericality: {
-                onlyInteger: true
-            }
+            numericality: true
         },
         installationFee: {
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty"
             },
-            numericality: {
-                onlyInteger: true
-            }
+            numericality: true
         },
         latePaymentFee: {
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty"
             },
-            numericality: {
-                onlyInteger: true
-            }
+            numericality: true
         },
         disconnectionFee: {
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty"
             },
-            numericality: {
-                onlyInteger: true
-            }
+            numericality: true
         },
+        rates: {
+            presence: {
+                allowEmpty: false,
+                message: "cannot be empty"
+            },
+            numericality: true
+        }
     };
 
     const fieldErrors = validate({ [fieldName]: fieldValue.trim() }, validationRules);
@@ -175,6 +183,7 @@ applicationFeeFormInputs.on("input", function () {
         $(this).attr('data-input-track', 'valid');
     }
 });
+
 penaltyFeeFormInputs.on("input", function () {
     const fieldName = $(this).attr("name");
     const fieldValue = $(this).val();
@@ -189,14 +198,23 @@ penaltyFeeFormInputs.on("input", function () {
     }
 });
 
+ratesInput.on("input", function () {
+    const fieldName = $(this).attr("name");
+    const fieldValue = $(this).val();
+    const errorMessage = validateField(fieldName, fieldValue);
 
-applicationFeeFormInputs.on("input", function () {
-    console.log($(this).attr("name"))
-})
-
+    if (errorMessage) {
+        console.log(errorMessage)
+        $(this).attr('data-input-track', 'error');
+    } else {
+        console.log("NO Error")
+        $(this).attr('data-input-track', 'valid');
+    }
+});
 
 
 applicationFeeForm.on("submit", function (e) {
+
     e.preventDefault()
 
     $.each(applicationFeeFormInputs, function () {
@@ -217,17 +235,17 @@ applicationFeeForm.on("submit", function (e) {
 
         } else {
             $(this).attr('data-input-track', 'valid');
-
-            let count = 0;
-            $.each(applicationFeeFormInputs, function (_, element) {
-                const item = $(element);
-                if (item.attr('data-input-track') === 'valid') {
-                    count++;
-                }
-                if (count === applicationFeeFormInputs.length) {
-                    console.log("SUBMIT")
-                }
-            });
+        }
+    });
+    let count = 0;
+    $.each(applicationFeeFormInputs, function (_, element) {
+        const item = $(element);
+        if (item.attr('data-input-track') === 'valid') {
+            count++;
+        }
+        if (count === applicationFeeFormInputs.length) {
+            console.log("SUBMIT")
+            submitFormData("updateApplicationFees", "applicationFeeInputs")
         }
     });
 })
@@ -254,18 +272,46 @@ penaltyFeeForm.on("submit", function (e) {
 
         } else {
             $(this).attr('data-input-track', 'valid');
-
-            let count = 0;
-            $.each(penaltyFeeFormInputs, function (_, element) {
-                const item = $(element);
-                if (item.attr('data-input-track') === 'valid') {
-                    count++;
-                }
-                if (count === penaltyFeeFormInputs.length) {
-                    console.log("SUBMIT")
-                }
-            });
         }
+    });
+    let count = 0;
+    $.each(penaltyFeeFormInputs, function (_, element) {
+        const item = $(element);
+        if (item.attr('data-input-track') === 'valid') {
+            count++;
+        }
+        if (count === penaltyFeeFormInputs.length) {
+            console.log("SUBMIT")
+            submitFormData("updatePenaltyFees", "penaltyInputs")
+        }
+    });
+})
+
+
+ratesForm.on("submit", function (e) {
+    e.preventDefault()
+    $.each(ratesInput, function () {
+        const fieldName = $(this).attr("name");
+        const fieldValue = $(this).val();
+        const errorMessage = validateField(fieldName, fieldValue);
+
+        $(`div[data-validate-input="${fieldName}"]`).empty();
+
+        if (errorMessage) {
+            console.log(errorMessage)
+            $(this).attr('data-input-track', 'error');
+
+            errorMessage.forEach((message) => {
+                const errorHTML = `<div style="display: inline-flex; align-items: center; justify-content: start; width: 100%;">${elements.miniCautionElement} <p style="margin: 2px">${message}</p></div>`;
+                $(`div[data-validate-input="${fieldName}"]`).append(errorHTML);
+            });
+
+        } else {
+            $(this).attr('data-input-track', 'valid');
+            console.log("SUBMIT")
+            submitFormData("updateRates", "ratesInputs")
+        }
+
     });
 })
 

@@ -382,6 +382,7 @@ class DatabaseQueries extends BaseQuery
                                                 $periodFrom = date("Y-m-d");
 
                                                 $billingStatus = NULL;
+                                                $billingType = 'initial';
                                                 $consumption = NULL;
                                                 $rates = NULL;
                                                 $billingAmount = 0;
@@ -389,14 +390,14 @@ class DatabaseQueries extends BaseQuery
                                                 $currentDate = new DateTime();
                                                 $billingMonthAndYear = $currentDate->format('F Y');
 
-                                                $sql_billing = "INSERT INTO billing_data (billing_id, client_id, prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+                                                $sql_billing = "INSERT INTO billing_data (billing_id, client_id, prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status,'billing_type', billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
                                                 $stmt_billing = $this->conn->prepareStatement($sql_billing);
 
                                                 // HERE WERE USING THE SAME VALUE FOR PERIOD TO AND PERIOD FROM FRO INITIALIZATION
                                                 if ($stmt_billing) {
                                                     mysqli_stmt_bind_param(
                                                         $stmt_billing,
-                                                        "ssiisssisssssss",
+                                                        "ssiisssissssssss",
                                                         $billingID,
                                                         $clientID,
                                                         $prevReading,
@@ -406,6 +407,7 @@ class DatabaseQueries extends BaseQuery
                                                         $rates,
                                                         $billingAmount,
                                                         $billingStatus,
+                                                        $billingType,
                                                         $billingMonthAndYear,
                                                         $dueDate,
                                                         $disconnectionDate,
@@ -738,7 +740,7 @@ class DatabaseQueries extends BaseQuery
                 }
 
                 $output .= "
-                    <a href=\"$url\" target=\"_blank\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
+                    <a href=\"$url\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
                         <div class=\"flex-shrink-0\">
                             <img class=\"rounded-full w-11 h-11\" src='$icon' alt=\"Confirm Icon\">
                         </div>
@@ -750,6 +752,8 @@ class DatabaseQueries extends BaseQuery
                 ";
             }
         } else {
+            $sql = "TRUNCATE TABLE notifications";
+            $this->conn->query($sql);
             $output .= "<div class=\"flex justify-center items-center px-4 py-3 hover:bg-gray-100\">None</div>";
         }
         $output = '<input id="notif_count_hidden" type="hidden" value="' . $notifCount . '">' . $output;
@@ -781,6 +785,90 @@ class DatabaseQueries extends BaseQuery
 
         return json_encode($response);
     }
+
+    public function updateApplicationFees($formData)
+    {
+
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $user_id = $_SESSION['user_id'];
+
+
+        $applicationFee = filter_var($formData['applicationFee'], FILTER_VALIDATE_FLOAT);
+        $inspectionFee = filter_var($formData['inspectionFee'], FILTER_VALIDATE_FLOAT);
+        $installationFee = filter_var($formData['installationFee'], FILTER_VALIDATE_FLOAT);
+        $registrationFee = filter_var($formData['registrationFee'], FILTER_VALIDATE_FLOAT);
+        $connectionFee = filter_var($formData['connectionFee'], FILTER_VALIDATE_FLOAT);
+        $reference_id = $user_id;
+
+
+        $sql = "INSERT into client_application_fees(application_fee, inspection_fee, registration_fee, connection_fee, installation_fee, reference_id, time, date, timestamp) VALUES(?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        $stmt->bind_param("ddddds", $applicationFee, $inspectionFee, $registrationFee, $connectionFee, $installationFee, $reference_id);
+
+
+        if ($stmt->execute()) {
+            return ['status' => 'success', 'message' => 'Application Fees are updated successfully'];
+        } else {
+            return ['status' => 'error', 'message' => 'Data insertion failed', 'error' => $this->conn->getErrorMessage()];
+        }
+    }
+    public function updatePenaltyFees($formData)
+    {
+
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $user_id = $_SESSION['user_id'];
+
+
+        $latePaymentFee = filter_var($formData['latePaymentFee'], FILTER_VALIDATE_FLOAT);
+        $disconnectionFee = filter_var($formData['disconnectionFee'], FILTER_VALIDATE_FLOAT);
+        $reference_id = $user_id;
+
+
+        $sql = "INSERT into penalty_fees(late_payment_fee, disconnection_fee, reference_id, time, date, timestamp) VALUES(?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        $stmt->bind_param("dds", $latePaymentFee, $disconnectionFee, $reference_id);
+
+
+        if ($stmt->execute()) {
+            return ['status' => 'success', 'message' => 'Penalty Fees are updated successfully'];
+        } else {
+            return ['status' => 'error', 'message' => 'Data insertion failed', 'error' => $this->conn->getErrorMessage()];
+        }
+    }
+    public function updateRates($formData)
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $user_id = $_SESSION['user_id'];
+
+
+        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
+        $rates = filter_var($formData['rates'], FILTER_VALIDATE_FLOAT);
+        $currentMonthYear = date('F Y');
+        $reference_id = $user_id;
+
+
+        $sql = "INSERT into rates(property_type, rates, billing_month, reference_id, time, date, timestamp) VALUES(?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        $stmt->bind_param("sdss", $propertyType, $rates, $currentMonthYear, $reference_id);
+
+        if ($stmt->execute()) {
+            return ['status' => 'success', 'message' => 'Rates are updated successfully'];
+        } else {
+            return ['status' => 'error', 'message' => 'Data insertion failed', 'error' => $this->conn->getErrorMessage()];
+        }
+    }
 }
 
 
@@ -810,7 +898,7 @@ class DataTable extends BaseQuery
             foreach ($filters as $filter) {
                 $conditions[] = "{$filter['column']} = ?";
                 $params[] = $filter['value'];
-                $types .= "s";  // Assuming all filter values are strings, adjust if not
+                $types .= "s";
             }
         }
 

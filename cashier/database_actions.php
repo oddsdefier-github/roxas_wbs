@@ -99,11 +99,15 @@ function handleLoadNotification($dbQueries)
 
 function handleRetrieveChargingFees($dbQueries)
 {
-    if (isset($_POST['type'])) {
+    if (isset($_POST['type']) && isset($_POST['id'])) {
+        $id = $_POST['id'];
         $table = $_POST['type'];
         if ($table === 'client_application_fees') {
-            $clientApplicationChargingFees =  $dbQueries->retrieveClientAppChargingFees($table);
+            $clientApplicationChargingFees =  $dbQueries->retrieveApplicationFees($id, $table);
             echo json_encode($clientApplicationChargingFees);
+        } else if ($table === 'penalty_fees') {
+            $billingChargingFees =  $dbQueries->retrieveApplicationFees($id, $table);
+            echo json_encode($billingChargingFees);
         }
     }
 }

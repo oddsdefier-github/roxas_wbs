@@ -74,6 +74,15 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'countUnreadNotifications':
             handleCountUnreadNotification($dbQueries);
             break;
+        case 'updateApplicationFees':
+            handleUpdateApplicationFees($dbQueries);
+            break;
+        case 'updatePenaltyFees':
+            handleUpdatePenaltyFees($dbQueries);
+            break;
+        case 'updateRates':
+            handleUpdateRates($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -207,4 +216,29 @@ function handleCountUnreadNotification($dbQueries)
 {
     $count = $dbQueries->countUnreadNotifications();
     echo $count;
+}
+
+function handleUpdateApplicationFees($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $updateAppFees = $dbQueries->updateApplicationFees($formData);
+        echo json_encode($updateAppFees);
+    }
+}
+function handleUpdatePenaltyFees($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $updatePenaltyFees = $dbQueries->updatePenaltyFees($formData);
+        echo json_encode($updatePenaltyFees);
+    }
+}
+function handleUpdateRates($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $updateRates = $dbQueries->updateRates($formData);
+        echo json_encode($updateRates);
+    }
 }

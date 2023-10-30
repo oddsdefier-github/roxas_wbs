@@ -33,8 +33,7 @@
             </div>
             <!-- Modal body -->
             <form action="#">
-                <input type="hidden" id="client_billing_payment_id">
-                <div>
+                <div class="penalty-fees-desc">
                     <div>Application Fee: </div>
                     <div>Inspection Fee: </div>
                     <div>Registration Fee : </div>

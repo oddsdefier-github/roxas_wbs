@@ -60,7 +60,39 @@ class DatabaseQueries extends BaseQuery
     //         return false;
     //     }
     // }
+    public function retrieveApplicationFees($id, $table)
+    {
+        $response = array();
+        $sql = "SELECT * FROM $table ORDER BY timestamp DESC LIMIT 1";
+        $result = $this->conn->query($sql);
+        if ($row = mysqli_fetch_assoc($result)) {
+            $response = array(
+                "status" => "success",
+                "fees" => $row
+            );
 
+            $queryClientApp = "SELECT * FROM client_application WHERE id = ?";
+            $stmt = $this->conn->prepareStatement($queryClientApp);
+            mysqli_stmt_bind_param($stmt, "i", $id);
+            if (mysqli_stmt_execute($stmt)) {
+                $result = mysqli_stmt_get_result($stmt);
+                if ($clientAppRow = mysqli_fetch_assoc($result)) {
+                    $response["client_application"] = $clientAppRow;
+                }
+            } else {
+                $response = array(
+                    "status" => "error",
+                    "client_application" => "Failed to client application fees" . $this->conn->getErrorMessage()
+                );
+            }
+        } else {
+            $response = array(
+                "status" => "error",
+                "fees" => "Failed to retrieve fees" . $this->conn->getErrorMessage()
+            );
+        }
+        return $response;
+    }
     public function confirmAppPayment($id)
     {
         $response = array();
@@ -134,12 +166,6 @@ class DatabaseQueries extends BaseQuery
         }
 
         return $output; // This will return our generated HTML to wherever you call the function
-    }
-
-    
-    public function retrieveClientAppChargingFees($table)
-    {
-        $sql = "SELECT * FROM $table";
     }
 }
 

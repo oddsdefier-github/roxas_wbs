@@ -1,26 +1,31 @@
 import { DataTableWithPagination } from './DataTableWithPagination.js';
 
+const applicationFeeTable = "client_application_fees";
+const penaltyTable = "penalty_fees";
 
-function retrieveChargingFees() {
-    const feesDescription = $(".fees-desc");
+function retrieveApplicationFees(id, table, htmlContainer) {
     $.ajax({
         url: "database_actions.php",
         type: "post",
         data: {
             action: "retrieveChargingFees",
-            type: "client_application_fees"
+            id: id,
+            type: table
         },
         success: function (data) {
-            feesDescription.html(data)
+            console.log(data)
+            htmlContainer.html(data)
         }
     })
-
 }
+
+
 function acceptClientAppPayment(id) {
+    const feeSDescContainer = $(".application-fees-desc");
+    retrieveApplicationFees(id, applicationFeeTable, feeSDescContainer);
     const acceptClientAppPayment = $("#acceptAppPaymentModal");
     const confirmAppPayment = $("#confirm-app-payment");
     console.log(id)
-    $("#client_app_payment_id").val(id)
     acceptClientAppPayment.css({
         'display': 'grid',
         'place-items': 'center',
@@ -47,7 +52,10 @@ function acceptClientAppPayment(id) {
     })
 }
 
+
 function acceptClientBillingPayment(id) {
+    const feeSDescContainer = $(".penalty-fees-desc");
+    retrieveChargingFees(penaltyTable, feeSDescContainer);
     console.log(id)
     $("#client_billing_payment_id").val(id)
     $("#acceptBillingPaymentModal").css({

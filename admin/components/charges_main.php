@@ -239,7 +239,7 @@
                         </div>
                         <div class="flex items-center justify-end gap-x-6">
                             <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
-                            <button id="submit-application" type="submit" class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <button id="rates_submit" type="submit" class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 Edit
                             </button>
                         </div>
