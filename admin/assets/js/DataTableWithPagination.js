@@ -2,6 +2,8 @@ export class DataTableWithPagination {
     constructor (tableName, tableContainerSelector = '#displayClientApplicationTable', filter = []) {
         this.tableName = tableName;
         this.filter = filter;
+        this.currentSortColumn = null;
+        this.currentSortDirection = 'ASC';
         this.tableContainerSelector = tableContainerSelector;
         this.itemsPerPageKey = `${this.tableContainerSelector}-itemsPerPage`;
         this.currentPageNumberKey = `${this.tableContainerSelector}-currentPageNumber`;
@@ -75,6 +77,9 @@ export class DataTableWithPagination {
 
         });
 
+
+        $(this.tableContainerSelector).on('click', 'th', (event) => this.handleSort(event));
+
         this.elements.clearSearch.on("click", () => {
             this.elements.searchInput.val("");
             this.handleClearInput();
@@ -117,6 +122,32 @@ export class DataTableWithPagination {
             console.log(checkedValuesArray);
         });
     }
+
+    handleSort(event) {
+        const column = $(event.target).attr('data-column-name');
+        const isSortable = $(event.target).attr('data-sortable') !== 'false';
+
+        if (!isSortable) return;  // Early exit if the column is not sortable
+
+        console.log(column);
+        if (this.currentSortColumn === column) {
+            this.currentSortDirection = this.currentSortDirection === 'ASC' ? 'DESC' : 'ASC';
+        } else {
+            this.currentSortColumn = column;
+            this.currentSortDirection = 'ASC';
+        }
+
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+        const currentFilters = radios.map((_, radio) => {
+            return {
+                column: $(radio).data('column'),
+                value: radio.value
+            };
+        }).get();
+
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
+    }
+
 
     updateItemsPerPageOptions() {
         this.elements.itemsPerPageSelector.find('option').each((index, option) => {
@@ -162,7 +193,7 @@ export class DataTableWithPagination {
         $('a[aria-current="page"]').text(this.currentPageNumber);
     }
 
-    fetchTableData(searchTerm = "", filters = this.filter) {
+    fetchTableData(searchTerm = "", filters = this.filter, sortColumn = this.currentSortColumn, sortDirection = this.currentSortDirection) {
         $.ajax({
             url: "database_actions.php",
             type: 'post',
@@ -175,6 +206,8 @@ export class DataTableWithPagination {
                     itemPerPage: this.itemsPerPage,
                     searchTerm: searchTerm,
                     filters: filters,
+                    sortColumn: sortColumn,
+                    sortDirection: sortDirection
                 }
             },
             success: (data, status) => {
