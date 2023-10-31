@@ -885,8 +885,8 @@ class DataTable extends BaseQuery
 
 
         $validColumns = [
-            'timestamp', 'full_name', 'meter_number', 'property_type', 'brgy',
-            'status', 'billing_status'
+            'meter_number', 'full_name',  'property_type', 'brgy',
+            'status', 'billing_status', 'timestamp'
         ];
         $validDirections = ['ASC', 'DESC'];
 
@@ -917,7 +917,7 @@ class DataTable extends BaseQuery
 
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
         <thead class="text-xs text-gray-500 uppercase">
-            <tr class="bg-slate-100 border-b">
+            <tr class="bg-slate-100 border-b cursor-pointer">
                 <th class="px-6 py-4" data-sortable="false">No.</th>
                 <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">
                     <div class="flex items-center gap-2">
@@ -1031,7 +1031,8 @@ class DataTable extends BaseQuery
         $itemPerPage = $dataTableParam['itemPerPage'];
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
-
+        $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
+        $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
         $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
         $conditions = [];
         $params = [];
@@ -1058,7 +1059,19 @@ class DataTable extends BaseQuery
             $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data";
         }
 
-        $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
+        $validColumns = [
+            'client_id', 'meter_number', 'full_name', 'property_type', 'brgy',
+            'status', 'timestamp'
+        ];
+        $validDirections = ['ASC', 'DESC'];
+
+        if (in_array($sortColumn, $validColumns) && in_array($sortDirection, $validDirections)) {
+            $sql .= " ORDER BY {$sortColumn} {$sortDirection}";
+        } else {
+            $sql .= " ORDER BY timestamp DESC";
+        }
+
+        $sql .= " LIMIT ? OFFSET ?";
         $params = array_merge($params, [$itemPerPage, $offset]);
         $types .= "ii";
 
@@ -1079,18 +1092,18 @@ class DataTable extends BaseQuery
 
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
         <thead class="text-xs text-gray-500 uppercase">
-            <tr class="bg-slate-100 border-b">
-                <th class="px-6 py-4">No.</th>
-                <th class="px-6 py-4">Client ID</th>
-                <th class="px-6 py-4">Meter No.</th>
-                <th class="px-6 py-4">Names&nbsp;&nbsp; 
+            <tr class="bg-slate-100 border-b cursor-pointer">
+                <th class="px-6 py-4" data-sortable="false">No.</th>
+                <th class="px-6 py-4" data-column-name="client_id" data-sortable="true">Client ID</th>
+                <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">Meter No.</th>
+                <th class="px-6 py-4" data-column-name="full_name" data-sortable="true">Names&nbsp;&nbsp; 
                 <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
-                <th class="px-6 py-4">Property Type</th>
-                <th class="px-6 py-4">Address</th>
-                <th class="px-6 py-4">Status</th>
-                <th class="px-6 py-4">DateTime</th>
-                <th class="px-6 py-4">Action</th>
+                <th class="px-6 py-4" data-column-name="property_type" data-sortable="true">Property Type</th>
+                <th class="px-6 py-4" data-column-name="brgy" data-sortable="true">Address</th>
+                <th class="px-6 py-4" data-column-name="status" data-sortable="true">Status</th>
+                <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">DateTime</th>
+                <th class="px-6 py-4" data-sortable="false">Action</th>
             </tr>
         </thead>';
 

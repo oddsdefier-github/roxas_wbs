@@ -8,6 +8,12 @@ export class DataTableWithPagination {
         this.itemsPerPageKey = `${this.tableContainerSelector}-itemsPerPage`;
         this.currentPageNumberKey = `${this.tableContainerSelector}-currentPageNumber`;
 
+        this.searchKey = `${this.tableContainerSelector}-searchKey`;
+        this.filterKey = `${this.tableContainerSelector}-filterKey`;
+
+        this.savedSearch = localStorage.getItem(this.searchKey) || "";
+        this.filter = JSON.parse(localStorage.getItem(this.filterKey)) || filter;
+
         this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 10;
         this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
 
@@ -31,21 +37,13 @@ export class DataTableWithPagination {
         };
 
 
-        this.searchKey = `${this.tableContainerSelector}-searchKey`;
-        this.filterKey = `${this.tableContainerSelector}-filterKey`;
 
-        const savedSearch = localStorage.getItem(this.searchKey) || "";
-        this.filter = JSON.parse(localStorage.getItem(this.filterKey)) || filter;
-
-        this.elements.searchInput.val(savedSearch);
-
-        console.log('Constructor filter:', this.filter);
-
+        this.elements.searchInput.val(this.savedSearch);
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
         this.bindEvents();
         this.bindCheckboxEvents();
-        this.fetchTableData(savedSearch, this.filter);
+        this.fetchTableData(this.savedSearch, this.filter);
         this.updateButtonsState();
     }
     bindEvents() {
@@ -58,7 +56,6 @@ export class DataTableWithPagination {
         });
 
         this.elements.resetFilter.on("click", () => { this.handleFilterReset() });
-        // Bind pagination events
         this.elements.prevBtn.on("click", () => this.handlePageChange("prev"));
         this.elements.nextBtn.on("click", () => this.handlePageChange("next"));
         this.elements.startBtn.on("click", () => this.handlePageChange("start"));
@@ -235,7 +232,7 @@ export class DataTableWithPagination {
         $('a[aria-current="page"]').text(this.currentPageNumber);
     }
 
-    fetchTableData(searchTerm = this.searchKey, filters = this.filterKey, sortColumn = this.currentSortColumn, sortDirection = this.currentSortDirection) {
+    fetchTableData(searchTerm = this.searchKey, filters = this.filter, sortColumn = this.currentSortColumn, sortDirection = this.currentSortDirection) {
         $.ajax({
             url: "database_actions.php",
             type: 'post',
@@ -277,6 +274,10 @@ export class DataTableWithPagination {
         });
     }
 
+    /**
+     * Handles page change for the data table with pagination.
+     * @param {string} direction - The direction of the page change. Can be "prev", "next", "start", or "end".
+     */
     handlePageChange(direction) {
         switch (direction) {
             case "prev":

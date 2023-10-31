@@ -1,22 +1,6 @@
 import { DataTableWithPagination } from './DataTableWithPagination.js';
 
 $(document).ready(function () {
-    const filterConfig = {
-        clientTable:
-            [
-                {
-                    column: "status",
-                    value: "Active"
-                }
-            ],
-        clientAppTable:
-            [
-                {
-                    column: "status",
-                    value: "Unconfirmed"
-                }
-            ]
-    }
     const currentPath = window.location.pathname;
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
