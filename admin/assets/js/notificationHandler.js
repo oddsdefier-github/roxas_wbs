@@ -51,7 +51,6 @@ $.ajax({
         action: "countUnreadNotifications"
     },
     success: function (data) {
-        console.log(JSON.parse(data).status)
         const status = JSON.parse(data).status;
         const count = JSON.parse(data).unread_count;
         if (status === 'success') {

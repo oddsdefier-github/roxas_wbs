@@ -95,7 +95,12 @@ if (isset($_GET['id'])) {
                     <div class="sm:col-span-6 grid grid-cols-7">
                         <div class="sm:col-span-6 grid grid-cols-6 gap-x-6 gap-y-8">
                             <div class="sm:col-span-2">
-                                <label for="age" class="select-none block text-sm font-medium leading-6 text-gray-900">Birthday</label>
+                                <label for="age" class="select-none block text-sm font-medium leading-6 text-gray-900">
+                                    <div class="flex gap-2 items-center">
+                                        <p>Birthdate</p>
+                                        <p class="readable-date text-xs text-gray-400"></p>
+                                    </div>
+                                </label>
                                 <div class="mt-2 relative">
                                     <div class="absolute top-0 left-0 inset-0 flex items-center pl-3 pointer-events-none">
                                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

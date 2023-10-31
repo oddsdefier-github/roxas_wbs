@@ -198,58 +198,66 @@ $(document).ready(function () {
 
     };
 
-    /**
-     * TODO: Fix the date picker functionality
-     * TODO: Manage the input validation -> submit form
-     * ? Just include the form for review and apply, use only one form / div
-     * * The age should be automatically calculated when date is set
-     */
-
-    birthDateInput.on("blur", function () {
-        validateAndCalculateAge();
-    });
-
-
-    birthDateInput.on("keyup", function (event) {
-        if (event.key === 'Enter') {
-            validateAndCalculateAge();
-            $(this).trigger('blur')
-        }
-    });
-
     function validateAndCalculateAge() {
         const dateText = birthDateInput.val();
         const parts = dateText.split("/");
 
-        if (parts.length === 3) {
-            const birthdate = new Date(parts[2], parts[0] - 1, parts[1]);
-            const today = new Date();
-
-            const age = today.getFullYear() - birthdate.getFullYear();
-
-            if (parseInt(today.getMonth() < birthdate.getMonth() || (today.getMonth() === birthdate.getMonth() && today.getDate() < birthdate.getDate()))) {
-                age--;
-            }
-
-            if (age < 18) {
-                alert("You must be at least 18 years old.");
-                birthDateInput.val("");
-                $('input[name="age"]').val("");
-            }
-            else if (age > 100) {
-                alert("Invalid age input.");
-                birthDateInput.val("");
-                $('input[name="age"]').val("");
-            } else {
-                $('input[name="age"]').val(age + " years old");
-            }
-        } else {
-            $('input[name="age"]').html('<span style="color: red;">Invalid date</span>');
+        if (parts.length !== 3 || parts[0].length !== 2 || parts[1].length !== 2 || parts[2].length !== 4) {
+            alert("Error: Invalid date format. Use mm/dd/yyyy.");
+            return;
         }
-    };
-    /**
-     * ! End of Date picker code
-     */
+
+        const birthdate = new Date(parts[2], parts[0] - 1, parts[1]);
+
+        if (isNaN(birthdate)) {
+            alert("Error: Invalid date input.");
+            return;
+        }
+
+        const today = new Date();
+        if (birthdate > today) {
+            alert("Birthdate cannot be in the future.");
+            return;
+        }
+
+        const ageDiff = today - birthdate;
+        const ageDate = new Date(ageDiff);
+        const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+        if (age < 18) {
+            alert("You must be at least 18 years old.");
+            return;
+        }
+
+        if (age > 100) {
+            alert("Invalid age input.");
+            return;
+        }
+
+        $('input[name="age"]').val(`${age} years old`);
+        const formattedDate = birthdate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        $(".readable-date").text(formattedDate);
+        $('select[name="gender"]').trigger('focus');
+    }
+
+
+    birthDateInput.on("blur", function () {
+        setTimeout(() => {
+            if ($('.datepicker-picker').is(':visible')) {
+                return;
+            }
+            validateAndCalculateAge();
+        }, 100)
+        console.log($(this).val());
+    });
+
+    birthDateInput.on("keyup", function (event) {
+        if (event.key === 'Enter') {
+            validateAndCalculateAge();
+            $(this).trigger('blur');
+        }
+    });
+
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -352,108 +360,144 @@ $(document).ready(function () {
         return fieldErrors ? fieldErrors[fieldName] : null;
     }
 
+
+    $('select').on("change", function () {
+        switch ($(this).attr('name')) {
+            case 'propertyType':
+                $('input[name="firstName"]').trigger('focus');
+                break;
+            case 'nameSuffix':
+                $('input[name="birthdate"]').trigger('focus');
+                break;
+            case 'gender':
+                $('input[name="phoneNumber"]').trigger('focus');
+                break;
+            case 'brgy':
+                $('input[name="streetAddress"]').trigger('focus');
+                break;
+        }
+    });
     inputFields.on("input", function () {
         const fieldName = $(this).attr("name");
         const fieldValue = $(this).val();
-
         const errorMessage = validateField(fieldName, fieldValue);
 
-        $(`div[data-validate-input="${fieldName}"]`).empty();
-        $(this).siblings('span[data-input-state="success"]').remove();
-        $(this).siblings('span[data-input-state="normal"]').show();
+
+        let debounceTimeout;
+        clearTimeout(debounceTimeout);
+
+        debounceTimeout = setTimeout(() => {
+            $(`div[data-validate-input="${fieldName}"]`).empty();
+            $(this).siblings('span[data-input-state="success"]').remove();
+            $(this).siblings('span[data-input-state="normal"]').show();
+
+            if (errorMessage) {
+                $(this).attr('data-input-track', 'error')
 
 
-        if (errorMessage) {
-            $(this).attr('data-input-track', 'error')
-
-            $('#submit-application')
-                .text('Fill all fields')
-                .prop('disabled', true)
-                .attr('title', 'Complete the fields to unlock!')
-                .removeClass(cssClasses.normalSubmitClass).addClass(cssClasses.errorSubmitClass);
-
-            errorMessage.forEach((message) => {
-                const errorHTML = `<div style="display: inline-flex; align-items: center; justify-content: start; width: 100%;">${elements.miniCautionElement} <p style="margin: 2px">${message}</p></div>`;
-                $(`div[data-validate-input="${fieldName}"]`).append(errorHTML);
-            });
-
-
-            $(this).removeClass(cssClasses.successInputClass).addClass(cssClasses.errorInputClass);
-            $(this).parent().siblings('label').removeClass(cssClasses.successLabelClass).addClass(cssClasses.errorLabelClass);
-
-            $(this).parent().find('svg').remove();
-            $(this).parent().append(elements.cautionElement);
-        } else {
-            $(this).attr('data-input-track', 'valid')
-
-
-            if ($(this).attr('name') == 'phoneNumber' || $(this).attr('name') == 'meterNumber') {
-                $(this).trigger('blur')
-            }
-            $(this).parent().find('svg').remove();
-
-
-            const inputLabel = $(this).parent().siblings('label');
-            const inputParent = $(this).parent();
-
-            $(this).removeClass(cssClasses.errorInputClass).removeClass(cssClasses.normalInputClass).addClass(cssClasses.successInputClass);
-            inputLabel.removeClass(cssClasses.errorLabelClass).removeClass(cssClasses.normalLabelClass).addClass(cssClasses.successLabelClass);
-
-            inputParent.append(elements.checkElement);
-
-            $(this).attr('data-input-state', 'success');
-            $(this).parent().next().html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`);
-        }
-
-        let count = 0;
-        $.each(inputs, function (_, item) {
-            if (item.attr('data-input-track') === 'valid') {
-                count++
-            }
-            if (count === inputs.length) {
                 $('#submit-application')
-                    .text("Submit")
-                    .prop('disabled', false)
-                    .attr('title', 'You can now submit!')
-                    .removeClass(cssClasses.errorSubmitClass).addClass(cssClasses.normalSubmitClass);
-            }
-        })
+                    .text('Fill all fields')
+                    .prop('disabled', true)
+                    .attr('title', 'Complete the fields to unlock!')
+                    .removeClass(cssClasses.normalSubmitClass).addClass(cssClasses.errorSubmitClass);
 
+                errorMessage.forEach((message) => {
+                    const errorHTML = `<div style="display: inline-flex; align-items: center; justify-content: start; width: 100%;">${elements.miniCautionElement} <p style="margin: 2px">${message}</p></div>`;
+                    $(`div[data-validate-input="${fieldName}"]`).append(errorHTML);
+                });
+
+
+                $(this).removeClass(cssClasses.successInputClass).addClass(cssClasses.errorInputClass);
+                $(this).parent().siblings('label').removeClass(cssClasses.successLabelClass).addClass(cssClasses.errorLabelClass);
+
+                $(this).parent().find('svg').remove();
+                $(this).parent().append(elements.cautionElement);
+
+
+
+            } else {
+                $(this).attr('data-input-track', 'valid')
+
+
+                switch ($(this).attr('name')) {
+                    case 'meterNumber':
+                        $(this).trigger('blur');
+                        $('select[name="propertyType"]').trigger('focus');
+                        break;
+                    case 'phoneNumber':
+                        $(this).trigger('blur');
+                        $('input[name="email"]').trigger('focus');
+                        break;
+                    case 'email':
+                        $(this).trigger('blur');
+                        $('select[name="brgy"]').trigger('focus');
+                        break;
+                }
+
+
+                $(this).parent().find('svg').remove();
+
+                const inputLabel = $(this).parent().siblings('label');
+                const inputParent = $(this).parent();
+
+                $(this).removeClass(cssClasses.errorInputClass).removeClass(cssClasses.normalInputClass).addClass(cssClasses.successInputClass);
+                inputLabel.removeClass(cssClasses.errorLabelClass).removeClass(cssClasses.normalLabelClass).addClass(cssClasses.successLabelClass);
+
+                inputParent.append(elements.checkElement);
+
+                $(this).attr('data-input-state', 'success');
+                $(this).parent().next().html(`<span style="display: inline-flex; align-items: center; justify-content: center; color: #16a34a;">${elements.miniCheckElement} <p style="margin: 2.5px; color: #16a34a;">Input is valid!</p><span>`);
+            }
+
+            let count = 0;
+            $.each(inputs, function (_, item) {
+                if (item.attr('data-input-track') === 'valid') {
+                    count++
+                }
+                if (count === inputs.length) {
+                    $('#submit-application')
+                        .text("Submit")
+                        .prop('disabled', false)
+                        .attr('title', 'You can now submit!')
+                        .removeClass(cssClasses.errorSubmitClass).addClass(cssClasses.normalSubmitClass);
+                }
+            })
+        }, 100);
 
     })
 
 
-    function navigateUsingArrowKey() {
-        const inputs = document.querySelectorAll('input:not([type="checkbox"])');
+    // function navigateUsingArrowKey() {
+    //     const inputs = document.querySelectorAll('input:not([type="checkbox"]), select');
 
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'ArrowRight') {
-                event.preventDefault();
-                focusNextEnabledInput();
-            } else if (event.key === 'ArrowLeft') {
-                event.preventDefault();
-                focusPreviousEnabledInput();
-            }
-        });
+    //     document.addEventListener('keydown', function (event) {
+    //         if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+    //             event.preventDefault();
+    //             focusNextEnabledInput();
+    //         } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+    //             event.preventDefault();
+    //             focusPreviousEnabledInput();
+    //         }
+    //     });
 
-        function focusNextEnabledInput() {
-            const focusedInput = document.activeElement;
-            const currentIndex = Array.from(inputs).indexOf(focusedInput);
-            let nextIndex = (currentIndex + 1) % inputs.length;
+    //     function focusNextEnabledInput() {
+    //         const focusedInput = document.activeElement;
+    //         const currentIndex = Array.from(inputs).indexOf(focusedInput);
+    //         let nextIndex = (currentIndex + 1) % inputs.length;
 
-            inputs[nextIndex].focus();
-        }
+    //         inputs[nextIndex].focus();
+    //     }
 
-        function focusPreviousEnabledInput() {
-            const focusedInput = document.activeElement;
-            const currentIndex = Array.from(inputs).indexOf(focusedInput);
-            let previousIndex = (currentIndex - 1 + inputs.length) % inputs.length;
+    //     function focusPreviousEnabledInput() {
+    //         const focusedInput = document.activeElement;
+    //         const currentIndex = Array.from(inputs).indexOf(focusedInput);
+    //         let previousIndex = (currentIndex - 1 + inputs.length) % inputs.length;
 
-            inputs[previousIndex].focus();
-        }
-    }
+    //         inputs[previousIndex].focus();
+    //     }
+    // }
 
-    navigateUsingArrowKey();
+    // navigateUsingArrowKey();
 
 
 });
