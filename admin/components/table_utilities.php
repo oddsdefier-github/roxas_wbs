@@ -18,6 +18,8 @@
             </div>
         </div>
         <div class="flex justify-center items-center gap-3">
+
+
             <button id="clientAppStatusFilter" data-dropdown-toggle="clientAppStatusFilterDropDown" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
@@ -29,27 +31,48 @@
                 </svg>
             </button>
 
-            <div id="clientAppStatusFilterDropDown" class="dropdown-container z-10 hidden w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
-                <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
+            <div id="clientAppStatusFilterDropDown" class="dropdown-container z-10 hidden w-40 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+                <ul class="px-3 py-2 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
+                    <div class="border-b-2 border-gray-200">
+                        <li>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                <label for="paid" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="paid" type="radio" value="Paid" data-column="billing_status" name="billing_status" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                    <span class="peer-checked:text-green-400">paid</span>
+                                </label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                <label for="unpaid" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="unpaid" type="radio" value="Unpaid" data-column="billing_status" name="billing_status" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                    <span class="peer-checked:text-green-400">unpaid</span>
+                                </label>
+                            </div>
+                        </li>
+                    </div>
                     <li>
                         <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <label for="approved" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
-                                <input id="approved" type="radio" value="Approved" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500">
-                                Approved</label>
+                            <label for="approved" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                <input id="approved" type="radio" value="Approved" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                <span class="peer-checked:text-indigo-500">approved</span>
+                            </label>
                         </div>
                     </li>
                     <li>
                         <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <label for="confirmed" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
-                                <input id="confirmed" type="radio" value="Confirmed" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500">
-                                Confirmed</label>
+                            <label for="confirmed" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                <input id="confirmed" type="radio" value="Confirmed" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                <span class="peer-checked:text-indigo-500">confirmed</span></label>
                         </div>
                     </li>
                     <li>
                         <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <label for="unconfirmed" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
-                                <input id="unconfirmed" type="radio" value="Unconfirmed" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500">
-                                Unconfirmed</label>
+                            <label for="unconfirmed" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                <input id="unconfirmed" type="radio" value="Unconfirmed" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+
+                                <span class="peer-checked:text-indigo-500">unconfirmed</span></label>
+                            </label>
                         </div>
                     </li>
                 </ul>

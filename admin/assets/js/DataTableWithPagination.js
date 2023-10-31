@@ -58,6 +58,7 @@ export class DataTableWithPagination {
 
             this.currentPageNumber = 1;
 
+
             const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
             let currentFilters = [];
 
@@ -97,11 +98,23 @@ export class DataTableWithPagination {
 
     bindCheckboxEvents() {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
-        radios.on('change', () => {
+
+        radios.on('change', (event) => {
             this.applyFilter();
             const selectedValue = event.currentTarget.value;
-            // Update the button text with the selected value
             $(".status-text").text(selectedValue);
+
+            // Find the currently checked radio input and log its values to the console
+            const checkedRadio = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+            const checkedValues = checkedRadio.map((_, radio) => {
+                return {
+                    column: $(radio).data('column'),
+                    value: radio.value
+                };
+            }).get();
+
+            const checkedValuesArray = checkedValues.map((checkedValue) => checkedValue.value);
+            console.log(checkedValuesArray);
         });
     }
 
@@ -161,7 +174,7 @@ export class DataTableWithPagination {
                     pageNumber: this.currentPageNumber,
                     itemPerPage: this.itemsPerPage,
                     searchTerm: searchTerm,
-                    filters: filters
+                    filters: filters,
                 }
             },
             success: (data, status) => {
