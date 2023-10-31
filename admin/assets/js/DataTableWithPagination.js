@@ -1,15 +1,18 @@
 export class DataTableWithPagination {
     constructor (tableName, tableContainerSelector = '#displayClientApplicationTable', filter = []) {
         this.tableName = tableName;
-        this.filter = filter;
-        this.currentSortColumn = null;
-        this.currentSortDirection = 'ASC';
+        this.filter = filter
+        this.currentSortColumn = "timestamp";
+        this.currentSortDirection = 'DESC';
         this.tableContainerSelector = tableContainerSelector;
+
         this.itemsPerPageKey = `${this.tableContainerSelector}-itemsPerPage`;
         this.currentPageNumberKey = `${this.tableContainerSelector}-currentPageNumber`;
 
         this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 10;
         this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
+
+
         this.totalItems = 0;
         this.lastPageNumber = 0;
 
@@ -27,11 +30,22 @@ export class DataTableWithPagination {
             itemsPerPageSelector: $("#item-per-page")
         };
 
+
+        this.searchKey = `${this.tableContainerSelector}-searchKey`;
+        this.filterKey = `${this.tableContainerSelector}-filterKey`;
+
+        const savedSearch = localStorage.getItem(this.searchKey) || "";
+        const savedFilter = JSON.parse(localStorage.getItem(this.filterKey)) || [];
+
+        this.elements.searchInput.val(savedSearch);
+        this.filter = savedFilter;
+
+
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
         this.bindEvents();
         this.bindCheckboxEvents();
-        this.fetchTableData();
+        this.fetchTableData(savedSearch, savedFilter);
         this.updateButtonsState();
     }
     bindEvents() {
@@ -73,7 +87,7 @@ export class DataTableWithPagination {
                 }).get();
             }
 
-            this.fetchTableData(this.elements.searchInput.val(), currentFilters);
+            this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
 
         });
 
@@ -84,7 +98,13 @@ export class DataTableWithPagination {
             this.elements.searchInput.val("");
             this.handleClearInput();
             this.handleSearch();
-        })
+        });
+
+
+        window.addEventListener('beforeunload', () => {
+            localStorage.removeItem(this.searchKey);
+            localStorage.removeItem(this.filterKey);
+        });
     }
 
     applyFilter() {
@@ -97,7 +117,8 @@ export class DataTableWithPagination {
         }).get();
         console.log(selectedFilters)
         this.currentPageNumber = 1;
-        this.fetchTableData(this.elements.searchInput.val(), selectedFilters);
+        localStorage.setItem(this.filterKey, JSON.stringify(selectedFilters))
+        this.fetchTableData(this.elements.searchInput.val(), selectedFilters, this.currentSortColumn, this.currentSortDirection);
     }
 
 
@@ -109,17 +130,16 @@ export class DataTableWithPagination {
             const selectedValue = event.currentTarget.value;
             $(".status-text").text(selectedValue);
 
-            // Find the currently checked radio input and log its values to the console
-            const checkedRadio = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
-            const checkedValues = checkedRadio.map((_, radio) => {
-                return {
-                    column: $(radio).data('column'),
-                    value: radio.value
-                };
-            }).get();
+            // const checkedRadio = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+            // const checkedValues = checkedRadio.map((_, radio) => {
+            //     return {
+            //         column: $(radio).data('column'),
+            //         value: radio.value
+            //     };
+            // }).get();
 
-            const checkedValuesArray = checkedValues.map((checkedValue) => checkedValue.value);
-            console.log(checkedValuesArray);
+            // const checkedValuesArray = checkedValues.map((checkedValue) => checkedValue.value);
+            // console.log(checkedValuesArray);
         });
     }
 
@@ -138,13 +158,16 @@ export class DataTableWithPagination {
         }
 
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
-        const currentFilters = radios.map((_, radio) => {
-            return {
-                column: $(radio).data('column'),
-                value: radio.value
-            };
-        }).get();
+        let currentFilters = [];
 
+        if (radios.length > 0) {
+            currentFilters = radios.map((_, radio) => {
+                return {
+                    column: $(radio).data('column'),
+                    value: radio.value
+                };
+            }).get();
+        }
         this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
     }
 
@@ -162,6 +185,7 @@ export class DataTableWithPagination {
 
 
     handleSearch() {
+        localStorage.setItem(this.searchKey, this.elements.searchInput.val());
         this.currentPageNumber = 1;
 
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
@@ -171,12 +195,13 @@ export class DataTableWithPagination {
                 value: radio.value
             };
         }).get();
-        this.fetchTableData(this.elements.searchInput.val(), currentFilters);
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
     }
 
     handleClearInput() {
         let searchTerm = this.elements.searchInput.val().trim();
         if (searchTerm === "") {
+            localStorage.removeItem(this.searchKey);
             this.elements.clearSearch.hide();
             this.elements.searchIcon.show();
         } else {
@@ -193,7 +218,7 @@ export class DataTableWithPagination {
         $('a[aria-current="page"]').text(this.currentPageNumber);
     }
 
-    fetchTableData(searchTerm = "", filters = this.filter, sortColumn = this.currentSortColumn, sortDirection = this.currentSortDirection) {
+    fetchTableData(searchTerm = this.searchKey, filters = this.filter, sortColumn = this.currentSortColumn, sortDirection = this.currentSortDirection) {
         $.ajax({
             url: "database_actions.php",
             type: 'post',
@@ -266,7 +291,7 @@ export class DataTableWithPagination {
         }).get();
 
         // Pass the filters to fetchTableData
-        this.fetchTableData(this.elements.searchInput.val(), currentFilters);
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
     }
 
 }

@@ -64,16 +64,18 @@ class EnhancedDeleteHandler extends DeleteHandler {
         this.tableInstance = tableInstance;
     }
     executeDeletion() {
-        
+
         const currentPath = window.location.pathname;
         const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
-        let filterValue = '';
+        let filterKey = '';
+
         if (filename === 'clients.php') {
-            filterValue = "Active"
+            filterKey = '#displayClientDataTable-filterKey';
         } else if (filename === 'clients_application_table.php') {
-            filterValue = "Unconfirmed"
+            filterKey = '#displayClientApplicationTable-filterKey';
         }
+        const savedFilter = JSON.parse(localStorage.getItem(filterKey)) || [];
         $.ajax({
             url: "database_actions.php",
             type: "post",
@@ -84,40 +86,30 @@ class EnhancedDeleteHandler extends DeleteHandler {
             },
             success: (data) => {
                 alert(data);
-                this.tableInstance.fetchTableData('', [{ column: "status", value: filterValue }]);
+                this.tableInstance.fetchTableData('', savedFilter);
             }
         });
     }
 }
 
-const filterConfig = {
-    clientTable:
-        [
-            {
-                column: "status",
-                value: "Active"
-            }
-        ],
-    clientAppTable:
-        [
-            {
-                column: "status",
-                value: "Unconfirmed"
-            }
-        ]
-}
-
-
 function deleteClient(delId, tableName) {
-    const clientTable = new DataTableWithPagination(tableName, '#displayClientDataTable', filterConfig.clientTable);
+    const clientTable = new DataTableWithPagination(tableName, '#displayClientDataTable');
     const handler = new EnhancedDeleteHandler(delId, tableName, clientTable);
     handler.deleteItem();
 }
 function deleteClientApplication(delId, tableName) {
-    const clientTable = new DataTableWithPagination(tableName, '#displayClientApplicationTable', filterConfig.clientAppTable);
+    const clientTable = new DataTableWithPagination(tableName, '#displayClientApplicationTable');
     const handler = new EnhancedDeleteHandler(delId, tableName, clientTable);
     handler.deleteItem();
 }
 
 window.deleteClient = deleteClient;
 window.deleteClientApplication = deleteClientApplication;
+
+
+
+
+
+
+
+

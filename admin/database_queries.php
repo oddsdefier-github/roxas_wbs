@@ -897,8 +897,7 @@ class DataTable extends BaseQuery
         }
 
         $sql .= " LIMIT ? OFFSET ?";
-        $params[] = $itemPerPage;
-        $params[] = $offset;
+        $params = array_merge($params, [$itemPerPage, $offset]);
         $types .= "ii";
 
         $stmt = $this->conn->prepareStatement($sql);
@@ -920,7 +919,16 @@ class DataTable extends BaseQuery
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b">
                 <th class="px-6 py-4" data-sortable="false">No.</th>
-                <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">Meter No.</th>
+                <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Meter No.</p>
+                        <span data-th="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </span>
+                    </div>
+                </th>
                 <th class="px-6 py-4" data-column-name="full_name" data-sortable="true">Names&nbsp;&nbsp; 
                 <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer" >' . $totalRecords . '</span></th>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">

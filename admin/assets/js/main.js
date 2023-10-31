@@ -21,9 +21,9 @@ $(document).ready(function () {
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
     if (filename === 'clients.php') {
-        const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable', filterConfig.clientTable);
+        const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
     } else if (filename === 'clients_application_table.php') {
-        const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable', filterConfig.clientAppTable);
+        const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
     }
 
     $('.page_nav').each(function () {
