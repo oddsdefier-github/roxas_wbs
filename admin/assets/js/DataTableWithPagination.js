@@ -1,7 +1,6 @@
 export class DataTableWithPagination {
     constructor (tableName, tableContainerSelector = '#displayClientApplicationTable', filter = []) {
         this.tableName = tableName;
-        this.filter = filter
         this.currentSortColumn = "timestamp";
         this.currentSortDirection = 'DESC';
         this.tableContainerSelector = tableContainerSelector;
@@ -22,6 +21,7 @@ export class DataTableWithPagination {
             searchIcon: $("#search-icon"),
             radioDropDownContainer: $(".dropdown-container"),
             statusFilterBtn: $("#statusFilter"),
+            resetFilter: $("#filterReset"),
             tableContainer: $(tableContainerSelector),
             prevBtn: $("#prev"),
             nextBtn: $("#next"),
@@ -35,17 +35,17 @@ export class DataTableWithPagination {
         this.filterKey = `${this.tableContainerSelector}-filterKey`;
 
         const savedSearch = localStorage.getItem(this.searchKey) || "";
-        const savedFilter = JSON.parse(localStorage.getItem(this.filterKey)) || [];
+        this.filter = JSON.parse(localStorage.getItem(this.filterKey)) || filter;
 
         this.elements.searchInput.val(savedSearch);
-        this.filter = savedFilter;
 
+        console.log('Constructor filter:', this.filter);
 
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
         this.bindEvents();
         this.bindCheckboxEvents();
-        this.fetchTableData(savedSearch, savedFilter);
+        this.fetchTableData(savedSearch, this.filter);
         this.updateButtonsState();
     }
     bindEvents() {
@@ -57,6 +57,7 @@ export class DataTableWithPagination {
 
         });
 
+        this.elements.resetFilter.on("click", () => { this.handleFilterReset() });
         // Bind pagination events
         this.elements.prevBtn.on("click", () => this.handlePageChange("prev"));
         this.elements.nextBtn.on("click", () => this.handlePageChange("next"));
@@ -100,11 +101,9 @@ export class DataTableWithPagination {
             this.handleSearch();
         });
 
+        this.applySavedFiltersToUI();
+        this.handleClearInput();
 
-        window.addEventListener('beforeunload', () => {
-            localStorage.removeItem(this.searchKey);
-            localStorage.removeItem(this.filterKey);
-        });
     }
 
     applyFilter() {
@@ -118,30 +117,48 @@ export class DataTableWithPagination {
         console.log(selectedFilters)
         this.currentPageNumber = 1;
         localStorage.setItem(this.filterKey, JSON.stringify(selectedFilters))
+        console.log('Constructor filter:', this.filter);
         this.fetchTableData(this.elements.searchInput.val(), selectedFilters, this.currentSortColumn, this.currentSortDirection);
+
+        const checkedRadio = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+        const checkedValues = checkedRadio.map((_, radio) => {
+            return {
+                column: $(radio).data('column'),
+                value: radio.value
+            };
+        }).get();
+
+        const checkedValuesArray = checkedValues.map((checkedValue) => checkedValue.value);
+        console.log(checkedValuesArray)
+        const statusText = checkedValuesArray.length > 0 ? checkedValuesArray.join(', ') : 'Status';
+        $(".status-text").text(statusText);
+    }
+    applySavedFiltersToUI() {
+        const self = this;
+        console.log("FILTER" + self.filter);
+        self.filter.forEach(filterObj => {
+            let radio = $(`input[data-column='${filterObj.column}'][value='${filterObj.value}']`);
+            if (radio) {
+                radio.prop('checked', true);
+            }
+        });
     }
 
-
+    handleFilterReset() {
+        localStorage.removeItem(this.searchKey);
+        localStorage.removeItem(this.filterKey);
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
+        radios.prop('checked', false);
+        this.applyFilter();
+    }
     bindCheckboxEvents() {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
 
-        radios.on('change', (event) => {
+        radios.on('change', () => {
             this.applyFilter();
-            const selectedValue = event.currentTarget.value;
-            $(".status-text").text(selectedValue);
-
-            // const checkedRadio = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
-            // const checkedValues = checkedRadio.map((_, radio) => {
-            //     return {
-            //         column: $(radio).data('column'),
-            //         value: radio.value
-            //     };
-            // }).get();
-
-            // const checkedValuesArray = checkedValues.map((checkedValue) => checkedValue.value);
-            // console.log(checkedValuesArray);
         });
     }
+
 
     handleSort(event) {
         const column = $(event.target).attr('data-column-name');
@@ -218,7 +235,7 @@ export class DataTableWithPagination {
         $('a[aria-current="page"]').text(this.currentPageNumber);
     }
 
-    fetchTableData(searchTerm = this.searchKey, filters = this.filter, sortColumn = this.currentSortColumn, sortDirection = this.currentSortDirection) {
+    fetchTableData(searchTerm = this.searchKey, filters = this.filterKey, sortColumn = this.currentSortColumn, sortDirection = this.currentSortDirection) {
         $.ajax({
             url: "database_actions.php",
             type: 'post',

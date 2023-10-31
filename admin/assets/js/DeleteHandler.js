@@ -68,13 +68,17 @@ class EnhancedDeleteHandler extends DeleteHandler {
         const currentPath = window.location.pathname;
         const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
+        let searchKey = '';
         let filterKey = '';
 
         if (filename === 'clients.php') {
+            searchKey = '#displayClientDataTable-searchKey';
             filterKey = '#displayClientDataTable-filterKey';
         } else if (filename === 'clients_application_table.php') {
+            searchKey = '#displayClientApplicationTable-searchKey';
             filterKey = '#displayClientApplicationTable-filterKey';
         }
+        const savedSearch = localStorage.getItem(searchKey) || "";
         const savedFilter = JSON.parse(localStorage.getItem(filterKey)) || [];
         $.ajax({
             url: "database_actions.php",
@@ -86,11 +90,12 @@ class EnhancedDeleteHandler extends DeleteHandler {
             },
             success: (data) => {
                 alert(data);
-                this.tableInstance.fetchTableData('', savedFilter);
+                this.tableInstance.fetchTableData(savedSearch, savedFilter);
             }
         });
     }
 }
+
 
 function deleteClient(delId, tableName) {
     const clientTable = new DataTableWithPagination(tableName, '#displayClientDataTable');
@@ -105,11 +110,3 @@ function deleteClientApplication(delId, tableName) {
 
 window.deleteClient = deleteClient;
 window.deleteClientApplication = deleteClientApplication;
-
-
-
-
-
-
-
-
