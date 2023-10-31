@@ -630,6 +630,53 @@ $(document).ready(function () {
         }
     })
 
+    reviewForm.on('submit', function (e) {
+        e.preventDefault();
+        const validID = $('#validId');
+        const proofOfOwnership = $('#proofOfOwnership');
+        const deedOfSale = $('#deedOfSale');
+        const affidavit = $('#affidavit'); // optional
+        const reviewConfirmationModal = $('#reviewConfirmationModal');
+        const confirmReviewCheck = $('#confirm_review_check');
+
+        /**
+         * Checks if the validID, proofOfOwnership, and deedOfSale checkboxes are all checked.
+         * @returns {boolean} Returns true if all checkboxes are checked, false otherwise.
+         */
+
+        let isChecked = validID.prop('checked') && proofOfOwnership.prop('checked') && deedOfSale.prop('checked');
+        if (!isChecked) {
+            alert('Please upload valid documents!');
+            return;
+        }
+
+        reviewConfirmationModal.css({
+            'display': 'grid',
+            'place-items': 'center',
+            'justify-content': 'center',
+            'align-items': 'center'
+        });
+
+        confirmReviewCheck.on('change', function () {
+            const isConfirmed = confirmReviewCheck.prop('checked');
+
+            const approvedClient = $('#approved_client');
+            const reviewConfirm = $('#review_confirm');
+
+            approvedClient.prop('disabled', !isConfirmed);
+            reviewConfirm.prop('disabled', !isConfirmed);
+            approvedClient.off('click');
+
+            if (isConfirmed) {
+                confirmUpdateApplication();
+                approvedClient.on('click', function () {
+                    processApplication();
+                    reviewConfirmationModal.hide();
+                });
+            }
+        });
+    });
+
     function confirmUpdateApplication() {
         function getSelectedItemValue(selectEl) {
             let value = selectEl.find(':selected').text();
@@ -737,56 +784,14 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     $('#reviewConfirmationModal').hide();
-                 
+
                     console.log(data);
                     alert(data.message);
-                       window.location.reload();
+                    window.location.reload();
                 }
             })
         });
     };
-
-
-    reviewForm.on('submit', function (e) {
-        const validID = $('#validId');
-        const proofOfOwnership = $('#proofOfOwnership');
-        const deedOfSale = $('#deedOfSale');
-        const affidavit = $('#affidavit');
-        e.preventDefault();
-
-        let isChecked =
-            validID.prop('checked') &&
-            proofOfOwnership.prop('checked') &&
-            deedOfSale.prop('checked')
-        if (!isChecked) {
-            alert('Please upload valid documents!');
-        } else {
-            $('#reviewConfirmationModal').css({
-                'display': 'grid',
-                'place-items': 'center',
-                'justify-content': 'center',
-                'align-items': 'center'
-            })
-            $('#confirm_review_check').on('change', function () {
-                if ($('#confirm_review_check').prop('checked') === true) {
-                    $('#approved_client').prop('disabled', false)
-                    $('#review_confirm').prop('disabled', false)
-                } else {
-                    $('#approved_client').prop('disabled', true)
-                    $('#review_confirm').prop('disabled', true)
-                };
-
-                confirmUpdateApplication()
-
-                $('#approved_client').on("click", function () {
-                    processApplication();
-                    $('#reviewConfirmationModal').hide();
-
-                })
-            })
-        }
-    });
-
 
 
 });

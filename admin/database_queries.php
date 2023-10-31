@@ -338,13 +338,9 @@ class DatabaseQueries extends BaseQuery
         }
     }
 
-    public function insertIntoBillingData($formData, $registrationId, $clientID)
+    public function insertIntoBillingData($formData, $clientID)
     {
         $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
-        $firstName = htmlspecialchars($formData['firstName'], ENT_QUOTES, 'UTF-8');
-        $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
-        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
-        $fullAddress = htmlspecialchars($formData['fullAddress'], ENT_QUOTES, 'UTF-8');
 
         session_start();
 
