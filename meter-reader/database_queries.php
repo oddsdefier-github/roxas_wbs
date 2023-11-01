@@ -20,22 +20,22 @@ class DatabaseQueries extends BaseQuery
     {
         $response = array();
 
-        // Client Data Query
-        $stmt = $this->conn->prepareStatement("SELECT * FROM client_data WHERE client_id = ?");
+        $selectQuery = "SELECT * FROM client_data WHERE client_id = ?";
+        $stmt = $this->conn->prepareStatement($selectQuery);
         if (!$stmt) {
             return ['error' => 'Failed to prepare statement for client_data query.'];
         }
 
-        $stmt->bind_param("s", $clientID);
-        if (!$stmt->execute()) {
+        mysqli_stmt_bind_param($stmt, "s", $clientID);
+        if (!mysqli_stmt_execute($stmt)) {
             return ['error' => 'Error executing the client_data statement.'];
         }
 
-        $result = $stmt->get_result();
-        $stmt->close();
+        $result = mysqli_stmt_get_result($stmt);
+        mysqli_stmt_close($stmt);
 
-        if ($result->num_rows == 1) {
-            $row = $result->fetch_assoc();
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
             $response = array_merge($response, [
                 'full_name' => $row['full_name'],
                 'meter_number' => $row['meter_number'],
@@ -47,22 +47,22 @@ class DatabaseQueries extends BaseQuery
             return ['error' => 'No client found with the provided ID.'];
         }
 
-        // Billing Data Query
-        $stmt = $this->conn->prepareStatement("SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1");
+        $sql = "SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmt = $this->conn->prepareStatement($sql);
         if (!$stmt) {
             return ['error' => 'Failed to prepare statement for billing_data query.'];
         }
 
-        $stmt->bind_param("s", $clientID);
-        if (!$stmt->execute()) {
+        mysqli_stmt_bind_param($stmt, "s", $clientID);
+        if (!mysqli_stmt_execute($stmt)) {
             return ['error' => 'Error executing the billing_data statement.'];
         }
 
-        $result = $stmt->get_result();
-        $stmt->close();
+        $result = mysqli_stmt_get_result($stmt);
+        mysqli_stmt_close($stmt);
 
-        if ($result->num_rows == 1) {
-            $row = $result->fetch_assoc();
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
             if ($row) {
                 $response['recent_meter_reading'] = $row['curr_reading'];
             } else {
@@ -334,7 +334,7 @@ class DataTable extends BaseQuery
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b">
                 <th class="px-6 py-4">No.</th>
-                <th class="px-6 py-4">Registration ID.</th>
+                <th class="px-6 py-4">Client ID.</th>
                 <th class="px-6 py-4">Names&nbsp;&nbsp; 
                 <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
@@ -359,7 +359,7 @@ class DataTable extends BaseQuery
 
             $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
-            <td class="px-6 py-3 text-sm">' . $regID . '</td>
+            <td class="px-6 py-3 text-sm">' . $clientID . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
             <td class="px-6 py-3 text-sm">' . $property_type . '</td>
             <td class="px-6 py-3 text-sm">' . $status . '</td>

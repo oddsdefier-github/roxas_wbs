@@ -175,6 +175,7 @@ class DataTable extends BaseQuery
     //CLIENT-TABLE
     public function billingTable($dataTableParam)
     {
+
         $pageNumber = $dataTableParam['pageNumber'];
         $itemPerPage = $dataTableParam['itemPerPage'];
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
@@ -185,9 +186,10 @@ class DataTable extends BaseQuery
         $params = [];
         $types = "";
 
+
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $conditions[] = "(billing_id LIKE ? OR client_id LIKE ? OR consumption LIKE ? OR billing_amount LIKE ?)";
+            $conditions[] = "(billing_id LIKE ? OR client_id LIKE ? OR consumption LIKE ? OR billing_amount LIKE ? OR reading_type = 'current')";
             $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm]);
             $types .= "ssss";
         }
@@ -201,9 +203,13 @@ class DataTable extends BaseQuery
         }
 
         if (!empty($conditions)) {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM billing_data WHERE " . implode(" AND ", $conditions);
+            $sql = "SELECT SQL_CALC_FOUND_ROWS billing_data.*, client_data.full_name FROM billing_data ";
+            $sql .= "LEFT JOIN client_data ON billing_data.client_id = client_data.client_id";
+            $sql .= "WHERE " . implode(" AND ", $conditions);
         } else {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM billing_data";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS billing_data.*, client_data.full_name FROM billing_data ";
+            $sql .= "LEFT JOIN client_data ON billing_data.client_id  = client_data.client_id";
+            $sql .= " WHERE reading_type = 'current'";
         }
 
         $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
@@ -233,7 +239,9 @@ class DataTable extends BaseQuery
                 <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
                 <th class="px-6 py-4">Client ID</th>
+                <th class="px-6 py-4">Client Name</th>
                 <th class="px-6 py-4">Status</th>
+                <th class="px-6 py-4">Reading Type</th>
                 <th class="px-6 py-4">DateTime</th>
                 <th class="px-6 py-4">Action</th>
             </tr>
@@ -246,10 +254,11 @@ class DataTable extends BaseQuery
             $id = $row['id'];
             $billingID = $row['billing_id'];
             $clientID = $row['client_id'];
+            $clientName = $row['full_name'];
             $status = $row['billing_status'];
             $time = $row['time'];
             $date = $row['date'];
-
+            $readingType = $row['reading_type'];
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
@@ -261,7 +270,9 @@ class DataTable extends BaseQuery
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $billingID . '</td>
             <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
+            <td  class="px-6 py-3 text-sm">' . $clientName . '</td>
             <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
+            <td class="px-6 py-3 text-sm">' . $readingType . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>

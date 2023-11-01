@@ -163,8 +163,6 @@ export class DataTableWithPagination {
         const column = $(event.target).closest('th').attr('data-column-name');
         const isSortable = $(event.target).closest('th').attr('data-sortable') !== 'false';
 
-        const sortIcon = $(event.target).closest('th').find('.sort-icon').attr('class');
-        console.log(sortIcon)
         if (!isSortable) return;
 
         if (this.currentSortColumn === column) {

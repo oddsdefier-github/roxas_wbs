@@ -1015,7 +1015,9 @@ class DataTable extends BaseQuery
             $confirmedBadge = '<span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Confirmed</span>';
             $statusBadge = ($status === 'approved') ? $approvedBadge : (($status === 'confirmed') ? $confirmedBadge : ($status === 'unconfirmed' ? $unconfirmedBadge : ''));
 
-            $table .= '<tr data-id="' . $id . '" class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            $page = 'client_application_review.php';
+
+            $table .= '<tr onclick="openPage(event, ' . $id . ', \'' . $page . '\')" data-client-id="' . $id . '" class="table-auto bg-white border-b hover:bg-gray-50  overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>

@@ -23,4 +23,24 @@ $(document).ready(function () {
 
     filename === 'clients_application_table.php' ? $("#clientAppStatusFilter").show() : $("#clientAppStatusFilter").hide();
     filename === 'clients.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
+
+
+
 });
+
+function openPage(event, id, page) {
+    if (event.target.tagName === 'BUTTON' || event.target.closest('svg')) { return }
+
+    const textSelected = window.getSelection().toString().length > 0;
+
+    if (textSelected) {
+        return;
+    }
+
+    console.log(id);
+    let location = window.location.href;
+    console.log(location);
+    window.location.href = `${page}?id=${id}`;
+}
+
+window.openPage = openPage;
