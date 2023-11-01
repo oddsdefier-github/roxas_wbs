@@ -1131,7 +1131,6 @@ class DataTable extends BaseQuery
 
         $result = mysqli_stmt_get_result($stmt);
 
-        // More efficient way to get total records
         $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
 
         if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {

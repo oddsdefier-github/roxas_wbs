@@ -30,6 +30,7 @@ include './auth_guard.php';
         </main>
     </section>
     <?php include './layouts/scripts.php'; ?>
+    <script type="module" src="./assets/js/acceptBillingPayment.js"></script>
     <script>
         $("#subheader-title").text("Payments");
         $("#subheader-title").siblings("h5").text("View, and Manage Payments.")

@@ -10,5 +10,4 @@
 <script src="./assets/js/signoutHandler.js"></script>
 <script src="./assets/js/modalManager.js"></script>
 <script src="./assets/js/apexcharts.js"></script>
-<script type="module" src="./assets/js/acceptPayments.js"></script>
 <script src="./assets/js/notificationHandler.js"></script>
