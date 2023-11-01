@@ -915,6 +915,16 @@ class DataTable extends BaseQuery
             $totalRecords = 0;
         }
 
+        $ascendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+    </svg>';
+
+        $descendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>';
+
+        $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
+
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b cursor-pointer">
@@ -922,21 +932,61 @@ class DataTable extends BaseQuery
                 <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Meter No.</p>
-                        <span data-th="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                            </svg>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
                         </span>
                     </div>
                 </th>
-                <th class="px-6 py-4" data-column-name="full_name" data-sortable="true">Names&nbsp;&nbsp; 
-                <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer" >' . $totalRecords . '</span></th>
+                <th class="px-6 py-4" data-column-name="full_name" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Names</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer" >' . $totalRecords . '</span>
+                    </div>
+                </th>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
-                <th class="px-6 py-4" data-column-name="property_type" data-sortable="true">Property Type</th>
-                <th class="px-6 py-4" data-column-name="brgy" data-sortable="true">Address</th>
-                <th class="px-6 py-4" data-column-name="status" data-sortable="true">Status</th>
-                <th class="px-6 py-4" data-column-name="billing_status" data-sortable="true">Billing Status</th>
-                <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">Applied Date</th>
+                <th class="px-6 py-4" data-column-name="property_type" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Property Type</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="brgy" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Address</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="status" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Status</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="billing_status" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Billing Status</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Applied Date</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
                 <th class="px-6 py-4" data-sortable="false">Action</th>
             </tr>
         </thead>';
@@ -1090,19 +1140,79 @@ class DataTable extends BaseQuery
             $totalRecords = 0;
         }
 
+
+        $ascendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+    </svg>';
+
+        $descendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>';
+
+        $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
+
+        
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b cursor-pointer">
                 <th class="px-6 py-4" data-sortable="false">No.</th>
-                <th class="px-6 py-4" data-column-name="client_id" data-sortable="true">Client ID</th>
-                <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">Meter No.</th>
-                <th class="px-6 py-4" data-column-name="full_name" data-sortable="true">Names&nbsp;&nbsp; 
-                <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
+                <th class="px-6 py-4" data-column-name="client_id" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Client ID</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Meter No.</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="full_name" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Names</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
+                    </div>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
-                <th class="px-6 py-4" data-column-name="property_type" data-sortable="true">Property Type</th>
-                <th class="px-6 py-4" data-column-name="brgy" data-sortable="true">Address</th>
-                <th class="px-6 py-4" data-column-name="status" data-sortable="true">Status</th>
-                <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">DateTime</th>
+                <th class="px-6 py-4" data-column-name="property_type" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Property Type</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="brgy" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Address</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="status" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Status</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Joined</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
                 <th class="px-6 py-4" data-sortable="false">Action</th>
             </tr>
         </thead>';

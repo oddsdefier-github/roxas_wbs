@@ -1780,12 +1780,20 @@ input:checked + .toggle-bg {
   z-index: 50;
 }
 
+.col-span-1 {
+  grid-column: span 1 / span 1;
+}
+
 .col-span-12 {
   grid-column: span 12 / span 12;
 }
 
 .col-span-2 {
   grid-column: span 2 / span 2;
+}
+
+.col-span-6 {
+  grid-column: span 6 / span 6;
 }
 
 .row-start-2 {
@@ -2271,6 +2279,34 @@ input:checked + .toggle-bg {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-\[\] {
+  width: ;
+}
+
+.w-\[90\%\] {
+  width: 90%;
+}
+
+.w-\[70\%\] {
+  width: 70%;
+}
+
+.w-\[30\] {
+  width: 30;
+}
+
+.w-\[30\%\] {
+  width: 30%;
+}
+
+.w-\[0\%\] {
+  width: 0%;
+}
+
+.w-\[10\%\] {
+  width: 10%;
 }
 
 .max-w-2xl {
@@ -3740,11 +3776,6 @@ input:checked + .toggle-bg {
   background-color: rgb(194 120 3 / var(--tw-bg-opacity));
 }
 
-.bg-gray-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
-}
-
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
@@ -3852,12 +3883,16 @@ input:checked + .toggle-bg {
   fill: #1C64F2;
 }
 
+.fill-gray-800 {
+  fill: #1F2937;
+}
+
 .fill-red-600 {
   fill: #E02424;
 }
 
-.fill-gray-800 {
-  fill: #1F2937;
+.fill-blue-100 {
+  fill: #E1EFFE;
 }
 
 .stroke-gray-800 {
@@ -5780,6 +5815,11 @@ input:checked + .toggle-bg {
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-gray-500:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-green-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(5 122 85 / var(--tw-bg-opacity));
@@ -5838,21 +5878,6 @@ input:checked + .toggle-bg {
 .hover\:bg-white:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-gray-800:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-gray-700:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-gray-600:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(75 85 99 / var(--tw-bg-opacity));
 }
 
 .hover\:font-bold:hover {
@@ -5960,11 +5985,6 @@ input:checked + .toggle-bg {
 .focus\:border-indigo-300:focus {
   --tw-border-opacity: 1;
   border-color: rgb(180 198 252 / var(--tw-border-opacity));
-}
-
-.focus\:border-indigo-500:focus {
-  --tw-border-opacity: 1;
-  border-color: rgb(104 117 245 / var(--tw-border-opacity));
 }
 
 .focus\:border-indigo-600:focus {

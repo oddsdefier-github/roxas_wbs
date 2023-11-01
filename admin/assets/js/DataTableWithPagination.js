@@ -160,12 +160,13 @@ export class DataTableWithPagination {
 
 
     handleSort(event) {
-        const column = $(event.target).attr('data-column-name');
-        const isSortable = $(event.target).attr('data-sortable') !== 'false';
+        const column = $(event.target).closest('th').attr('data-column-name');
+        const isSortable = $(event.target).closest('th').attr('data-sortable') !== 'false';
 
-        if (!isSortable) return;  // Early exit if the column is not sortable
+        const sortIcon = $(event.target).closest('th').find('.sort-icon').attr('class');
+        console.log(sortIcon)
+        if (!isSortable) return;
 
-        console.log(column);
         if (this.currentSortColumn === column) {
             this.currentSortDirection = this.currentSortDirection === 'ASC' ? 'DESC' : 'ASC';
         } else {

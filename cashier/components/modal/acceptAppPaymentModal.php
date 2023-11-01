@@ -20,7 +20,7 @@
         <!-- Modal content -->
         <div class="relative p-5 bg-white rounded-lg shadow-lg">
             <!-- Modal header -->
-            <div class="flex justify-between items-center rounded-t pb-4 border-b sm:mb-5 dark:border-gray-600">
+            <div class="flex justify-between items-center rounded-t pb-4 border-b dark:border-gray-600">
                 <h3 class="text-xl font-bold text-gray-800 dark:text-white">
                     <div class="flex gap-2 items-center">
                         <span>
@@ -41,47 +41,61 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <form action="#" class="">
-                <div class="py-5 rounded-md">
+            <form id="client_app_payment_confirmation" class="">
+                <!-- <div class="py-5 rounded-md">
                     <div class="w-full grid place-items-center pointer-events-none">
                         <img class="w-48 h-48" src="./assets/payment.svg" alt="Payment Illustration">
                     </div>
-                </div>
+                </div> -->
                 <div class="application-fees-desc py-3 flex flex-col gap-2">
                     <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
                         <p class="font-medium text-gray-600">Application Fee</p>
-                        <p class="application-fee font-bold text-gray-700 "></p>
+                        <p class="application-fee font-semibold text-gray-500 "></p>
                     </div>
                     <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
                         <p class="font-medium text-gray-600">Inspection Fee </p>
-                        <p class="inspection-fee font-bold text-gray-700 "></p>
+                        <p class="inspection-fee font-semibold text-gray-500 "></p>
                     </div>
                     <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
                         <p class="font-medium text-gray-600">Registration Fee </p>
-                        <p class="registration-fee font-bold text-gray-700 "></p>
+                        <p class="registration-fee font-semibold text-gray-500 "></p>
                     </div>
                     <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
                         <p class="font-medium text-gray-600">Connection Fee</p>
-                        <p class="connection-fee font-bold text-gray-700 "></p>
+                        <p class="connection-fee font-semibold text-gray-500 "></p>
                     </div>
                     <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
                         <p class="font-medium text-gray-600">Installation Fee </p>
-                        <p class="installation-fee font-bold text-gray-700"></p>
+                        <p class="installation-fee font-semibold text-gray-500"></p>
                     </div>
                 </div>
-                <div class="flex justify-between w-full py-3 px-2 text-lg">
+                <div class="flex justify-between w-full py-3 px-2 text-lg border-b-2 border-gray-200">
                     <p class="font-bold text-gray-600">Total</p>
-                    <p class="total-fee font-bold text-gray-700"></p>
+                    <p class="total_application_fee font-bold text-gray-700"></p>
                 </div>
-                <div class="py-3 flex flex-col justify-center">
+                <div class="flex justify-between w-full mt-4 py-0 px-2 text-sm">
+                    <p class="font-medium text-gray-500">Amount Paid</p>
+                    <p id="amount_paid" class="font-semibold text-gray-600"></p>
+                </div>
+                <div class="flex justify-between w-full py-0 px-2 text-sm">
+                    <p class="font-medium text-gray-500">Amount Due</p>
+                    <p class="amount_due font-semibold text-red-500 hidden"></p>
+                </div>
+                <div class="flex justify-between w-full py-2 px-2 text-sm">
+                    <p class="font-medium text-gray-500">Change</p>
+                    <p class="remaining_balance font-semibold text-green-500"></p>
+
+                </div>
+                <div class="mt-3 py-3 flex flex-col justify-center">
                     <div class="">
-                        <label for="amount-paid" class="block mb-2 text-right text-sm font-medium text-gray-500">*Amount paid by the applicant</label>
-                        <input type="text" name="amount-paid" id="amount-paid" class="block w-full py-3 px-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-gray-500 focus:border-gray-500" dir="rtl" mode="numeric" pattern="[0-9]+">
+                        <label for="amount_paid_input" class="block mb-2 text-right text-sm font-medium text-gray-500">*Amount paid by the applicant</label>
+                        <input type="text" name="amount_paid_input" id="amount_paid_input" class="validate-amount-paid-input block w-full py-3 px-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-gray-500 focus:border-gray-500" dir="rtl" inputmode="numeric" pattern="[0-9]+">
                     </div>
+                    <div data-validate-input="amount_paid_input" class="validate-message"></div>
                 </div>
                 <div class="flex items-center justify-end space-x-4 py-3">
-                    <button data-button-type="close-modal" type="button" class="text-gray-500 bg-gray-50 hover:bg-gray-100 focus:ring-3 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">No, cancel</button>
-                    <button id="confirm-app-payment" type="submit" class="text-white bg-gray-800 hover:bg-gray-600 focus:ring-3 focus:outline-none focus:ring-gray-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    <button id="close_modal" data-button-type="close-modal" type="button" class="text-gray-500 bg-gray-50 hover:bg-gray-100 focus:ring-3 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">No, cancel</button>
+                    <button id="confirm-app-payment" type="submit" class="text-white bg-gray-800 hover:bg-gray-500 focus:ring-3 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled>
                         Confirm
                     </button>
                 </div>
