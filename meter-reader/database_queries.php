@@ -114,7 +114,7 @@ class DatabaseQueries extends BaseQuery
         $this->conn->beginTransaction();
 
         // Fetch rates
-        $query_rates = "SELECT * FROM rates WHERE property_type = ? AND billing_month = ?";
+        $query_rates = "SELECT * FROM rates WHERE property_type = ? AND billing_month = ? ORDER BY timestamp DESC LIMIT 1";
         $stmt = $this->conn->prepareStatement($query_rates);
         mysqli_stmt_bind_param($stmt, "ss", $propertyType, $billingMonthAndYear);
         if (mysqli_stmt_execute($stmt)) {

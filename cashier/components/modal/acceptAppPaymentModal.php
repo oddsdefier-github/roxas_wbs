@@ -21,8 +21,17 @@
         <div class="relative p-5 bg-white rounded-lg shadow-lg">
             <!-- Modal header -->
             <div class="flex justify-between items-center rounded-t pb-4 border-b sm:mb-5 dark:border-gray-600">
-                <h3 class="text-xl font-bold text-indigo-800 dark:text-white">
-                    Confirm Payment
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+                    <div class="flex gap-2 items-center">
+                        <span>
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" class="fill-gray-800 h-5 w-5">
+                                <path d="M39.64 40.83L33.87 56.7a1.99 1.99 0 0 1-3.74 0l-5.77-15.87a2.02 2.02 0 0 0-1.2-1.2L7.3 33.88a1.99 1.99 0 0 1 0-3.74l15.87-5.77a2.02 2.02 0 0 0 1.2-1.2L30.12 7.3a1.99 1.99 0 0 1 3.74 0l5.77 15.87a2.02 2.02 0 0 0 1.2 1.2l15.86 5.76a1.99 1.99 0 0 1 0 3.74l-15.87 5.77a2.02 2.02 0 0 0-1.2 1.2z"></path>
+                            </svg>
+                        </span>
+                        <h3>
+                            Payment Confirmation
+                        </h3>
+                    </div>
                 </h3>
                 <button type="button" data-button-type="close-modal" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -67,12 +76,12 @@
                 <div class="py-3 flex flex-col justify-center">
                     <div class="">
                         <label for="amount-paid" class="block mb-2 text-right text-sm font-medium text-gray-500">*Amount paid by the applicant</label>
-                        <input type="text" name="amount-paid" id="amount-paid" class="block w-full py-3 px-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-indigo-500 focus:border-indigo-500" dir="rtl" pattern="[0-9]+">
+                        <input type="text" name="amount-paid" id="amount-paid" class="block w-full py-3 px-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-gray-500 focus:border-gray-500" dir="rtl" mode="numeric" pattern="[0-9]+">
                     </div>
                 </div>
                 <div class="flex items-center justify-end space-x-4 py-3">
-                    <button data-button-type="close-modal" type="button" class="text-gray-500 bg-gray-50 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">No, cancel</button>
-                    <button id="confirm-app-payment" type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <button data-button-type="close-modal" type="button" class="text-gray-500 bg-gray-50 hover:bg-gray-100 focus:ring-3 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">No, cancel</button>
+                    <button id="confirm-app-payment" type="submit" class="text-white bg-gray-800 hover:bg-gray-600 focus:ring-3 focus:outline-none focus:ring-gray-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                         Confirm
                     </button>
                 </div>

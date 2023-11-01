@@ -129,6 +129,7 @@ export class DataTableWithPagination {
         console.log(checkedValuesArray)
         const statusText = checkedValuesArray.length > 0 ? checkedValuesArray.join(', ') : 'Status';
         $(".status-text").text(statusText);
+        this.elements.resetFilter.prop("disabled", false)
     }
     applySavedFiltersToUI() {
         const self = this;
@@ -147,6 +148,7 @@ export class DataTableWithPagination {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
         radios.prop('checked', false);
         this.applyFilter();
+        this.elements.resetFilter.prop("disabled", true)
     }
     bindCheckboxEvents() {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");

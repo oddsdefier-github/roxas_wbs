@@ -24,9 +24,9 @@ function retrieveApplicationFees(id, table) {
                 const { application_fee, inspection_fee, registration_fee, connection_fee, installation_fee } = fees;
 
                 const total_fee = parseFloat(application_fee) + parseFloat(inspection_fee) + parseFloat(registration_fee) + parseFloat(connection_fee) + parseFloat(installation_fee);
-                
+
                 const formatNumber = (num) => {
-                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    return num.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ".00";
                 };
                 $(".application-fee").text("₱" + formatNumber(application_fee));
                 $(".inspection-fee").text("₱" + formatNumber(inspection_fee));
@@ -61,21 +61,21 @@ function acceptClientAppPayment(id) {
     confirmAppPayment.off("click");
     confirmAppPayment.on("click", function (e) {
         e.preventDefault()
-        $.ajax({
-            url: "database_actions.php",
-            type: "post",
-            data: {
-                action: "confirmAppPayment",
-                id: id,
-                total_fee: window.total_fee 
-            },
-            success: function (data) {
-                console.log(data)
-                alert(JSON.parse(data).message)
-                const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientAppBillingTable');
-                acceptClientAppPayment.hide();
-            }
-        })
+        // $.ajax({
+        //     url: "database_actions.php",
+        //     type: "post",
+        //     data: {
+        //         action: "confirmAppPayment",
+        //         id: id,
+        //         total_fee: window.total_fee 
+        //     },
+        //     success: function (data) {
+        //         console.log(data)
+        //         alert(JSON.parse(data).message)
+        //         const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientAppBillingTable');
+        //         acceptClientAppPayment.hide();
+        //     }
+        // })
     })
 }
 
