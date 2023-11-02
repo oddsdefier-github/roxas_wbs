@@ -27,7 +27,7 @@ include './auth_guard.php';
         <?php include './components/subheader.php'; ?>
         <main class="relative flex flex-1 flex-col justify-start overflow-auto">
             <div class="flex flex-col gap-5">
-                <?php include './components/billing_main.php'; ?>
+                <?php include './components/meter_reading_main.php'; ?>
             </div>
         </main>
     </section>
@@ -35,8 +35,9 @@ include './auth_guard.php';
     <?php include './components/modal/encode_reading_data_modal.php'; ?>
     <?php include './components/modal/view_reading_data_modal.php'; ?>
 
+
     <?php include './layouts/scripts.php'; ?>
-    <script src="./assets/js/application_validate.js"></script>
+    <script type="module" src="./assets/js/populateAddressFilter.js"></script>
     <script>
         $("#subheader-title").text("Encode Billing Data");
         $("#subheader-title").siblings("h5").text("Handle, Assess, or Encode Billing Data.")

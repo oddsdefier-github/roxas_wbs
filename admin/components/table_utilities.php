@@ -37,14 +37,17 @@
                 </svg>
             </button>
 
-            <div id="clientAppStatusFilterDropDown" class="dropdown-container z-10 hidden w-40 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+            <div id="clientAppStatusFilterDropDown" class="dropdown-container z-10 hidden w-40 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" style="width: 13rem;">
                 <ul class="px-3 py-2 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
                     <div class="border-b-2 border-gray-200">
+                        <li>
+                            <p class="font-semibold uppercase py-1 text-xs text-gray-500">Billing Status</p>
+                        </li>
                         <li title='Billing Status'>
                             <div class="flex items-center p-2 rounded hover:bg-gray-100">
                                 <label for="paid" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="paid" type="radio" value="Paid" data-column="billing_status" name="billing_status" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
-                                    <span class="peer-checked:text-green-400">paid</span>
+                                    <span class="peer-checked:text-green-400" data-load-type="static">paid</span>
                                 </label>
                             </div>
                         </li>
@@ -52,35 +55,43 @@
                             <div class="flex items-center p-2 rounded hover:bg-gray-100">
                                 <label for="unpaid" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="unpaid" type="radio" value="Unpaid" data-column="billing_status" name="billing_status" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
-                                    <span class="peer-checked:text-green-400">unpaid</span>
+                                    <span class="peer-checked:text-green-400" data-load-type="static">unpaid</span>
                                 </label>
                             </div>
                         </li>
                     </div>
-                    <li title='Status'>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                            <label for="approved" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                                <input id="approved" type="radio" value="Approved" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
-                                <span class="peer-checked:text-indigo-500">approved</span>
-                            </label>
-                        </div>
-                    </li>
-                    <li title='Status'>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                            <label for="confirmed" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                                <input id="confirmed" type="radio" value="Confirmed" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
-                                <span class="peer-checked:text-indigo-500">confirmed</span></label>
-                        </div>
-                    </li>
-                    <li title='Status'>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                            <label for="unconfirmed" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                                <input id="unconfirmed" type="radio" value="Unconfirmed" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+                    <div>
+                        <li>
+                            <p class="font-semibold uppercase py-1 text-xs text-gray-500">Status</p>
+                        </li>
+                        <li title='Status'>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
+                                <label for="approved" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="approved" type="radio" value="Approved" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                    <span class="peer-checked:text-indigo-500" data-load-type="static">approved</span>
+                                </label>
+                            </div>
+                        </li>
+                        <li title='Status'>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
+                                <label for="confirmed" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="confirmed" type="radio" value="Confirmed" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                    <span class="peer-checked:text-indigo-500" data-load-type="static">confirmed</span></label>
+                            </div>
+                        </li>
 
-                                <span class="peer-checked:text-indigo-500">unconfirmed</span></label>
-                            </label>
-                        </div>
-                    </li>
+                        <li title='Status'>
+                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
+                                <label for="unconfirmed" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="unconfirmed" type="radio" value="Unconfirmed" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+
+                                    <span class="peer-checked:text-indigo-500" data-load-type="static">unconfirmed</span></label>
+                                </label>
+                            </div>
+                        </li>
+                    </div>
+                    <div class="max-h-40 overflow-y-auto" id="address_filter" style="max-height: 20rem;">
+                    </div>
                 </ul>
             </div>
 

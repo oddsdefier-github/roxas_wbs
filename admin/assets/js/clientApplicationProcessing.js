@@ -214,10 +214,10 @@ $(document).ready(function () {
                     $.each(addressData, function (index, item) {
                         let option = $('<option>', {
                             value: item.id,
-                            text: item.barangay
+                            text: item.brgy
                         });
 
-                        if (item.barangay === brgy) {
+                        if (item.brgy === brgy) {
                             option.prop('selected', true);
                         }
                         selectElement.append(option);

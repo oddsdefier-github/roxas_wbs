@@ -31,7 +31,7 @@ const AddressFetcher = {
                     $.each(addressData, function (index, item) {
                         let option = $('<option>', {
                             value: item.id,
-                            text: item.barangay
+                            text: item.brgy
                         });
                         if (index === 0) {
                             option.prop('selected', true);

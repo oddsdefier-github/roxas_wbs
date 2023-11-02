@@ -131,6 +131,15 @@ export class DataTableWithPagination {
         $(".status-text").text(statusText);
         this.elements.resetFilter.prop("disabled", false)
     }
+
+    bindCheckboxEvents() {
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
+        radios.on('change', () => {
+            this.applyFilter();
+        });
+    }
+
+
     applySavedFiltersToUI() {
         const self = this;
         console.log("FILTER" + self.filter);
@@ -149,14 +158,6 @@ export class DataTableWithPagination {
         radios.prop('checked', false);
         this.applyFilter();
         this.elements.resetFilter.prop("disabled", true)
-    }
-
-    bindCheckboxEvents() {
-        const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
-
-        radios.on('change', () => {
-            this.applyFilter();
-        });
     }
 
 

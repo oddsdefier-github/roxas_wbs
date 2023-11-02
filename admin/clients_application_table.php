@@ -33,9 +33,10 @@ include './auth_guard.php';
     </section>
 
     <?php include './layouts/scripts.php'; ?>
+    <script type="module" src="./assets/js/populateAddressFilter.js"></script>
     <script>
-    $("#subheader-title").text("Clients Application");
-    $("#subheader-title").siblings("h5").text("Manage, Evaluate, Approve, or Decline Client Applications.")
+        $("#subheader-title").text("Clients Application");
+        $("#subheader-title").siblings("h5").text("Manage, Evaluate, Approve, or Decline Client Applications.")
     </script>
 </body>
 

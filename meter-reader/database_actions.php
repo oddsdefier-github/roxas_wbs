@@ -38,29 +38,11 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'retrieveClientData':
             handleRetrieveClientData($dbQueries);
             break;
-        case 'processClientApplication':
-            handleProcessClientApplication($dbQueries);
-            break;
-        case 'approveClientApplication':
-            handleApproveClientApplication($dbQueries);
-            break;
         case 'getDataTable':
             handleGetDataTable($dataTable);
             break;
-        case 'getTotalItem':
-            handleGetTotalItem($dbQueries);
-            break;
-        case 'getName':
-            handleGetName($dbQueries);
-            break;
-        case 'getClientApplicationData':
-            handleGetClientApplicationData($dbQueries);
-            break;
         case 'getAddressData':
             handleGetAddressData($dbQueries);
-            break;
-        case 'deleteItem':
-            handleDeleteItem($dbQueries);
             break;
         case 'encodeMeterReadingData':
             handleEncodeMeterReadingData($dbQueries);
@@ -103,50 +85,10 @@ function handleGetDataTable($dataTable)
     }
 }
 
-function handleGetTotalItem($dbQueries)
-{
-    if (isset($_POST['tableName'])) {
-        $tableName = $_POST['tableName'];
-        $searchTerm = isset($_POST['searchTerm']) ? $_POST['searchTerm'] : "";
-
-        $getTotal = $dbQueries->getTotalItem($tableName, $searchTerm);
-        echo json_encode($getTotal);
-    }
-}
-
-
-function handleGetClientApplicationData($dbQueries)
-{
-    if (isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $getClientApplicationData = $dbQueries->retrieveClientApplicationData($id);
-        echo json_encode($getClientApplicationData);
-    }
-}
 function handleGetAddressData($dbQueries)
 {
     $getAddressData = $dbQueries->fetchAddressData();
     echo json_encode($getAddressData);
-}
-
-function handleDeleteItem($dbQueries)
-{
-    if (isset($_POST['id']) && isset($_POST['tableName'])) {
-        $id = $_POST['id'];
-        $tableName = $_POST['tableName'];
-        $deleteItem = $dbQueries->deleteItem($id, $tableName);
-        echo json_encode($deleteItem);
-    }
-}
-
-function handleGetName($dbQueries)
-{
-    if (isset($_POST['id']) && isset($_POST['tableName'])) {
-        $id = $_POST['id'];
-        $tableName = $_POST['tableName'];
-        $getName = $dbQueries->getName($id, $tableName);
-        echo json_encode($getName);
-    }
 }
 
 function handleEncodeMeterReadingData($dbQueries)
