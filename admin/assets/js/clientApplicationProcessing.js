@@ -810,6 +810,7 @@ $(document).ready(function () {
         };
 
         $("#review_confirm").on("click", function () {
+            localStorage.setItem("polling_interval", "5000")
             $(this).html(confirmStatus);
             $.ajax({
                 url: "database_actions.php",

@@ -143,22 +143,22 @@ function acceptClientAppPayment(id) {
                     $(".remaining_balance").text(formatNumber(remainingBalance));
                     amountDueEl.show()
                     console.log("CLICK")
-                    // $.ajax({
-                    //     url: "database_actions.php",
-                    //     type: "post",
-                    //     data: {
-                    //         action: "confirmAppPayment",
-                    //         id: id,
-                    //         total_fee: total_fee
-                    //     },
-                    //     success: function (data) {
-                    //         setTimeout(function () {
-                    //             alert(JSON.parse(data).message)
-                    //             acceptClientAppPaymentModal.hide();
-                    //             new DataTableWithPagination("client_application", '#displayClientAppBillingTable');
-                    //         }, 1000)
-                    //     }
-                    // })
+                    $.ajax({
+                        url: "database_actions.php",
+                        type: "post",
+                        data: {
+                            action: "confirmAppPayment",
+                            id: id,
+                            total_fee: total_fee
+                        },
+                        success: function (data) {
+                            setTimeout(function () {
+                                alert(JSON.parse(data).message)
+                                acceptClientAppPaymentModal.hide();
+                                new DataTableWithPagination("client_application", '#displayClientAppBillingTable');
+                            }, 1000)
+                        }
+                    })
                 }
 
             })

@@ -22,10 +22,10 @@ include './auth_guard.php';
     <?php include './components/logout_loader.php'; ?>
     <?php include './layouts/sidebar.php'; ?>
 
-    <section class="flex min-h-screen grow flex-col bg-white">
+    <section class="flex min-h-screen grow flex-col bg-white overflow-y-auto">
         <?php include './layouts/header.php'; ?>
         <?php include './components/subheader.php'; ?>
-        <main class="relative flex flex-1 flex-col justify-start overflow-auto">
+        <main class="relative flex flex-1 flex-col overflow-y-auto justify-start">
             <div class="flex flex-col gap-5">
                 <?php include './components/clients_application_table_main.php'; ?>
             </div>

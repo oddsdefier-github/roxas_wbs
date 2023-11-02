@@ -24,8 +24,6 @@ $(document).ready(function () {
     filename === 'clients_application_table.php' ? $("#clientAppStatusFilter").show() : $("#clientAppStatusFilter").hide();
     filename === 'clients.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
 
-
-
 });
 
 function openPage(event, id, page) {

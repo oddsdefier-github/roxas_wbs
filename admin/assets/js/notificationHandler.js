@@ -44,23 +44,37 @@ function toggleViewAllButton() {
     }
 }
 
-$.ajax({
-    url: "database_actions.php",
-    type: "post",
-    data: {
-        action: "countUnreadNotifications"
-    },
-    success: function (data) {
-        const status = JSON.parse(data).status;
-        const count = JSON.parse(data).unread_count;
-        if (status === 'success') {
-            notifCount.show()
-            notifCount.html(count)
-        } else if (status === 'empty') {
-            notifCount.hide()
-        } else {
-            alert(data)
-            notifCount.hide()
+
+function countUnreadNotifications() {
+    $.ajax({
+        url: "database_actions.php",
+        type: "post",
+        data: {
+            action: "countUnreadNotifications"
+        },
+        success: function (data) {
+            try {
+                const response = JSON.parse(data);
+                const status = response.status;
+                const count = response.unread_count;
+
+                if (status === 'success') {
+                    notifCount.show();
+                    notifCount.text(count);
+                } else if (status === 'empty') {
+                    notifCount.hide();
+                }
+            } catch (e) {
+                console.error("Error parsing JSON response:", e);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("AJAX error:", textStatus, errorThrown);
+        },
+        complete: function () {
+            setTimeout(countUnreadNotifications, 5000);
         }
-    }
-})
+    });
+}
+
+countUnreadNotifications();
