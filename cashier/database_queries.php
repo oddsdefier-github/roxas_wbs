@@ -135,6 +135,35 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
+
+    public function retrieveBillingRates()
+    {
+        $response = array();
+        $sql = "SELECT * FROM rates ORDER BY timestamp DESC LIMIT 1";
+
+        $result = $this->conn->query($sql);
+        if ($result) {
+            if ($row = mysqli_fetch_assoc($result)) {
+                $response = [
+                    'status' => 'success',
+                    'rates' => $row
+                ];
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'rates' => null
+                ];
+            }
+        } else {
+            $response = [
+                'status' => 'error',
+                'rates' => $this->conn->getErrorMessage()
+            ];
+        }
+
+        return $response;
+    }
+
     public function handleLoadNotification()
     {
 
@@ -203,16 +232,17 @@ class DataTable extends BaseQuery
         }
 
         if (!empty($conditions)) {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS billing_data.*, client_data.full_name FROM billing_data ";
-            $sql .= "LEFT JOIN client_data ON billing_data.client_id = client_data.client_id";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS billing_data.*, client_data.* FROM billing_data ";
+            $sql .= "LEFT JOIN client_data ON billing_data.client_id = client_data.client_id ";
             $sql .= "WHERE " . implode(" AND ", $conditions);
         } else {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS billing_data.*, client_data.full_name FROM billing_data ";
-            $sql .= "LEFT JOIN client_data ON billing_data.client_id  = client_data.client_id";
-            $sql .= " WHERE reading_type = 'current'";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS billing_data.*, client_data.* FROM billing_data ";
+            $sql .= "LEFT JOIN client_data ON billing_data.client_id = client_data.client_id ";
+            $sql .= "WHERE billing_data.reading_type = 'current'";
         }
 
-        $sql .= " ORDER BY timestamp DESC LIMIT ? OFFSET ?";
+
+        $sql .= " ORDER BY billing_data.timestamp DESC LIMIT ? OFFSET ?";
         $params = array_merge($params, [$itemPerPage, $offset]);
         $types .= "ii";
 
@@ -266,6 +296,8 @@ class DataTable extends BaseQuery
             $unpaidBadge = '<span class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Unpaid</span>';
             $statusBadge = ($status === 'paid') ? $paidBadge : $unpaidBadge;
 
+            $jsonData = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+
             $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $billingID . '</td>
@@ -279,7 +311,7 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button title="Accept Payment" onclick="acceptClientBillingPayment(' . $id . ')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <button title="Accept Payment" onclick="acceptClientBillingPayment(' . $jsonData . ')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Payment
                 </button>
             </td>

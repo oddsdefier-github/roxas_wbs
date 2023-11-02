@@ -42,36 +42,44 @@
             </div>
             <!-- Modal body -->
             <form id="client_app_payment_confirmation" class="">
-                <div class="py-5 rounded-md">
-                    <div class="w-full grid place-items-center pointer-events-none">
-                        <img class="w-48 h-48" src="./assets/payment.svg" alt="Payment Illustration">
+                <div class="pt-3 rounded-md">
+                    <div class="flex justify-between w-full py-3 px-3 rounded-md bg-gray-100 hover:bg-gray-50">
+                        <div class="text-gray-500">
+                            <p class="billing_id font-semibold" title="Billing ID"></p>
+                            <p class="client_id text-sm" title="Client ID"></p>
+                        </div>
+                        <div class="text-gray-500">
+                            <p class="full_name font-medium" title="Client Name"></p>
+
+                            <p class="meter_number text-sm" title="Meter Number"></p>
+                        </div>
                     </div>
                 </div>
                 <div class="application-fees-desc py-3 flex flex-col gap-2">
                     <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
                         <p class="font-medium text-gray-600">Consumption</p>
-                        <p class="application-fee font-semibold text-gray-500 "></p>
+                        <p class="consumption font-semibold text-gray-500 " title="Cubic Meter"></p>
                     </div>
                     <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
-                        <p class="font-medium text-gray-600">Rates</p>
-                        <p class="inspection-fee font-semibold text-gray-500"></p>
+                        <p class="font-medium text-gray-600">Rates •<span class="property_type font-normal text-gray-400 ml-2"></span></p>
+                        <p class="rates font-semibold text-gray-500"></p>
                     </div>
                     <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
                         <p class="font-medium text-gray-600">Penalty</p>
-                        <p class="registration-fee font-semibold text-gray-500 "></p>
-                    </div>
-                    <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
-                        <p class="font-medium text-gray-600">Tax</p>
-                        <p class="registration-fee font-semibold text-gray-500 "></p>
+                        <p class="penalty font-semibold text-gray-500 "></p>
                     </div>
                 </div>
-                <div class="flex justify-between w-full py-3 px-2 text-base">
-                    <p class="font-bold text-gray-600">Subtotal</p>
-                    <p class="total_application_fee font-bold text-gray-700"></p>
+                <div class="flex justify-between w-full py-0 px-2 text-sm">
+                    <p class="font-semibold text-gray-500">Subtotal</p>
+                    <p class="subtotal_bill font-bold text-gray-600"></p>
+                </div>
+                <div class="flex justify-between w-full py-0 px-2 text-sm">
+                    <p class="font-medium text-gray-500">Tax(<span class="tax text-gray-400"></span>)</p>
+                    <p class="tax_amount font-semibold text-gray-600"></p>
                 </div>
                 <div class="flex justify-between w-full py-3 px-2 text-lg border-b-2 border-gray-200">
                     <p class="font-bold text-gray-600">Total</p>
-                    <p class="total_application_fee font-bold text-gray-700"></p>
+                    <p class="total_bill font-bold text-gray-700"></p>
                 </div>
                 <div class="flex justify-between w-full mt-4 py-0 px-2 text-sm">
                     <p class="font-medium text-gray-500">Amount Paid</p>
@@ -84,18 +92,17 @@
                 <div class="flex justify-between w-full py-2 px-2 text-sm">
                     <p class="font-medium text-gray-500">Change</p>
                     <p class="remaining_balance font-semibold text-green-500"></p>
-
                 </div>
                 <div class="mt-3 py-3 flex flex-col justify-center">
                     <div class="">
-                        <label for="amount_paid_input" class="block mb-2 text-right text-sm font-medium text-gray-500">*Amount paid by the applicant</label>
+                        <label for="amount_paid_input" class="block mb-2 text-right text-sm font-medium text-gray-500">*Amount paid by the client</label>
                         <input type="text" name="amount_paid_input" id="amount_paid_input" class="validate-amount-paid-input block w-full py-3 px-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-gray-500 focus:border-gray-500" dir="rtl" inputmode="numeric" pattern="[0-9]+">
                     </div>
                     <div data-validate-input="amount_paid_input" class="validate-message"></div>
                 </div>
                 <div class="flex items-center justify-end space-x-4 py-3">
                     <button id="close_modal" data-button-type="close-modal" type="button" class="text-gray-500 bg-gray-50 hover:bg-gray-100 focus:ring-3 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">No, cancel</button>
-                    <button id="confirm-app-payment" type="submit" class="text-white bg-gray-800 hover:bg-gray-500 focus:ring-3 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled>
+                    <button id="confirm-bill-payment" type="submit" class="text-white bg-gray-800 hover:bg-gray-500 focus:ring-3 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled>
                         Confirm
                     </button>
                 </div>

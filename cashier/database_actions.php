@@ -50,6 +50,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'retrieveChargingFees':
             handleRetrieveChargingFees($dbQueries);
             break;
+        case 'retrieveBillingRates':
+            handleRetrieveBillingRates($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -110,4 +113,10 @@ function handleRetrieveChargingFees($dbQueries)
             echo json_encode($billingChargingFees);
         }
     }
+}
+
+function handleRetrieveBillingRates($dbQueries)
+{
+    $retrieveBillingRates = $dbQueries->retrieveBillingRates();
+    echo json_encode($retrieveBillingRates);
 }
