@@ -252,39 +252,56 @@ class DataTable extends BaseQuery
         $itemPerPage = $dataTableParam['itemPerPage'];
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
         $offset = ($pageNumber - 1) * $itemPerPage;
-
+        $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
+        $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
         $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+
         $conditions = [];
         $params = [];
         $types = "";
 
-
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $conditions[] = "(billing_id LIKE ? OR client_id LIKE ? OR consumption LIKE ? OR billing_amount LIKE ?)";
-            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm]);
-            $types .= "ssss";
+            $conditions[] = "(bd.billing_id LIKE ? OR bd.client_id LIKE ? OR cd.full_name LIKE ? OR bd.meter_number LIKE ? OR cd.property_type LIKE ? OR cd.status LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "ssssss";
         }
 
         if (!empty($filters)) {
+            print_r($filters);
             foreach ($filters as $filter) {
                 $conditions[] = "{$filter['column']} = ?";
                 $params[] = $filter['value'];
-                $types .= "s";  // Assuming all filter values are strings, adjust if not
+                $types .= "s";
             }
         }
 
+
         if (!empty($conditions)) {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd ";
-            $sql .= "LEFT JOIN client_data AS cd ON bd.client_id = cd.client_id ";
-            $sql .= "WHERE bd." . implode(" AND bd.", $conditions); 
+            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
+            $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
+            $sql .= " WHERE bd.billing_type = 'initial' AND " . implode(" AND ", $conditions);
         } else {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd ";
-            $sql .= "LEFT JOIN client_data AS cd ON bd.client_id = cd.client_id ";
-            $sql .= "WHERE bd.reading_type = 'current'";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
+            $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
+            $sql .= " WHERE bd.billing_type = 'initial'";
         }
 
-        $sql .= " ORDER BY bd.timestamp DESC LIMIT ? OFFSET ?";
+        // echo $sql;
+        // print_r($params);
+
+        $validColumns = [
+            'bd.client_id', 'bd.billing_id', 'cd.full_name',  'cd.property_type', 'bd.timestamp', 'cd.brgy'
+        ];
+        $validDirections = ['ASC', 'DESC'];
+
+        if (in_array($sortColumn, $validColumns) && in_array($sortDirection, $validDirections)) {
+            $sql .= " ORDER BY {$sortColumn} {$sortDirection}";
+        } else {
+            $sql .= " ORDER BY bd.timestamp DESC";
+        }
+
+        $sql .= " LIMIT ? OFFSET ?";
         $params = array_merge($params, [$itemPerPage, $offset]);
         $types .= "ii";
 
@@ -292,9 +309,9 @@ class DataTable extends BaseQuery
         mysqli_stmt_bind_param($stmt, $types, ...$params);
         mysqli_stmt_execute($stmt);
 
+
         $result = mysqli_stmt_get_result($stmt);
 
-        // More efficient way to get total records
         $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
 
         if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
@@ -303,18 +320,61 @@ class DataTable extends BaseQuery
             $totalRecords = 0;
         }
 
+        $descendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+    </svg>';
+        $ascendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>';
+
+        $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
+
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b">
                 <th class="px-6 py-4">No.</th>
-                <th class="px-6 py-4">Billing ID&nbsp;&nbsp; 
-                <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
+                <th class="px-6 py-4" data-column-name="bd.billing_id" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Billing ID</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span>
+                    </div>
+                </th>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
-                <th class="px-6 py-4">Client ID</th>
-                <th class="px-6 py-4">Client Name</th>
-                <th class="px-6 py-4">Status</th>
-                <th class="px-6 py-4">Reading Type</th>
-                <th class="px-6 py-4">DateTime</th>
+                <th class="px-6 py-4" data-column-name="bd.client_id" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Client ID</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="cd.full_name" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Client Name</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="cd.property_type" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Property Type</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="bd.timestamp" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Reading Date</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
                 <th class="px-6 py-4">Action</th>
             </tr>
         </thead>';
@@ -327,31 +387,22 @@ class DataTable extends BaseQuery
             $billingID = $row['billing_id'];
             $clientID = $row['client_id'];
             $clientName = $row['full_name'];
-            $status = $row['billing_status'];
+            $propertyType = $row['property_type'];
             $time = $row['time'];
             $date = $row['date'];
-            $readingType = $row['reading_type'];
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
-
-            $paidBadge = '<span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Paid</span>';
-            $unpaidBadge = '<span class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Unpaid</span>';
-            $statusBadge = ($status === 'paid') ? $paidBadge : $unpaidBadge;
-
-            // $jsonData = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
 
             $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $billingID . '</td>
             <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
             <td  class="px-6 py-3 text-sm">' . $clientName . '</td>
-            <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
-            <td class="px-6 py-3 text-sm">' . $readingType . '</td>
+            <td class="px-6 py-3 text-sm">' . $propertyType . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>
             </td>
-
             <td class="flex items-center px-6 py-4 space-x-3">
                 <button title="Accept Payment" onclick="acceptClientBillingPayment(\'' . $clientID . '\')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Payment
@@ -374,10 +425,10 @@ class DataTable extends BaseQuery
             if ($number > 1) {
                 echo $table;
             } else {
-                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
             }
         } else {
-            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
         }
 
         echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';

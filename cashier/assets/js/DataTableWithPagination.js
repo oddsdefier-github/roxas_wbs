@@ -1,13 +1,23 @@
 export class DataTableWithPagination {
     constructor (tableName, tableContainerSelector = '#displayBillingTable', filter = []) {
         this.tableName = tableName;
-        this.filter = filter;
+        this.currentSortColumn = "timestamp";
+        this.currentSortDirection = 'DESC';
         this.tableContainerSelector = tableContainerSelector;
+
         this.itemsPerPageKey = `${this.tableContainerSelector}-itemsPerPage`;
         this.currentPageNumberKey = `${this.tableContainerSelector}-currentPageNumber`;
 
-        this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 5;
+        this.searchKey = `${this.tableContainerSelector}-searchKey`;
+        this.filterKey = `${this.tableContainerSelector}-filterKey`;
+
+        this.savedSearch = localStorage.getItem(this.searchKey) || "";
+        this.filter = JSON.parse(localStorage.getItem(this.filterKey)) || filter;
+
+        this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 10;
         this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
+
+
         this.totalItems = 0;
         this.lastPageNumber = 0;
 
@@ -17,6 +27,7 @@ export class DataTableWithPagination {
             searchIcon: $("#search-icon"),
             radioDropDownContainer: $(".dropdown-container"),
             statusFilterBtn: $("#statusFilter"),
+            resetFilter: $("#filterReset"),
             tableContainer: $(tableContainerSelector),
             prevBtn: $("#prev"),
             nextBtn: $("#next"),
@@ -25,11 +36,14 @@ export class DataTableWithPagination {
             itemsPerPageSelector: $("#item-per-page")
         };
 
+
+
+        this.elements.searchInput.val(this.savedSearch);
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
         this.bindEvents();
-        this.bindCheckboxEvents();
-        this.fetchTableData();
+        this.bindFilterEvents();
+        this.fetchTableData(this.savedSearch, this.filter);
         this.updateButtonsState();
     }
     bindEvents() {
@@ -41,7 +55,7 @@ export class DataTableWithPagination {
 
         });
 
-        // Bind pagination events
+        this.elements.resetFilter.on("click", () => { this.handleFilterReset() });
         this.elements.prevBtn.on("click", () => this.handlePageChange("prev"));
         this.elements.nextBtn.on("click", () => this.handlePageChange("next"));
         this.elements.startBtn.on("click", () => this.handlePageChange("start"));
@@ -58,21 +72,35 @@ export class DataTableWithPagination {
 
             this.currentPageNumber = 1;
 
+
             const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
-            const currentFilters = radios.map((_, radio) => {
-                return {
-                    column: $(radio).data('column'),
-                    value: radio.value
-                };
-            }).get();
-            this.fetchTableData(this.elements.searchInput.val(), currentFilters);
+            let currentFilters = [];
+
+            if (radios.length > 0) {
+                currentFilters = radios.map((_, radio) => {
+                    return {
+                        column: $(radio).data('column'),
+                        value: radio.value
+                    };
+                }).get();
+            }
+
+            this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
+
         });
+
+
+        $(this.tableContainerSelector).on('click', 'th', (event) => this.handleSort(event));
 
         this.elements.clearSearch.on("click", () => {
             this.elements.searchInput.val("");
             this.handleClearInput();
             this.handleSearch();
-        })
+        });
+
+        this.applySavedFiltersToUI();
+        this.handleClearInput();
+        this.elements.resetFilter.prop("disabled", false)
     }
 
     applyFilter() {
@@ -85,24 +113,85 @@ export class DataTableWithPagination {
         }).get();
         console.log(selectedFilters)
         this.currentPageNumber = 1;
-        this.fetchTableData(this.elements.searchInput.val(), selectedFilters);
+        localStorage.setItem(this.filterKey, JSON.stringify(selectedFilters))
+        console.log('Constructor filter:', this.filter);
+        this.fetchTableData(this.elements.searchInput.val(), selectedFilters, this.currentSortColumn, this.currentSortDirection);
+
+        const checkedRadio = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+        const checkedValues = checkedRadio.map((_, radio) => {
+            return {
+                column: $(radio).data('column'),
+                value: radio.value
+            };
+        }).get();
+
+        const checkedValuesArray = checkedValues.map((checkedValue) => checkedValue.value);
+        console.log(checkedValuesArray)
+        const statusText = checkedValuesArray.length > 0 ? checkedValuesArray.join(', ') : 'Status';
+        $(".status-text").text(statusText);
+        this.elements.resetFilter.prop("disabled", false)
     }
 
-
-    bindCheckboxEvents() {
+    bindFilterEvents() {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
         radios.on('change', () => {
             this.applyFilter();
-            const selectedValue = event.currentTarget.value;
-            $(".status-text").text(selectedValue);
         });
     }
 
+
+    applySavedFiltersToUI() {
+        const self = this;
+        console.log("FILTER" + self.filter);
+        self.filter.forEach(filterObj => {
+            let radio = $(`input[data-column='${filterObj.column}'][value='${filterObj.value}']`);
+            if (radio) {
+                radio.prop('checked', true);
+            }
+        });
+    }
+
+    handleFilterReset() {
+        localStorage.removeItem(this.searchKey);
+        localStorage.removeItem(this.filterKey);
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
+        radios.prop('checked', false);
+        this.applyFilter();
+        this.elements.resetFilter.prop("disabled", true)
+    }
+
+
+    handleSort(event) {
+        const column = $(event.target).closest('th').attr('data-column-name');
+        const isSortable = $(event.target).closest('th').attr('data-sortable') !== 'false';
+
+        if (!isSortable) return;
+
+        if (this.currentSortColumn === column) {
+            this.currentSortDirection = this.currentSortDirection === 'ASC' ? 'DESC' : 'ASC';
+        } else {
+            this.currentSortColumn = column;
+            this.currentSortDirection = 'ASC';
+        }
+
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+        let currentFilters = [];
+
+        if (radios.length > 0) {
+            currentFilters = radios.map((_, radio) => {
+                return {
+                    column: $(radio).data('column'),
+                    value: radio.value
+                };
+            }).get();
+        }
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
+    }
+
+
     updateItemsPerPageOptions() {
-        this.elements.itemsPerPageSelector.find('option').each((_, option) => {
+        this.elements.itemsPerPageSelector.find('option').each((index, option) => {
             let value = parseInt($(option).val(), 10);
-            console.log("VALUE: " + value)
-            console.log(this.totalItems + " THIS IS THE TOTAL ITEMS")
             if (value > this.totalItems) {
                 $(option).prop("disabled", true);
             } else {
@@ -111,7 +200,9 @@ export class DataTableWithPagination {
         });
     }
 
+
     handleSearch() {
+        localStorage.setItem(this.searchKey, this.elements.searchInput.val());
         this.currentPageNumber = 1;
 
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
@@ -121,12 +212,13 @@ export class DataTableWithPagination {
                 value: radio.value
             };
         }).get();
-        this.fetchTableData(this.elements.searchInput.val(), currentFilters);
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
     }
 
     handleClearInput() {
         let searchTerm = this.elements.searchInput.val().trim();
         if (searchTerm === "") {
+            localStorage.removeItem(this.searchKey);
             this.elements.clearSearch.hide();
             this.elements.searchIcon.show();
         } else {
@@ -143,7 +235,7 @@ export class DataTableWithPagination {
         $('a[aria-current="page"]').text(this.currentPageNumber);
     }
 
-    fetchTableData(searchTerm = "", filters = []) {
+    fetchTableData(searchTerm = this.searchKey, filters = this.filter, sortColumn = this.currentSortColumn, sortDirection = this.currentSortDirection) {
         $.ajax({
             url: "database_actions.php",
             type: 'post',
@@ -155,11 +247,14 @@ export class DataTableWithPagination {
                     pageNumber: this.currentPageNumber,
                     itemPerPage: this.itemsPerPage,
                     searchTerm: searchTerm,
-                    filters: filters
+                    filters: filters,
+                    sortColumn: sortColumn,
+                    sortDirection: sortDirection
                 }
             },
-            success: (data) => {
+            success: (data, status) => {
                 this.elements.tableContainer.html(data);
+
                 // Properly parse the hidden values
                 this.totalItems = parseInt($('#totalItemsHidden').val(), 10) || 0;
                 this.updateItemsPerPageOptions();
@@ -182,6 +277,10 @@ export class DataTableWithPagination {
         });
     }
 
+    /**
+     * Handles page change for the data table with pagination.
+     * @param {string} direction - The direction of the page change. Can be "prev", "next", "start", or "end".
+     */
     handlePageChange(direction) {
         switch (direction) {
             case "prev":
@@ -213,7 +312,7 @@ export class DataTableWithPagination {
         }).get();
 
         // Pass the filters to fetchTableData
-        this.fetchTableData(this.elements.searchInput.val(), currentFilters);
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
     }
 
 }

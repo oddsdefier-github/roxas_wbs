@@ -271,7 +271,7 @@ class DatabaseQueries extends BaseQuery
                 return "Error: " . $insertIntoClientSecondaryData;
             }
 
-            $insertIntoBillingData = $this->insertIntoBillingData($formData, $registrationId, $clientID);
+            $insertIntoBillingData = $this->insertIntoBillingData($formData, $clientID);
             if (!$insertIntoBillingData) {
                 return "Error: " . $insertIntoBillingData;
             }
@@ -344,7 +344,7 @@ class DatabaseQueries extends BaseQuery
 
         session_start();
 
-        $encoder = $_SESSION['user_name'];
+        $encoder = $_SESSION['user_id'];
 
         $initialReading = 0;
         $prevReading = 0;
@@ -373,13 +373,14 @@ class DatabaseQueries extends BaseQuery
         $currentDate = new DateTime();
         $billingMonthAndYear = $currentDate->format('F Y');
 
-        $sql_billing = "INSERT INTO billing_data (billing_id, client_id, prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_type, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $sql_billing = "INSERT INTO billing_data (billing_id, client_id, meter_number, prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_type, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
         $stmt_billing = $this->conn->prepareStatement($sql_billing);
         mysqli_stmt_bind_param(
             $stmt_billing,
-            "ssddsssdssssssss",
+            "sssddsssdssssssss",
             $billingID,
             $clientID,
+            $meterNumber,
             $prevReading,
             $initialReading,
             $readingType,
