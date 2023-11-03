@@ -5,7 +5,18 @@ $(document).ready(function () {
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
     if (filename === 'meter_reading.php') {
-        const clientTable = new DataTableWithPagination("client_data", '#displayClientForBilling');
+        const today = new Date();
+        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+        const todayDate = today.getDate();
+        if (today.getDate() === todayDate) {
+            $(".main-content").show();
+            const clientTable = new DataTableWithPagination("client_data", '#displayClientForBilling');
+        } else {
+            $(".main-content").show();
+            const daysLeft = lastDayOfMonth.getDate() - today.getDate();
+            $(".main-content").html(`Wait for ${daysLeft}days to encode new reading again.</br>Have a nice day!`);
+        }
     }
 
     $('.page_nav').each(function () {

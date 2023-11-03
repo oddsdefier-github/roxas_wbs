@@ -3863,6 +3863,10 @@ input:checked + .toggle-bg {
   stroke: #1F2937;
 }
 
+.stroke-green-400 {
+  stroke: #31C48D;
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;

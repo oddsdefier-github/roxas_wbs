@@ -1,4 +1,4 @@
-<div class="px-10 mb-10">
+<div class="hidden main-content px-10 mb-10">
     <div>
         <?php include './layouts/clients_nav.php' ?>
     </div>
