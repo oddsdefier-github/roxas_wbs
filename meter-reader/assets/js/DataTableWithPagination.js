@@ -1,5 +1,5 @@
 export class DataTableWithPagination {
-    constructor (tableName, tableContainerSelector = '#displayClientApplicationTable', filter = []) {
+    constructor (tableName, tableContainerSelector = '#displayClientForBilling', filter = []) {
         this.tableName = tableName;
         this.currentSortColumn = "timestamp";
         this.currentSortDirection = 'DESC';
@@ -36,11 +36,13 @@ export class DataTableWithPagination {
             itemsPerPageSelector: $("#item-per-page")
         };
 
+
+
         this.elements.searchInput.val(this.savedSearch);
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
         this.bindEvents();
-        this.bindCheckboxEvents();
+        this.bindFilterEvents();
         this.fetchTableData(this.savedSearch, this.filter);
         this.updateButtonsState();
     }
@@ -129,6 +131,15 @@ export class DataTableWithPagination {
         $(".status-text").text(statusText);
         this.elements.resetFilter.prop("disabled", false)
     }
+
+    bindFilterEvents() {
+        const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
+        radios.on('change', () => {
+            this.applyFilter();
+        });
+    }
+
+
     applySavedFiltersToUI() {
         const self = this;
         console.log("FILTER" + self.filter);
@@ -149,16 +160,9 @@ export class DataTableWithPagination {
         this.elements.resetFilter.prop("disabled", true)
     }
 
-    bindFilterEvents() {
-        const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
-        radios.on('change', () => {
-            this.applyFilter();
-        });
-    }
 
     handleSort(event) {
         const column = $(event.target).closest('th').attr('data-column-name');
-        console.log(column)
         const isSortable = $(event.target).closest('th').attr('data-sortable') !== 'false';
 
         if (!isSortable) return;

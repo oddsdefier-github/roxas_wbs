@@ -73,7 +73,113 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 
+    function getDueAndDisconnectionDates(): array
+    {
+        $dateTime = new DateTime();
+        $dateTime->modify('+15 days');
+        $dayOfWeek = $dateTime->format('w');
 
+        // Skip weekends for dueDate
+        if ($dayOfWeek == 6) { // Saturday
+            $dateTime->modify('+2 days');
+        } elseif ($dayOfWeek == 0) { // Sunday
+            $dateTime->modify('+1 day');
+        }
+
+        $dueDate = $dateTime->format('Y-m-d');
+
+        // Calculate disconnectionDate
+        $disconnectionDateTime = clone $dateTime;
+        $disconnectionDateTime->modify('+30 days');
+        $disconnectionDate = $disconnectionDateTime->format('Y-m-d');
+
+        return [
+            'dueDate' => $dueDate,
+            'disconnectionDate' => $disconnectionDate
+        ];
+    }
+
+    public function getRates(string $propertyType, string $billingMonthAndYear): ?string
+    {
+        $query_rates = "SELECT * FROM rates WHERE property_type = ? AND billing_month = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmt = $this->conn->prepareStatement($query_rates);
+        mysqli_stmt_bind_param($stmt, "ss", $propertyType, $billingMonthAndYear);
+
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            $row = mysqli_fetch_assoc($result);
+
+            if ($row) {
+                return $row['rates'];
+            }
+        }
+
+        return null;
+    }
+
+
+    public function getPeriodTo(): string
+    {
+        $currentDate = new DateTime();
+        $currentDate->setTime(0, 0, 0);
+        $periodTo = clone $currentDate;
+        $periodTo->modify('last day of this month');
+        return $periodTo->format('Y-m-d');
+    }
+
+    public function getPeriodFrom(string $clientID): ?string
+    {
+        $selectBillingData = "SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmt_select = $this->conn->prepareStatement($selectBillingData);
+        mysqli_stmt_bind_param($stmt_select, "s", $clientID);
+        if (mysqli_stmt_execute($stmt_select)) {
+            $result_select = mysqli_stmt_get_result($stmt_select);
+            if ($row = mysqli_fetch_assoc($result_select)) {
+                $periodFrom = $row['period_to'];
+                $date = new DateTime($periodFrom);
+                $date->modify('+1 day');
+                mysqli_stmt_close($stmt_select);
+                return $date->format('Y-m-d');
+            }
+            mysqli_stmt_close($stmt_select);
+        }
+        return null;
+    }
+
+    public function updateReadingTypeToPrevious(string $clientID): array
+    {
+        $updateSql = "UPDATE billing_data SET reading_type = 'previous' WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmt_update = $this->conn->prepareStatement($updateSql);
+        mysqli_stmt_bind_param($stmt_update, "s", $clientID);
+        $updateResult = mysqli_stmt_execute($stmt_update);
+        mysqli_stmt_close($stmt_update);
+        if (!$updateResult) {
+            $this->conn->rollbackTransaction();
+            return array("status" => "error", "message" => "Error updating previous reading.");
+        }
+        return array("status" => "success", "message" => "Successfully updated previous reading.");
+    }
+
+
+    public function updateClientReadingStatus($clientID)
+    {
+        $updateReadingStatus = "UPDATE client_data SET reading_status = 'read' WHERE client_id = ?";
+        $stmt_update = $this->conn->prepareStatement($updateReadingStatus);
+        mysqli_stmt_bind_param($stmt_update, "s", $clientID);
+        $updateResult = mysqli_stmt_execute($stmt_update);
+
+        if (mysqli_stmt_affected_rows($stmt_update) === 0) {
+            mysqli_stmt_close($stmt_update);
+            return array("status" => "warning", "message" => "No rows were affected or data is the same.");
+        }
+
+        if (!$updateResult) {
+            mysqli_stmt_close($stmt_update);
+            return array("status" => "error", "message" => "Error updating client reading status.");
+        }
+        mysqli_stmt_close($stmt_update);
+        return array("status" => "success", "message" => "Successfully updated client reading status.");
+    }
 
 
     public function encodeCurrentReading($formData)
@@ -84,23 +190,12 @@ class DatabaseQueries extends BaseQuery
 
         $readingType = 'current';
 
-        // Initialize DateTime and set dueDate
-        $dateTime = new DateTime();
-        $dateTime->modify('+15 days');
-        $dayOfWeek = $dateTime->format('w');
-        if ($dayOfWeek == 6) {
-            $dateTime->modify('+2 days');
-        } elseif ($dayOfWeek == 0) {
-            $dateTime->modify('+1 day');
-        }
-        $dueDate = $dateTime->format('Y-m-d');
-
-        $disconnectionDateTime = clone $dateTime;
-        $disconnectionDateTime->modify('+30 days');
-        $disconnectionDate = $disconnectionDateTime->format('Y-m-d');
-
+        $getDueAndDisconnectionDates = $this->getDueAndDisconnectionDates();
+        $dueDate = $getDueAndDisconnectionDates['dueDate'];
+        $disconnectionDate = $getDueAndDisconnectionDates['disconnectionDate'];
 
         $billingStatus = 'unpaid';
+
         $currentDate = new DateTime();
         $billingMonthAndYear = $currentDate->format('F Y');
 
@@ -111,65 +206,33 @@ class DatabaseQueries extends BaseQuery
         $propertyType = $formData['propertyType'];
         $meterNumber = $formData['meterNumber'];
         $billingID = "B-" . $meterNumber . "-" . time();
+
         $this->conn->beginTransaction();
 
-        // Fetch rates
-        $query_rates = "SELECT * FROM rates WHERE property_type = ? AND billing_month = ? ORDER BY timestamp DESC LIMIT 1";
-        $stmt = $this->conn->prepareStatement($query_rates);
-        mysqli_stmt_bind_param($stmt, "ss", $propertyType, $billingMonthAndYear);
-        if (mysqli_stmt_execute($stmt)) {
-            $result = mysqli_stmt_get_result($stmt);
-            $row = mysqli_fetch_assoc($result);
-            $rates = $row['rates'];
-        }
+        $rates = $this->getRates($propertyType, $billingMonthAndYear);
 
         $billingAmount = $consumption * $rates;
 
-        // Determine periodTo
-        $currentDate = new DateTime();
-        $currentDate->setTime(0, 0, 0);
-        $periodTo = clone $currentDate;
-        $periodTo->modify('last day of this month');
-        $periodTo = $periodTo->format('Y-m-d');
+        $periodTo = $this->getPeriodTo();
+        $periodFrom = $this->getPeriodFrom($clientID);
 
-        // Fetch periodFrom
-        $selectBillingData = "SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
-        $stmt_select = $this->conn->prepareStatement($selectBillingData);
-        mysqli_stmt_bind_param($stmt_select, "s", $clientID);
-        if (mysqli_stmt_execute($stmt_select)) {
-            $result_select = mysqli_stmt_get_result($stmt_select);
-            if ($row = mysqli_fetch_assoc($result_select)) {
-                $periodFrom = $row['period_to'];
 
-                $date = new DateTime($periodFrom);
-                $date->modify('+1 day');
-                $periodFrom = $date->format('Y-m-d');
-            }
-            mysqli_stmt_close($stmt_select);
-        }
-
-        // Update previous reading
-        $updateSql = "UPDATE billing_data SET reading_type = 'previous' WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
-        $stmt_update = $this->conn->prepareStatement($updateSql);
-        mysqli_stmt_bind_param($stmt_update, "s", $clientID);
-        $updateResult = mysqli_stmt_execute($stmt_update);
-        mysqli_stmt_close($stmt_update);
-        if (!$updateResult) {
-            $this->conn->rollbackTransaction();
-            return array("status" => "error", "message" => "Error updating previous reading.");
-        }
+        $response = $this->updateReadingTypeToPrevious($clientID);
 
         $billingType = 'actual';
-
         // Insert current reading
-        $sql_billing = "INSERT INTO billing_data (billing_id, client_id, prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_type, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $sql_billing = "INSERT INTO billing_data (billing_id, client_id, meter_number,  prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_type, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+
+
         $stmt_billing = $this->conn->prepareStatement($sql_billing);
+
         if ($stmt_billing) {
             mysqli_stmt_bind_param(
                 $stmt_billing,
-                "ssiisssissssssss",
+                "sssiisssissssssss",
                 $billingID,
                 $clientID,
+                $meterNumber,
                 $prevReading,
                 $currReading,
                 $readingType,
@@ -189,22 +252,12 @@ class DatabaseQueries extends BaseQuery
             if (mysqli_stmt_execute($stmt_billing)) {
                 $this->conn->commitTransaction();
                 $response["message"] = $billingID;
-                $updateReadingStatus = "UPDATE client_data SET reading_status = 'read'  WHERE client_id = ?";
-                $stmt_update = $this->conn->prepareStatement($updateReadingStatus);
-                mysqli_stmt_bind_param($stmt_update, "s", $clientID);
-                $updateResult = mysqli_stmt_execute($stmt_update);
-                mysqli_stmt_close($stmt_update);
-
-                if (!$updateResult) {
-                    $this->conn->rollbackTransaction();
-                    return array("status" => "error", "message" => "Error client reading status.");
-                }
+                $response = $this->updateClientReadingStatus($clientID);
             } else {
                 $this->conn->rollbackTransaction();
                 $response = array("status" => "error", "message" => "Error inserting initial reading: " . $stmt_billing->error);
             }
         }
-
         mysqli_stmt_close($stmt_billing);
         return $response;
     }
@@ -255,7 +308,7 @@ class DataTable extends BaseQuery
         }
 
         if (!empty($conditions)) {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data WHERE " . implode(" AND ", $conditions);
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data WHERE reading_status = 'pending' AND " . implode(" AND ", $conditions);
         } else {
             $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_data WHERE reading_status = 'pending'";
         }

@@ -13,8 +13,9 @@ class SignOutHandler {
     }
 
     static playSignOutAudio() {
-        const audio = new Audio('./outro.wav');
-        audio.play();
+        // const audio = new Audio('./outro.wav');
+        // audio.play();
+        console.log('LOGOUT')
     }
 
     static hideSignOutModal() {
