@@ -39,7 +39,7 @@
 
             <div id="clientAppStatusFilterDropDown" class="dropdown-container z-10 hidden w-40 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" style="width: 13rem;">
                 <ul class="px-3 py-2 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
-                    <div class="border-b-2 border-gray-200">
+                    <div class="border-b-2 border-gray-200 py-2">
                         <li>
                             <p class="font-semibold uppercase py-1 text-xs text-gray-500">Billing Status</p>
                         </li>
@@ -60,7 +60,7 @@
                             </div>
                         </li>
                     </div>
-                    <div>
+                    <div class="border-b-2 border-gray-200 py-2">
                         <li>
                             <p class="font-semibold uppercase py-1 text-xs text-gray-500">Status</p>
                         </li>
@@ -90,7 +90,7 @@
                             </div>
                         </li>
                     </div>
-                    <div class="max-h-40 overflow-y-auto" id="address_filter" style="max-height: 20rem;">
+                    <div class="max-h-40 overflow-y-auto py-2" id="address_filter" style="max-height: 20rem;">
                     </div>
                 </ul>
             </div>

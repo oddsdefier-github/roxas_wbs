@@ -164,6 +164,49 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 
+    public function retrieveBillingData($clientID)
+    {
+        $response = array();
+
+        $sql = "SELECT billing_data.*, client_data.* FROM billing_data "
+            . "LEFT JOIN client_data ON billing_data.client_id = client_data.client_id "
+            . "WHERE billing_data.reading_type = 'current' AND client_data.client_id = ?";
+
+        if ($stmt = $this->conn->prepareStatement($sql)) {
+            mysqli_stmt_bind_param($stmt, "s", $clientID);
+
+            if (mysqli_stmt_execute($stmt)) {
+                $result = mysqli_stmt_get_result($stmt);
+
+                if ($row = mysqli_fetch_assoc($result)) {
+                    $response = [
+                        'status' => 'success',
+                        'jsonData' => $row
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'No data found.'
+                    ];
+                }
+                mysqli_free_result($result);
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => "Execute failed: " . $this->conn->getErrorMessage()
+                ];
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => "Prepare failed: " . $this->conn->getErrorMessage()
+            ];
+        }
+
+        return $response;
+    }
+
     public function handleLoadNotification()
     {
 
@@ -218,7 +261,7 @@ class DataTable extends BaseQuery
 
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $conditions[] = "(billing_id LIKE ? OR client_id LIKE ? OR consumption LIKE ? OR billing_amount LIKE ? OR reading_type = 'current')";
+            $conditions[] = "(billing_id LIKE ? OR client_id LIKE ? OR consumption LIKE ? OR billing_amount LIKE ?)";
             $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm]);
             $types .= "ssss";
         }
@@ -232,17 +275,16 @@ class DataTable extends BaseQuery
         }
 
         if (!empty($conditions)) {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS billing_data.*, client_data.* FROM billing_data ";
-            $sql .= "LEFT JOIN client_data ON billing_data.client_id = client_data.client_id ";
-            $sql .= "WHERE " . implode(" AND ", $conditions);
+            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd ";
+            $sql .= "LEFT JOIN client_data AS cd ON bd.client_id = cd.client_id ";
+            $sql .= "WHERE bd." . implode(" AND bd.", $conditions); // Specify 'bd' table alias for conditions
         } else {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS billing_data.*, client_data.* FROM billing_data ";
-            $sql .= "LEFT JOIN client_data ON billing_data.client_id = client_data.client_id ";
-            $sql .= "WHERE billing_data.reading_type = 'current'";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd ";
+            $sql .= "LEFT JOIN client_data AS cd ON bd.client_id = cd.client_id ";
+            $sql .= "WHERE bd.reading_type = 'current'";
         }
 
-
-        $sql .= " ORDER BY billing_data.timestamp DESC LIMIT ? OFFSET ?";
+        $sql .= " ORDER BY bd.timestamp DESC LIMIT ? OFFSET ?";
         $params = array_merge($params, [$itemPerPage, $offset]);
         $types .= "ii";
 
@@ -296,7 +338,7 @@ class DataTable extends BaseQuery
             $unpaidBadge = '<span class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Unpaid</span>';
             $statusBadge = ($status === 'paid') ? $paidBadge : $unpaidBadge;
 
-            $jsonData = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
+            // $jsonData = htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8');
 
             $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
@@ -311,7 +353,7 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button title="Accept Payment" onclick="acceptClientBillingPayment(' . $jsonData . ')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <button title="Accept Payment" onclick="acceptClientBillingPayment(\'' . $clientID . '\')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Payment
                 </button>
             </td>

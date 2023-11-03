@@ -39,7 +39,7 @@
                         </li>
                     </ul>
                     <div class="py-1 cursor-pointer">
-                        <button data-button-type="open-modal" data-modal-name="sign_out" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</button>
+                        <button data-button-type="open-modal" data-modal-name="sign_out" class="sign_out block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</button>
                     </div>
                 </div>
             </div>

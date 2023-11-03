@@ -17,6 +17,7 @@ include './auth_guard.php';
 <body class="flex h-screen w-screen overflow-hidden font-inter bg-gray-50">
     <?php include './components/alerts.php'; ?>
     <?php include './components/modal/acceptAppPaymentModal.php'; ?>
+    <?php include './components/modal/signOutModal.php'; ?>
     <?php include './components/logout_loader.php'; ?>
     <?php include './layouts/sidebar.php'; ?>
 
@@ -29,6 +30,7 @@ include './auth_guard.php';
             </div>
         </main>
     </section>
+
     <?php include './layouts/scripts.php'; ?>
     <script type="module" src="./assets/js/acceptAppPayment.js"> </script>
     <script>

@@ -32,6 +32,7 @@ class SignOutHandler {
             window.location.href = '../index.php';
         }, 1000);
     }
+
 }
 
 function signOut() {

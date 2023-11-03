@@ -14,6 +14,7 @@ const formatNumber = (num) => {
     return num.toLocaleString('en-US', { style: 'currency', currency: 'PHP' });
 };
 
+
 function retrieveApplicationFees(id, table, callback) {
     $.ajax({
         url: "database_actions.php",

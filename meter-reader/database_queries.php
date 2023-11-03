@@ -250,7 +250,7 @@ class DataTable extends BaseQuery
             foreach ($filters as $filter) {
                 $conditions[] = "{$filter['column']} = ?";
                 $params[] = $filter['value'];
-                $types .= "s";  // Assuming all filter values are strings, adjust if not
+                $types .= "s";
             }
         }
 

@@ -6,8 +6,8 @@
 
 
 <script type="module" src="./assets/js/main.js"></script>
+<script type="module" src="./assets/js/ModalManager.js"></script>
+<script src="./assets/js/SignOutHandler.js"></script>
 <script src="./assets/js/sidebar.js"></script>
-<script src="./assets/js/signoutHandler.js"></script>
-<script src="./assets/js/modalManager.js"></script>
 <script src="./assets/js/apexcharts.js"></script>
 <script src="./assets/js/notificationHandler.js"></script>

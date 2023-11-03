@@ -70,6 +70,24 @@ function totalCalculationWithTax(billAmount, taxRate) {
     };
 }
 
+function retrieveBillingData(clientID, callback) {
+    $.ajax({
+        url: "database_actions.php",
+        type: "post",
+        data: {
+            action: "retrieveBillingData",
+            clientID: clientID,
+        },
+        success: function (data) {
+
+
+            const jsonData = JSON.parse(data).jsonData
+            console.log(jsonData)
+            callback(jsonData)
+        }
+    })
+
+}
 
 function updateUI(dataObj) {
     fullNameEl.text(dataObj.full_name);
@@ -87,60 +105,61 @@ function updateUI(dataObj) {
     propertyTypeEl.text(dataObj.property_type);
 }
 
+function acceptClientBillingPayment(clientID) {
+    console.log(clientID)
+
+    retrieveBillingData(clientID, function (jsonData) {
+        
+        clearInputsOrText([amountPaidInput, amountPaidEl, remainingBalanceEl]);
+        amountDueEl.hide();
+        setModalSettings();
+
+        console.log(jsonData)
+        const fullName = jsonData.full_name;
+        const clientID = jsonData.client_id;
+        const meterNumber = jsonData.meter_number;
+        const propertyType = jsonData.property_type;
+        const consumption = jsonData.consumption;
+        const rates = jsonData.rates;
+        const billingID = jsonData.billing_id;
+        const billingAmount = jsonData.billing_amount;
+        const penalty = jsonData.penalty;
+        const dueDate = jsonData.due_date;
+        const periodFrom = jsonData.period_from;
+        const periodTo = jsonData.period_to;
+        const billingAddress = jsonData.full_address;
+
+        const tax = taxEl.attr('data-tax-rate');
+        const taxPercentage = tax + "%";
+
+        const billCalculation = totalCalculationWithTax(billingAmount, tax);
+        const taxAmount = billCalculation.taxAmount;
+        const totalBill = billCalculation.totalWithTax;
+
+        window.totalBill = totalBill;
+
+        console.log(totalBill)
+        const UIElements = {
+            consumption: consumption + " cu.m.",
+            rates: formatNumber(parseFloat(rates)),
+            penalty: formatNumber(parseFloat(penalty)),
+            amount_due: formatNumber(parseFloat(billingAmount)),
+            tax: taxPercentage,
+            taxAmount: formatNumber(parseFloat(taxAmount)),
+            totalBill: formatNumber(parseFloat(totalBill)),
+            property_type: propertyType,
+            full_name: fullName,
+            billing_id: billingID,
+            meter_number: meterNumber,
+            client_id: clientID
+        }
+        updateUI(UIElements);
+
+        displayModal($("#acceptBillingPaymentModal"));
+    })
 
 
-function acceptClientBillingPayment(jsonData) {
-    clearInputsOrText([amountPaidInput, amountPaidEl, remainingBalanceEl]);
-    amountDueEl.hide();
-    setModalSettings();
-
-
-    console.log(jsonData)
-    const fullName = jsonData.full_name;
-    const clientID = jsonData.client_id;
-    const meterNumber = jsonData.meter_number;
-    const propertyType = jsonData.property_type;
-    const consumption = jsonData.consumption;
-    const rates = jsonData.rates;
-    const billingID = jsonData.billing_id;
-    const billingAmount = jsonData.billing_amount;
-    const penalty = jsonData.penalty;
-    const dueDate = jsonData.due_date;
-    const periodFrom = jsonData.period_from;
-    const periodTo = jsonData.period_to;
-    const billingAddress = jsonData.full_address;
-
-    const tax = taxEl.attr('data-tax-rate');
-    const taxPercentage = tax + "%";
-
-    const billCalculation = totalCalculationWithTax(billingAmount, tax);
-    const taxAmount = billCalculation.taxAmount;
-    const totalBill = billCalculation.totalWithTax;
-
-    window.totalBill = totalBill;
-
-    console.log(totalBill)
-    const UIElements = {
-        consumption: consumption + " cu.m.",
-        rates: formatNumber(parseFloat(rates)),
-        penalty: formatNumber(parseFloat(penalty)),
-        amount_due: formatNumber(parseFloat(billingAmount)),
-        tax: taxPercentage,
-        taxAmount: formatNumber(parseFloat(taxAmount)),
-        totalBill: formatNumber(parseFloat(totalBill)),
-        property_type: propertyType,
-        full_name: fullName,
-        billing_id: billingID,
-        meter_number: meterNumber,
-        client_id: clientID
-    }
-    updateUI(UIElements);
-
-    displayModal($("#acceptBillingPaymentModal"));
-
-    setConfirmPaymentButtonBehavior(totalBill);
     // $("#client_billing_payment_id").va)
-
 }
 
 
