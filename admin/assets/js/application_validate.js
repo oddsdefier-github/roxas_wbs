@@ -122,7 +122,7 @@ $(document).ready(function () {
             age: getAgeIntValue(ageInput),
             gender: getSelectedItemValue(genderInput),
             phoneNumber: phoneNumberInput.val(),
-            email: emailInput.val(),
+            email: emailInput.val().toLowerCase(),
             propertyType: getSelectedItemValue(propertyTypeInput),
             streetAddress: formatName(streetAddressInput.val()),
             brgy: getSelectedItemValue(brgyInput),
@@ -351,6 +351,10 @@ $(document).ready(function () {
                 email: {
                     message: "is invalid",
                 },
+                format: {
+                    pattern: /^[^A-Z]*$/,
+                    message: "should not contain uppercase letters"
+                }
             },
             streetAddress: {
                 presence: {
