@@ -149,14 +149,12 @@ export class DataTableWithPagination {
         this.elements.resetFilter.prop("disabled", true)
     }
 
-    bindCheckboxEvents() {
+    bindFilterEvents() {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
-
         radios.on('change', () => {
             this.applyFilter();
         });
     }
-
 
     handleSort(event) {
         const column = $(event.target).closest('th').attr('data-column-name');

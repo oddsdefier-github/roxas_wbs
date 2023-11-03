@@ -277,7 +277,7 @@ class DataTable extends BaseQuery
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd ";
             $sql .= "LEFT JOIN client_data AS cd ON bd.client_id = cd.client_id ";
-            $sql .= "WHERE bd." . implode(" AND bd.", $conditions); // Specify 'bd' table alias for conditions
+            $sql .= "WHERE bd." . implode(" AND bd.", $conditions); 
         } else {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd ";
             $sql .= "LEFT JOIN client_data AS cd ON bd.client_id = cd.client_id ";

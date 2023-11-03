@@ -33,22 +33,22 @@
             <div id="clientAppStatusFilterDropDown" class="dropdown-container z-10 hidden w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
                 <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
                     <li>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <label for="approved" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
+                        <div class="flex items-center rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <label for="approved" class="p-2 w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
                                 <input id="approved" type="radio" value="Approved" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500">
                                 Approved</label>
                         </div>
                     </li>
                     <li>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <label for="confirmed" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
+                        <div class="flex items-center rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <label for="confirmed" class="p-2 w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
                                 <input id="confirmed" type="radio" value="Confirmed" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500">
                                 Confirmed</label>
                         </div>
                     </li>
                     <li>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <label for="unconfirmed" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
+                        <div class="flex items-center rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <label for="unconfirmed" class="p-2 w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
                                 <input id="unconfirmed" type="radio" value="Unconfirmed" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500">
                                 Unconfirmed</label>
                         </div>
@@ -70,15 +70,15 @@
             <div id="clientStatusFilterDropDown" class="dropdown-container z-10 hidden w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
                 <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
                     <li>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <label for="active" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
+                        <div class="flex items-center rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <label for="active" class="p-2 w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
                                 <input id="active" type="radio" value="Active" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500">
                                 Active</label>
                         </div>
                     </li>
                     <li>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                            <label for="inactive" class="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
+                        <div class="flex items-center rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                            <label for="inactive" class="p-2 w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">
                                 <input id="inactive" type="radio" value="Inactive" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500">
                                 Inactive</label>
                         </div>

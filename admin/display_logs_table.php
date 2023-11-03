@@ -109,7 +109,7 @@ while ($rows = mysqli_fetch_assoc($result)) {
 
             mysqli_free_result($client_name_result);
         } else {
-            $client_name = "Error: " . mysqli_error($conn);
+            $client_name = "Error: " . $conn->getErrorMessage();
         }
     } elseif ($user_activity == "Sign in") {
         $activity_class .= "bg-blue-100 text-blue-500 ";
@@ -132,7 +132,7 @@ while ($rows = mysqli_fetch_assoc($result)) {
 
             mysqli_free_result($client_name_result);
         } else {
-            $client_name = "Error: " . mysqli_error($conn);
+            $client_name = "Error: " . $conn->getErrorMessage();
         }
     }
 

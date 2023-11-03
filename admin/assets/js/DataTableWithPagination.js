@@ -42,7 +42,7 @@ export class DataTableWithPagination {
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
         this.bindEvents();
-        this.bindCheckboxEvents();
+        this.bindFilterEvents();
         this.fetchTableData(this.savedSearch, this.filter);
         this.updateButtonsState();
     }
@@ -132,7 +132,7 @@ export class DataTableWithPagination {
         this.elements.resetFilter.prop("disabled", false)
     }
 
-    bindCheckboxEvents() {
+    bindFilterEvents() {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
         radios.on('change', () => {
             this.applyFilter();

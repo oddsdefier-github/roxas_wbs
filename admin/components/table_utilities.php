@@ -44,16 +44,16 @@
                             <p class="font-semibold uppercase py-1 text-xs text-gray-500">Billing Status</p>
                         </li>
                         <li title='Billing Status'>
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                                <label for="paid" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="paid" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="paid" type="radio" value="Paid" data-column="billing_status" name="billing_status" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-green-400" data-load-type="static">paid</span>
                                 </label>
                             </div>
                         </li>
                         <li title='Billing Status'>
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                                <label for="unpaid" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="unpaid" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="unpaid" type="radio" value="Unpaid" data-column="billing_status" name="billing_status" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-green-400" data-load-type="static">unpaid</span>
                                 </label>
@@ -65,24 +65,24 @@
                             <p class="font-semibold uppercase py-1 text-xs text-gray-500">Status</p>
                         </li>
                         <li title='Status'>
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                                <label for="approved" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="approved" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="approved" type="radio" value="Approved" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-indigo-500" data-load-type="static">approved</span>
                                 </label>
                             </div>
                         </li>
                         <li title='Status'>
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                                <label for="confirmed" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="confirmed" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="confirmed" type="radio" value="Confirmed" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-indigo-500" data-load-type="static">confirmed</span></label>
                             </div>
                         </li>
 
                         <li title='Status'>
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                                <label for="unconfirmed" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="unconfirmed" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="unconfirmed" type="radio" value="Unconfirmed" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
 
                                     <span class="peer-checked:text-indigo-500" data-load-type="static">unconfirmed</span></label>
@@ -90,7 +90,8 @@
                             </div>
                         </li>
                     </div>
-                    <div class="max-h-40 overflow-y-auto py-2" id="address_filter" style="max-height: 20rem;">
+                    <div class="max-h-40 overflow-y-auto py-2" style="max-height: 20rem;">
+                        <?php include './components/address_filter.php' ?>
                     </div>
                 </ul>
             </div>
@@ -107,40 +108,45 @@
             </button>
 
             <div id="clientStatusFilterDropDown" class="dropdown-container z-10 hidden w-44 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
-                <ul class="px-3 py-2 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
+                <ul class="px-3 py-2 space-y-1 text-sm text-gray-700" aria-labelledby="dropdownRadioBgHoverButton">
                     <div class="border-b-2 border-gray-200">
                         <li title='Reading Status'>
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                                <label for="read" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="read" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="read" type="radio" value="Read" data-column="reading_status" name="reading_status" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-green-400">read</span>
                                 </label>
                             </div>
                         </li>
                         <li title='Reading Status'>
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                                <label for="pending" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="pending" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="pending" type="radio" value="Pending" data-column="reading_status" name="reading_status" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-green-400">pending</span>
                                 </label>
                             </div>
                         </li>
                     </div>
-                    <li title='Status'>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                            <label for="active" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                                <input id="active" type="radio" value="Active" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
-                                <span class="peer-checked:text-indigo-500">active</span>
-                            </label>
-                        </div>
-                    </li>
-                    <li title='Status'>
-                        <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                            <label for="inactive" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                                <input id="inactive" type="radio" value="Inactive" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
-                                <span class="peer-checked:text-indigo-500">inactive</span></label>
-                        </div>
-                    </li>
+                    <div>
+                        <li title='Status'>
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="active" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="active" type="radio" value="Active" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                    <span class="peer-checked:text-indigo-500">active</span>
+                                </label>
+                            </div>
+                        </li>
+                        <li title='Status'>
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="inactive" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="inactive" type="radio" value="Inactive" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                    <span class="peer-checked:text-indigo-500">inactive</span></label>
+                            </div>
+                        </li>
+                    </div>
+                    <div class="py-2 overflow-y-auto" style="max-height: 20.5rem;">
+                        <?php include './components/address_filter.php' ?>
+                    </div>
                 </ul>
             </div>
 

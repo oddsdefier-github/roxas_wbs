@@ -43,22 +43,23 @@
                             <p class="font-semibold uppercase py-1 text-xs text-gray-500">Status</p>
                         </li>
                         <li title='Status'>
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                                <label for="active" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="active" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="active" type="radio" value="Active" data-column="status" name="status" class="mr-1 w-4 h-4 peer text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-indigo-500">active</span>
                                 </label>
                             </div>
                         </li>
                         <li title='Status'>
-                            <div class="flex items-center p-2 rounded hover:bg-gray-100">
-                                <label for="inactive" class="w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="inactive" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
                                     <input id="inactive" type="radio" value="Inactive" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-indigo-500">inactive</span></label>
                             </div>
                         </li>
                     </div>
-                    <div class="relative max-h-40 overflow-y-auto" id="address_filter" style="max-height: 20rem;">
+                    <div class="max-h-40 overflow-y-auto py-2" style="max-height: 20rem;">
+                        <?php include './components/address_filter.php' ?>
                     </div>
                 </ul>
             </div>
