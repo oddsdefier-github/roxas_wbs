@@ -4,10 +4,7 @@ $(document).ready(function () {
     const currentPath = window.location.pathname;
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
-
-
     if (filename === 'meter_reading.php') {
-
         const clientTable = new DataTableWithPagination("client_data", '#displayClientForBilling');
     }
 

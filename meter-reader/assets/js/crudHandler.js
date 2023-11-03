@@ -1,9 +1,13 @@
+import { DataTableWithPagination } from './DataTableWithPagination.js';
 class EncodeHandler {
-    constructor (clientID) {
+    constructor (clientID, tableDisplay) {
         this.client_id = clientID;
+
         this.initializeElements();
         this.bindEvents();
         this.retrieveData();
+        this.showModal();
+        this.tableDisplay = tableDisplay;
     }
 
     initializeElements() {
@@ -112,6 +116,9 @@ class EncodeHandler {
             },
             success: data => {
                 console.log(data);
+                const filters = JSON.parse(localStorage.getItem('#displayClientForBilling-filterKey'));
+                const searchTerm = localStorage.getItem('#displayClientForBilling-searchKey');
+                this.tableDisplay.fetchTableData(searchTerm, filters);
                 this.hideModal();
             }
         });
@@ -135,16 +142,9 @@ class EncodeHandler {
     }
 }
 
-function encodeReadingData(clientID) {
-    const handler = new EncodeHandler(clientID);
-    handler.showModal();
-}
 
-function viewReadingData(clientID) {
-    // Assuming 'viewHandler' is another class you have
-    const handler = new viewHandler(clientID);
-    handler.deleteItem();
+function encodeReadingData(clientID) {
+    const handler = new EncodeHandler(clientID, new DataTableWithPagination("client_data", '#displayClientForBilling'));
 }
 
 window.encodeReadingData = encodeReadingData;
-window.viewReadingData = viewReadingData;
