@@ -72,7 +72,7 @@
                                     <div data-popper-arrow></div>
                                 </div>
 
-                                <input type="text" id="consumption" class="block w-full p-4 text-sm text-gray-400 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="Consumption will be automatically calculated">
+                                <input type="text" id="consumption" class="validate-input block w-full p-4 text-sm text-gray-400 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="Consumption will be automatically calculated">
                             </div>
                             <div class="mb-4">
                                 <label for="large-input" class="mb-2 flex items-center text-sm font-medium text-gray-600">Previous Reading
@@ -89,11 +89,11 @@
                                     <div data-popper-arrow></div>
                                 </div>
 
-                                <input type="text" id="prev-reading" class="block w-full p-4 text-gray-600 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="98 cubic meter">
+                                <input type="text" id="prev_reading" class="validate-input block w-full p-4 text-gray-600 border border-gray-300 rounded-lg bg-gray-50 sm:text-md" disabled readonly value="98 cubic meter">
                             </div>
                             <!-- CURRENT-READING-INPUT -->
                             <div>
-                                <label for="large-input" class="mb-2 flex items-center text-sm font-medium text-gray-600 dark:text-white">Current Reading
+                                <label for="curr-reading" class="mb-2 flex items-center text-sm font-medium text-gray-600 dark:text-white">Current Reading
                                     <button data-popover-target="curr-popover" data-popover-placement="bottom-end" type="button"><svg class="w-4 h-4 ml-2 text-gray-400 hover:text-gray-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
                                         </svg><span class="sr-only">Show information</span>
@@ -107,14 +107,14 @@
                                     </div>
                                     <div data-popper-arrow></div>
                                 </div>
-                                <input type="text" id="curr-reading" class="block w-full rounded-lg border-0 p-4 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-500">
+                                <input type="text" id="curr_reading" class="validate-input block w-full rounded-lg border-0 p-4 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-500">
                                 <div>
                                     <p class="validate-message"></p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="accordion-collapse" data-accordion="collapse">
+                    <!-- <div id="accordion-collapse" data-accordion="collapse">
                         <h2 id="accordion-collapse-heading-1">
                             <button type="button" class="flex items-center justify-between w-full p-2 py-3 font-medium text-left text-gray-500 border border-gray-200 focus:rounded-b-none-0 hover:bg-gray-100" data-accordion-target="#accordion-collapse-body-1" aria-expanded="false" aria-controls="accordion-collapse-body-1">
                                 <span class="text-sm font-bold  flex items-center gap-2">
@@ -156,7 +156,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class=" flex justify-end items-center space-x-2 mt-4">
                         <button data-button-type="close-modal" type="button" class="text-gray-700 ring-1 ring-gray-300 bg-white hover:bg-gray-100 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Cancel</button>

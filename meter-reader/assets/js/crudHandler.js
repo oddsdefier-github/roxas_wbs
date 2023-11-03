@@ -28,9 +28,9 @@ class EncodeHandler {
             prevReading: $('#prev-reading'),
             submitEncode: $('.submit_encode'),
             clientProfileLink: $('.client_profile_link'),
-            currReadingInput: $('#curr-reading'),
+            currReadingInput: $('#curr_reading'),
             consumptionInput: $('#consumption'),
-            prevReadingInput: $('#prev-reading'),
+            prevReadingInput: $('#prev_reading'),
             encodeForm: $('.encode_form')
         };
     }
@@ -39,8 +39,21 @@ class EncodeHandler {
         this.elements.currReadingInput.on('input', () => {
             const prevReading = this.elements.prevReadingInput.val();
             const currReading = this.elements.currReadingInput.val();
-            const computeConsumption = +currReading - +prevReading;
-            this.elements.consumptionInput.val(`${computeConsumption} cubic meter`);
+
+            let cleanedInput = currReading.replace(/[^\d.]/g, '');
+            let currReadingVal = parseFloat(cleanedInput);
+
+            if (isNaN(currReadingVal)) {
+                this.elements.currReadingInput.val("");
+                this.elements.consumptionInput.val("");
+            } else {
+                const computeConsumption = parseFloat(currReadingVal) - parseFloat(prevReading);
+
+                let consumption = parseFloat(computeConsumption);
+                this.elements.consumptionInput.val(`${consumption} cubic meter`);
+            }
+            this.elements.currReadingInput.val(cleanedInput);
+
         });
     }
 
@@ -74,8 +87,9 @@ class EncodeHandler {
         });
     }
 
+
     handleStatus(status) {
-        $('#curr-reading').prop('disabled', status !== 'active');
+        this.elements.currReadingInput.prop('disabled', status !== 'active');
     }
 
     updateUI(responseData) {
@@ -124,13 +138,38 @@ class EncodeHandler {
         });
     }
 
+    validateInput(responseData) {
+        this.elements.encodeForm.on("submit", e => {
+            e.preventDefault();
+
+            const prevReading = parseFloat(this.elements.prevReadingInput.val());
+            const currReading = parseFloat(this.elements.currReadingInput.val());
+
+            function validateCurrReading(curr, prev) {
+                if (isNaN(curr) || curr <= 0) {
+                    console.log("Current reading should be a positive number.");
+                    return false;
+                }
+                if (curr <= prev) {
+                    console.log("Current reading should be greater than the previous reading.");
+                    return false;
+                }
+                return true;
+            }
+
+            if (validateCurrReading(currReading, prevReading)) {
+                this.submitData(responseData);
+            }
+        });
+    }
+
     encodeCurrentReading(responseData) {
         this.elements.currReadingInput.val("");
         this.elements.encodeForm.off('submit');
         this.elements.encodeForm.on('submit', e => {
             e.preventDefault();
             if (this.elements.currReadingInput.val().trim() !== '') {
-                this.submitData(responseData);
+                this.validateInput(responseData);
             } else {
                 console.log('EMPTY');
             }
