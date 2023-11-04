@@ -128,7 +128,7 @@
 
                         </li>
                         <li class="my-2">
-                            <a href="" class="tab-menu flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
+                            <a href="./" class="tab flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
                                 <div class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -142,34 +142,6 @@
                                     <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                                 </svg>
                             </a>
-
-                            <ul class="px-3 submenu-container">
-                                <li class="my-2">
-                                    <a href="" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
-                                        <span class="gap-2 flex items-center">
-                                            <div class="p-1 rounded-md">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                                                    <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
-                                                </svg>
-                                            </div>
-                                            <p class="text-gray-100 text-xs group-hover:text-primary-300">Application</p>
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="my-2">
-                                    <a href="" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
-                                        <span class="gap-2 flex items-center">
-                                            <div class="p-1 rounded-md">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                                                    <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
-                                                </svg>
-                                            </div>
-                                            <p class="text-gray-100 text-xs group-hover:text-primary-300">Billing</p>
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-
                         </li>
 
                         <li class="my-2">
