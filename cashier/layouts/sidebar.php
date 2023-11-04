@@ -69,24 +69,6 @@
                             </a>
                         </li>
                         <li class="my-2">
-                            <a href="transactions.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
-                                <span class="flex items-center gap-2">
-
-                                    <div class="p-2 rounded-md" style="background-color: #3730a3;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-                                        </svg>
-
-                                        </svg>
-                                    </div>
-                                    <p class="ml-2">Transactions</p>
-                                </span>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-                                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-                                </svg>
-                            </a>
-                        </li>
-                        <li class="my-2">
                             <a href="" class="tab-menu flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
                                 <div class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">

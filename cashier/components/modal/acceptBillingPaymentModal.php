@@ -101,7 +101,7 @@
                     <div data-validate-input="amount_paid_input" class="validate-message"></div>
                 </div>
                 <div class="flex items-center justify-end space-x-4 py-3">
-                    <button id="close_modal" data-button-type="close-modal" type="button" class="text-gray-500 bg-gray-50 hover:bg-gray-100 focus:ring-3 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">No, cancel</button>
+                    <button id="cancel_payment" data-button-type="close-modal" type="button" class="text-gray-500 bg-gray-50 hover:bg-gray-100 focus:ring-3 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">No, cancel</button>
                     <button id="confirm-bill-payment" type="submit" class="text-white bg-gray-800 hover:bg-gray-500 focus:ring-3 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled>
                         Confirm
                     </button>

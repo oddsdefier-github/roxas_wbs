@@ -25,6 +25,45 @@
                 </svg>
             </button>
 
+            <button id="clientAppFilter" data-dropdown-toggle="clientAppFilterDropDown" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium group text-gray-700 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
+                </svg>
+
+                <span class="status-text group-hover:text-primary-700">Status</span>
+                <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path clip-rule="evenodd" fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+            </button>
+
+            <div id="clientAppFilterDropDown" class="dropdown-container z-10 hidden w-40 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" style="width: 13rem;">
+                <ul class="px-3 py-2 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
+                    <div class="border-b-2 border-gray-200 py-2">
+                        <li>
+                            <p class="font-semibold uppercase py-1 text-xs text-gray-500">Property Type</p>
+                        </li>
+                        <li title='Property Type'>
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="residential" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="residential" type="radio" value="Residential" data-column="property_type" name="property_type" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                    <span class="peer-checked:text-green-400">residential</span>
+                                </label>
+                            </div>
+                        </li>
+                        <li title='Property Type'>
+                            <div class="flex items-center rounded hover:bg-gray-100">
+                                <label for="commercial" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="commercial" type="radio" value="Commercial" data-column="property_type" name="property_type" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                    <span class="peer-checked:text-green-400">commercial</span>
+                                </label>
+                            </div>
+                        </li>
+                    </div>
+                    <div class="max-h-40 overflow-y-auto py-2" style="max-height: 20rem;">
+                        <?php include './components/address_filter_ca.php' ?>
+                    </div>
+                </ul>
+            </div>
 
             <button id="billingFilter" data-dropdown-toggle="billingFilterDropDown" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium group text-gray-700 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">

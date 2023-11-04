@@ -21,7 +21,7 @@ const amountDueEl = $(".amount_due");
 const acceptBillingPaymentModal = $("#acceptBillingPaymentModal");
 const amountPaidInput = $("#amount_paid_input");
 
-
+const cancelPayment = $("#cancel_payment");
 const confirmBillPayment = $("#confirm-bill-payment");
 
 
@@ -40,18 +40,28 @@ function retrieveBillingRates() {
     })
 }
 
-retrieveBillingRates();
 
 
-function displayModal(el) {
-    el.css({
-        'display': 'grid',
-        'place-items': 'center',
-        'justify-content': 'center',
-        'align-items': 'center'
-    });
+function retrieveBillingData(clientID, callback) {
+    $.ajax({
+        url: "database_actions.php",
+        type: "post",
+        data: {
+            action: "retrieveBillingData",
+            clientID: clientID,
+        },
+        success: function (data) {
+
+
+            const jsonData = JSON.parse(data).billingData
+            console.log(jsonData)
+            callback(jsonData)
+        }
+    })
+
 }
 
+retrieveBillingRates();
 
 const formatNumber = (num) => {
     return num.toLocaleString('en-US', { style: 'currency', currency: 'PHP' });
@@ -70,50 +80,21 @@ function totalCalculationWithTax(billAmount, taxRate) {
     };
 }
 
-function retrieveBillingData(clientID, callback) {
-    $.ajax({
-        url: "database_actions.php",
-        type: "post",
-        data: {
-            action: "retrieveBillingData",
-            clientID: clientID,
-        },
-        success: function (data) {
-
-
-            const jsonData = JSON.parse(data).jsonData
-            console.log(jsonData)
-            callback(jsonData)
-        }
-    })
-
-}
-
-function updateUI(dataObj) {
-    fullNameEl.text(dataObj.full_name);
-    billingIDEl.text(dataObj.billing_id);
-    meterNumberEl.text(dataObj.meter_number);
-    clientIDEl.text(dataObj.client_id);
-    consumptionEl.text(dataObj.consumption);
-    ratesEl.text(dataObj.rates);
-    penaltyEl.text(dataObj.penalty);
-    subTotalBillEl.text(dataObj.amount_due);
-    taxEl.text(dataObj.tax);
-    taxAmountEl.text(dataObj.taxAmount);
-    totalBillEl.text(dataObj.totalBill);
-    amountDueEl.text(dataObj.totalBill);
-    propertyTypeEl.text(dataObj.property_type);
+function setModalSettings() {
+    confirmBillPayment.html('Confirm');
+    $("#close_modal").show();
+    acceptBillingPaymentModal.css({
+        'display': 'grid',
+        'place-items': 'center',
+        'justify-content': 'center',
+        'align-items': 'center'
+    });
+    amountPaidInput.trigger("focus");
 }
 
 function acceptClientBillingPayment(clientID) {
     console.log(clientID)
-
     retrieveBillingData(clientID, function (jsonData) {
-        
-        clearInputsOrText([amountPaidInput, amountPaidEl, remainingBalanceEl]);
-        amountDueEl.hide();
-        setModalSettings();
-
         console.log(jsonData)
         const fullName = jsonData.full_name;
         const clientID = jsonData.client_id;
@@ -124,10 +105,6 @@ function acceptClientBillingPayment(clientID) {
         const billingID = jsonData.billing_id;
         const billingAmount = jsonData.billing_amount;
         const penalty = jsonData.penalty;
-        const dueDate = jsonData.due_date;
-        const periodFrom = jsonData.period_from;
-        const periodTo = jsonData.period_to;
-        const billingAddress = jsonData.full_address;
 
         const tax = taxEl.attr('data-tax-rate');
         const taxPercentage = tax + "%";
@@ -136,34 +113,35 @@ function acceptClientBillingPayment(clientID) {
         const taxAmount = billCalculation.taxAmount;
         const totalBill = billCalculation.totalWithTax;
 
+        billingIDEl.text(billingID);
+        clientIDEl.text(clientID);
+        meterNumberEl.text(meterNumber);
+        fullNameEl.text(fullName);
+        propertyTypeEl.text(propertyType);
+        taxEl.text(taxPercentage);
+        consumptionEl.text(consumption + " cu.m.");
+        ratesEl.text(formatNumber(parseFloat(rates)));
+        penaltyEl.text(formatNumber(parseFloat(penalty)));
+        subTotalBillEl.text(formatNumber(parseFloat(billingAmount)));
+        taxAmountEl.text(formatNumber(parseFloat(taxAmount)));
+        totalBillEl.text(formatNumber(parseFloat(totalBill)));
+        amountDueEl.text(formatNumber(parseFloat(totalBill)));
+
         window.totalBill = totalBill;
-
-        console.log(totalBill)
-        const UIElements = {
-            consumption: consumption + " cu.m.",
-            rates: formatNumber(parseFloat(rates)),
-            penalty: formatNumber(parseFloat(penalty)),
-            amount_due: formatNumber(parseFloat(billingAmount)),
-            tax: taxPercentage,
-            taxAmount: formatNumber(parseFloat(taxAmount)),
-            totalBill: formatNumber(parseFloat(totalBill)),
-            property_type: propertyType,
-            full_name: fullName,
-            billing_id: billingID,
-            meter_number: meterNumber,
-            client_id: clientID
-        }
-        updateUI(UIElements);
-
-        displayModal($("#acceptBillingPaymentModal"));
     })
+    amountDueEl.hide();
+    setModalSettings();
+    clearInputsOrText([amountPaidInput, amountPaidEl, remainingBalanceEl]);
 
-
-    // $("#client_billing_payment_id").va)
+    confirmBillPayment.off("click");
+    confirmBillPayment.on("click", function (e) {
+        e.preventDefault();
+        $("#cancel_payment").hide();
+        displayLoadingStatus(confirmBillPayment, 'Confirming...');
+        handleValidationOnSubmit(window.totalBill, clientID);
+    });
 }
 
-
-amountPaidInput.attr('data-input-track', 'error');
 
 function validateField(fieldName, fieldValue, totalBill) {
     totalBill = parseFloat(totalBill);
@@ -183,38 +161,6 @@ function validateField(fieldName, fieldValue, totalBill) {
     const fieldErrors = validate({ [fieldName]: fieldValue.trim() }, validationRules);
     return fieldErrors ? fieldErrors[fieldName] : null;
 }
-
-
-amountPaidInput.on("input", function () {
-    let rawInput = $(this).val();
-    console.log(rawInput)
-    let cleanedInput = rawInput.replace(/[^\d.]/g, '');
-    let amountPaidInputVal = parseFloat(cleanedInput);
-
-    if (isNaN(amountPaidInputVal)) {
-        cleanedInput = "";
-        amountPaidEl.text("");
-        remainingBalanceEl.text("");
-        amountDueEl.hide();
-    } else {
-        let remainingBalance = amountPaidInputVal - window.totalBill;
-
-        remainingBalanceEl.text(formatNumber(remainingBalance));
-        if (remainingBalance < 0) {
-            remainingBalanceEl.removeClass("text-green-500").addClass("text-red-600");
-            confirmBillPayment.prop("disabled", true);
-        } else {
-            remainingBalanceEl.removeClass("text-red-600").addClass("text-green-500");
-            confirmBillPayment.prop("disabled", false);
-        }
-
-        amountPaidEl.text(formatNumber(amountPaidInputVal));
-        amountDueEl.show();
-    }
-
-    $(this).val(cleanedInput);
-    console.log('LOG')
-});
 
 function displayLoadingStatus(el, message) {
     let confirmStatus = $('<div role="status">' +
@@ -247,73 +193,77 @@ function clearInputsOrText(el) {
     }
 }
 
-function setModalSettings() {
-    confirmBillPayment.html('Confirm');
-    $("#close_modal").show();
-    acceptBillingPaymentModal.css({
-        'display': 'grid',
-        'place-items': 'center',
-        'justify-content': 'center',
-        'align-items': 'center'
-    });
-    amountPaidInput.trigger("focus");
-}
 
-function setConfirmPaymentButtonBehavior(totalBill) {
-    confirmBillPayment.off("click");
-    confirmBillPayment.on("click", function (e) {
-        e.preventDefault();
-        handlePaymentConfirmation(totalBill);
-    });
-}
+amountPaidInput.on("input", function () {
+    let rawInput = $(this).val();
+    let cleanedInput = rawInput.replace(/[^\d.]/g, '');
+    let amountPaidInputVal = parseFloat(cleanedInput);
 
+    if (isNaN(amountPaidInputVal)) {
+        cleanedInput = "";
+        amountPaidEl.text("");
+        remainingBalanceEl.text("");
+        amountDueEl.hide();
+    } else {
+        const totalBill = window.totalBill;
+        let remainingBalance = amountPaidInputVal - totalBill;
 
-function handlePaymentConfirmation(totalBill) {
-    $("#close_modal").hide();
-    displayLoadingStatus(confirmBillPayment, 'Confirming...');
+        remainingBalanceEl.text(formatNumber(remainingBalance));
+        if (remainingBalance < 0) {
+            remainingBalanceEl.removeClass("text-green-500").addClass("text-red-600");
+            confirmBillPayment.prop("disabled", true);
+        } else {
+            amountDueEl.text(formatNumber(totalBill));
+            remainingBalanceEl.text(formatNumber(remainingBalance));
+            amountDueEl.show();
 
+            remainingBalanceEl.removeClass("text-red-600").addClass("text-green-500");
+            confirmBillPayment.prop("disabled", false);
+        }
+
+        amountPaidEl.text(formatNumber(amountPaidInputVal));
+        amountDueEl.show();
+    }
+
+    $(this).val(cleanedInput);
+});
+
+function handleValidationOnSubmit(totalBill, clientID) {
     const fieldName = amountPaidInput.attr("name");
     const fieldValue = amountPaidInput.val();
     const errorMessage = validateField(fieldName, fieldValue, totalBill);
-
-    const remainingBalance = parseFloat(fieldValue) - totalBill;
-
     if (errorMessage) {
         console.log(errorMessage);
         return;
     }
-
-    displayAmountDetails(totalBill, remainingBalance);
-    sendPaymentConfirmationRequest(totalBill);
+    sendPaymentConfirmationRequest(totalBill, clientID);
 }
 
-function displayAmountDetails(totalBill, remainingBalance) {
-    $(".amount_due").text(formatNumber(totalBill));
-    $(".remaining_balance").text(formatNumber(remainingBalance));
-    amountDueEl.show();
-}
 
-function sendPaymentConfirmationRequest(totalBill) {
-    // $.ajax({
-    //     url: "database_actions.php",
-    //     type: "post",
-    //     data: {
-    //         action: "confirmBillPayment",
-    //         totalBill: totalBill
-    //     },
-    //     success: function (data) {
-    //         setTimeout(function () {
-    //             alert(JSON.parse(data).message);
-    //             acceptBillingPaymentModal.hide();
-    //             new DataTableWithPagination("client_application", '#displayClientAppBillingTable');
-    //         }, 1000);
-    //     }
-    // });
 
-    setTimeout(function () {
-        acceptBillingPaymentModal.hide();
-        new DataTableWithPagination("billing_data", '#displayBillingTable');
-    }, 1000);
+function sendPaymentConfirmationRequest(totalBill, clientID) {
+    let amountPaid = amountPaidInput.val();
+    let remainingBalance = parseFloat(totalBill - amountPaid).toFixed(2);
+    $.ajax({
+        url: "database_actions.php",
+        type: "post",
+        data: {
+            action: "confirmBillingPayment",
+            formData: {
+                clientID: clientID,
+                amountPaid: amountPaid,
+                remainingBalance: remainingBalance
+
+            }
+        },
+        success: function (data) {
+            setTimeout(function () {
+                alert(JSON.parse(data).message)
+                acceptBillingPaymentModal.hide();
+                new DataTableWithPagination("billing_data", '#displayBillingTable');
+            }, 500);
+        }
+    });
 }
 
 

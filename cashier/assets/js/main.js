@@ -21,7 +21,7 @@ $(document).ready(function () {
     });
 
     filename === 'billing_payments.php' ? $("#billingFilter").show() : $("#billingFilter").hide();
-    filename === 'clients.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
+    filename === 'application_payments.php' ? $("#clientAppFilter").show() : $("#clientAppFilter").hide();
 
 
 });

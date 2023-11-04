@@ -41,8 +41,8 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'confirmAppPayment':
             handleConfirmAppPayment($dbQueries);
             break;
-        case 'confirmBillPayment':
-            handleConfirmAppPayment($dbQueries);
+        case 'confirmBillingPayment':
+            handleConfirmBillingPayment($dbQueries);
             break;
         case 'loadNotification':
             handleLoadNotification($dbQueries);
@@ -89,14 +89,6 @@ function handleConfirmAppPayment($dbQueries)
         echo json_encode($confirmAppPayment);
     }
 }
-function handleConfirmBillPayment($dbQueries)
-{
-    if (isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $confirmBillPayment = $dbQueries->confirmBillPayment($id);
-        echo json_encode($confirmBillPayment);
-    }
-}
 
 function handleLoadNotification($dbQueries)
 {
@@ -129,5 +121,13 @@ function handleRetrieveBillingData($dbQueries)
         $clientID = $_POST['clientID'];
         $retrieveBillingData = $dbQueries->retrieveBillingData($clientID);
         echo json_encode($retrieveBillingData);
+    }
+}
+function handleConfirmBillingPayment($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $confirmBillPayment = $dbQueries->confirmBillingPayment($formData);
+        echo json_encode($confirmBillPayment);
     }
 }
