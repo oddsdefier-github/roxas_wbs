@@ -2,6 +2,7 @@
     <li>
         <p class="font-semibold uppercase py-1 text-xs text-gray-500">Address</p>
     </li>
+
     <li title="Address">
         <div class="flex items-center rounded hover:bg-gray-100">
             <label for="San Aquilino_ca" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">

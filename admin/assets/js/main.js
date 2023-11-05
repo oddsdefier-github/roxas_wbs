@@ -21,8 +21,8 @@ $(document).ready(function () {
         });
     })
 
-    filename === 'clients_application_table.php' ? $("#clientAppStatusFilter").show() : $("#clientAppStatusFilter").hide();
-    filename === 'clients.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
+    filename === 'clients_application_table.php' ? $("#clientAppFilter").show() : $("#clientAppFilter").hide();
+    filename === 'clients.php' ? $("#clientFilter").show() : $("#clientFilter").hide();
 
 });
 

@@ -11,15 +11,16 @@ $(document).ready(function () {
         const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientAppBillingTable');
     }
 
-    $('.payments_nav').find('a').each(function () {
-        const linkHref = $(this).attr('href');
-        const linkFilename = linkHref.substring(linkHref.lastIndexOf('/') + 1);
+    $('.payments_nav').each(function () {
+        $(this).find('a').each(function () {
+            const linkHref = $(this).attr('href');
+            const linkFilename = linkHref.substring(linkHref.lastIndexOf('/') + 1);
 
-        if (linkFilename === filename) {
-            $(this).removeClass('inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50').addClass('inline-block p-4 text-primary-600 bg-gray-100 rounded-t-lg active');
-        }
-    });
-
+            if (linkFilename === filename) {
+                $(this).removeClass('inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50').addClass('inline-block font-bold p-4 text-primary-700 bg-primary-100 rounded-t-lg active');
+            }
+        });
+    })
     filename === 'billing_payments.php' ? $("#billingFilter").show() : $("#billingFilter").hide();
     filename === 'application_payments.php' ? $("#clientAppFilter").show() : $("#clientAppFilter").hide();
 

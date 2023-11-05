@@ -127,8 +127,8 @@ export class DataTableWithPagination {
 
         const checkedValuesArray = checkedValues.map((checkedValue) => checkedValue.value);
         console.log(checkedValuesArray)
-        const statusText = checkedValuesArray.length > 0 ? checkedValuesArray.join(', ') : 'Status';
-        $(".status-text").text(statusText);
+        const statusText = checkedValuesArray.length > 0 ? checkedValuesArray.join(', ') : 'Filter';
+        $(".filter_text").text(statusText);
         this.elements.resetFilter.prop("disabled", false)
     }
 
