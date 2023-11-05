@@ -440,7 +440,6 @@ $(document).ready(function () {
 
                 if (responseData) {
                     const clientID = responseData['client_id']; //for printing its not the id in the url
-
                     if (responseData['status'] === 'error') {
                         alert(`${responseData['message']}`)
                     } else if ((responseData['status'] === 'success')) {

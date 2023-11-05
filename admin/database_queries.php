@@ -436,7 +436,6 @@ class DatabaseQueries extends BaseQuery
         $currDate = date('mdy');
         $clientID = "WBS-" . $initials . "-" . $paddedTotal . $currDate;
 
-
         if ($this->checkDuplicate("meter_number", $meterNumber, $table)) {
             $response = array(
                 "status" => "error",
@@ -454,6 +453,7 @@ class DatabaseQueries extends BaseQuery
         };
 
         $insertIntoClientData = $this->insertIntoClientData($formData, $clientID);
+        
         if ($insertIntoClientData === true) {
             $response = array(
                 "status" => "success",

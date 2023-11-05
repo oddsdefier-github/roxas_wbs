@@ -113,8 +113,10 @@ export class DataTableWithPagination {
         }).get();
         console.log(selectedFilters)
         this.currentPageNumber = 1;
+
         localStorage.setItem(this.filterKey, JSON.stringify(selectedFilters))
         console.log('Constructor filter:', this.filter);
+
         this.fetchTableData(this.elements.searchInput.val(), selectedFilters, this.currentSortColumn, this.currentSortDirection);
 
         const checkedRadio = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
@@ -139,21 +141,38 @@ export class DataTableWithPagination {
         });
     }
 
-
     applySavedFiltersToUI() {
         const self = this;
-        console.log("FILTER" + self.filter);
+        const checkedValuesArray = [];
         self.filter.forEach(filterObj => {
-            let radio = $(`input[data-column='${filterObj.column}'][value='${filterObj.value}']`);
-            if (radio) {
-                radio.prop('checked', true);
+            let radios = $(`input[data-column='${filterObj.column}'][value='${filterObj.value}']`);
+            console.log(radios.length);
+
+            let checkedRadio = filterObj.value;
+            checkedValuesArray.push(checkedRadio);
+
+            if (radios.length > 1) {
+                radios.each(function () {
+                    const radio = $(this);
+                    console.log(radio.find(':checked'));
+                    radio.trigger('change')
+                    radio.prop('checked', true);
+                    console.log(radio.prop('checked'));
+                });
+            } else if (radios.length === 1) {
+                radios.prop('checked', true);
             }
         });
+
+        const statusText = checkedValuesArray.length > 0 ? checkedValuesArray.join(', ') : 'Filter';
+        $(".filter_text").text(statusText);
     }
+
 
     handleFilterReset() {
         localStorage.removeItem(this.searchKey);
         localStorage.removeItem(this.filterKey);
+        localStorage.removeItem(this.currentPageNumberKey);
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
         radios.prop('checked', false);
         this.applyFilter();
