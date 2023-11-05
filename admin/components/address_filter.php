@@ -4,8 +4,8 @@
     </li>
     <li title="Address">
         <div class="flex items-center rounded hover:bg-gray-100">
-            <label for="San Aquilino" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                <input id="San Aquilino" type="radio" value="San Aquilino" data-column="brgy" name="brgy" class="mr-1 w-4 h-4 peer text-yellow-400 bg-gray-100 border-gray-300 focus:ring-transparent">
+            <label for="san_aquilino" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                <input id="san_aquilino" type="radio" value="San Aquilino" data-column="brgy" name="brgy" class="mr-1 w-4 h-4 peer text-yellow-400 bg-gray-100 border-gray-300 focus:ring-transparent">
                 <span class="peer-checked:text-yellow-400">San Aquilino</span>
             </label>
         </div>

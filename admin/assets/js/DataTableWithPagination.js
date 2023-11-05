@@ -113,8 +113,10 @@ export class DataTableWithPagination {
         }).get();
         console.log(selectedFilters)
         this.currentPageNumber = 1;
+        
         localStorage.setItem(this.filterKey, JSON.stringify(selectedFilters))
         console.log('Constructor filter:', this.filter);
+        
         this.fetchTableData(this.elements.searchInput.val(), selectedFilters, this.currentSortColumn, this.currentSortDirection);
 
         const checkedRadio = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
@@ -142,7 +144,6 @@ export class DataTableWithPagination {
 
     applySavedFiltersToUI() {
         const self = this;
-        console.log("FILTER" + self.filter);
         self.filter.forEach(filterObj => {
             let radio = $(`input[data-column='${filterObj.column}'][value='${filterObj.value}']`);
             if (radio) {

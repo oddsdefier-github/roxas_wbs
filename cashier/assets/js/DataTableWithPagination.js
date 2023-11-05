@@ -142,6 +142,7 @@ export class DataTableWithPagination {
 
     applySavedFiltersToUI() {
         const self = this;
+        console.log("FILTER" + self.filter);
         self.filter.forEach(filterObj => {
             let radio = $(`input[data-column='${filterObj.column}'][value='${filterObj.value}']`);
             if (radio) {

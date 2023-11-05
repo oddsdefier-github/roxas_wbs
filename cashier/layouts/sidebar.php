@@ -35,12 +35,12 @@
 </style>
 <aside class="flex flex-col min-h-screen cursor-pointer bg-primary-700 text-gray-50 text-sm pb-5" id="sidebar">
     <div class="h-full w-64">
-        <div class="h-16 text-white pr-10">
-            <div class="flex gap-3 h-full items-end justify-center">
-                <div>
-                    <img data-profile-picture class=" w-10 h-10 rounded-full cursor-pointer p-1 ring-2 ring-primary-300" src="<?php echo BASE_URL ?>/cat.png" alt="User dropdown">
+        <div class="h-16 text-white w-full">
+            <div class="grid grid-cols-4 gap-10 h-full justify-center items-start px-5">
+                <div class="w-16 h-16 col-span-1 grid place-items-end justify-center">
+                    <img data-profile-picture class="w-10 h-10 rounded-full cursor-pointer p-1 ring-2 ring-primary-300" src="<?php echo BASE_URL ?>/cat.png">
                 </div>
-                <div class="flex flex-col justify-center items-start">
+                <div class="h-full col-span-3 flex flex-col justify-end items-start px-1">
                     <h5 class="font-medium text-xs truncate"><?php echo $_SESSION['user_name']; ?></h5>
                     <h6 class="font-medium text-xs" style="color: #a5b4fc;"><?php echo $_SESSION['user_role']; ?></h6>
                 </div>
@@ -88,22 +88,25 @@
                                     <a href="billing_payments.php" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
                                         <span class="gap-2 flex items-center">
                                             <div class="p-1 rounded-md">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M12 12m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
                                                 </svg>
                                             </div>
-                                            <p class="text-gray-100 text-xs group-hover:text-primary-300">Billing</p>
+                                            <p class="text-gray-200 text-xs group-hover:text-primary-300">Billing</p>
                                         </span>
                                     </a>
                                 </li>
                                 <li class="my-2">
                                     <a href="application_payments.php" class="tab flex items-center  justify-between gap-2 rounded-md px-5 py-2 hover:text-primary-300 group">
                                         <span class="gap-2 flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
-                                            </svg>
-
-                                            <p class="text-gray-100 text-xs group-hover:text-primary-300">Application</p>
+                                            <div class="p-1 rounded-md">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <path d="M12 12m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                                                </svg>
+                                            </div>
+                                            <p class="text-gray-200 text-xs group-hover:text-primary-300">Application</p>
                                         </span>
                                     </a>
                                 </li>

@@ -127,7 +127,7 @@
                             </div>
                         </li>
                     </div>
-                    <div>
+                    <div class="border-b-2 border-gray-200 py-2">
                         <li title='Status'>
                             <div class="flex items-center rounded hover:bg-gray-100">
                                 <label for="active" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
