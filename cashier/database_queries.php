@@ -128,19 +128,25 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 
+    public function updateClientApplication($id)
+    {
+        $sql = "UPDATE client_application SET billing_status = 'paid' WHERE id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        if (!mysqli_stmt_execute($stmt)) {
+            return false;
+        }
+        return true;
+    }
     public function confirmAppPayment($id)
     {
         $response = array();
         $this->conn->beginTransaction();
 
         try {
-            $sql = "UPDATE client_application SET billing_status = 'paid' WHERE id = ?";
-            $stmt = $this->conn->prepareStatement($sql);
-
-            mysqli_stmt_bind_param($stmt, "i", $id);
-
-            if (!mysqli_stmt_execute($stmt)) {
-                throw new Exception("Failed to confirm payment. Error: " . mysqli_stmt_error($stmt));
+            if (!$this->updateClientApplication($id)) {
+                throw new Exception("Failed to update client application.");
             }
 
             session_start();
@@ -156,16 +162,18 @@ class DatabaseQueries extends BaseQuery
                 throw new Exception("Failed to add notification.");
             }
 
-            // Commit the transaction
             $this->conn->commitTransaction();
 
-            $response["status"] = "success";
-            $response["message"] = "Payment confirmed successfully.";
+            $response = array(
+                "status" => "success",
+                "message" => "Payment confirmed successfully."
+            );
         } catch (Exception $e) {
             $this->conn->rollbackTransaction();
-
-            $response["status"] = "error";
-            $response["message"] = $e->getMessage();
+            $response = array(
+                "status" => "error",
+                "message" => $e->getMessage()
+            );
         }
 
         return $response;
@@ -300,6 +308,40 @@ class DatabaseQueries extends BaseQuery
         }
         return false;
     }
+    public function insertIntoTransactions($data)
+    {
+        $transactionID = $data['transactionID'];
+        $transactionType = $data['transactionType'];
+        $referenceID = $data['referenceID'];
+        $description = $data['description'];
+        $amountDue = $data['amountDue'];
+        $amountPaid = $data['amountPaid'];
+        $remainingBalance = $data['remainingBalance'];
+        $userID = $data['confirmedBy'];
+
+        $sql = "INSERT INTO transactions (transaction_id, reference_id, transaction_type, transaction_desc, amount_due, amount_paid, remaining_balance, confirmed_by, time, date, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+
+        $stmt = $this->conn->prepareStatement($sql);
+        if (!$stmt) {
+            return false;
+        } else {
+            mysqli_stmt_bind_param(
+                $stmt,
+                "ssssddds",
+                $transactionID,
+                $referenceID,
+                $transactionType,
+                $description,
+                $amountDue,
+                $amountPaid,
+                $remainingBalance,
+                $userID
+            );
+            if (mysqli_stmt_execute($stmt)) {
+                return true;
+            }
+        }
+    }
     public function confirmBillingPayment($formData)
     {
         $this->conn->beginTransaction();
@@ -313,7 +355,6 @@ class DatabaseQueries extends BaseQuery
 
         $rates = $this->retrieveBillingRates();
         $billingData = $this->retrieveBillingData($clientID);
-
 
         $billingID = $billingData['billingData']['billing_id'];
         $billingAmount = $billingData['billingData']['billing_amount'];
@@ -335,48 +376,36 @@ class DatabaseQueries extends BaseQuery
         $userName = $_SESSION['user_name'];
         $description = "Payment received from $clientName - Billing Month of $billingMonth - Confirmed by $userName";
 
-        $sql = "INSERT INTO transactions (transaction_id, reference_id, transaction_type, transaction_desc, amount_due, amount_paid, remaining_balance, confirmed_by, time, date, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
-        $stmt = $this->conn->prepareStatement($sql);
+        $data = array(
+            "transactionID" => $transactionID,
+            "transactionType" =>  $transactionType,
+            "referenceID" => $referenceID,
+            "description" => $description,
+            "amountDue" => $amountDue,
+            "amountPaid" => $amountPaid,
+            "remainingBalance" => $remainingBalance,
+            "confirmedBy" => $userID
+        );
 
-        if (!$stmt) {
+        try {
+            if (!$this->insertIntoTransactions($data)) {
+                throw new Exception("Failed to update client application.");
+            }
+
+
+            $this->conn->commitTransaction();
+
+            $response = array(
+                "status" => "success",
+                "message" => "Payment confirmed successfully."
+            );
+        } catch (Exception $e) {
             $this->conn->rollbackTransaction();
             $response = array(
                 "status" => "error",
-                "message" => "Prepare statement error: " . $this->conn->getErrorMessage()
+                "message" => $e->getMessage()
             );
-        } else {
-            mysqli_stmt_bind_param(
-                $stmt,
-                "ssssddds",
-                $transactionID,
-                $referenceID,
-                $transactionType,
-                $description,
-                $amountDue,
-                $amountPaid,
-                $remainingBalance,
-                $userID
-            );
-
-            if (mysqli_stmt_execute($stmt)) {
-                if (!$this->updateBillingData($billingID)) {
-                    $this->conn->rollbackTransaction();
-                }
-                $this->conn->commitTransaction();
-                $response = array(
-                    "debug" => $remainingBalance,
-                    "status" => "success",
-                    "message" => $description
-                );
-            } else {
-                $response = array(
-                    "status" => "error",
-                    "message" => "Execution error: " . $this->conn->getErrorMessage()
-                );
-            }
-
-            mysqli_stmt_close($stmt);
         }
 
         return $response;
@@ -544,9 +573,17 @@ class DataTable extends BaseQuery
                 <span class="text-xs">' . $readable_time . '</span>
             </td>
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button title="Accept Payment" onclick="acceptClientBillingPayment(\'' . $clientID . '\')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                    Payment
-                </button>
+
+                <button title="Accept Payment" onclick="acceptClientBillingPayment(\'' . $clientID . '\')" type="button" title="View Client" class="text-white bg-primary-700 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center ">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 icon icon-tabler icon-tabler-cash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
+                <path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                <path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2"></path>
+             </svg>
+        
+                <span class="ml-2 text-sm">Payment</span>
+            </button>
             </td>
         </tr>';
             array_push($countArr, $number);
@@ -619,7 +656,7 @@ class DataTable extends BaseQuery
 
 
         $validColumns = [
-            'full_name', 'meter_number', 'property_type',  'application_id', 'timestamp', 'brgy'
+            'full_name', 'meter_number', 'property_type', 'brgy',  'application_id', 'timestamp', 'brgy'
         ];
         $validDirections = ['ASC', 'DESC'];
 
@@ -687,6 +724,14 @@ class DataTable extends BaseQuery
                         </span>
                     </div>
                 </th>
+                <th class="px-6 py-4" data-column-name="brgy" data-sortable="true">
+                <div class="flex items-center gap-2">
+                    <p>Address</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
                 <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Applied Date</p>
@@ -707,6 +752,8 @@ class DataTable extends BaseQuery
             $applicationID = $row['application_id'];
             $name = $row['full_name'];
             $propertyType = $row['property_type'];
+            $street = $row['street'];
+            $brgy = $row['brgy'];
             $time = $row['time'];
             $date = $row['date'];
 
@@ -718,15 +765,26 @@ class DataTable extends BaseQuery
             <td  class="px-6 py-3 text-sm">' . $applicationID . '</td>
             <td  class="px-6 py-3 text-sm">' . $name . '</td>
             <td  class="px-6 py-3 text-sm">' . $propertyType . '</td>
+            <td class="px-6 py-3 text-sm"> 
+            <span class="font-medium text-sm">' . $brgy . '</span> </br>
+            <span class="text-xs text-gray-400">' . $street . '</span>
+        </td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button title="Accept Payment" onclick="acceptClientAppPayment(' . $id . ')" type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                Payment
-                </button>
+            <button title="Accept Payment" onclick="acceptClientAppPayment(' . $id . ')" type="button" title="View Client" class="text-white bg-primary-700 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center ">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 icon icon-tabler icon-tabler-cash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
+                <path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                <path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2"></path>
+                </svg>
+        
+                <span class="ml-2 text-sm">Payment</span>
+            </button>
             </td>
         </tr>';
             array_push($countArr, $number);

@@ -25,7 +25,7 @@ class EncodeHandler {
             statusBadge: $('.status_badge'),
             propertyType: $('.property_type'),
             meterNumber: $('.meter_number'),
-            prevReading: $('#prev-reading'),
+            prevReading: $('#prev_reading'),
             submitEncode: $('.submit_encode'),
             clientProfileLink: $('.client_profile_link'),
             currReadingInput: $('#curr_reading'),
@@ -156,28 +156,25 @@ class EncodeHandler {
     }
 
     validateInput(responseData) {
-        this.elements.encodeForm.on("submit", e => {
-            e.preventDefault();
+        const prevReading = parseFloat(this.elements.prevReadingInput.val());
+        const currReading = parseFloat(this.elements.currReadingInput.val());
 
-            const prevReading = parseFloat(this.elements.prevReadingInput.val());
-            const currReading = parseFloat(this.elements.currReadingInput.val());
-
-            function validateCurrReading(curr, prev) {
-                if (isNaN(curr) || curr <= 0) {
-                    console.log("Current reading should be a positive number.");
-                    return false;
-                }
-                if (curr <= prev) {
-                    console.log("Current reading should be greater than the previous reading.");
-                    return false;
-                }
-                return true;
+        function validateCurrReading(curr, prev) {
+            if (isNaN(curr) || curr <= 0) {
+                console.log("Current reading should be a positive number.");
+                return false;
             }
-
-            if (validateCurrReading(currReading, prevReading)) {
-                this.submitData(responseData);
+            if (curr <= prev) {
+                console.log("Current reading should be greater than the previous reading.");
+                return false;
             }
-        });
+            return true;
+        }
+
+        if (validateCurrReading(currReading, prevReading)) {
+            this.submitData(responseData);
+        }
+
     }
 
     encodeCurrentReading(responseData) {
@@ -187,6 +184,7 @@ class EncodeHandler {
             e.preventDefault();
             if (this.elements.currReadingInput.val().trim() !== '') {
                 this.validateInput(responseData);
+                console.log(responseData)
             } else {
                 console.log('EMPTY');
             }

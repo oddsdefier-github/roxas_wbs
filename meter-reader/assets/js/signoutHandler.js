@@ -4,7 +4,7 @@ class SignOutHandler {
             url: "signout.php",
             type: "post",
             success: function (data) {
-                SignOutHandler.playSignOutAudio();
+                console.log(data)
                 console.log(JSON.parse(data));
                 console.log("SIGN OUT");
                 SignOutHandler.hideSignOutModal();
@@ -12,11 +12,6 @@ class SignOutHandler {
         });
     }
 
-    static playSignOutAudio() {
-        // const audio = new Audio('./outro.wav');
-        // audio.play();
-        console.log('LOGOUT')
-    }
 
     static hideSignOutModal() {
         $('#signoutModal').hide();
