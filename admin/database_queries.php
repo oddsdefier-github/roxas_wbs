@@ -866,7 +866,7 @@ class DataTable extends BaseQuery
 
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $conditions[] = "(full_name LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ? OR billing_status LIKE ?)";
+            $conditions[] = "(full_name LIKE ? OR application_id LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ? OR billing_status LIKE ?)";
             $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
             $types .= "sssssss";
         }
@@ -887,7 +887,7 @@ class DataTable extends BaseQuery
 
 
         $validColumns = [
-            'meter_number', 'full_name',  'property_type', 'brgy',
+            'application_id', 'full_name',  'property_type', 'brgy',
             'status', 'billing_status', 'timestamp'
         ];
         $validDirections = ['ASC', 'DESC'];
@@ -930,9 +930,9 @@ class DataTable extends BaseQuery
         <thead class="text-xs text-gray-500 uppercase">
             <tr class="bg-slate-100 border-b cursor-pointer">
                 <th class="px-6 py-4" data-sortable="false">No.</th>
-                <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">
+                <th class="px-6 py-4" data-column-name="application_id" data-sortable="true">
                     <div class="flex items-center gap-2">
-                        <p>Meter No.</p>
+                        <p>Application ID</p>
                         <span class="sort-icon">
                         ' . $sortIcon . '
                         </span>
@@ -998,7 +998,7 @@ class DataTable extends BaseQuery
         while ($row = mysqli_fetch_assoc($result)) {
             $tableName = "client_application";
             $id = $row['id'];
-            $meter_number = $row['meter_number'];
+            $application_id = $row['application_id'];
             $name = $row['full_name'];
             $street = $row['street'];
             $brgy = $row['brgy'];
@@ -1020,7 +1020,7 @@ class DataTable extends BaseQuery
 
             $table .= '<tr onclick="openPage(event, ' . $id . ', \'' . $page . '\')" data-client-id="' . $id . '" class="table-auto bg-white border-b hover:bg-gray-50  overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
-            <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
+            <td class="px-6 py-3 text-sm">' . $application_id . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
             <td class="px-6 py-3 text-sm">' . $property_type . '</td>
             <td class="px-6 py-3 text-sm"> 
@@ -1274,6 +1274,226 @@ class DataTable extends BaseQuery
                 </button>
 
                 <button  onclick="clientActions(\'' . $clientID . '\')"  class="delete-client text-gray-800 bg-gray-200 hover:bg-gray-200 focus:ring-2 focus:outline-none focus:ring-gray-200 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
+                    </svg>
+                
+                    <span class="sr-only">Icon description</span>
+                </button>
+            </td>
+        </tr>';
+            array_push($countArr, $number);
+            $number++;
+        }
+
+        $start = 0;
+        $end = 0;
+
+        if (!empty($countArr)) {
+            $start = $countArr[0];
+            $end = end($countArr);
+
+            $table .= '</tbody></table>';
+
+            if ($number > 1) {
+                echo $table;
+            } else {
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
+            }
+        } else {
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
+        }
+
+        echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
+        echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
+    }
+    public function transactionTable($dataTableParam)
+    {
+        $pageNumber = $dataTableParam['pageNumber'];
+        $itemPerPage = $dataTableParam['itemPerPage'];
+        $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
+        $offset = ($pageNumber - 1) * $itemPerPage;
+        $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
+        $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
+        $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+        $conditions = [];
+        $params = [];
+        $types = "";
+
+        if ($searchTerm) {
+            $likeTerm = "%" . $searchTerm . "%";
+            $conditions[] = "(transaction_id LIKE ? OR reference_id LIKE ? OR transaction_type LIKE ? OR amount_due LIKE ? OR amount_paid LIKE ? OR confirmed_by LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "ssssss";
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $filter) {
+                $conditions[] = "{$filter['column']} = ?";
+                $params[] = $filter['value'];
+                $types .= "s";  // Assuming all filter values are strings, adjust if not
+            }
+        }
+
+        if (!empty($conditions)) {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM transactions WHERE " . implode(" AND ", $conditions);
+        } else {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM transactions";
+        }
+
+        $validColumns = [
+            'transaction_id', 'reference_id', 'transaction_type', 'transaction_desc', 'amount_due', 'amount_paid', 'confirmed_by', 'timestamp'
+        ];
+        $validDirections = ['ASC', 'DESC'];
+
+        if (in_array($sortColumn, $validColumns) && in_array($sortDirection, $validDirections)) {
+            $sql .= " ORDER BY {$sortColumn} {$sortDirection}";
+        } else {
+            $sql .= " ORDER BY timestamp DESC";
+        }
+
+        $sql .= " LIMIT ? OFFSET ?";
+        $params = array_merge($params, [$itemPerPage, $offset]);
+        $types .= "ii";
+
+
+
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+
+        $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
+
+        if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
+            $totalRecords = $row['total'];
+        } else {
+            $totalRecords = 0;
+        }
+
+
+        $ascendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+    </svg>';
+
+        $descendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>';
+
+        $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
+        $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
+
+        
+        <thead class="text-xs text-gray-500 uppercase">
+            <tr class="bg-slate-100 border-b cursor-pointer">
+                <th class="px-6 py-4" data-sortable="false">No.</th>
+                <th class="px-6 py-4" data-column-name="transaction_id" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Transaction ID</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">
+                        ' . $totalRecords . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="transaction_type" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Type</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
+                <th class="px-6 py-4" data-column-name="description" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Description</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="amount_due" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Amount Due</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="amount_paid" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Amount Paid</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="confirmed_by" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Confirmed by</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">
+                <div class="flex items-center gap-2">
+                    <p>Created at</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+            </th>
+                <th class="px-6 py-4" data-sortable="false">Action</th>
+            </tr>
+        </thead>';
+
+        $countArr = array();
+        $number = ($pageNumber - 1) * $itemPerPage + 1;
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id = $row['id'];
+            $transactionID = $row['transaction_id'];
+            $referenceID = $row['reference_id'];
+            $transactionType = $row['transaction_type'];
+            $description = $row['transaction_desc'];
+            $amountDue = $row['amount_due'];
+            $amountPaid = $row['amount_paid'];
+            $confirmedBy = $row['confirmed_by'];
+            $time = $row['time'];
+            $date = $row['date'];
+
+            $readable_date = date("F j, Y", strtotime($date));
+            $readable_time = date("h:i A", strtotime($time));
+
+
+            $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            <td  class="px-6 py-3 text-sm">' . $number . '</td>
+            <td  class="px-6 py-3 text-sm">' . $transactionID . '</td>
+            <td class="px-6 py-3 text-sm">' . $transactionType . '</td>
+            <td class="px-6 py-3 text-sm" style="max-width: 20rem;">' . $description . '</td>
+            <td class="px-6 py-3 text-sm">' . $amountDue . '</td>
+            <td class="px-6 py-3 text-sm">' . $amountPaid . '</td>
+            <td class="px-6 py-3 text-sm">' . $confirmedBy . '</td>
+            <td class="px-6 py-3 text-sm">            
+                <span class="font-medium text-sm">' . $readable_date . '</span> </br>
+                <span class="text-xs">' . $readable_time . '</span>
+            </td>
+
+            <td class="flex items-center px-6 py-4 space-x-3">
+                <button  type="button" title="View Client" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                <span class="sr-only">Icon description</span>
+                </button>
+
+                <button    class="delete-client text-gray-800 bg-gray-200 hover:bg-gray-200 focus:ring-2 focus:outline-none focus:ring-gray-200 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
                     </svg>

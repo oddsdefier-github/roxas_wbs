@@ -8,6 +8,8 @@ $(document).ready(function () {
         const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
     } else if (filename === 'clients_application_table.php') {
         const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
+    } else if (filename === 'transactions.php') {
+        const clientTable = new DataTableWithPagination("transactions", '#displayTxTable');
     }
 
     $('.page_nav').each(function () {

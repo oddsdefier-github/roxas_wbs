@@ -19,20 +19,23 @@ class DatabaseQueries extends BaseQuery
 
     public function notificationExists($user_id, $type, $reference_id)
     {
-        $sql = "SELECT id FROM notifications WHERE user_id = ? AND type = ? AND reference_id = ?";
+        $sql = "SELECT id FROM notifications WHERE user_id = ? AND type = ? AND reference_id = ? LIMIT 1";
         $stmt = $this->conn->prepareStatement($sql);
 
-        mysqli_stmt_bind_param($stmt, "ssi", $user_id, $type, $reference_id);
-
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-
-        if (mysqli_num_rows($result) > 0) {
-            return true;
-        } else {
+        if (!$stmt) {
             return false;
         }
+
+        mysqli_stmt_bind_param($stmt, "sss", $user_id, $type, $reference_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+
+        $num_rows = mysqli_stmt_num_rows($stmt);
+        mysqli_stmt_close($stmt);
+        return $num_rows > 0;
     }
+
+
     public function addNotification($user_id, $message, $type, $reference_id = null)
     {
         $sql = "INSERT INTO notifications (user_id, message, type, reference_id) VALUES (?, ?, ?, ?)";
@@ -93,90 +96,6 @@ class DatabaseQueries extends BaseQuery
         }
 
         return $output; // This will return our generated HTML to wherever you call the function
-    }
-    public function retrieveApplicationFees($id, $table)
-    {
-        $response = array();
-        $sql = "SELECT * FROM $table ORDER BY timestamp DESC LIMIT 1";
-        $result = $this->conn->query($sql);
-        if ($row = mysqli_fetch_assoc($result)) {
-            $response = array(
-                "status" => "success",
-                "fees" => $row
-            );
-
-            $queryClientApp = "SELECT * FROM client_application WHERE id = ?";
-            $stmt = $this->conn->prepareStatement($queryClientApp);
-            mysqli_stmt_bind_param($stmt, "i", $id);
-            if (mysqli_stmt_execute($stmt)) {
-                $result = mysqli_stmt_get_result($stmt);
-                if ($clientAppRow = mysqli_fetch_assoc($result)) {
-                    $response["client_application"] = $clientAppRow;
-                }
-            } else {
-                $response = array(
-                    "status" => "error",
-                    "client_application" => "Failed to client application fees" . $this->conn->getErrorMessage()
-                );
-            }
-        } else {
-            $response = array(
-                "status" => "error",
-                "fees" => "Failed to retrieve fees" . $this->conn->getErrorMessage()
-            );
-        }
-        return $response;
-    }
-
-    public function updateClientApplication($id)
-    {
-        $sql = "UPDATE client_application SET billing_status = 'paid' WHERE id = ?";
-        $stmt = $this->conn->prepareStatement($sql);
-
-        mysqli_stmt_bind_param($stmt, "i", $id);
-        if (!mysqli_stmt_execute($stmt)) {
-            return false;
-        }
-        return true;
-    }
-    public function confirmAppPayment($id)
-    {
-        $response = array();
-        $this->conn->beginTransaction();
-
-        try {
-            if (!$this->updateClientApplication($id)) {
-                throw new Exception("Failed to update client application.");
-            }
-
-            session_start();
-            $user_id = $_SESSION['user_id'];
-            $message = "Payment confirmed for application ID: " . $id;
-            $type = "payment_confirmation";
-
-            if ($this->notificationExists($user_id, $type, $id)) {
-                throw new Exception("Notification already exists for application ID: " . $id);
-            }
-
-            if (!$this->addNotification($user_id, $message, $type, $id)) {
-                throw new Exception("Failed to add notification.");
-            }
-
-            $this->conn->commitTransaction();
-
-            $response = array(
-                "status" => "success",
-                "message" => "Payment confirmed successfully."
-            );
-        } catch (Exception $e) {
-            $this->conn->rollbackTransaction();
-            $response = array(
-                "status" => "error",
-                "message" => $e->getMessage()
-            );
-        }
-
-        return $response;
     }
 
     public function retrieveBillingRates()
@@ -308,6 +227,33 @@ class DatabaseQueries extends BaseQuery
         }
         return false;
     }
+
+    public function checkDuplicate($column, $value, $table)
+    {
+        $checkDuplicateQuery = "SELECT $column FROM $table WHERE $column = ?";
+
+        $stmt = $this->conn->prepareStatement($checkDuplicateQuery);
+        if (!$stmt) {
+            return false;
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $value);
+
+        if (!mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+
+        mysqli_stmt_store_result($stmt);
+
+        $isDuplicate = mysqli_stmt_num_rows($stmt) > 0;
+
+        mysqli_stmt_close($stmt);
+
+        return $isDuplicate;
+    }
+
+
     public function insertIntoTransactions($data)
     {
         $transactionID = $data['transactionID'];
@@ -342,6 +288,8 @@ class DatabaseQueries extends BaseQuery
             }
         }
     }
+
+
     public function confirmBillingPayment($formData)
     {
         $this->conn->beginTransaction();
@@ -389,10 +337,147 @@ class DatabaseQueries extends BaseQuery
         );
 
         try {
+            if ($this->checkDuplicate('reference_id', $referenceID, 'transactions')) {
+                throw new Exception("Failed to do insert new transaction. Duplicate reference ID.");
+            }
+            if (!$this->insertIntoTransactions($data)) {
+                throw new Exception("Failed to update client application.");
+            }
+            if (!$this->updateBillingData($billingID)) {
+                throw new Exception("Failed to update billing data.");
+            }
+
+            $this->conn->commitTransaction();
+
+            $response = array(
+                "status" => "success",
+                "message" => "Payment confirmed successfully."
+            );
+        } catch (Exception $e) {
+            $this->conn->rollbackTransaction();
+            $response = array(
+                "status" => "error",
+                "message" => $e->getMessage()
+            );
+        }
+
+        return $response;
+    }
+    public function retrieveClientApplicationFees()
+    {
+        $sql = "SELECT * FROM client_application_fees ORDER BY timestamp DESC LIMIT 1";
+        $result = $this->conn->query($sql);
+
+        if (!$result) {
+            return "Failed: " . $this->conn->getErrorMessage();
+        }
+        if ($row = mysqli_fetch_assoc($result)) {
+            $response = array(
+                'client_application_fees' => $row
+            );
+            return $response;
+        }
+    }
+    public function retrieveClientApplication($applicationID)
+    {
+
+        $queryClientApp = "SELECT * FROM client_application WHERE application_id = ?";
+        $stmt = $this->conn->prepareStatement($queryClientApp);
+        mysqli_stmt_bind_param($stmt, "s", $applicationID);
+        if (!$stmt) {
+            $response = array(
+                "status" => "error",
+                "client_application" => "Failed to client application fees" . $this->conn->getErrorMessage()
+            );
+            return $response;
+        }
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            if ($clientAppRow = mysqli_fetch_assoc($result)) {
+                $response["client_application"] = $clientAppRow;
+                return $response;
+            }
+        }
+    }
+
+    public function updateClientApplication($applicationID)
+    {
+        $sql = "UPDATE client_application SET billing_status = 'paid' WHERE application_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        mysqli_stmt_bind_param($stmt, "s", $applicationID);
+        if (!mysqli_stmt_execute($stmt)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function confirmAppPayment($formData)
+    {
+        $this->conn->beginTransaction();
+
+        $applicationID = htmlspecialchars($formData['applicationID'], ENT_QUOTES, 'UTF-8');
+        $amountPaid = htmlspecialchars($formData['amountPaid'], ENT_QUOTES, 'UTF-8');
+
+        $transactionID = $this->generateTransactionID();
+
+        $transactionType = 'application_payment';
+        $referenceID = $applicationID;
+
+        $clientApplicationFees = $this->retrieveClientApplicationFees();
+        $applicationFee = $clientApplicationFees['client_application_fees']['application_fee'];
+        $inspectionFee = $clientApplicationFees['client_application_fees']['inspection_fee'];
+        $registrationFee = $clientApplicationFees['client_application_fees']['registration_fee'];
+        $connectionFee = $clientApplicationFees['client_application_fees']['connection_fee'];
+        $installationFee = $clientApplicationFees['client_application_fees']['installation_fee'];
+
+        $amountDue = intval($applicationFee) + intval($inspectionFee) + intval($registrationFee) + intval($connectionFee) + intval($installationFee);
+        $remainingBalance = intval($amountPaid) - intval($amountDue);
+
+        $roundedRemainingBalance = round($remainingBalance, 2);
+
+        $clientApplication = $this->retrieveClientApplication($applicationID);
+        $clientName = $clientApplication['client_application']['full_name'];
+        $propertyType = $clientApplication['client_application']['property_type'];
+        session_start();
+        $userID = $_SESSION['user_id'];
+        $userName = $_SESSION['user_name'];
+        $description = "Payment received from $clientName - Property Type $propertyType - Confirmed by $userName";
+
+        $data = array(
+            "transactionID" => $transactionID,
+            "transactionType" =>  $transactionType,
+            "referenceID" => $referenceID,
+            "description" => $description,
+            "amountDue" => $amountDue,
+            "amountPaid" => $amountPaid,
+            "remainingBalance" => $roundedRemainingBalance,
+            "confirmedBy" => $userID
+        );
+
+        try {
+            if ($this->checkDuplicate('reference_id', $referenceID, 'transactions')) {
+                throw new Exception("Failed to do insert new transaction. Duplicate reference ID.");
+            }
+
             if (!$this->insertIntoTransactions($data)) {
                 throw new Exception("Failed to update client application.");
             }
 
+            if (!$this->updateClientApplication($applicationID)) {
+                throw new Exception("Failed to update client application.");
+            }
+
+            $message = "Payment confirmed for application ID: " . $applicationID;
+            $type = "payment_confirmation";
+
+            if ($this->notificationExists($userID, $type, $applicationID)) {
+                throw new Exception("Notification already exists for application ID: " . $applicationID);
+            }
+
+            if (!$this->addNotification($userID, $message, $type, $applicationID)) {
+                throw new Exception("Failed to add notification.");
+            }
 
             $this->conn->commitTransaction();
 
@@ -775,7 +860,7 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-            <button title="Accept Payment" onclick="acceptClientAppPayment(' . $id . ')" type="button" title="View Client" class="text-white bg-primary-700 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center ">
+            <button title="Accept Payment" onclick="acceptClientAppPayment(\'' . $applicationID . '\')" type="button" title="View Client" class="text-white bg-primary-700 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm p-2 text-center inline-flex items-center ">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 icon icon-tabler icon-tabler-cash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>

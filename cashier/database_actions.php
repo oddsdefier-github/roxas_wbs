@@ -47,8 +47,11 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'loadNotification':
             handleLoadNotification($dbQueries);
             break;
-        case 'retrieveChargingFees':
-            handleRetrieveChargingFees($dbQueries);
+        case 'retrieveClientApplication':
+            handleRetrieveClientApplication($dbQueries);
+            break;
+        case 'retrieveClientApplicationFee':
+            handleRetrieveClientApplicationFee($dbQueries);
             break;
         case 'retrieveBillingRates':
             handleRetrieveBillingRates($dbQueries);
@@ -81,11 +84,16 @@ function handleGetDataTable($dataTable)
     }
 }
 
+function handleRetrieveClientApplicationFee($dbQueries)
+{
+    $retrieveClientApplicationFees = $dbQueries->retrieveClientApplicationFees();
+    echo json_encode($retrieveClientApplicationFees);
+}
 function handleConfirmAppPayment($dbQueries)
 {
-    if (isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $confirmAppPayment = $dbQueries->confirmAppPayment($id);
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $confirmAppPayment = $dbQueries->confirmAppPayment($formData);
         echo json_encode($confirmAppPayment);
     }
 }
@@ -95,18 +103,12 @@ function handleLoadNotification($dbQueries)
     $dbQueries->loadNotificationHtml();
 }
 
-function handleRetrieveChargingFees($dbQueries)
+function handleRetrieveClientApplication($dbQueries)
 {
-    if (isset($_POST['type']) && isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $table = $_POST['type'];
-        if ($table === 'client_application_fees') {
-            $clientApplicationChargingFees =  $dbQueries->retrieveApplicationFees($id, $table);
-            echo json_encode($clientApplicationChargingFees);
-        } else if ($table === 'penalty_fees') {
-            $billingChargingFees =  $dbQueries->retrieveApplicationFees($id, $table);
-            echo json_encode($billingChargingFees);
-        }
+    if (isset($_POST['applicationID'])) {
+        $applicationID = $_POST['applicationID'];
+        $clientApplicationChargingFees =  $dbQueries->retrieveClientApplication($applicationID);
+        echo json_encode($clientApplicationChargingFees);
     }
 }
 

@@ -44,16 +44,16 @@
                         </li>
                         <li title='Property Type'>
                             <div class="flex items-center rounded hover:bg-gray-100">
-                                <label for="residential" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                                    <input id="residential" type="radio" value="Residential" data-column="property_type" name="property_type" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                <label for="residential_ca" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="residential_ca" type="radio" value="Residential" data-column="property_type" name="property_type_ca" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-green-400">residential</span>
                                 </label>
                             </div>
                         </li>
                         <li title='Property Type'>
                             <div class="flex items-center rounded hover:bg-gray-100">
-                                <label for="commercial" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                                    <input id="commercial" type="radio" value="Commercial" data-column="property_type" name="property_type" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                <label for="commercial_ca" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="commercial_ca" type="radio" value="Commercial" data-column="property_type" name="property_type_ca" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-green-400">commercial</span>
                                 </label>
                             </div>
@@ -84,16 +84,16 @@
                         </li>
                         <li title='Property Type'>
                             <div class="flex items-center rounded hover:bg-gray-100">
-                                <label for="residential" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                                    <input id="residential" type="radio" value="Residential" data-column="cd.property_type" name="cd.property_type" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                <label for="residential_b" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="residential_b" type="radio" value="Residential" data-column="cd.property_type" name="cd.property_type_b" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-green-400">residential</span>
                                 </label>
                             </div>
                         </li>
                         <li title='Property Type'>
                             <div class="flex items-center rounded hover:bg-gray-100">
-                                <label for="commercial" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
-                                    <input id="commercial" type="radio" value="Commercial" data-column="cd.property_type" name="cd.property_type" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                <label for="commercial_b" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                    <input id="commercial_b" type="radio" value="Commercial" data-column="cd.property_type" name="cd.property_type_b" class="mr-1 w-4 h-4 peer text-green-400 bg-gray-100 border-gray-300 focus:ring-transparent">
                                     <span class="peer-checked:text-green-400">commercial</span>
                                 </label>
                             </div>

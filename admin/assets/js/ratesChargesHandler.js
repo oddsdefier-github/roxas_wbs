@@ -61,6 +61,7 @@ function submitFormData(action, inputs) {
             },
             success: function (response) {
                 console.log(response)
+                alert(JSON.parse(response).message)
             },
             error: function (xhr, status, error) {
                 console.log("An error occurred.", error);
@@ -148,7 +149,7 @@ function validateField(fieldName, fieldValue) {
             },
             numericality: true
         },
-                reconnectionFee: {
+        reconnectionFee: {
             presence: {
                 allowEmpty: false,
                 message: "cannot be empty"

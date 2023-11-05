@@ -1,7 +1,5 @@
 import { DataTableWithPagination } from './DataTableWithPagination.js';
 
-const applicationFeeTable = "client_application_fees";
-const penaltyTable = "penalty_fees";
 const amountPaidInput = $("#amount_paid_input");
 const amountPaid = $("#amount_paid");
 const remainingBalanceEl = $(".remaining_balance");
@@ -14,62 +12,77 @@ const formatNumber = (num) => {
     return num.toLocaleString('en-US', { style: 'currency', currency: 'PHP' });
 };
 
-
-function retrieveApplicationFees(id, table, callback) {
+function retrieveClientApplication(applicationID, callback) {
     $.ajax({
         url: "database_actions.php",
         type: "post",
         data: {
-            action: "retrieveChargingFees",
-            id: id,
-            type: table
+            action: "retrieveClientApplication",
+            applicationID: applicationID
         },
         success: function (data) {
-            function appendDataToModal(data) {
-                const { fees } = JSON.parse(data);
-                const { application_fee, inspection_fee, registration_fee, connection_fee, installation_fee } = fees;
+            console.log(JSON.parse(data));
+            callback(data)
+        }
+    })
 
-                const total_fee = parseFloat(application_fee) + parseFloat(inspection_fee) + parseFloat(registration_fee) + parseFloat(connection_fee) + parseFloat(installation_fee);
+}
 
-                $(".application-fee").text(formatNumber(parseFloat(application_fee)));
-                $(".inspection-fee").text(formatNumber(parseFloat(inspection_fee)));
-                $(".registration-fee").text(formatNumber(parseFloat(registration_fee)));
-                $(".connection-fee").text(formatNumber(parseFloat(connection_fee)));
-                $(".installation-fee").text(formatNumber(parseFloat(installation_fee)));
-                $(".total_application_fee").text(formatNumber(parseFloat(total_fee)));
-                amountDueEl.text(`-${formatNumber(total_fee)}`);
-
-                window.total_fee = total_fee;
-
-                // Call the callback function and pass the total_fee as an argument
-                callback(total_fee);
-            }
-
-            appendDataToModal(data);
+function retrieveApplicationFees(applicationID, callback) {
+    console.log(applicationID)
+    $.ajax({
+        url: "database_actions.php",
+        type: "post",
+        data: {
+            action: "retrieveClientApplicationFee",
+        },
+        success: function (data) {
+            console.log(data);
+            callback(data);
         }
     })
 }
 
+function setModalSettings() {
+    clearInputsOrText([amountPaidInput, amountPaid, remainingBalanceEl]);
+    amountDueEl.hide();
+    confirmAppPayment.html('Confirm');
+    $("#close_modal").show();
 
+    acceptClientAppPaymentModal.css({
+        'display': 'grid',
+        'place-items': 'center',
+        'justify-content': 'center',
+        'align-items': 'center'
+    });
+    amountPaidInput.trigger("focus");
+}
 
-amountPaidInput.attr('data-input-track', 'error');
+function appendPrimaryInfoToModal(applicationID) {
+    retrieveClientApplication(applicationID, function (data) {
+        const { client_application } = JSON.parse(data);
+        const { application_id, property_type, full_name, meter_number } = client_application;
+        $(".application_id").text(application_id);
+        $(".property_type").text(property_type);
+        $(".full_name").text(full_name);
+        $(".meter_number").text(meter_number);
+    })
+}
 
-function validateField(fieldName, fieldValue, totalFee) {
-    totalFee = parseFloat(totalFee);
-    const validationRules = {
-        amount_paid_input: {
-            presence: {
-                allowEmpty: false,
-                message: "cannot be empty"
-            },
-            numericality: {
-                greaterThanOrEqualTo: totalFee,
-                message: `must be greater than or equal to ${totalFee}`
-            }
-        }
-    };
-    const fieldErrors = validate({ [fieldName]: fieldValue.trim() }, validationRules);
-    return fieldErrors ? fieldErrors[fieldName] : null;
+function updateModalData(data) {
+    setModalSettings();
+    const { client_application_fees } = JSON.parse(data);
+    const { application_fee, inspection_fee, registration_fee, connection_fee, installation_fee } = client_application_fees;
+    const total_fee = parseFloat(application_fee) + parseFloat(inspection_fee) + parseFloat(registration_fee) + parseFloat(connection_fee) + parseFloat(installation_fee);
+
+    $(".application-fee").text(formatNumber(parseFloat(application_fee)));
+    $(".inspection-fee").text(formatNumber(parseFloat(inspection_fee)));
+    $(".registration-fee").text(formatNumber(parseFloat(registration_fee)));
+    $(".connection-fee").text(formatNumber(parseFloat(connection_fee)));
+    $(".installation-fee").text(formatNumber(parseFloat(installation_fee)));
+    $(".total_application_fee").text(formatNumber(parseFloat(total_fee)));
+    amountDueEl.text(`-${formatNumber(total_fee)}`);
+    return total_fee;
 }
 
 
@@ -85,14 +98,7 @@ amountPaidInput.on("input", function () {
         remainingBalanceEl.text("");
         amountDueEl.hide();
     } else {
-        /**
-         * Calculates the remaining balance after deducting the total fee from the amount paid.
-         *
-         * @param {number} amountPaidInputVal - The amount paid by the customer.
-         * @param {number} total_fee - The total fee to be deducted from the amount paid.
-         * @returns {number} The remaining balance after deducting the total fee from the amount paid.
-         */
-        let remainingBalance = amountPaidInputVal - window.total_fee;
+        let remainingBalance = amountPaidInputVal - window.totalFee;
 
         remainingBalanceEl.text(formatNumber(remainingBalance));
         if (remainingBalance < 0) {
@@ -126,10 +132,6 @@ function displayLoadingStatus(el, message) {
 }
 
 
-/**
- * Clears the value of the given input element(s) or text element.
- * @param {jQuery|jQuery[]} el - The input element(s) or text element to clear.
- */
 function clearInputsOrText(el) {
     if (Array.isArray(el)) {
         el.forEach(function (input) {
@@ -148,74 +150,89 @@ function clearInputsOrText(el) {
     }
 }
 
-
-function acceptClientAppPayment(id) {
-    clearInputsOrText([amountPaidInput, amountPaid, remainingBalanceEl]);
-    amountDueEl.hide();
-    setModalSettings();
-
-    retrieveApplicationFees(id, applicationFeeTable, function (total_fee) {
-        setConfirmPaymentButtonBehavior(total_fee, id);
-    });
-}
-
-function setModalSettings() {
-    confirmAppPayment.html('Confirm');
-    $("#close_modal").show();
-
-    acceptClientAppPaymentModal.css({
-        'display': 'grid',
-        'place-items': 'center',
-        'justify-content': 'center',
-        'align-items': 'center'
-    });
-    amountPaidInput.trigger("focus");
-}
-
-function setConfirmPaymentButtonBehavior(total_fee, id) {
-    confirmAppPayment.off("click");
-    confirmAppPayment.on("click", function (e) {
-        e.preventDefault();
-        handlePaymentConfirmation(total_fee, id);
-    });
-}
-
-function handlePaymentConfirmation(total_fee, id) {
+function handleSubmitEvent() {
     $("#close_modal").hide();
     displayLoadingStatus(confirmAppPayment, 'Confirming...');
+}
 
+function acceptClientAppPayment(applicationID) {
+    appendPrimaryInfoToModal(applicationID);
+    retrieveApplicationFees(applicationID, function (data) {
+        const totalFee = updateModalData(data)
+        window.totalFee = totalFee
+        confirmAppPayment.off("click");
+        confirmAppPayment.on("click", function (e) {
+            e.preventDefault();
+
+            handleSubmitEvent();
+
+            if (validatePayment(totalFee)) {
+                const data = {
+                    applicationID: applicationID,
+                    amountPaid: parseFloat(amountPaidInput.val())
+                }
+                sendPaymentConfirmationRequest(data);
+            }
+            return false;
+        });
+    });
+}
+
+function validatePayment(totalFee) {
     const fieldName = amountPaidInput.attr("name");
     const fieldValue = amountPaidInput.val();
-    const errorMessage = validateField(fieldName, fieldValue, total_fee);
+    const errorMessage = validateField(fieldName, fieldValue, totalFee);
 
-    const remainingBalance = parseFloat(fieldValue) - total_fee;
+    const remainingBalance = parseFloat(fieldValue) - totalFee;
 
     if (errorMessage) {
         console.log(errorMessage);
-        return;
+        return false;
     }
-
-    displayAmountDetails(total_fee, remainingBalance);
-    sendPaymentConfirmationRequest(total_fee, id);
+    displayAmountDetails(totalFee, remainingBalance);
+    return true;
 }
 
-function displayAmountDetails(total_fee, remainingBalance) {
-    $(".amount_due").text(formatNumber(total_fee));
+function validateField(fieldName, fieldValue, totalFee) {
+    totalFee = parseFloat(totalFee);
+    const validationRules = {
+        amount_paid_input: {
+            presence: {
+                allowEmpty: false,
+                message: "cannot be empty"
+            },
+            numericality: {
+                greaterThanOrEqualTo: totalFee,
+                message: `must be greater than or equal to ${totalFee}`
+            }
+        }
+    };
+    const fieldErrors = validate({ [fieldName]: fieldValue.trim() }, validationRules);
+    return fieldErrors ? fieldErrors[fieldName] : null;
+}
+
+function displayAmountDetails(totalFee, remainingBalance) {
+    $(".amount_due").text(formatNumber(totalFee));
     $(".remaining_balance").text(formatNumber(remainingBalance));
     amountDueEl.show();
 }
 
-function sendPaymentConfirmationRequest(total_fee, id) {
+
+function sendPaymentConfirmationRequest(formData) {
+    const { applicationID, amountPaid } = formData;
     $.ajax({
         url: "database_actions.php",
         type: "post",
         data: {
             action: "confirmAppPayment",
-            id: id,
-            total_fee: total_fee
+            formData: {
+                applicationID: applicationID,
+                amountPaid: amountPaid
+            }
         },
         success: function (data) {
             setTimeout(function () {
+                console.log(data)
                 alert(JSON.parse(data).message);
                 acceptClientAppPaymentModal.hide();
                 new DataTableWithPagination("client_application", '#displayClientAppBillingTable');

@@ -42,11 +42,19 @@
             </div>
             <!-- Modal body -->
             <form id="client_app_payment_confirmation" class="">
-                <!-- <div class="py-5 rounded-md">
-                    <div class="w-full grid place-items-center pointer-events-none">
-                        <img class="w-48 h-48" src="./assets/payment.svg" alt="Payment Illustration">
+                <div class="pt-3 rounded-md">
+                    <div class="flex justify-between w-full py-3 px-3 rounded-md bg-gray-100 hover:bg-gray-50">
+                        <div class="text-gray-500">
+                            <p class="application_id font-semibold" title="Application ID"></p>
+                            <p class="property_type text-sm" title="Client ID"></p>
+                        </div>
+                        <div class="text-gray-500">
+                            <p class="full_name font-medium" title="Name"></p>
+
+                            <p class="meter_number text-sm" title="Meter Number"></p>
+                        </div>
                     </div>
-                </div> -->
+                </div>
                 <div class="application-fees-desc py-3 flex flex-col gap-2">
                     <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
                         <p class="font-medium text-gray-600">Application Fee</p>
