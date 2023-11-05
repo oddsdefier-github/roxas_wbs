@@ -46,28 +46,23 @@ class DatabaseQueries extends BaseQuery
 
     public function markNotificationAsRead($applicationID)
     {
-        $sqlSelect = "SELECT id FROM client_application WHERE application_id = ?";
-        $stmtSelect = $this->conn->prepareStatement($sqlSelect);
-        $stmtSelect->bind_param("s", $applicationID);
+        $sqlUpdate = "UPDATE notifications SET status = 'read' WHERE reference_id = ?";
+        $stmtUpdate = $this->conn->prepareStatement($sqlUpdate);
+        if (!$stmtUpdate) {
 
-        if ($stmtSelect->execute()) {
-            $result = $stmtSelect->get_result();
-            $row = $result->fetch_assoc();
-            $id = $row['id'];
+            return false;
+        }
+        mysqli_stmt_bind_param($stmtUpdate, "s", $applicationID);
 
-            $sqlUpdate = "UPDATE notifications SET status = 'read' WHERE reference_id = ?";
-            $stmtUpdate = $this->conn->prepareStatement($sqlUpdate);
-            $stmtUpdate->bind_param("i", $id);
-
-            if ($stmtUpdate->execute()) {
-                return true;
-            } else {
-                return "Error: " . $this->conn->getErrorMessage();
-            }
+        if (mysqli_stmt_execute($stmtUpdate)) {
+            return true;
         } else {
-            return "Error: " . $this->conn->getErrorMessage();
+
+            return false;
         }
     }
+
+
 
     public function insertIntoClientApplication($formData)
     {
@@ -143,19 +138,31 @@ class DatabaseQueries extends BaseQuery
         }
     }
 
-    public function checkDuplicate($items, $values, $table)
+    public function checkDuplicate($column, $value, $table)
     {
-        $checkDuplicate = "SELECT $items FROM $table WHERE $items = ?";
-        $stmt = $this->conn->prepareStatement($checkDuplicate);
-        mysqli_stmt_bind_param($stmt, "s", $values);
-        if (mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_store_result($stmt);
-            if (mysqli_stmt_num_rows($stmt) > 0) {
-                return true;
-            }
+        $checkDuplicateQuery = "SELECT $column FROM $table WHERE $column = ?";
+
+        $stmt = $this->conn->prepareStatement($checkDuplicateQuery);
+        if (!$stmt) {
+            return false;
         }
-        return false;
+
+        mysqli_stmt_bind_param($stmt, "s", $value);
+
+        if (!mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+
+        mysqli_stmt_store_result($stmt);
+
+        $isDuplicate = mysqli_stmt_num_rows($stmt) > 0;
+
+        mysqli_stmt_close($stmt);
+
+        return $isDuplicate;
     }
+
 
     public function processClientApplication($formData)
     {
@@ -493,13 +500,13 @@ class DatabaseQueries extends BaseQuery
     }
 
 
-    public function retrieveClientApplicationData($id)
+    public function retrieveClientApplicationData($applicationID)
     {
 
         $data = array();
-        $sql = "SELECT * FROM client_application WHERE id = ?";
+        $sql = "SELECT * FROM client_application WHERE application_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
-        mysqli_stmt_bind_param($stmt, "s", $id);
+        mysqli_stmt_bind_param($stmt, "s", $applicationID);
         mysqli_stmt_execute($stmt);
         $result = $this->conn->getResultSet($stmt);
 
@@ -633,7 +640,7 @@ class DatabaseQueries extends BaseQuery
                 affidavit = ?,
                 billing_status = 'unpaid',
                 timestamp = CURRENT_TIMESTAMP 
-                WHERE id = ?";
+                WHERE application_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
 
         $stmt->bind_param(
@@ -1018,7 +1025,7 @@ class DataTable extends BaseQuery
 
             $page = 'client_application_review.php';
 
-            $table .= '<tr onclick="openPage(event, ' . $id . ', \'' . $page . '\')" data-client-id="' . $id . '" class="table-auto bg-white border-b hover:bg-gray-50  overflow-auto">
+            $table .= '<tr onclick="openPage(event, \'' . $application_id . '\', \'' . $page . '\')" data-client-id="' . $id . '" class="table-auto bg-white border-b hover:bg-gray-50  overflow-auto">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td class="px-6 py-3 text-sm">' . $application_id . '</td>
             <td class="px-6 py-3 text-sm">' . $name . '</td>
@@ -1035,7 +1042,7 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <a href="./client_application_review.php?id=' . $id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <a href="./client_application_review.php?id=' . $application_id . '" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -1371,15 +1378,14 @@ class DataTable extends BaseQuery
         } else {
             $totalRecords = 0;
         }
+        $ascendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>';
 
-
-        $ascendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        $descendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
     </svg>';
 
-        $descendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-    </svg>';
 
         $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
@@ -1408,13 +1414,21 @@ class DataTable extends BaseQuery
                     </div>
                 </th>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
-                <th class="px-6 py-4" data-column-name="description" data-sortable="true">
+                <th class="px-6 py-4" data-column-name="transaction_desc" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Description</p>
                         <span class="sort-icon">
                         ' . $sortIcon . '
                         </span>
                     </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="amount_paid" data-sortable="true">
+                <div class="flex items-center gap-2">
+                    <p>Amount Paid</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
                 </th>
                 <th class="px-6 py-4" data-column-name="amount_due" data-sortable="true">
                     <div class="flex items-center gap-2">
@@ -1424,14 +1438,7 @@ class DataTable extends BaseQuery
                         </span>
                     </div>
                 </th>
-                <th class="px-6 py-4" data-column-name="amount_paid" data-sortable="true">
-                    <div class="flex items-center gap-2">
-                        <p>Amount Paid</p>
-                        <span class="sort-icon">
-                        ' . $sortIcon . '
-                        </span>
-                    </div>
-                </th>
+
                 <th class="px-6 py-4" data-column-name="confirmed_by" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Confirmed by</p>
@@ -1462,7 +1469,9 @@ class DataTable extends BaseQuery
             $transactionType = $row['transaction_type'];
             $description = $row['transaction_desc'];
             $amountDue = $row['amount_due'];
+            $formattedAmountDue = "₱" . number_format($amountDue, 2, '.', ',');
             $amountPaid = $row['amount_paid'];
+            $formattedAmountPaid = "₱" . number_format($amountPaid, 2, '.', ',');
             $confirmedBy = $row['confirmed_by'];
             $time = $row['time'];
             $date = $row['date'];
@@ -1476,8 +1485,8 @@ class DataTable extends BaseQuery
             <td  class="px-6 py-3 text-sm">' . $transactionID . '</td>
             <td class="px-6 py-3 text-sm">' . $transactionType . '</td>
             <td class="px-6 py-3 text-sm" style="max-width: 20rem;">' . $description . '</td>
-            <td class="px-6 py-3 text-sm">' . $amountDue . '</td>
-            <td class="px-6 py-3 text-sm">' . $amountPaid . '</td>
+            <td class="px-6 py-3 text-sm">' . $formattedAmountPaid . '</td>
+            <td class="px-6 py-3 text-sm">' . $formattedAmountDue . '</td>
             <td class="px-6 py-3 text-sm">' . $confirmedBy . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>

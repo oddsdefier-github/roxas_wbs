@@ -24,15 +24,16 @@ $(document).ready(function () {
 
     const folderName = 'wbs_zero_php';
 
-    function retrieveClientApplicationData(applicantId, callback) {
+    function retrieveClientApplicationData(applicationID, callback) {
         $.ajax({
             url: "database_actions.php",
             type: "POST",
             data: {
                 action: "getClientApplicationData",
-                id: applicantId,
+                applicationID: applicationID,
             },
             success: function (data) {
+                console.log(data)
                 var applicationData = JSON.parse(data).applicationData;
                 console.log(applicationData);
                 callback(applicationData); // Call the callback function with the data
@@ -735,7 +736,7 @@ $(document).ready(function () {
                     setTimeout(() => {
                         processApplication();
                         reviewConfirmationModal.hide();
-                    }, 1000);
+                    }, 800);
                 });
             }
         });

@@ -153,9 +153,9 @@ function handleGetTotalItem($dbQueries)
 
 function handleGetClientApplicationData($dbQueries)
 {
-    if (isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $getClientApplicationData = $dbQueries->retrieveClientApplicationData($id);
+    if (isset($_POST['applicationID'])) {
+        $applicationID = $_POST['applicationID'];
+        $getClientApplicationData = $dbQueries->retrieveClientApplicationData($applicationID);
         echo json_encode($getClientApplicationData);
     }
 }

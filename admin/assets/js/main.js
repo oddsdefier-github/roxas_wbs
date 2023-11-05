@@ -11,7 +11,6 @@ $(document).ready(function () {
     } else if (filename === 'transactions.php') {
         const clientTable = new DataTableWithPagination("transactions", '#displayTxTable');
     }
-
     $('.page_nav').each(function () {
         $(this).find('a').each(function () {
             const linkHref = $(this).attr('href');
