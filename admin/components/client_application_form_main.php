@@ -246,7 +246,9 @@
                     </div>
 
                     <div class="mt-6 flex items-center justify-end gap-x-6">
-                        <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
+                        <button id="back" onclick="window.history.back()" type="button" class="text-gray-500 bg-gray-50 hover:bg-gray-100 focus:ring-3 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
+                            Back
+                        </button>
                         <button id="submit-application" type="submit" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600" disabled>
                             Submit
                         </button>
