@@ -40,7 +40,10 @@
                 <ul class="px-3 py-2 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioBgHoverButton">
                     <div class="border-b-2 border-gray-200">
                         <li>
-                            <p class="font-semibold uppercase py-1 text-xs text-gray-500">Status</p>
+                            <div class="flex justify-between">
+                                <p class="font-semibold uppercase py-1 text-xs text-gray-500">Status</p>
+                            </div>
+
                         </li>
                         <li title='Status'>
                             <div class="flex items-center rounded hover:bg-gray-100">
