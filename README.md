@@ -54,7 +54,7 @@ The developer is continuously working to enhance the Water Billing System. He we
 5. Run the system on a local server or deploy to a live server.
 
 ## Usage
-After setting up the project, navigate to the homepage and log in with your credentials. Administrators can manage billing cycles, user data, and view reports. Customers can check their bill status, usage history, and make payments online.
+After setting up the project, navigate to the homepage and log in with your credentials. Administrators can manage billing cycles, user data, and view reports. Customers can check their bill status, and usage history.
 
 ## Contributing
 Contributions to the Water Billing System are welcome. Please fork the repository and submit a pull request with your proposed changes.
