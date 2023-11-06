@@ -15,6 +15,8 @@ The Water Billing System is a comprehensive solution designed to streamline and 
 - Automated billing calculations based on water usage.
 - Secure login and user management system.
 - Payment gateway integration for easy bill settlements.
+- Seamless client addition with a verification and approval system that allows for initial application encoding, review, and finalization upon payment.
+- The ability to print invoices, certificates, and reports.
 - Data analytics for usage patterns and financial reporting.
 
 ## Setup and Installation
