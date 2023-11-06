@@ -76,6 +76,9 @@ function handleGetDataTable($dataTable)
             case "billing_data":
                 $dataTable->billingTable($dataTableParam);
                 break;
+            case "billing_data_verified":
+                $dataTable->verifiedBillingTable($dataTableParam);
+                break;
 
                 // Add more cases if you have more tables with similar functionality.
                 // case "another_table":

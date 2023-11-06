@@ -263,6 +263,7 @@ class DatabaseQueries extends BaseQuery
         return true;
     }
 
+    public function verifyReadingData() {}
     public function insertIntoBillingData($formData)
     {
         $this->conn->beginTransaction();
@@ -659,7 +660,6 @@ class DataTable extends BaseQuery
         }
 
 
-
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
@@ -806,7 +806,7 @@ class DataTable extends BaseQuery
             </td>
             <td class="px-6 py-3 text-sm font-semibold">' . $prevReading . '</td>
             <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">
-            ' . $currReading . '</td>
+            ' . $currReading . '  <span class="hidden group-hover:flex text-xs">cubic meter</span></td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>
@@ -814,10 +814,234 @@ class DataTable extends BaseQuery
             <td class="flex items-center px-6 py-4 space-x-3">
 
             <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span class="sr-only">Icon description</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="sr-only">Icon description</span>
+            </button>
+            </td>
+        </tr>';
+            array_push($countArr, $number);
+            $number++;
+        }
+
+        $start = 0;
+        $end = 0;
+
+        if (!empty($countArr)) {
+            $start = $countArr[0];
+            $end = end($countArr);
+
+            $table .= '</tbody></table>';
+
+            if ($number > 1) {
+                echo $table;
+            } else {
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
+            }
+        } else {
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
+        }
+
+        echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
+        echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
+    }
+    public function verifiedBillingTable($dataTableParam)
+    {
+
+        $pageNumber = $dataTableParam['pageNumber'];
+        $itemPerPage = $dataTableParam['itemPerPage'];
+        $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
+        $offset = ($pageNumber - 1) * $itemPerPage;
+        $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
+        $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
+        $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+
+        $conditions = [];
+        $params = [];
+        $types = "";
+
+        $currentDate = new DateTime();
+        $billingMonthAndYear = $currentDate->format('F Y');
+
+        $conditions[] = "billing_month = ?";
+        $params[] = $billingMonthAndYear;
+        $types .= "s";
+
+        if ($searchTerm) {
+            $likeTerm = "%" . $searchTerm . "%";
+            $conditions[] = "(bd.billing_id LIKE ? OR bd.client_id LIKE ? OR cd.full_name LIKE ? OR bd.meter_number LIKE ? OR cd.property_type LIKE ? OR cd.status LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "ssssss";
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $filter) {
+                $conditions[] = "{$filter['column']} = ?";
+                $params[] = $filter['value'];
+                $types .= "s";
+            }
+        }
+
+
+        if (!empty($conditions)) {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
+            $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
+            $sql .= " WHERE bd.billing_type = 'verified' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
+        } else {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
+            $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
+            $sql .= " WHERE bd.billing_type = 'verified' AND bd.billing_status = 'unpaid'";
+        }
+
+        // echo $sql;
+        // print_r($params);
+
+        $validColumns = [
+            'bd.client_id', 'bd.meter_number', 'cd.full_name',  'cd.property_type', 'bd.timestamp', 'bd.prev_reading', 'bd.curr_reading', 'cd.brgy'
+        ];
+        $validDirections = ['ASC', 'DESC'];
+
+        if (in_array($sortColumn, $validColumns) && in_array($sortDirection, $validDirections)) {
+            $sql .= " ORDER BY {$sortColumn} {$sortDirection}";
+        } else {
+            $sql .= " ORDER BY bd.timestamp DESC";
+        }
+
+        $sql .= " LIMIT ? OFFSET ?";
+        $params = array_merge($params, [$itemPerPage, $offset]);
+        $types .= "ii";
+
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+        mysqli_stmt_execute($stmt);
+
+
+        $result = mysqli_stmt_get_result($stmt);
+
+        $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
+
+        if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
+            $totalRecords = $row['total'];
+        } else {
+            $totalRecords = 0;
+        }
+
+        $descendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+    </svg>';
+        $ascendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>';
+
+        $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
+
+        $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
+        <thead class="text-xs text-gray-500 uppercase">
+            <tr class="bg-slate-100 border-b">
+                <th class="px-6 py-4">No.</th>
+                <th class="px-6 py-4" data-column-name="bd.client_id" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Client ID</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span>
+                    </div>
+                </th>
+                <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
+                <th class="px-6 py-4" data-column-name="cd.full_name" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Client Name</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="cd.property_type" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Property Type</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="cd.brgy" data-sortable="true">
+                <div class="flex items-center gap-2">
+                    <p>Address</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="bd.prev_reading" data-sortable="true" title="Previous Reading">
+                <div class="flex items-center gap-2">
+                    <p>Previous</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="bd.curr_reading" data-sortable="true" title="Current Reading">
+                <div class="flex items-center gap-2">
+                    <p>Current</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="bd.timestamp" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Reading Date</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4">Action</th>
+            </tr>
+        </thead>';
+
+        $countArr = array();
+        $number = ($pageNumber - 1) * $itemPerPage + 1;
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id = $row['id'];
+            $clientID = $row['client_id'];
+            $clientName = $row['full_name'];
+            $propertyType = $row['property_type'];
+            $street = $row['street'];
+            $brgy = $row['brgy'];
+            $prevReading = $row['prev_reading'];
+            $currReading = $row['curr_reading'];
+            $time = $row['time'];
+            $date = $row['date'];
+            $readable_date = date("F j, Y", strtotime($date));
+            $readable_time = date("h:i A", strtotime($time));
+
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
+            <td  class="px-6 py-3 text-sm">' . $number . '</td>
+            <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
+            <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $clientName . '</td>
+            <td class="px-6 py-3 text-sm">' . $propertyType . '</td>
+            <td class="px-6 py-3 text-sm"> 
+            <span class="font-medium text-sm">' . $brgy . '</span> </br>
+            <span class="text-xs text-gray-400">' . $street . '</span>
+            </td>
+            <td class="px-6 py-3 text-sm font-semibold">' . $prevReading . '</td>
+            <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">
+            ' . $currReading . '  <span class="hidden group-hover:flex text-xs">cubic meter</span></td>
+            <td class="px-6 py-3 text-sm">            
+                <span class="font-medium text-sm">' . $readable_date . '</span> </br>
+                <span class="text-xs">' . $readable_time . '</span>
+            </td>
+            <td class="flex items-center px-6 py-4 space-x-3">
+
+            <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="sr-only">Icon description</span>
             </button>
             </td>
         </tr>';

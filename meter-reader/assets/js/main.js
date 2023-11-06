@@ -1,5 +1,7 @@
 import { DataTableWithPagination } from './DataTableWithPagination.js';
 $(document).ready(function () {
+
+
     const currentPath = window.location.pathname;
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
@@ -17,13 +19,18 @@ $(document).ready(function () {
             $(".main-content").html(`Wait for ${daysLeft}days to encode new reading again.</br>Have a nice day!`);
         }
 
+
+
     } else if (filename === 'verify_meter_reading.php') {
         $(".main-content").show();
         const clientTable = new DataTableWithPagination("billing_data", '#displayClientForReadingVerification');
+
+
     } else if (filename === 'bill_meter_reading.php') {
         $(".main-content").show();
-        const clientTable = new DataTableWithPagination("billing_data", '#displayClientForBillingGeneration');
+        const clientTable = new DataTableWithPagination("billing_data_verified", '#displayClientForBillingGeneration');
     }
+
 
     $('.page_nav').each(function () {
         $(this).find('a').each(function () {

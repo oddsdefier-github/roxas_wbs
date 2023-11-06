@@ -8,7 +8,7 @@
         </div>
         <div class="shadow">
             <div>
-                <!-- <div id="displayClientForBilling"></div> -->
+                <div id="displayClientForBillingGeneration"></div>
             </div>
             <?php include 'pagination.php' ?>
         </div>
