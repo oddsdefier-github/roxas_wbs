@@ -20,9 +20,16 @@ The Water Billing System is a comprehensive solution designed to streamline and 
 ## Setup and Installation
 1. Clone the repository to your local machine.
 2. Set up a MySQL database and import the provided SQL schema.
-3. Configure your PHP environment to connect to the database.
+3. Configure your PHP environment:
+   - Edit the `php.ini` file to enable extensions required by `dompdf`. Specifically, ensure the following lines are uncommented:
+     ```
+     extension=mbstring
+     extension=gd
+     ```
+     This will enable multibyte string processing and image processing capabilities which are necessary for PDF generation.
+   - Connect the application to the database by editing the appropriate configuration files.
 4. Install necessary JavaScript and CSS dependencies.
-5. Run the system on a local server.
+5. Run the system on a local server or deploy to a live server.
 
 ## Usage
 After setting up the project, navigate to the homepage and log in with your credentials. Administrators can manage billing cycles, user data, and view reports. Customers can check their bill status, usage history, and make payments online.
