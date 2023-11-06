@@ -73,7 +73,7 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 
-    function getDueAndDisconnectionDates(): array
+    public function getDueAndDisconnectionDates(): array
     {
         $dateTime = new DateTime();
         $dateTime->modify('+15 days');
@@ -146,7 +146,7 @@ class DatabaseQueries extends BaseQuery
         return null;
     }
 
-    public function updateReadingTypeToPrevious(string $clientID): array
+    public function updateReadingTypeToPrevious(string $clientID): bool
     {
         $updateSql = "UPDATE billing_data SET reading_type = 'previous' WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
         $stmt_update = $this->conn->prepareStatement($updateSql);
@@ -155,13 +155,13 @@ class DatabaseQueries extends BaseQuery
         mysqli_stmt_close($stmt_update);
         if (!$updateResult) {
             $this->conn->rollbackTransaction();
-            return array("status" => "error", "message" => "Error updating previous reading.");
+            return false;
         }
-        return array("status" => "success", "message" => "Successfully updated previous reading.");
+        return true;
     }
 
 
-    public function updateClientReadingStatus($clientID)
+    public function updateClientReadingStatus(string $clientID): bool
     {
         $updateReadingStatus = "UPDATE client_data SET reading_status = 'read' WHERE client_id = ?";
         $stmt_update = $this->conn->prepareStatement($updateReadingStatus);
@@ -170,24 +170,105 @@ class DatabaseQueries extends BaseQuery
 
         if (mysqli_stmt_affected_rows($stmt_update) === 0) {
             mysqli_stmt_close($stmt_update);
-            return array("status" => "warning", "message" => "No rows were affected or data is the same.");
+            return false;
         }
-
         if (!$updateResult) {
             mysqli_stmt_close($stmt_update);
-            return array("status" => "error", "message" => "Error updating client reading status.");
+            return false;
         }
         mysqli_stmt_close($stmt_update);
-        return array("status" => "success", "message" => "Successfully updated client reading status.");
+        return true;
     }
 
-
-    public function encodeCurrentReading($formData)
+    public function checkDuplicate($clientID, $billingMonthAndYear)
     {
-        $response = array();
+        $checkDuplicateQuery = "SELECT client_id FROM billing_data WHERE client_id = ? AND billing_month = ? AND billing_type = 'unverified' OR billing_type = 'verified'";
+        $stmt = $this->conn->prepareStatement($checkDuplicateQuery);
+        if (!$stmt) {
+            return false;
+        }
+        mysqli_stmt_bind_param($stmt, "ss", $clientID, $billingMonthAndYear);
+
+        if (!mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+
+        mysqli_stmt_store_result($stmt);
+
+        $isDuplicate = mysqli_stmt_num_rows($stmt) > 0;
+
+        mysqli_stmt_close($stmt);
+
+        return $isDuplicate;
+    }
+
+    public function retrievePreviousReading($clientID)
+    {
+        $sql = "SELECT prev_reading FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmt = $this->conn->prepareStatement($sql);
+        if (!$stmt) {
+            return false;
+        }
+        mysqli_stmt_bind_param($stmt, "s", $clientID);
+        if (!mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+        mysqli_stmt_bind_result($stmt, $prev_reading);
+        $result = mysqli_stmt_fetch($stmt);
+        mysqli_stmt_close($stmt);
+        if ($result) {
+            return $prev_reading;
+        } else {
+            return false;
+        }
+    }
+
+    public function insertIntoMeterReadingLogs(array $data): bool
+    {
+        $referenceID = $data['referenceID'];
+        $clientID = $data['clientID'];
+        $prevReading = $data['prevReading'];
+        $currReading = $data['currReading'];
+        $meterNumber = $data['meterNumber'];
+        $consumption = $data['consumption'];
+        $userID = $data['userID'];
+        $readingMonth = $data['readingMonth'];
+
+        $this->conn->beginTransaction();
+        $sql = "INSERT into meter_reading_logs (reference_id, client_id, meter_number, prev_reading, curr_reading, consumption, user_id, reading_month, time, date, timestamp) VALUES (?, ?, ?, ?,?, ?, ?,?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $stmt = $this->conn->prepareStatement($sql);
+        if (!$stmt) {
+            return false;
+        }
+        mysqli_stmt_bind_param(
+            $stmt,
+            "sssdddss",
+            $referenceID,
+            $clientID,
+            $meterNumber,
+            $prevReading,
+            $currReading,
+            $consumption,
+            $userID,
+            $readingMonth
+        );
+
+        if (!mysqli_stmt_execute($stmt)) {
+            $this->conn->rollbackTransaction();
+            return false;
+        }
+        mysqli_stmt_close($stmt);
+        return true;
+    }
+
+    public function insertIntoBillingData($formData)
+    {
+        $this->conn->beginTransaction();
+
         session_start();
         $encoder = $_SESSION['user_name'];
-
         $readingType = 'current';
 
         $getDueAndDisconnectionDates = $this->getDueAndDisconnectionDates();
@@ -195,70 +276,116 @@ class DatabaseQueries extends BaseQuery
         $disconnectionDate = $getDueAndDisconnectionDates['disconnectionDate'];
 
         $billingStatus = 'unpaid';
-
+        $billingType = 'unverified';
         $currentDate = new DateTime();
         $billingMonthAndYear = $currentDate->format('F Y');
 
         $clientID = $formData['clientID'];
-        $prevReading = $formData['prevReading'];
+        $prevReading = $this->retrievePreviousReading($clientID);
         $currReading = $formData['currReading'];
-        $consumption = $formData['consumption'];
+        $consumption = intval($currReading) - intval($prevReading);
+        $roundedConsumption = round($consumption, 2);
         $propertyType = $formData['propertyType'];
         $meterNumber = $formData['meterNumber'];
         $billingID = "B-" . $meterNumber . "-" . time();
 
-        $this->conn->beginTransaction();
+        $rates = 0.00;
 
-        $rates = $this->getRates($propertyType, $billingMonthAndYear);
-
-        $billingAmount = $consumption * $rates;
+        $billingAmount = 0.00;
 
         $periodTo = $this->getPeriodTo();
         $periodFrom = $this->getPeriodFrom($clientID);
 
+        $data = array(
+            "referenceID" => $billingID,
+            "clientID" => $clientID,
+            "meterNumber" => $meterNumber,
+            "prevReading" => $prevReading,
+            "currReading" => $currReading,
+            "consumption" => $roundedConsumption,
+            "userID" => $encoder,
+            "readingMonth" => $billingMonthAndYear
+        );
 
-        $response = $this->updateReadingTypeToPrevious($clientID);
+        if (!$this->insertIntoMeterReadingLogs($data)) {
+            $this->conn->rollbackTransaction();
+            return false;
+        }
 
-        $billingType = 'actual';
-        // Insert current reading
+        if (!$this->updateReadingTypeToPrevious($clientID)) {
+            $this->conn->rollbackTransaction();
+            return false;
+        }
+
+        if ($this->checkDuplicate($clientID, $billingMonthAndYear)) {
+            $this->conn->rollbackTransaction();
+            return false;
+        }
+
         $sql_billing = "INSERT INTO billing_data (billing_id, client_id, meter_number,  prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_type, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
-
         $stmt_billing = $this->conn->prepareStatement($sql_billing);
+        if (!$stmt_billing) {
+            return false;
+        }
+        mysqli_stmt_bind_param(
+            $stmt_billing,
+            "sssiisssissssssss",
+            $billingID,
+            $clientID,
+            $meterNumber,
+            $prevReading,
+            $currReading,
+            $readingType,
+            $roundedConsumption,
+            $rates,
+            $billingAmount,
+            $billingStatus,
+            $billingType,
+            $billingMonthAndYear,
+            $dueDate,
+            $disconnectionDate,
+            $periodTo,
+            $periodFrom,
+            $encoder
+        );
 
-        if ($stmt_billing) {
-            mysqli_stmt_bind_param(
-                $stmt_billing,
-                "sssiisssissssssss",
-                $billingID,
-                $clientID,
-                $meterNumber,
-                $prevReading,
-                $currReading,
-                $readingType,
-                $consumption,
-                $rates,
-                $billingAmount,
-                $billingStatus,
-                $billingType,
-                $billingMonthAndYear,
-                $dueDate,
-                $disconnectionDate,
-                $periodTo,
-                $periodFrom,
-                $encoder
-            );
 
-            if (mysqli_stmt_execute($stmt_billing)) {
-                $this->conn->commitTransaction();
-                $response["message"] = $billingID;
-                $response = $this->updateClientReadingStatus($clientID);
-            } else {
-                $this->conn->rollbackTransaction();
-                $response = array("status" => "error", "message" => "Error inserting initial reading: " . $stmt_billing->error);
-            }
+        if (!mysqli_stmt_execute($stmt_billing)) {
+            mysqli_stmt_close($stmt_billing);
+            return false;
         }
         mysqli_stmt_close($stmt_billing);
+        return true;
+    }
+
+    public function encodeCurrentReading($formData)
+    {
+        $response = array();
+        $clientID = $formData['clientID'];
+
+        try {
+            if (!$this->insertIntoBillingData($formData)) {
+                throw new Exception("Failed to do insert into billing data. Already encoded for this month.");
+            }
+
+            if (!$this->updateClientReadingStatus($clientID)) {
+                throw new Exception("Failed to update client reading status to read.");
+            }
+
+            $this->conn->commitTransaction();
+            $response = array(
+                "status" => "success",
+                "message" => "Client reading has been encoded."
+            );
+        } catch (Exception $e) {
+            $this->conn->rollbackTransaction();
+
+            $response = array(
+                "status" => "error",
+                "message" => $e->getMessage()
+            );
+        }
         return $response;
     }
 
@@ -275,7 +402,6 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 }
-
 
 class DataTable extends BaseQuery
 {
@@ -432,6 +558,224 @@ class DataTable extends BaseQuery
             $street = $row['street'];
             $brgy = $row['brgy'];
             $property_type = $row['property_type'];
+            $status = $row['status'];
+            $time = $row['time'];
+            $date = $row['date'];
+
+            $readable_date = date("F j, Y", strtotime($date));
+            $readable_time = date("h:i A", strtotime($time));
+
+            $activeBadge = '<span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Active</span>';
+            $inactiveBadge = '<span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Inactive</span>';
+            $statusBadge = ($status === 'active') ? $activeBadge : (($status === 'inactive' ? $inactiveBadge : ''));
+
+            $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            <td  class="px-6 py-3 text-sm">' . $number . '</td>
+            <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
+            <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
+            <td class="px-6 py-3 text-sm">' . $name . '</td>
+            <td class="px-6 py-3 text-sm">' . $property_type . '</td>
+            <td class="px-6 py-3 text-sm"> 
+                <span class="font-medium text-sm">' . $brgy . '</span> </br>
+                <span class="text-xs text-gray-400">' . $street . '</span>
+            </td>
+            <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
+            <td class="px-6 py-3 text-sm">            
+                <span class="font-medium text-sm">' . $readable_date . '</span> </br>
+                <span class="text-xs">' . $readable_time . '</span>
+            </td>
+
+            <td class="flex items-center px-6 py-4 space-x-3">
+                <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="sr-only">Icon description</span>
+                </button>
+                <button title="View Reading" onclick="viewReadingData(' . $id . ', \'' . $tableName . '\')" class="text-white bg-green-400 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="sr-only">Icon description</span>
+                </button>
+            </td>
+        </tr>';
+            array_push($countArr, $number);
+            $number++;
+        }
+
+        $start = 0;
+        $end = 0;
+
+        if (!empty($countArr)) {
+            $start = $countArr[0];
+            $end = end($countArr);
+
+            $table .= '</tbody></table>';
+
+            if ($number > 1) {
+                echo $table;
+            } else {
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
+            }
+        } else {
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
+        }
+
+        echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
+        echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
+    }
+
+    public function billingTable($dataTableParam)
+    {
+        $pageNumber = $dataTableParam['pageNumber'];
+        $itemPerPage = $dataTableParam['itemPerPage'];
+        $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
+        $offset = ($pageNumber - 1) * $itemPerPage;
+        $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
+        $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
+        $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+        $conditions = [];
+        $params = [];
+        $types = "";
+
+        if ($searchTerm) {
+            $likeTerm = "%" . $searchTerm . "%";
+            $conditions[] = "(full_name LIKE ? OR client_id LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "sssssss";
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $filter) {
+                $conditions[] = "{$filter['column']} = ?";
+                $params[] = $filter['value'];
+                $types .= "s";
+            }
+        }
+
+        if (!empty($conditions)) {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM billing_data WHERE billing_type = 'unverified' AND billing_month =  'November 2023' AND " . implode(" AND ", $conditions);
+        } else {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM billing_data WHERE billing_type = 'unverified' AND billing_month =  'November 2023'";
+        }
+
+        $validColumns = [
+            'client_id', 'meter_number', 'full_name', 'property_type', 'brgy',
+            'status', 'timestamp'
+        ];
+        $validDirections = ['ASC', 'DESC'];
+
+        if (in_array($sortColumn, $validColumns) && in_array($sortDirection, $validDirections)) {
+            $sql .= " ORDER BY {$sortColumn} {$sortDirection}";
+        } else {
+            $sql .= " ORDER BY timestamp DESC";
+        }
+
+        $sql .= " LIMIT ? OFFSET ?";
+        $params = array_merge($params, [$itemPerPage, $offset]);
+        $types .= "ii";
+
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+
+        $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
+
+        if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
+            $totalRecords = $row['total'];
+        } else {
+            $totalRecords = 0;
+        }
+
+
+        $ascendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+    </svg>';
+
+        $descendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>';
+
+        $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
+        $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
+
+        
+        <thead class="text-xs text-gray-500 uppercase">
+            <tr class="bg-slate-100 border-b cursor-pointer">
+                <th class="px-6 py-4" data-sortable="false">No.</th>
+                <th class="px-6 py-4" data-column-name="client_id" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Client ID</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Meter No.</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="full_name" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Names</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
+                    </div>
+                <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
+                <th class="px-6 py-4" data-column-name="property_type" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Property Type</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="brgy" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Address</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="status" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Status</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Joined</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-sortable="false">Action</th>
+            </tr>
+        </thead>';
+
+        $countArr = array();
+        $number = ($pageNumber - 1) * $itemPerPage + 1;
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id = $row['id'];
+            $clientID = $row['client_id'];
+            $meter_number = $row['meter_number'];
+            
             $status = $row['status'];
             $time = $row['time'];
             $date = $row['date'];

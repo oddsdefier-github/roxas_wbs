@@ -75,6 +75,7 @@ function handleGetDataTable($dataTable)
             case "client_data":
                 $dataTable->clientTable($dataTableParam);
                 break;
+                
                 // Add more cases if you have more tables with similar functionality.
                 // case "another_table":
                 //     $dataTable->anotherTableFunction($dataTableParam);

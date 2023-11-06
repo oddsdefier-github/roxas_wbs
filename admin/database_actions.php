@@ -4,6 +4,7 @@ use Admin\Database\DatabaseConnection;
 
 require './database_queries.php';
 
+
 function sanitizeArray($array)
 {
     foreach ($array as $key => $value) {

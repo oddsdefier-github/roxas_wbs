@@ -1,22 +1,28 @@
 import { DataTableWithPagination } from './DataTableWithPagination.js';
-
 $(document).ready(function () {
     const currentPath = window.location.pathname;
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
-    if (filename === 'meter_reading.php') {
+    if (filename === 'encode_meter_reading.php') {
         const today = new Date();
         const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
         const todayDate = today.getDate();
         if (today.getDate() === todayDate) {
             $(".main-content").show();
-            const clientTable = new DataTableWithPagination("client_data", '#displayClientForBilling');
+            const clientTable = new DataTableWithPagination("client_data", '#displayClientForReadingEncoding');
         } else {
             $(".main-content").show();
             const daysLeft = lastDayOfMonth.getDate() - today.getDate();
             $(".main-content").html(`Wait for ${daysLeft}days to encode new reading again.</br>Have a nice day!`);
         }
+
+    } else if (filename === 'verify_meter_reading.php') {
+        $(".main-content").show();
+        // const clientTable = new DataTableWithPagination("client_data", '#displayClientForReadingVerification');
+    } else if (filename === 'bill_meter_reading.php') {
+        $(".main-content").show();
+        const clientTable = new DataTableWithPagination("client_data", '#displayClientForBillingGeneration');
     }
 
     $('.page_nav').each(function () {
@@ -29,7 +35,6 @@ $(document).ready(function () {
             }
         });
     })
-
-    filename === 'meter_reading.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
+    filename === 'encode_meter_reading.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
 
 });

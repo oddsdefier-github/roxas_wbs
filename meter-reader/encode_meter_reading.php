@@ -27,14 +27,13 @@ include './auth_guard.php';
         <?php include './components/subheader.php'; ?>
         <main class="relative flex flex-1 flex-col justify-start overflow-auto">
             <div class="flex flex-col gap-5">
-                <?php include './components/meter_reading_main.php'; ?>
+                <?php include './components/encode_meter_reading_main.php'; ?>
             </div>
         </main>
     </section>
 
     <?php include './components/modal/encode_reading_data_modal.php'; ?>
     <?php include './components/modal/view_reading_data_modal.php'; ?>
-
 
     <?php include './layouts/scripts.php'; ?>
     <script>

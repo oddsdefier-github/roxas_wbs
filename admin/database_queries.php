@@ -3,7 +3,6 @@
 use Admin\Database\DatabaseConnection;
 
 require 'database/connection.php';
-
 class BaseQuery
 {
     protected $conn;
@@ -371,7 +370,7 @@ class DatabaseQueries extends BaseQuery
 
         $periodFrom = date("Y-m-d");
 
-        $billingStatus = NULL;
+        $billingStatus = 'initial';
         $billingType = 'initial';
         $consumption = 0;
         $rates = 0;
@@ -453,7 +452,7 @@ class DatabaseQueries extends BaseQuery
         };
 
         $insertIntoClientData = $this->insertIntoClientData($formData, $clientID);
-        
+
         if ($insertIntoClientData === true) {
             $response = array(
                 "status" => "success",
@@ -1084,7 +1083,6 @@ class DataTable extends BaseQuery
     }
 
 
-    //CLIENT-TABLE
     public function clientTable($dataTableParam)
     {
         $pageNumber = $dataTableParam['pageNumber'];

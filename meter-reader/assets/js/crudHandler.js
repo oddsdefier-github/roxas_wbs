@@ -126,7 +126,6 @@ class EncodeHandler {
 
         const prevReading = this.elements.prevReadingInput.val();
         const currReading = this.elements.currReadingInput.val();
-        const consumption = this.elements.consumptionInput.val().split(" ")[0];
 
         this.displayLoadingStatus(this.elements.submitEncode, 'Encoding...');
         $.ajax({
@@ -140,17 +139,17 @@ class EncodeHandler {
                     currReading: currReading,
                     propertyType: property_type,
                     meterNumber: meter_number,
-                    consumption: consumption
                 }
             },
             success: data => {
                 console.log(data);
                 setTimeout(() => {
-                    const filters = JSON.parse(localStorage.getItem('#displayClientForBilling-filterKey'));
-                    const searchTerm = localStorage.getItem('#displayClientForBilling-searchKey');
+                    alert(JSON.parse(data).message)
+                    const filters = JSON.parse(localStorage.getItem('#displayClientForReadingEncoding-filterKey'));
+                    const searchTerm = localStorage.getItem('#displayClientForReadingEncoding-searchKey');
                     this.tableDisplay.fetchTableData(searchTerm, filters);
                     this.hideModal();
-                }, 1000)
+                }, 500)
             }
         });
     }
@@ -198,7 +197,7 @@ class EncodeHandler {
 
 
 function encodeReadingData(clientID) {
-    const handler = new EncodeHandler(clientID, new DataTableWithPagination("client_data", '#displayClientForBilling'));
+    const handler = new EncodeHandler(clientID, new DataTableWithPagination("client_data", '#displayClientForReadingEncoding'));
 }
 
 window.encodeReadingData = encodeReadingData;

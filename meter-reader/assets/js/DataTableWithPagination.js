@@ -1,5 +1,5 @@
 export class DataTableWithPagination {
-    constructor (tableName, tableContainerSelector = '#displayClientForBilling', filter = []) {
+    constructor (tableName, tableContainerSelector = '#displayClientForReadingEncoding', filter = []) {
         this.tableName = tableName;
         this.currentSortColumn = "timestamp";
         this.currentSortDirection = 'DESC';
@@ -16,7 +16,6 @@ export class DataTableWithPagination {
 
         this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 10;
         this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
-
 
         this.totalItems = 0;
         this.lastPageNumber = 0;
@@ -35,7 +34,6 @@ export class DataTableWithPagination {
             endBtn: $("#end"),
             itemsPerPageSelector: $("#item-per-page")
         };
-
 
 
         this.elements.searchInput.val(this.savedSearch);
