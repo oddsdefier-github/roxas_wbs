@@ -69,13 +69,14 @@ function handleGetDataTable($dataTable)
         $tableName = $_POST['tableName'];
 
         switch ($tableName) {
-            case "client_application":
-                $dataTable->clientApplicationTable($dataTableParam);
-                break;
             case "client_data":
                 $dataTable->clientTable($dataTableParam);
                 break;
-                
+
+            case "billing_data":
+                $dataTable->billingTable($dataTableParam);
+                break;
+
                 // Add more cases if you have more tables with similar functionality.
                 // case "another_table":
                 //     $dataTable->anotherTableFunction($dataTableParam);

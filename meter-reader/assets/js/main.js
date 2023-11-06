@@ -19,10 +19,10 @@ $(document).ready(function () {
 
     } else if (filename === 'verify_meter_reading.php') {
         $(".main-content").show();
-        // const clientTable = new DataTableWithPagination("client_data", '#displayClientForReadingVerification');
+        const clientTable = new DataTableWithPagination("billing_data", '#displayClientForReadingVerification');
     } else if (filename === 'bill_meter_reading.php') {
         $(".main-content").show();
-        const clientTable = new DataTableWithPagination("client_data", '#displayClientForBillingGeneration');
+        const clientTable = new DataTableWithPagination("billing_data", '#displayClientForBillingGeneration');
     }
 
     $('.page_nav').each(function () {

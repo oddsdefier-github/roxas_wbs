@@ -322,7 +322,7 @@ class DatabaseQueries extends BaseQuery
             return false;
         }
 
-        $sql_billing = "INSERT INTO billing_data (billing_id, client_id, meter_number,  prev_reading, curr_reading, reading_type, consumption, rates, billing_amount, billing_status, billing_type, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $sql_billing = "INSERT INTO billing_data (billing_id, client_id, meter_number,  prev_reading, curr_reading, reading_type, consumption, billing_status, billing_type, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
         $stmt_billing = $this->conn->prepareStatement($sql_billing);
         if (!$stmt_billing) {
@@ -330,7 +330,7 @@ class DatabaseQueries extends BaseQuery
         }
         mysqli_stmt_bind_param(
             $stmt_billing,
-            "sssiisssissssssss",
+            "sssddsdssssssss",
             $billingID,
             $clientID,
             $meterNumber,
@@ -338,8 +338,6 @@ class DatabaseQueries extends BaseQuery
             $currReading,
             $readingType,
             $roundedConsumption,
-            $rates,
-            $billingAmount,
             $billingStatus,
             $billingType,
             $billingMonthAndYear,
@@ -414,9 +412,11 @@ class DataTable extends BaseQuery
         $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
         $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
         $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+
         $conditions = [];
         $params = [];
         $types = "";
+
 
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
@@ -469,14 +469,14 @@ class DataTable extends BaseQuery
             $totalRecords = 0;
         }
 
+        $ascendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>';
 
-        $ascendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        $descendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
     </svg>';
 
-        $descendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-    </svg>';
 
         $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
@@ -569,11 +569,11 @@ class DataTable extends BaseQuery
             $inactiveBadge = '<span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Inactive</span>';
             $statusBadge = ($status === 'active') ? $activeBadge : (($status === 'inactive' ? $inactiveBadge : ''));
 
-            $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
-            <td class="px-6 py-3 text-sm">' . $name . '</td>
+            <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $name . '</td>
             <td class="px-6 py-3 text-sm">' . $property_type . '</td>
             <td class="px-6 py-3 text-sm"> 
                 <span class="font-medium text-sm">' . $brgy . '</span> </br>
@@ -586,19 +586,13 @@ class DataTable extends BaseQuery
             </td>
 
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded text-sm p-2 text-center inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span class="sr-only">Icon description</span>
                 </button>
-                <button title="View Reading" onclick="viewReadingData(' . $id . ', \'' . $tableName . '\')" class="text-white bg-green-400 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span class="sr-only">Icon description</span>
-                </button>
+
             </td>
         </tr>';
             array_push($countArr, $number);
@@ -629,6 +623,7 @@ class DataTable extends BaseQuery
 
     public function billingTable($dataTableParam)
     {
+
         $pageNumber = $dataTableParam['pageNumber'];
         $itemPerPage = $dataTableParam['itemPerPage'];
         $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
@@ -636,15 +631,23 @@ class DataTable extends BaseQuery
         $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
         $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
         $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+
         $conditions = [];
         $params = [];
         $types = "";
 
+        $currentDate = new DateTime();
+        $billingMonthAndYear = $currentDate->format('F Y');
+
+        $conditions[] = "billing_month = ?";
+        $params[] = $billingMonthAndYear;
+        $types .= "s";
+
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $conditions[] = "(full_name LIKE ? OR client_id LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
-            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
-            $types .= "sssssss";
+            $conditions[] = "(bd.billing_id LIKE ? OR bd.client_id LIKE ? OR cd.full_name LIKE ? OR bd.meter_number LIKE ? OR cd.property_type LIKE ? OR cd.status LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "ssssss";
         }
 
         if (!empty($filters)) {
@@ -655,22 +658,30 @@ class DataTable extends BaseQuery
             }
         }
 
+
+
         if (!empty($conditions)) {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM billing_data WHERE billing_type = 'unverified' AND billing_month =  'November 2023' AND " . implode(" AND ", $conditions);
+            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
+            $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
+            $sql .= " WHERE bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
         } else {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM billing_data WHERE billing_type = 'unverified' AND billing_month =  'November 2023'";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
+            $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
+            $sql .= " WHERE bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid'";
         }
 
+        // echo $sql;
+        // print_r($params);
+
         $validColumns = [
-            'client_id', 'meter_number', 'full_name', 'property_type', 'brgy',
-            'status', 'timestamp'
+            'bd.client_id', 'bd.meter_number', 'cd.full_name',  'cd.property_type', 'bd.timestamp', 'bd.prev_reading', 'bd.curr_reading', 'cd.brgy'
         ];
         $validDirections = ['ASC', 'DESC'];
 
         if (in_array($sortColumn, $validColumns) && in_array($sortDirection, $validDirections)) {
             $sql .= " ORDER BY {$sortColumn} {$sortDirection}";
         } else {
-            $sql .= " ORDER BY timestamp DESC";
+            $sql .= " ORDER BY bd.timestamp DESC";
         }
 
         $sql .= " LIMIT ? OFFSET ?";
@@ -680,6 +691,7 @@ class DataTable extends BaseQuery
         $stmt = $this->conn->prepareStatement($sql);
         mysqli_stmt_bind_param($stmt, $types, ...$params);
         mysqli_stmt_execute($stmt);
+
 
         $result = mysqli_stmt_get_result($stmt);
 
@@ -691,48 +703,38 @@ class DataTable extends BaseQuery
             $totalRecords = 0;
         }
 
-
-        $ascendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        $descendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
     </svg>';
-
-        $descendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        $ascendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
     </svg>';
 
         $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
-        $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
 
-        
+        $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
         <thead class="text-xs text-gray-500 uppercase">
-            <tr class="bg-slate-100 border-b cursor-pointer">
-                <th class="px-6 py-4" data-sortable="false">No.</th>
-                <th class="px-6 py-4" data-column-name="client_id" data-sortable="true">
+            <tr class="bg-slate-100 border-b">
+                <th class="px-6 py-4">No.</th>
+                <th class="px-6 py-4" data-column-name="bd.client_id" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Client ID</p>
                         <span class="sort-icon">
                         ' . $sortIcon . '
                         </span>
+                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span>
                     </div>
                 </th>
-                <th class="px-6 py-4" data-column-name="meter_number" data-sortable="true">
-                    <div class="flex items-center gap-2">
-                        <p>Meter No.</p>
-                        <span class="sort-icon">
-                        ' . $sortIcon . '
-                        </span>
-                    </div>
-                </th>
-                <th class="px-6 py-4" data-column-name="full_name" data-sortable="true">
-                    <div class="flex items-center gap-2">
-                        <p>Names</p>
-                        <span class="sort-icon">
-                        ' . $sortIcon . '
-                        </span>
-                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span></th>
-                    </div>
                 <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
-                <th class="px-6 py-4" data-column-name="property_type" data-sortable="true">
+                <th class="px-6 py-4" data-column-name="cd.full_name" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Client Name</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="cd.property_type" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Property Type</p>
                         <span class="sort-icon">
@@ -740,31 +742,39 @@ class DataTable extends BaseQuery
                         </span>
                     </div>
                 </th>
-                <th class="px-6 py-4" data-column-name="brgy" data-sortable="true">
+                <th class="px-6 py-4" data-column-name="cd.brgy" data-sortable="true">
+                <div class="flex items-center gap-2">
+                    <p>Address</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="bd.prev_reading" data-sortable="true" title="Previous Reading">
+                <div class="flex items-center gap-2">
+                    <p>Previous</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="bd.curr_reading" data-sortable="true" title="Current Reading">
+                <div class="flex items-center gap-2">
+                    <p>Current</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="bd.timestamp" data-sortable="true">
                     <div class="flex items-center gap-2">
-                        <p>Address</p>
+                        <p>Reading Date</p>
                         <span class="sort-icon">
                         ' . $sortIcon . '
                         </span>
                     </div>
                 </th>
-                <th class="px-6 py-4" data-column-name="status" data-sortable="true">
-                    <div class="flex items-center gap-2">
-                        <p>Status</p>
-                        <span class="sort-icon">
-                        ' . $sortIcon . '
-                        </span>
-                    </div>
-                </th>
-                <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">
-                    <div class="flex items-center gap-2">
-                        <p>Joined</p>
-                        <span class="sort-icon">
-                        ' . $sortIcon . '
-                        </span>
-                    </div>
-                </th>
-                <th class="px-6 py-4" data-sortable="false">Action</th>
+                <th class="px-6 py-4">Action</th>
             </tr>
         </thead>';
 
@@ -774,49 +784,41 @@ class DataTable extends BaseQuery
         while ($row = mysqli_fetch_assoc($result)) {
             $id = $row['id'];
             $clientID = $row['client_id'];
-            $meter_number = $row['meter_number'];
-            
-            $status = $row['status'];
+            $clientName = $row['full_name'];
+            $propertyType = $row['property_type'];
+            $street = $row['street'];
+            $brgy = $row['brgy'];
+            $prevReading = $row['prev_reading'];
+            $currReading = $row['curr_reading'];
             $time = $row['time'];
             $date = $row['date'];
-
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $activeBadge = '<span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Active</span>';
-            $inactiveBadge = '<span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Inactive</span>';
-            $statusBadge = ($status === 'active') ? $activeBadge : (($status === 'inactive' ? $inactiveBadge : ''));
-
-            $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
-            <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
-            <td class="px-6 py-3 text-sm">' . $name . '</td>
-            <td class="px-6 py-3 text-sm">' . $property_type . '</td>
+            <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $clientName . '</td>
+            <td class="px-6 py-3 text-sm">' . $propertyType . '</td>
             <td class="px-6 py-3 text-sm"> 
-                <span class="font-medium text-sm">' . $brgy . '</span> </br>
-                <span class="text-xs text-gray-400">' . $street . '</span>
+            <span class="font-medium text-sm">' . $brgy . '</span> </br>
+            <span class="text-xs text-gray-400">' . $street . '</span>
             </td>
-            <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
+            <td class="px-6 py-3 text-sm font-semibold">' . $prevReading . '</td>
+            <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">
+            ' . $currReading . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>
             </td>
-
             <td class="flex items-center px-6 py-4 space-x-3">
-                <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span class="sr-only">Icon description</span>
-                </button>
-                <button title="View Reading" onclick="viewReadingData(' . $id . ', \'' . $tableName . '\')" class="text-white bg-green-400 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span class="sr-only">Icon description</span>
-                </button>
+
+            <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="sr-only">Icon description</span>
+            </button>
             </td>
         </tr>';
             array_push($countArr, $number);
@@ -835,13 +837,14 @@ class DataTable extends BaseQuery
             if ($number > 1) {
                 echo $table;
             } else {
-                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
             }
         } else {
-            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
         }
 
         echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
         echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
     }
+
 }

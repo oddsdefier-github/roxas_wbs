@@ -49,6 +49,8 @@ export class DataTableWithPagination {
     bindEvents() {
         let debounceTimeout;
         this.elements.searchInput.on("keyup", () => {
+
+            
             this.handleClearInput();
             clearTimeout(debounceTimeout);
             debounceTimeout = setTimeout(() => this.handleSearch(), 300);

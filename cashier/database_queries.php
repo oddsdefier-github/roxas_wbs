@@ -16,7 +16,6 @@ class BaseQuery
 
 class DatabaseQueries extends BaseQuery
 {
-
     public function notificationExists($user_id, $type, $reference_id)
     {
         $sql = "SELECT id FROM notifications WHERE user_id = ? AND type = ? AND reference_id = ? LIMIT 1";
@@ -215,7 +214,7 @@ class DatabaseQueries extends BaseQuery
     {
         $update = "UPDATE billing_data SET billing_status = 'paid' WHERE billing_id = ?";
         $stmt = $this->conn->prepareStatement($update);
-        mysqli_stmt_bind_param($stmt, "s",  $billingID);
+        mysqli_stmt_bind_param($stmt, "s", $billingID);
 
         if (!$stmt) {
             if (!$stmt) {
@@ -845,7 +844,7 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $table .= '<tr class="table-auto bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 hover:bg-gray-200" data-id="' . $id . '">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $applicationID . '</td>
             <td  class="px-6 py-3 text-sm">' . $name . '</td>
