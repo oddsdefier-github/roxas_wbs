@@ -533,11 +533,11 @@ class DataTable extends BaseQuery
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'actual' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
+            $sql .= " WHERE bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
         } else {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'actual' AND bd.billing_status = 'unpaid'";
+            $sql .= " WHERE bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid'";
         }
 
         // echo $sql;
@@ -620,6 +620,14 @@ class DataTable extends BaseQuery
                         </span>
                     </div>
                 </th>
+                <th class="px-6 py-4" data-column-name="bd.billing_amount" data-sortable="true">
+                <div class="flex items-center gap-2">
+                    <p>Amount</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
                 <th class="px-6 py-4" data-column-name="bd.timestamp" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Reading Date</p>
@@ -641,17 +649,20 @@ class DataTable extends BaseQuery
             $clientID = $row['client_id'];
             $clientName = $row['full_name'];
             $propertyType = $row['property_type'];
+            $billingAmount = $row['billing_amount'];
+            $formattedBillingAmount = "₱" . number_format($billingAmount, 2, '.', ',');
             $time = $row['time'];
             $date = $row['date'];
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $table .= '<tr class="table-auto data-id="' . $id . '" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 overflow-auto">
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $billingID . '</td>
             <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
             <td  class="px-6 py-3 text-sm">' . $clientName . '</td>
             <td class="px-6 py-3 text-sm">' . $propertyType . '</td>
+            <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $formattedBillingAmount . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>
@@ -844,10 +855,10 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $table .= '<tr class="table-auto bg-white border-b border-gray-200 hover:bg-gray-200" data-id="' . $id . '">
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $applicationID . '</td>
-            <td  class="px-6 py-3 text-sm">' . $name . '</td>
+            <td  class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $name . '</td>
             <td  class="px-6 py-3 text-sm">' . $propertyType . '</td>
             <td class="px-6 py-3 text-sm"> 
             <span class="font-medium text-sm">' . $brgy . '</span> </br>
