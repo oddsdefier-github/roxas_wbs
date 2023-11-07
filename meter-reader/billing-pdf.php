@@ -5,13 +5,17 @@ use Dompdf\Options;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 
+use League\OAuth2\Client\Provider\Google;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 require './database_queries.php';
 require __DIR__ . "/vendor/autoload.php";
 
 session_start();
 $meterReader = $_SESSION['user_name'];
 
-$options = new Options;
+$options = new Options();
 $options->setChroot(__DIR__);
 $options->setIsRemoteEnabled(true);
 $options->set('defaultFont', 'Helvetica');
@@ -23,8 +27,7 @@ $sql = "SELECT cd.*, bd.*, sd.*
         FROM client_data cd 
         JOIN billing_data bd ON cd.client_id = bd.client_id 
         JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
-        WHERE bd.billing_status = 'unpaid' AND bd.billing_type = 'actual'";
-
+        WHERE bd.billing_status = 'unpaid' AND bd.billing_type = 'verified'";
 
 $stmt = $conn->prepareStatement($sql);
 
@@ -85,6 +88,12 @@ foreach ($billing_data as $billing) {
         [$billingID, $formattedDate, $accountNUmber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $rates, $billingAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
         $template
     );
+
+    try {
+        
+    }catch (Exception $e) {
+
+    }
 
     // Append individual billing HTML to all billings
     $all_billings .= $billingHtml;

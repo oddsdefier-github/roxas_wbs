@@ -488,9 +488,9 @@ class DataTable extends BaseQuery
 
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
-            $conditions[] = "(full_name LIKE ? OR client_id LIKE ? OR meter_number LIKE ? OR street LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
-            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
-            $types .= "sssssss";
+            $conditions[] = "(full_name LIKE ? OR client_id LIKE ? OR meter_number LIKE ? OR street LIKE ? OR reading_status LIKE ? OR brgy LIKE ? OR property_type LIKE ? OR status LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "ssssssss";
         }
 
         if (!empty($filters)) {
@@ -509,7 +509,7 @@ class DataTable extends BaseQuery
 
         $validColumns = [
             'client_id', 'meter_number', 'full_name', 'property_type', 'brgy',
-            'status', 'timestamp'
+            'status', 'reading_status', 'timestamp'
         ];
         $validDirections = ['ASC', 'DESC'];
 
@@ -602,6 +602,14 @@ class DataTable extends BaseQuery
                         </span>
                     </div>
                 </th>
+                <th class="px-6 py-4" data-column-name="reading_status" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Reading</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
                 <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Joined</p>
@@ -627,6 +635,7 @@ class DataTable extends BaseQuery
             $brgy = $row['brgy'];
             $property_type = $row['property_type'];
             $status = $row['status'];
+            $reading_status = $row['reading_status'];
             $time = $row['time'];
             $date = $row['date'];
 
@@ -648,6 +657,7 @@ class DataTable extends BaseQuery
                 <span class="text-xs text-gray-400">' . $street . '</span>
             </td>
             <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
+            <td class="px-6 py-3 text-sm">' . $reading_status . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>
@@ -729,11 +739,11 @@ class DataTable extends BaseQuery
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
+            $sql .= " WHERE cd.reading_status = 'encoded' AND bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
         } else {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid'";
+            $sql .= " WHERE cd.reading_status = 'encoded' AND bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid'";
         }
 
         // echo $sql;
@@ -949,7 +959,7 @@ class DataTable extends BaseQuery
             }
         }
 
-
+        
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
