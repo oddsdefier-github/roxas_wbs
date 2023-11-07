@@ -63,6 +63,7 @@ $(document).ready(function () {
             },
             success: function (data) {
                 console.log(data)
+                $(".modal-main").html(JSON.parse(data).message);
                 clearInterval(animationInterval);
             },
             error: function () {

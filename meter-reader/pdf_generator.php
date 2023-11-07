@@ -103,25 +103,32 @@ class WBSMailer extends PdfGenerator
         $stmt = $this->conn->prepareStatement($sql);
 
         if (!$stmt) {
-            return [];
+            return null;
         }
         mysqli_stmt_bind_param($stmt, "s", $status);
         if (!mysqli_stmt_execute($stmt)) {
-            return [];
+            return null;
         }
         $result = mysqli_stmt_get_result($stmt);
         if (!$result) {
-            return [];
+            return null;
         }
         $emailList = [];
 
         while ($row = mysqli_fetch_assoc($result)) {
             $emailList[] = $row['email'];
         }
+
+        if (empty($emailList)) {
+            return null;
+        }
+
         mysqli_stmt_free_result($stmt);
         mysqli_stmt_close($stmt);
         return $emailList;
     }
+
+
     public function selectClientID($email)
     {
         $sql = "SELECT client_id FROM client_data WHERE email = ?";
@@ -175,6 +182,7 @@ class WBSMailer extends PdfGenerator
         return $data;
 
     }
+
     public function insertIntoEmailLogs($data)
     {
         $clientID = $data['client_id'];
@@ -255,10 +263,12 @@ class WBSMailer extends PdfGenerator
         );
         $mail = new PHPMailer(true);
         try {
+            $credentials = json_decode(file_get_contents('config/credentials.json'), true);
+
             $provider = new Google([
-                'clientId'     => '528897583972-kcpsk9dkalmr5beu32ui9368g9ifbff7.apps.googleusercontent.com',
-                'clientSecret' => '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',
-                'redirectUri'  => 'https://example.com/callback-url',
+                'clientId'     => $credentials['clientId'],
+                'clientSecret' => $credentials['clientSecret'],
+                'redirectUri'  => $credentials['redirectUri'],
             ]);
 
             $mail = new PHPMailer(true);
@@ -298,6 +308,12 @@ class WBSMailer extends PdfGenerator
     {
         $status = 'active';
         $response = array();
+        if  (!$emails = $this->queryAllEmails($status)) {
+            return array(
+                "status" => "error",
+                "message" => "No matching emails found."
+            );
+        }
         $emails = $this->queryAllEmails($status);
         $paths = [];
         $errors = [];
@@ -309,11 +325,11 @@ class WBSMailer extends PdfGenerator
                 continue;
             }
             $clientData = $this->queryDataForInvoice($clientID);
-            $billingID = $clientData['billing_id'];
             if (!$clientData) {
                 $errors[$email] = "Client data not found.";
                 continue;
             }
+            $billingID = $clientData['billing_id'];
             if ($this->checkSentEmail($billingID)) {
                 $errors[$email] = "Email already sent for this billing ID.";
                 continue;
