@@ -2152,6 +2152,10 @@ input:checked + .toggle-bg {
   height: 1.75rem;
 }
 
+.h-72 {
+  height: 18rem;
+}
+
 .h-8 {
   height: 2rem;
 }
@@ -2162,6 +2166,14 @@ input:checked + .toggle-bg {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-36 {
+  height: 9rem;
+}
+
+.h-48 {
+  height: 12rem;
 }
 
 .max-h-40 {
@@ -5529,6 +5541,10 @@ input:checked + .toggle-bg {
 
 .\[a-zA-Z-\:\#\] {
   a-z-a--z-: #;
+}
+
+.\[hostname\:port\] {
+  hostname: port;
 }
 
 .\[image\:\$img\|\$width\|\$height\|\$type\] {
