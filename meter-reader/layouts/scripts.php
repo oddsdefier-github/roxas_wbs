@@ -4,8 +4,6 @@
 <script src="./assets/libs/apexcharts/dist/apexcharts.min.js"></script>
 <script src="./assets/libs/validate.js/validate.min.js"></script>
 
-
-<script type="module" src="./assets/js/crudHandler.js"></script>
 <script type="module" src="./assets/js/main.js"></script>
 <script src="./assets/js/sidebar.js"></script>
 <script src="./assets/js/SignOutHandler.js"></script>

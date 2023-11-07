@@ -64,7 +64,12 @@ class DatabaseQueries extends BaseQuery
         if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
             if ($row) {
-                $response['recent_meter_reading'] = $row['curr_reading'];
+                $response = array_merge($response, [
+                    "billing_id" => $row['billing_id'],
+                    "billing_month" => $row['billing_month'],
+                    "prev_reading" => $row['prev_reading'],
+                    "curr_reading" => $row['curr_reading']
+                ]);
             } else {
                 $response['error'] = 'No billing data found for the provided ID.';
             }
@@ -99,7 +104,7 @@ class DatabaseQueries extends BaseQuery
         ];
     }
 
-    public function getRates(string $propertyType, string $billingMonthAndYear): ?string
+    public function getRates(string $propertyType, string $billingMonthAndYear)
     {
         $query_rates = "SELECT * FROM rates WHERE property_type = ? AND billing_month = ? ORDER BY timestamp DESC LIMIT 1";
         $stmt = $this->conn->prepareStatement($query_rates);
@@ -161,11 +166,11 @@ class DatabaseQueries extends BaseQuery
     }
 
 
-    public function updateClientReadingStatus(string $clientID): bool
+    public function updateClientReadingStatus(string $clientID, string $readingStatus): bool
     {
-        $updateReadingStatus = "UPDATE client_data SET reading_status = 'read' WHERE client_id = ?";
+        $updateReadingStatus = "UPDATE client_data SET reading_status = ? WHERE client_id = ?";
         $stmt_update = $this->conn->prepareStatement($updateReadingStatus);
-        mysqli_stmt_bind_param($stmt_update, "s", $clientID);
+        mysqli_stmt_bind_param($stmt_update, "ss", $readingStatus, $clientID);
         $updateResult = mysqli_stmt_execute($stmt_update);
 
         if (mysqli_stmt_affected_rows($stmt_update) === 0) {
@@ -182,7 +187,7 @@ class DatabaseQueries extends BaseQuery
 
     public function checkDuplicate($clientID, $billingMonthAndYear)
     {
-        $checkDuplicateQuery = "SELECT client_id FROM billing_data WHERE client_id = ? AND billing_month = ? AND billing_type = 'unverified' OR billing_type = 'verified'";
+        $checkDuplicateQuery = "SELECT client_id FROM billing_data WHERE client_id = ? AND billing_month = ? AND (billing_type = 'unverified' OR billing_type = 'verified')";
         $stmt = $this->conn->prepareStatement($checkDuplicateQuery);
         if (!$stmt) {
             return false;
@@ -263,7 +268,73 @@ class DatabaseQueries extends BaseQuery
         return true;
     }
 
-    public function verifyReadingData() {}
+    public function updateAndVerifiedBillingData($formData)
+    {
+        $this->conn->beginTransaction();
+        $clientID = $formData['clientID'];
+        $billingID = $formData['billingID'];
+        $billingMonth = $formData['billingMonth'];
+        $prevReading = $formData['prevReading'];
+        $currReading = $formData['currReading'];
+        $consumption = intval($currReading) - intval($prevReading);
+
+        $propertyType = $formData['propertyType'];
+        $billingType = 'verified';
+
+        $rates = $this->getRates($propertyType, $billingMonth);
+        $billingAmount = $consumption * $rates;
+        $roundedBillingAmount = round($billingAmount, 2);
+
+        $sql = "UPDATE billing_data SET curr_reading = ?, consumption = ?, rates = ?, billing_amount = ?, billing_type = ?, last_update = CURRENT_TIMESTAMP WHERE billing_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmt_update = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param(
+            $stmt_update,
+            "ddddss",
+            $currReading,
+            $consumption,
+            $rates,
+            $roundedBillingAmount,
+            $billingType,
+            $billingID
+        );
+        $updateResult = mysqli_stmt_execute($stmt_update);
+
+        if (mysqli_stmt_affected_rows($stmt_update) === 0) {
+            mysqli_stmt_close($stmt_update);
+            return false;
+        }
+        if (!$updateResult) {
+            mysqli_stmt_close($stmt_update);
+            return false;
+        }
+        mysqli_stmt_close($stmt_update);
+        return true;
+    }
+
+    public function verifyReadingData($formData)
+    {
+        $response = array();
+        $this->conn->beginTransaction();
+        try {
+            if(!$this->updateAndVerifiedBillingData($formData)) {
+                throw new Exception("Failed to update and verified billing data.");
+            }
+
+            $this->conn->commitTransaction();
+            $response = array(
+                "status" => "success",
+                "message" => "Verification success."
+            );
+            return $response;
+        } catch (Exception $e) {
+            $this->conn->rollbackTransaction();
+            $response = array(
+                "status" => "error",
+                "message" => $e->getMessage()
+            );
+            return false;
+        }
+    }
     public function insertIntoBillingData($formData)
     {
         $this->conn->beginTransaction();
@@ -286,13 +357,8 @@ class DatabaseQueries extends BaseQuery
         $currReading = $formData['currReading'];
         $consumption = intval($currReading) - intval($prevReading);
         $roundedConsumption = round($consumption, 2);
-        $propertyType = $formData['propertyType'];
         $meterNumber = $formData['meterNumber'];
         $billingID = "B-" . $meterNumber . "-" . time();
-
-        $rates = 0.00;
-
-        $billingAmount = 0.00;
 
         $periodTo = $this->getPeriodTo();
         $periodFrom = $this->getPeriodFrom($clientID);
@@ -358,6 +424,7 @@ class DatabaseQueries extends BaseQuery
         return true;
     }
 
+
     public function encodeCurrentReading($formData)
     {
         $response = array();
@@ -368,8 +435,8 @@ class DatabaseQueries extends BaseQuery
                 throw new Exception("Failed to do insert into billing data. Already encoded for this month.");
             }
 
-            if (!$this->updateClientReadingStatus($clientID)) {
-                throw new Exception("Failed to update client reading status to read.");
+            if (!$this->updateClientReadingStatus($clientID, 'encoded')) {
+                throw new Exception("Failed to update client reading status to encoded.");
             }
 
             $this->conn->commitTransaction();
@@ -659,7 +726,6 @@ class DataTable extends BaseQuery
             }
         }
 
-
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
@@ -813,7 +879,7 @@ class DataTable extends BaseQuery
             </td>
             <td class="flex items-center px-6 py-4 space-x-3">
 
-            <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+            <button  title="Verify Reading" onclick="verifyReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -1037,7 +1103,7 @@ class DataTable extends BaseQuery
             </td>
             <td class="flex items-center px-6 py-4 space-x-3">
 
-            <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+            <button  title="Verify Reading" onclick="verifyReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>

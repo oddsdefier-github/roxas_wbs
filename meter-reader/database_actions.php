@@ -47,6 +47,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'encodeMeterReadingData':
             handleEncodeMeterReadingData($dbQueries);
             break;
+        case 'verifyReadingData':
+            handleVerifyReadingData($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -102,5 +105,13 @@ function handleEncodeMeterReadingData($dbQueries)
         $formData = $_POST['formData'];
         $encodeMeterReadingData = $dbQueries->encodeCurrentReading($formData);
         echo json_encode($encodeMeterReadingData);
+    }
+}
+
+function handleVerifyReadingData($dbQueries) {
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $verifyReadingData = $dbQueries->verifyReadingData($formData);
+        echo json_encode($verifyReadingData);
     }
 }

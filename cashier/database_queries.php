@@ -533,11 +533,11 @@ class DataTable extends BaseQuery
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'billed' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
+            $sql .= " WHERE bd.billing_type = 'verified' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
         } else {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'billed' AND bd.billing_status = 'unpaid'";
+            $sql .= " WHERE bd.billing_type = 'verified' AND bd.billing_status = 'unpaid'";
         }
 
         // echo $sql;

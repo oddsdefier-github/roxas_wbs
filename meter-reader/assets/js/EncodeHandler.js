@@ -27,7 +27,7 @@ class EncodeHandler {
             meterNumber: $('.meter_number'),
             prevReading: $('#prev_reading'),
             submitEncode: $('.submit_encode'),
-            clientProfileLink: $('.client_profile_link'),
+            copyClientID: $('.copy_client_id'),
             currReadingInput: $('#curr_reading'),
             consumptionInput: $('#consumption'),
             prevReadingInput: $('#prev_reading'),
@@ -46,11 +46,13 @@ class EncodeHandler {
             if (isNaN(currReadingVal)) {
                 this.elements.currReadingInput.val("");
                 this.elements.consumptionInput.val("");
+                this.elements.submitEncode.prop('disabled', true);
             } else {
                 const computeConsumption = parseFloat(currReadingVal) - parseFloat(prevReading);
 
                 let consumption = parseFloat(computeConsumption);
                 this.elements.consumptionInput.val(`${consumption} cubic meter`);
+                this.elements.submitEncode.prop('disabled', false);
             }
             this.elements.currReadingInput.val(cleanedInput);
 
@@ -106,19 +108,34 @@ class EncodeHandler {
         this.elements.currReadingInput.prop('disabled', status !== 'active');
     }
 
+    copyClientID = async (client_id) => {
+        try {
+            await navigator.clipboard.writeText(client_id);
+            console.log('Copied to clipboard!');
+        } catch (err) {
+            console.error('Failed to copy!', err)
+        }
+    }
+
     updateUI(responseData) {
-        const { full_name, status, property_type, meter_number, recent_meter_reading } = responseData;
-        const clientProfileLink = `./client_profile.php?id=${this.client_id}`;
+        this.elements.currReadingInput.val("");
+        console.log(responseData)
+        const { client_id, full_name, status, property_type, meter_number, curr_reading } = responseData; //current_reading in the db
 
         this.elements.statusBadge.html(this.badgeElements[status]);
-        this.elements.submitEncode.prop('disabled', status === 'inactive');
+        this.elements.currReadingInput.prop('disabled', status === 'inactive');
 
         this.elements.fullName.text(full_name);
         this.elements.propertyType.text(property_type);
         this.elements.meterNumber.text(meter_number);
-        this.elements.clientProfileLink.attr('href', clientProfileLink);
-        this.elements.prevReading.val(recent_meter_reading);
-        this.handleStatus(status);
+        this.elements.prevReading.val(curr_reading);
+        this.ha //current_reading in the dbndleStatus(status);
+
+        this.elements.fullName.on('mouseover', () => { this.elements.fullName.text(client_id) });
+        this.elements.fullName.on('mouseout', () => { this.elements.fullName.text(full_name) });
+        this.elements.copyClientID.on('click', this.copyClientID.bind(this, client_id));
+
+
     }
 
     submitData(responseData) {
@@ -155,7 +172,12 @@ class EncodeHandler {
     }
 
     validateInput(responseData) {
-        const prevReading = parseFloat(this.elements.prevReadingInput.val());
+        const { curr_reading } = responseData; //current_reading in the db
+
+        if (this.elements.currReadingInput.val().trim() === '') {
+            return alert('Input field cannot be empty!');
+        }
+        const prevReading = parseFloat(curr_reading);
         const currReading = parseFloat(this.elements.currReadingInput.val());
 
         function validateCurrReading(curr, prev) {
@@ -177,16 +199,10 @@ class EncodeHandler {
     }
 
     encodeCurrentReading(responseData) {
-        this.elements.currReadingInput.val("");
-        this.elements.encodeForm.off('submit');
-        this.elements.encodeForm.on('submit', e => {
+        this.elements.submitEncode.off('click');
+        this.elements.submitEncode.on('click', e => {
             e.preventDefault();
-            if (this.elements.currReadingInput.val().trim() !== '') {
-                this.validateInput(responseData);
-                console.log(responseData)
-            } else {
-                console.log('EMPTY');
-            }
+            this.validateInput(responseData);
         });
     }
 

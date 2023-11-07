@@ -3877,6 +3877,10 @@ input:checked + .toggle-bg {
   fill: #E02424;
 }
 
+.stroke-gray-500 {
+  stroke: #6B7280;
+}
+
 .stroke-gray-800 {
   stroke: #1F2937;
 }
