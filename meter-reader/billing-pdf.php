@@ -47,6 +47,8 @@ $template = file_get_contents('templates/billing-template.html');
 // Initialize empty string to store all billings
 $all_billings = "";
 
+$all_pdf_paths = [];
+
 // Process each billing
 foreach ($billing_data as $billing) {
     // Generate QR code for the billing using Endroid library
@@ -59,6 +61,7 @@ foreach ($billing_data as $billing) {
 
     // Replace placeholders in the template with actual data
     $billingID = $billing['billing_id'];
+    $email = $billing['email'];
     $accountNUmber = $billing['client_id'];
     $meterNumber = $billing['meter_number'];
     $propertyType = $billing['property_type'];
@@ -89,33 +92,91 @@ foreach ($billing_data as $billing) {
         $template
     );
 
-    try {
-        
-    }catch (Exception $e) {
+    $dompdf->loadHtml($billingHtml);
+    $dompdf->setPaper('legal');
+    $dompdf->render();
 
+    // Save individual PDF to temporary directory
+    $individualFileName = __DIR__ . '/temp/' . $billingID . '.pdf';
+    file_put_contents($individualFileName, $dompdf->output());
+    $all_pdf_paths[] = $individualFileName; // Keep track of this file
+
+    // Prepare and send the email with the PDF attached
+    $mail = new PHPMailer(true);
+
+    try {
+
+        $provider = new Google([
+            'clientId'     => '528897583972-kcpsk9dkalmr5beu32ui9368g9ifbff7.apps.googleusercontent.com',
+            'clientSecret' => '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',
+            'redirectUri'  => 'https://example.com/callback-url',
+        ]);
+
+        $mail = new PHPMailer(true);
+
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        //to view proper logging details for success and error messages
+        // $mail->SMTPDebug = 1;
+        $mail->Host = 'smtp.gmail.com';  //gmail SMTP server
+        $mail->Username = 'roxaswaterbillingsystem@gmail.com';   //email
+        $mail->Password = 'sluzmpnriimiseul';   //16 character obtained from app password created
+        $mail->Port = 465;                    //SMTP port
+        $mail->SMTPSecure = "ssl";
+
+        $mail->setFrom('roxaswaterbillingsystem@gmail.com', 'Roxas Water Billing System Inc.');
+        $mail->addAddress($email, $firstName . ' ' . $lastName); // Add a recipient
+
+        $mail->addAttachment($individualFileName); // Add the PDF generated
+
+        // Content
+        $mail->isHTML(true); // Set email format to HTML
+        $mail->Subject = 'Your Billing Information';
+        $mail->Body    = 'Please find your billing information attached.';
+
+        $mail->send();
+        echo 'Message has been sent';
+
+        if (!$mail->send()) {
+            throw new Exception('Email not sent an error was encountered: ' . $mail->ErrorInfo);
+        } else {
+            echo 'Message has been sent.';
+        }
+
+
+    } catch (Exception $e) {
+        echo $e->getMessage();
     }
 
     // Append individual billing HTML to all billings
     $all_billings .= $billingHtml;
 }
 
-// Load combined billings to Dompdf
-$dompdf->loadHtml($all_billings);
 
-// Set paper size (Half Letter size in this case)
-$dompdf->setPaper('legal');
+// $dompdf->loadHtml($all_billings);
+// $dompdf->setPaper('legal');
+// $dompdf->render();
+// $dompdf->addInfo("Title", "Billing");
 
-// Generate PDF
-$dompdf->render();
+// $fileName = "billings.pdf";
+// $dompdf->stream($fileName, ["Attachment" => 0]);
 
-// Add metadata to PDF
+// // Save PDF to file system
+// $output = $dompdf->output();
+// $fileName = "/billings.pdf";
+// file_put_contents($fileName, $output);
+
+
+$concatenatedPdf = new Dompdf($options);
+$concatenatedPdf->loadHtml(implode('', array_map('file_get_contents', $all_pdf_paths)));
+$concatenatedPdf->setPaper('legal');
+$concatenatedPdf->render();
 $dompdf->addInfo("Title", "Billing");
 
-// Stream PDF to client
-$fileName = "billings.pdf";
-$dompdf->stream($fileName, ["Attachment" => 0]);
+$finalFileName = 'billings_combined.pdf';
+$dompdf->stream($finalFileName, ["Attachment" => 0]);
 
-// Save PDF to file system
-$output = $dompdf->output();
-$fileName = "/billings.pdf";
-file_put_contents($fileName, $output);
+// Save the final concatenated PDF
+
+file_put_contents($finalFileName, $concatenatedPdf->output());

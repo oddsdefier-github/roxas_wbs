@@ -959,7 +959,7 @@ class DataTable extends BaseQuery
             }
         }
 
-        
+
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
@@ -1050,17 +1050,17 @@ class DataTable extends BaseQuery
                     </span>
                 </div>
                 </th>
-                <th class="px-6 py-4" data-column-name="bd.prev_reading" data-sortable="true" title="Previous Reading">
+                <th class="px-6 py-4" data-column-name="bd.curr_reading" data-sortable="true" title="Current Reading">
                 <div class="flex items-center gap-2">
-                    <p>Previous</p>
+                    <p>Final Reading</p>
                     <span class="sort-icon">
                     ' . $sortIcon . '
                     </span>
                 </div>
                 </th>
-                <th class="px-6 py-4" data-column-name="bd.curr_reading" data-sortable="true" title="Current Reading">
+                <th class="px-6 py-4" data-column-name="bd.billing_type" data-sortable="true" title="Current Reading">
                 <div class="flex items-center gap-2">
-                    <p>Current</p>
+                    <p>Status</p>
                     <span class="sort-icon">
                     ' . $sortIcon . '
                     </span>
@@ -1074,7 +1074,6 @@ class DataTable extends BaseQuery
                         </span>
                     </div>
                 </th>
-                <th class="px-6 py-4">Action</th>
             </tr>
         </thead>';
 
@@ -1088,8 +1087,8 @@ class DataTable extends BaseQuery
             $propertyType = $row['property_type'];
             $street = $row['street'];
             $brgy = $row['brgy'];
-            $prevReading = $row['prev_reading'];
             $currReading = $row['curr_reading'];
+            $status = $row['billing_type'];
             $time = $row['time'];
             $date = $row['date'];
             $readable_date = date("F j, Y", strtotime($date));
@@ -1104,21 +1103,16 @@ class DataTable extends BaseQuery
             <span class="font-medium text-sm">' . $brgy . '</span> </br>
             <span class="text-xs text-gray-400">' . $street . '</span>
             </td>
-            <td class="px-6 py-3 text-sm font-semibold">' . $prevReading . '</td>
             <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">
-            ' . $currReading . '  <span class="hidden group-hover:flex text-xs">cubic meter</span></td>
+            ' . $currReading . '  <span class="hidden group-hover:flex text-xs">cubic meter</span>
+            </td>
+            <td class="px-6 py-3 text-sm">
+
+            <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400"> ' . $status . '</span>
+           </td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>
-            </td>
-            <td class="flex items-center px-6 py-4 space-x-3">
-
-            <button  title="Verify Reading" onclick="verifyReadingData(\'' . $clientID . '\')" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span class="sr-only">Icon description</span>
-            </button>
             </td>
         </tr>';
             array_push($countArr, $number);

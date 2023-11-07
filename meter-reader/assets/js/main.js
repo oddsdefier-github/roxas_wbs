@@ -42,4 +42,35 @@ $(document).ready(function () {
     })
     filename === 'encode_meter_reading.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
 
+
+
+    function generatePDF() {
+        $("#sendingEmailModal").css({
+            'display': 'grid',
+            'place-items': 'center',
+            'justify-content': 'center',
+            'align-items': 'center'
+        })
+        let animationInterval = setInterval(function () {
+            console.log("Waiting for data...");
+            // Here you can also update your animation
+        }, 50);
+        $.ajax({
+            url: "bill_generation.php",
+            type: "POST",
+            data: {
+                action: "sendIndividualBilling"
+            },
+            success: function (data) {
+                console.log(data)
+                clearInterval(animationInterval);
+            },
+            error: function () {
+                // Handle the error case
+                console.log("Error in AJAX request.");
+                clearInterval(animationInterval);
+            }
+        })
+    }
+    window.generatePDF = generatePDF
 });
