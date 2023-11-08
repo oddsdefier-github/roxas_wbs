@@ -319,6 +319,7 @@ class WBSMailer extends PdfGenerator
         $emails = $this->queryAllEmails($status);
         $paths = [];
         $errors = [];
+        $sentEmail = [];
 
         foreach ($emails as $email) {
             $clientID = $this->selectClientID($email);
@@ -333,7 +334,7 @@ class WBSMailer extends PdfGenerator
             }
             $billingID = $clientData['billing_id'];
             if ($this->checkSentEmail($billingID)) {
-                $errors[$email] = "Email already sent for this billing ID.";
+                $sentEmail[$email] = "Email already sent for this billing ID.";
                 continue;
             }
             $generatedBilling = $this->generateIndividualBilling($clientData);
@@ -347,16 +348,24 @@ class WBSMailer extends PdfGenerator
         }
 
         if (!empty($errors)) {
-            $response = array(
+            return $response = array(
                 "status" => "error",
                 "message" => "There were errors sending some emails.",
                 "errors" => $errors
+            );
+        }
+
+        if (!empty($sentEmail)) {
+            $response = array(
+                "status" => "error",
+                "message" => "The bills have already been sent to the corresponding emails.",
+                "errors" => $sentEmail
             );
         } else {
             $response = array(
                 "status" => "success",
                 "message" => "Email has been sent to everyone.",
-                "emails" => $paths
+                "emails" => $sentEmail
             );
         }
 

@@ -37,6 +37,7 @@ include './auth_guard.php';
 
 
     <?php include './layouts/scripts.php'; ?>
+    <script src="./assets/js/billHandler.js"></script>
     <script>
         $("#subheader-title").text("Encode Billing Data");
         $("#subheader-title").siblings("h5").text("Handle, Assess, or Encode Billing Data.")

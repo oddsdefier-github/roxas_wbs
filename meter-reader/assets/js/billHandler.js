@@ -1,0 +1,118 @@
+
+class BillUIHandler {
+    constructor (action = 'sendIndividualBilling') {
+        this.action = action;
+
+        this.elements = {
+            sendingEmailModal: $("#sendingEmailModal"),
+            messageHeader: $(".message-header"),
+            messageBody: $(".message-body")
+        }
+        this.animationElements = {
+            sendingAnim: $(".sending-animation"),
+            successAnim: $(".success-animation"),
+            errorAnim: $(".error-animation")
+        }
+
+        this.handleDBRequest(this.action);
+        this.bindEvents();
+    }
+
+    bindEvents() {
+
+    }
+    showModal() {
+        this.animationElements.sendingAnim.show();
+        this.elements.sendingEmailModal.css({
+            'display': 'grid',
+            'place-items': 'center',
+            'justify-content': 'center',
+            'align-items': 'center'
+        });
+
+    }
+    handleModalUI() {
+
+    }
+
+    successHandler() {
+
+    }
+    errorHandler() {
+
+    }
+    handleDBRequest(action = this.action) {
+        const self = this;
+        this.showModal();
+        let count = 0;
+        let animationInterval = setInterval(function () {
+            console.log("Waiting for data...");
+            count++
+            console.log(count)
+        }, 1000);
+        $.ajax({
+            url: "bill_generation.php",
+            type: "post",
+            data: {
+                action: action
+            },
+            success: function (data) {
+                console.log(data)
+                const response = JSON.parse(data).status;
+                const message = JSON.parse(data).message;
+
+                if (response === 'error') {
+                    self.elements.messageHeader.text('Error.');
+                    self.elements.messageBody.text(message);
+                    self.animationElements.successAnim.hide();
+                    self.animationElements.sendingAnim.hide();
+                    self.animationElements.errorAnim.show();
+
+                } else if (response === 'success') {
+                    self.elements.messageHeader.text('Success.');
+                    self.elements.messageBody.text(message);
+                    self.animationElements.sendingAnim.hide();
+                    self.animationElements.errorAnim.hide();
+                    self.animationElements.successAnim.show();
+
+                }
+
+                clearInterval(animationInterval);
+                // window.open('./billing-pdf.php')
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("AJAX error:", textStatus, errorThrown);
+            }
+        })
+    }
+}
+
+function sendIndividualBilling() {
+    // $("#sendingEmailModal").css({
+    //     'display': 'grid',
+    //     'place-items': 'center',
+    //     'justify-content': 'center',
+    //     'align-items': 'center'
+    // })
+    // let animationInterval = setInterval(function () {
+    //     console.log("Waiting for data...");
+    // }, 1000);
+    new BillUIHandler('sendIndividualBilling')
+    // $.ajax({
+    //     url: "bill_generation.php",
+    //     type: "POST",
+    //     data: {
+    //         action: "sendIndividualBilling"
+    //     },
+    //     success: function (data) {
+    //         console.log(data)
+    //         $(".modal-main").html(JSON.parse(data).message);
+    //         clearInterval(animationInterval);
+    //     },
+    //     error: function () {
+    //         // Handle the error case
+    //         console.log("Error in AJAX request.");
+    //         clearInterval(animationInterval);
+    //     }
+    // })
+}
