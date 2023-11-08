@@ -5,31 +5,6 @@ $(document).ready(function () {
     const currentPath = window.location.pathname;
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
-    if (filename === 'encode_meter_reading.php') {
-        const today = new Date();
-        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
-        const todayDate = today.getDate();
-        if (today.getDate() === todayDate) {
-            $(".main-content").show();
-            const clientTable = new DataTableWithPagination("client_data", '#displayClientForReadingEncoding');
-        } else {
-            $(".main-content").show();
-            const daysLeft = lastDayOfMonth.getDate() - today.getDate();
-            $(".main-content").html(`Wait for ${daysLeft}days to encode new reading again.</br>Have a nice day!`);
-        }
-
-    } else if (filename === 'verify_meter_reading.php') {
-        $(".main-content").show();
-        const clientTable = new DataTableWithPagination("billing_data", '#displayClientForReadingVerification');
-
-
-    } else if (filename === 'bill_meter_reading.php') {
-        $(".main-content").show();
-        const clientTable = new DataTableWithPagination("billing_data_verified", '#displayClientForBillingGeneration');
-    }
-
-
     $('.page_nav').each(function () {
         $(this).find('a').each(function () {
             const linkHref = $(this).attr('href');
@@ -40,13 +15,42 @@ $(document).ready(function () {
             }
         });
     })
-    filename === 'encode_meter_reading.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
-    filename === 'encode_meter_reading.php' ? $("#clientStatusFilter").show() : $("#clientStatusFilter").hide();
 
-    if (filename === 'bill_meter_reading.php') {
-        $("#sendIndividualBilling").show()
-    } else {
-        $("#sendIndividualBilling").hide();
+    switch (filename) {
+        case 'encode_meter_reading.php':
+            $("#clientStatusFilter").show();
+            $("#clientStatusFilter").show();
+
+            const today = new Date();
+            const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+            const todayDate = today.getDate();
+
+            if (today.getDate() === todayDate) {
+                $(".main-content").show();
+                new DataTableWithPagination("client_data", '#displayClientForReadingEncoding');
+            } else {
+                $(".main-content").show();
+                const daysLeft = lastDayOfMonth.getDate() - today.getDate();
+                $(".main-content").html(`Wait for ${daysLeft}days to encode new reading again.</br>Have a nice day!`);
+            }
+
+            break;
+        case 'verify_meter_reading.php':
+            $(".main-content").show();
+            new DataTableWithPagination("billing_data", '#displayClientForReadingVerification');
+            break;
+        case 'bill_meter_reading.php':
+            $("#sendIndividualBilling").show();
+
+            $(".main-content").show();
+            new DataTableWithPagination("billing_data_verified", '#displayClientForBillingGeneration');
+            break;
+        default:
+            $("#clientStatusFilter").hide();
+            $("#clientStatusFilter").hide();
+            $("#sendIndividualBilling").hide();
+            break;
     }
 
 
