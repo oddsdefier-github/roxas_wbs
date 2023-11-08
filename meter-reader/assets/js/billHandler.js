@@ -88,31 +88,9 @@ class BillUIHandler {
 }
 
 function sendIndividualBilling() {
-    // $("#sendingEmailModal").css({
-    //     'display': 'grid',
-    //     'place-items': 'center',
-    //     'justify-content': 'center',
-    //     'align-items': 'center'
-    // })
-    // let animationInterval = setInterval(function () {
-    //     console.log("Waiting for data...");
-    // }, 1000);
     new BillUIHandler('sendIndividualBilling')
-    // $.ajax({
-    //     url: "bill_generation.php",
-    //     type: "POST",
-    //     data: {
-    //         action: "sendIndividualBilling"
-    //     },
-    //     success: function (data) {
-    //         console.log(data)
-    //         $(".modal-main").html(JSON.parse(data).message);
-    //         clearInterval(animationInterval);
-    //     },
-    //     error: function () {
-    //         // Handle the error case
-    //         console.log("Error in AJAX request.");
-    //         clearInterval(animationInterval);
-    //     }
-    // })
+}
+
+function generateBillingPDF() {
+    window.open('./billing-pdf.php');
 }

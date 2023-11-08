@@ -24,8 +24,10 @@ class BaseQuery
     }
 }
 
-class PdfGenerator extends BaseQuery
+class DBhandler extends BaseQuery {}
+class PdfGenerator extends DBhandler
 {
+    public function concludeBillingGeneration() {}
     public function generateIndividualBilling($data)
     {
         $template = file_get_contents('templates/billing-template.html');

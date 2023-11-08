@@ -21,6 +21,7 @@ $_POST = sanitizeArray($_POST);
 if ($conn) {
     $dbConnection = new DatabaseConnection($host1, $username1, $password1, $database1);
     $pdfGenerator = new PdfGenerator($dbConnection);
+    $dbHandler = new DBhandler($dbConnection);
     $wbsMailer = new WBSMailer($dbConnection);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Database connection failed.']);
@@ -46,3 +47,5 @@ function handleSendIndividualBilling($wbsMailer)
     $sendIndividualBill = $wbsMailer->sendIndividualBilling();
     echo json_encode($sendIndividualBill);
 }
+
+

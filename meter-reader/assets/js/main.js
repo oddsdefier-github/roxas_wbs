@@ -5,6 +5,7 @@ $(document).ready(function () {
     const currentPath = window.location.pathname;
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
+
     $('.page_nav').each(function () {
         $(this).find('a').each(function () {
             const linkHref = $(this).attr('href');
@@ -16,9 +17,10 @@ $(document).ready(function () {
         });
     })
 
+
     switch (filename) {
         case 'encode_meter_reading.php':
-            $("#clientStatusFilter").show();
+
             $("#clientStatusFilter").show();
 
             const today = new Date();
@@ -37,19 +39,23 @@ $(document).ready(function () {
 
             break;
         case 'verify_meter_reading.php':
-            $(".main-content").show();
-            new DataTableWithPagination("billing_data", '#displayClientForReadingVerification');
-            break;
-        case 'bill_meter_reading.php':
-            $("#sendIndividualBilling").show();
 
             $(".main-content").show();
+            new DataTableWithPagination("billing_data", '#displayClientForReadingVerification');
+
+            break;
+        case 'bill_meter_reading.php':
+            $("#generateBillingPDF").show();
+            $("#sendIndividualBilling").show();
+            $(".main-content").show();
+
             new DataTableWithPagination("billing_data_verified", '#displayClientForBillingGeneration');
+
             break;
         default:
             $("#clientStatusFilter").hide();
-            $("#clientStatusFilter").hide();
             $("#sendIndividualBilling").hide();
+            $("#generateBillingPDF").hide();
             break;
     }
 
