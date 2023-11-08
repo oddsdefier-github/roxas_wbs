@@ -63,7 +63,9 @@ class PdfGenerator extends BaseQuery
         $prevReading = $data['prev_reading'];
         $consumption = $data['consumption'];
         $rates = $data['rates'];
-        $billingAmount = number_format($data['billing_amount']);
+        $formattedRates = number_format($rates, 2, '.', ',');
+        $billingAmount = $data['billing_amount'];
+        $formattedBillingAmount = number_format($billingAmount, 2, '.', ',');
         $periodTo = $data['period_to'];
         $periodFrom = $data['period_from'];
         $dueDate = $data['due_date'];
@@ -75,7 +77,7 @@ class PdfGenerator extends BaseQuery
 
         $billingHtml = str_replace(
             ['{{billing_id}}', '{{datetime}}', '{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{curr_reading}}', '{{prev_reading}}', '{{consumption}}', '{{rates}}', '{{billing_amount}}', '{{billing_month}}', '{{meter_number}}', '{{property_type}}', '{{period_to}}', '{{period_from}}', '{{due_date}}', '{{disconnection_date}}', '{{meter_reader}}', '{{qr_code_path}}'],
-            [$billingID, $formattedDate, $accountNUmber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $rates, $billingAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
+            [$billingID, $formattedDate, $accountNUmber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $formattedRates, $formattedBillingAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
             $template
         );
 

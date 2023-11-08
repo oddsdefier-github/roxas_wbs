@@ -54,24 +54,24 @@ $(document).ready(function () {
         let animationInterval = setInterval(function () {
             console.log("Waiting for data...");
             // Here you can also update your animation
-        }, 50);
-        $.ajax({
-            url: "bill_generation.php",
-            type: "POST",
-            data: {
-                action: "sendIndividualBilling"
-            },
-            success: function (data) {
-                console.log(data)
-                $(".modal-main").html(JSON.parse(data).message);
-                clearInterval(animationInterval);
-            },
-            error: function () {
-                // Handle the error case
-                console.log("Error in AJAX request.");
-                clearInterval(animationInterval);
-            }
-        })
+        }, 1000);
+        // $.ajax({
+        //     url: "bill_generation.php",
+        //     type: "POST",
+        //     data: {
+        //         action: "sendIndividualBilling"
+        //     },
+        //     success: function (data) {
+        //         console.log(data)
+        //         $(".modal-main").html(JSON.parse(data).message);
+        //         clearInterval(animationInterval);
+        //     },
+        //     error: function () {
+        //         // Handle the error case
+        //         console.log("Error in AJAX request.");
+        //         clearInterval(animationInterval);
+        //     }
+        // })
     }
     window.generatePDF = generatePDF
 });
