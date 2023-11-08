@@ -759,7 +759,7 @@ class DatabaseQueries extends BaseQuery
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-
+        $applicationFeeID = "AF" . date("YmdHis") . rand(100, 999);
         $user_id = $_SESSION['user_id'];
 
 
@@ -771,10 +771,10 @@ class DatabaseQueries extends BaseQuery
         $reference_id = $user_id;
 
 
-        $sql = "INSERT into client_application_fees(application_fee, inspection_fee, registration_fee, connection_fee, installation_fee, reference_id, time, date, timestamp) VALUES(?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $sql = "INSERT into client_application_fees(application_fee_id, application_fee, inspection_fee, registration_fee, connection_fee, installation_fee, reference_id, time, date, timestamp) VALUES(?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
         $stmt = $this->conn->prepareStatement($sql);
 
-        $stmt->bind_param("ddddds", $applicationFee, $inspectionFee, $registrationFee, $connectionFee, $installationFee, $reference_id);
+        $stmt->bind_param("sddddds", $applicationFeeID, $applicationFee, $inspectionFee, $registrationFee, $connectionFee, $installationFee, $reference_id);
 
 
         if ($stmt->execute()) {
@@ -790,6 +790,7 @@ class DatabaseQueries extends BaseQuery
             session_start();
         }
 
+        $penaltyID = "PF" . date("YmdHis") . rand(100, 999);
         $user_id = $_SESSION['user_id'];
 
 
@@ -798,10 +799,10 @@ class DatabaseQueries extends BaseQuery
         $reference_id = $user_id;
 
 
-        $sql = "INSERT into penalty_fees(late_payment_fee, reconnection_fee, reference_id, time, date, timestamp) VALUES( ?, ?,?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $sql = "INSERT into penalty_fees(penalty_fee_id, late_payment_fee, reconnection_fee, reference_id, time, date, timestamp) VALUES( ?,?, ?,?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
         $stmt = $this->conn->prepareStatement($sql);
 
-        $stmt->bind_param("dds", $latePaymentFee, $reconnectionFee, $reference_id);
+        $stmt->bind_param("sdds", $penaltyID, $latePaymentFee, $reconnectionFee, $reference_id);
 
 
         if ($stmt->execute()) {
@@ -816,6 +817,7 @@ class DatabaseQueries extends BaseQuery
             session_start();
         }
 
+        $ratesID = "RF" . date("YmdHis") . rand(100, 999);
         $user_id = $_SESSION['user_id'];
 
 
@@ -825,10 +827,10 @@ class DatabaseQueries extends BaseQuery
         $reference_id = $user_id;
 
 
-        $sql = "INSERT into rates(property_type, rates, billing_month, reference_id, time, date, timestamp) VALUES(?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $sql = "INSERT into rates(rate_fee_id, rate_type, rates, billing_month, reference_id, time, date, timestamp) VALUES(?,?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
         $stmt = $this->conn->prepareStatement($sql);
 
-        $stmt->bind_param("sdss", $propertyType, $rates, $currentMonthYear, $reference_id);
+        $stmt->bind_param("ssdss", $ratesID, $propertyType, $rates, $currentMonthYear, $reference_id);
 
         if ($stmt->execute()) {
             return ['status' => 'success', 'message' => 'Rates are updated successfully'];

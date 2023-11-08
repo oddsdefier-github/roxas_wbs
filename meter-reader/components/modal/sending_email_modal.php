@@ -53,7 +53,10 @@
                         </div>
                         <div class="mb-3">
                             <h3 class="text-xl font-bold text-gray-600 message-header">Sending Email...</h3>
-                            <h6 class="text-sm font-medium text-gray-500 message-body">Please be patience it could take 1 min or more.</h6>
+                            <h6 class="text-sm font-medium text-gray-500 message-body">Please be patient. This may take a minute or more.</h6>
+                            <a href="temp/NOV-2023-BILLING-INVOICE_654b897235ef8.pdf" download="NOV-2023-BILLING-INVOICE.pdf">Download PDF</a>
+
+
                         </div>
                     </div>
                     <div class=" flex justify-end items-center space-x-2">

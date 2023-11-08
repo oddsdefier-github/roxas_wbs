@@ -57,7 +57,7 @@ class BillUIHandler {
                 action: action
             },
             success: function (data) {
-                console.log(data)
+                console.log(JSON.parse(data))
                 const response = JSON.parse(data).status;
                 const message = JSON.parse(data).message;
 

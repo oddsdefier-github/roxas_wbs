@@ -2,7 +2,7 @@
 
 use MeterReader\Database\DatabaseConnection;
 
-require './pdf_generator.php';
+require './bill_handler.php';
 
 function sanitizeArray($array)
 {
@@ -40,6 +40,7 @@ function handleAction($action, $pdfGenerator, $wbsMailer)
             handleSendIndividualBilling($wbsMailer);
             break;
     }
+
 }
 
 function handleSendIndividualBilling($wbsMailer)
@@ -47,5 +48,4 @@ function handleSendIndividualBilling($wbsMailer)
     $sendIndividualBill = $wbsMailer->sendIndividualBilling();
     echo json_encode($sendIndividualBill);
 }
-
 
