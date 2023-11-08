@@ -45,7 +45,6 @@ $(document).ready(function () {
 
             break;
         case 'bill_meter_reading.php':
-            $("#generateBillingPDF").show();
             $("#sendIndividualBilling").show();
             $(".main-content").show();
 

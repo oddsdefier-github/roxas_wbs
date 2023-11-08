@@ -212,7 +212,7 @@ class DatabaseQueries extends BaseQuery
 
     public function updateBillingData($billingID)
     {
-        $update = "UPDATE billing_data SET billing_status = 'paid' WHERE billing_id = ?";
+        $update = "UPDATE billing_data SET billing_status = 'paid', billing_type = 'paid' WHERE billing_id = ?";
         $stmt = $this->conn->prepareStatement($update);
         mysqli_stmt_bind_param($stmt, "s", $billingID);
 
@@ -337,7 +337,7 @@ class DatabaseQueries extends BaseQuery
 
         try {
             if ($this->checkDuplicate('reference_id', $referenceID, 'transactions')) {
-                throw new Exception("Failed to do insert new transaction. Duplicate reference ID.");
+                throw new Exception("Failed to do insert new transaction. $clientName already paid, please check transaction history.");
             }
             if (!$this->insertIntoTransactions($data)) {
                 throw new Exception("Failed to update client application.");
@@ -529,15 +529,14 @@ class DataTable extends BaseQuery
             }
         }
 
-
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'verified' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
+            $sql .= " WHERE bd.billing_type = 'billed' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
         } else {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'verified' AND bd.billing_status = 'unpaid'";
+            $sql .= " WHERE bd.billing_type = 'billed' AND bd.billing_status = 'unpaid'";
         }
 
         // echo $sql;

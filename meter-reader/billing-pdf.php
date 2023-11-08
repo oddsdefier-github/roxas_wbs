@@ -146,3 +146,4 @@ function generateBillingPDF($conn)
 
 
 generateBillingPDF($conn);
+header('Location: ./bill_meter_reading.php');

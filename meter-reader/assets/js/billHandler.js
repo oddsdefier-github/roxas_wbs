@@ -61,23 +61,32 @@ class BillUIHandler {
                 const response = JSON.parse(data).status;
                 const message = JSON.parse(data).message;
 
-                if (response === 'error') {
-                    self.elements.messageHeader.text('Error.');
-                    self.elements.messageBody.text(message);
-                    self.animationElements.successAnim.hide();
-                    self.animationElements.sendingAnim.hide();
-                    self.animationElements.errorAnim.show();
+                if (data) {
+                    if (response === 'error') {
+                        self.elements.messageHeader.text('Error.');
+                        self.elements.messageBody.text(message);
+                        self.animationElements.successAnim.hide();
+                        self.animationElements.sendingAnim.hide();
+                        self.animationElements.errorAnim.show();
 
-                } else if (response === 'success') {
-                    self.elements.messageHeader.text('Success.');
-                    self.elements.messageBody.text(message);
-                    self.animationElements.sendingAnim.hide();
-                    self.animationElements.errorAnim.hide();
-                    self.animationElements.successAnim.show();
 
+                    } else if (response === 'success') {
+                        self.elements.messageHeader.text('Success.');
+                        self.elements.messageBody.text(message);
+                        self.animationElements.sendingAnim.hide();
+                        self.animationElements.errorAnim.hide();
+                        self.animationElements.successAnim.show();
+
+                        setTimeout(() => {
+                            $("#generateBillingPDF").show();
+                            alert('Click the generate button to generate billing PDF.');
+                        }, 1000)
+
+                        $("#generateBillingPDF").hide();
+                    }
+
+                    clearInterval(animationInterval);
                 }
-
-                clearInterval(animationInterval);
                 // window.open('./billing-pdf.php')
             },
             error: (jqXHR, textStatus, errorThrown) => {

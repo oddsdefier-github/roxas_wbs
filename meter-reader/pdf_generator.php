@@ -103,7 +103,7 @@ class WBSMailer extends PdfGenerator
         $sql = "SELECT client_data.email 
                 FROM client_data 
                 JOIN billing_data ON client_data.client_id = billing_data.client_id 
-                WHERE client_data.status = ? AND billing_data.billing_type = 'verified'";
+                WHERE client_data.status = ? AND billing_data.billing_type = 'verified' AND client_data.reading_status = 'encoded'";
         $stmt = $this->conn->prepareStatement($sql);
 
         if (!$stmt) {
