@@ -55,7 +55,7 @@ function generateBillingPDF($conn)
             FROM client_data cd 
             JOIN billing_data bd ON cd.client_id = bd.client_id 
             JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
-            WHERE bd.billing_status = 'unpaid' AND bd.billing_type = 'billed'";
+            WHERE bd.billing_status = 'unpaid' AND bd.billing_type = 'verified'";
 
 
     $stmt = $conn->prepareStatement($sql);
@@ -133,19 +133,14 @@ function generateBillingPDF($conn)
     $dompdf->addInfo("Title", "Billing");
 
     // Stream PDF to client
-    // $fileName = $currentMonth . "-" . $currentYear . "-BILLING-INVOICE.pdf";
-    // $dompdf->stream($fileName, ["Attachment" => 0]);
+    $fileName = $currentMonth . "-" . $currentYear . "-BILLING-INVOICE.pdf";
+    $dompdf->stream($fileName, ["Attachment" => 0]);
 
     $output = $dompdf->output();
-
-
     $randomName = uniqid();
     $fileName = "./temp/" . $currentMonth . "-" . $currentYear . "-BILLING-INVOICE_" . $randomName . ".pdf";
     file_put_contents($fileName, $output);
-
-    return $fileName;
 }
 
 
 generateBillingPDF($conn);
-header('Location: ./bill_meter_reading.php');

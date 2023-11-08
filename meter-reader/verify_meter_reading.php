@@ -32,6 +32,8 @@ include './auth_guard.php';
         </main>
     </section>
 
+
+    <?php include './components/modal/sending_email_modal.php'; ?>
     <?php include './components/modal/verify_reading_data_modal.php'; ?>
 
     <?php include './layouts/scripts.php'; ?>

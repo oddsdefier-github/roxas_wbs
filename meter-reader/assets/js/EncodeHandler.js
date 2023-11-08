@@ -160,6 +160,8 @@ class EncodeHandler {
             },
             success: data => {
                 console.log(data);
+
+                
                 setTimeout(() => {
                     alert(JSON.parse(data).message)
                     const filters = JSON.parse(localStorage.getItem('#displayClientForReadingEncoding-filterKey'));

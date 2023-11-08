@@ -21,6 +21,7 @@ $_POST = sanitizeArray($_POST);
 if ($conn) {
     $dbConnection = new DatabaseConnection($host1, $username1, $password1, $database1);
     $dbQueries = new DatabaseQueries($dbConnection);
+    $wbsMailer = new WBSMailer($dbConnection);
     $dataTable = new DataTable($dbConnection);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Database connection failed.']);
@@ -29,10 +30,10 @@ if ($conn) {
 
 if (isset($_POST['action'])) {
     $action = $_POST['action'];
-    handleAction($action, $dbQueries, $dataTable);
+    handleAction($action, $dbQueries, $wbsMailer, $dataTable);
 }
 
-function handleAction($action, $dbQueries, $dataTable)
+function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
 {
     switch ($action) {
         case 'retrieveClientData':
@@ -49,6 +50,9 @@ function handleAction($action, $dbQueries, $dataTable)
             break;
         case 'verifyReadingData':
             handleVerifyReadingData($dbQueries);
+            break;
+        case 'sendIndividualBilling':
+            handleSendIndividualBilling($wbsMailer);
             break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
@@ -108,10 +112,21 @@ function handleEncodeMeterReadingData($dbQueries)
     }
 }
 
-function handleVerifyReadingData($dbQueries) {
+function handleVerifyReadingData($dbQueries)
+{
     if (isset($_POST['formData'])) {
         $formData = $_POST['formData'];
         $verifyReadingData = $dbQueries->verifyReadingData($formData);
         echo json_encode($verifyReadingData);
+    }
+}
+
+
+function handleSendIndividualBilling($wbsMailer)
+{
+    if (isset($_POST['clientID'])) {
+        $clientID = $_POST['clientID'];
+        $sendIndividualBilling = $wbsMailer->sendIndividualBilling($clientID);
+        echo json_encode($sendIndividualBilling);
     }
 }

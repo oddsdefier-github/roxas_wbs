@@ -8,6 +8,7 @@ class VerifyHandler {
         this.retrieveData();
         this.showModal();
         this.tableDisplay = tableDisplay;
+
     }
 
     initializeElements() {
@@ -31,8 +32,17 @@ class VerifyHandler {
             consumptionInput: $('#consumption'),
             prevReadingInput: $('#prev_reading'),
             editCurrInput: $('.edit_curr_input'),
-            encodeForm: $('.encode_form')
+            encodeForm: $('.encode_form'),
+            sendingEmailModal: $("#sendingEmailModal"),
+            messageHeader: $(".message-header"),
+            messageBody: $(".message-body")
         };
+
+        this.animationElements = {
+            sendingAnim: $(".sending-animation"),
+            successAnim: $(".success-animation"),
+            errorAnim: $(".error-animation")
+        }
     }
 
     bindEvents() {
@@ -100,6 +110,10 @@ class VerifyHandler {
         this.elements.currReadingInput.trigger("blur");
     }
 
+    hideModal() {
+        this.verifyReadingDataModal.css('display', 'none');
+    }
+
     displayLoadingStatus(el, message) {
         let confirmStatus = $('<div role="status">' +
             '<svg aria-hidden="true" class="inline w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-100" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">' +
@@ -153,41 +167,6 @@ class VerifyHandler {
 
     }
 
-    submitData(responseData) {
-        const { client_id, property_type, meter_number, billing_id, billing_month } = responseData;
-
-        const prevReading = this.elements.prevReadingInput.val();
-        const currReading = this.elements.currReadingInput.val();
-
-        this.displayLoadingStatus(this.elements.submitEncode, 'Verifying...');
-        $.ajax({
-            url: "database_actions.php",
-            type: "post",
-            data: {
-                action: "verifyReadingData",
-                formData: {
-                    billingID: billing_id,
-                    billingMonth: billing_month,
-                    clientID: client_id,
-                    prevReading: prevReading,
-                    currReading: currReading,
-                    propertyType: property_type,
-                    meterNumber: meter_number,
-                }
-            },
-            success: data => {
-                setTimeout(() => {
-                    console.log(data);
-                    alert(JSON.parse(data).message)
-                    const filters = JSON.parse(localStorage.getItem('#displayClientForReadingVerification-filterKey'));
-                    const searchTerm = localStorage.getItem('#displayClientForReadingVerification-searchKey');
-                    this.tableDisplay.fetchTableData(searchTerm, filters);
-                    this.hideModal();
-                }, 300)
-            }
-        });
-    }
-
     validateInput(responseData) {
         const { prev_reading } = responseData;
 
@@ -223,9 +202,94 @@ class VerifyHandler {
         });
     }
 
-    hideModal() {
-        this.verifyReadingDataModal.css('display', 'none');
+    submitData(responseData) {
+        const { client_id, property_type, meter_number, billing_id, billing_month } = responseData;
+
+        const prevReading = this.elements.prevReadingInput.val();
+        const currReading = this.elements.currReadingInput.val();
+
+        this.displayLoadingStatus(this.elements.submitEncode, 'Verifying...');
+        $.ajax({
+            url: "database_actions.php",
+            type: "post",
+            data: {
+                action: "verifyReadingData",
+                formData: {
+                    billingID: billing_id,
+                    billingMonth: billing_month,
+                    clientID: client_id,
+                    prevReading: prevReading,
+                    currReading: currReading,
+                    propertyType: property_type,
+                    meterNumber: meter_number,
+                }
+            },
+            success: data => {
+                setTimeout(() => {
+                    console.log(data);
+                    alert(JSON.parse(data).message)
+                    const filters = JSON.parse(localStorage.getItem('#displayClientForReadingVerification-filterKey'));
+                    const searchTerm = localStorage.getItem('#displayClientForReadingVerification-searchKey');
+                    this.tableDisplay.fetchTableData(searchTerm, filters);
+                    this.hideModal();
+
+                    this.handleSendEmail(client_id);
+                }, 300)
+            }
+        });
     }
+
+    showSendingEmailModal() {
+        this.animationElements.successAnim.hide();
+        this.animationElements.errorAnim.hide();
+        this.animationElements.sendingAnim.show();
+        this.elements.sendingEmailModal.css({
+            'display': 'grid',
+            'place-items': 'center',
+            'justify-content': 'center',
+            'align-items': 'center'
+        });
+
+    }
+
+    handleSendEmail(clientID) {
+        const self = this;
+        this.showSendingEmailModal();
+        $.ajax({
+            url: "database_actions.php",
+            type: "post",
+            data: {
+                action: "sendIndividualBilling",
+                clientID: clientID
+            },
+            success: function (data) {
+                console.log(data)
+                const response = JSON.parse(data).status;
+                const message = JSON.parse(data).message;
+
+                if (data) {
+                    if (response === 'error') {
+                        self.elements.messageHeader.text('Error.');
+                        self.elements.messageBody.text(message);
+                        self.animationElements.successAnim.hide();
+                        self.animationElements.sendingAnim.hide();
+                        self.animationElements.errorAnim.show();
+
+                    } else if (response === 'success') {
+                        self.elements.messageHeader.text('Success.');
+                        self.elements.messageBody.text(message);
+                        self.animationElements.sendingAnim.hide();
+                        self.animationElements.errorAnim.hide();
+                        self.animationElements.successAnim.show();
+                    }
+                }
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("AJAX error:", textStatus, errorThrown);
+            }
+        })
+    }
+
 }
 
 function verifyReadingData(clientID) {

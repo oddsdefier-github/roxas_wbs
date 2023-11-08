@@ -96,69 +96,9 @@ class PdfGenerator extends BaseQuery
     }
 
 }
+
 class WBSMailer extends PdfGenerator
 {
-    // public function queryAllEmails($status)
-    // {
-    //     $sql = "SELECT client_data.email
-    //             FROM client_data
-    //             JOIN billing_data ON client_data.client_id = billing_data.client_id
-    //             WHERE client_data.status = ? AND billing_data.billing_type = 'verified' AND client_data.reading_status = 'encoded'";
-    //     $stmt = $this->conn->prepareStatement($sql);
-
-    //     if (!$stmt) {
-    //         return null;
-    //     }
-    //     mysqli_stmt_bind_param($stmt, "s", $status);
-    //     if (!mysqli_stmt_execute($stmt)) {
-    //         return null;
-    //     }
-    //     $result = mysqli_stmt_get_result($stmt);
-    //     if (!$result) {
-    //         return null;
-    //     }
-    //     $emailList = [];
-
-    //     while ($row = mysqli_fetch_assoc($result)) {
-    //         $emailList[] = $row['email'];
-    //     }
-
-    //     if (empty($emailList)) {
-    //         return null;
-    //     }
-
-    //     mysqli_stmt_free_result($stmt);
-    //     mysqli_stmt_close($stmt);
-    //     return $emailList;
-    // }
-
-
-    // public function selectClientID($email)
-    // {
-    //     $sql = "SELECT client_id FROM client_data WHERE email = ?";
-    //     $stmt = $this->conn->prepareStatement($sql);
-    //     if (!$stmt) {
-    //         return null;
-    //     }
-
-    //     mysqli_stmt_bind_param($stmt, "s", $email);
-    //     if (!mysqli_stmt_execute($stmt)) {
-    //         return null;
-    //     }
-
-    //     $result = mysqli_stmt_get_result($stmt);
-    //     if (!$result) {
-    //         return null;
-    //     }
-
-    //     $row = mysqli_fetch_assoc($result);
-    //     $clientID = $row['client_id'];
-
-    //     mysqli_stmt_free_result($stmt);
-    //     mysqli_stmt_close($stmt);
-    //     return $clientID;
-
-    // }
     public function queryDataForInvoice($clientID)
     {
         $sql = "SELECT cd.*, bd.*, sd.* 
@@ -234,6 +174,7 @@ class WBSMailer extends PdfGenerator
 
         return $isExist;
     }
+
     public function mailBillingInvoice($clientData, $filepath)
     {
         $requiredFields = ['email', 'first_name', 'last_name'];
@@ -273,9 +214,8 @@ class WBSMailer extends PdfGenerator
                 'clientSecret' => $credentials['clientSecret'],
                 'redirectUri'  => $credentials['redirectUri'],
             ]);
-
+            
             $mail = new PHPMailer(true);
-
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
@@ -308,44 +248,53 @@ class WBSMailer extends PdfGenerator
         }
     }
 
-    public function selectEmail($clientID)
-    {
-        $sql = "SELECT email FROM client_data WHERE client_id = ? AND status = 'active'";
-        $stmt = $this->conn->prepareStatement($sql);
-        if (!$stmt) {
-            return null;
-        }
-        mysqli_stmt_bind_param($stmt, "s", $clientID);
-        if (!mysqli_stmt_execute($stmt)) {
-            return null;
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-        $row = mysqli_fetch_assoc($result);
-        mysqli_stmt_close($stmt);
-
-        return $row['email'];
-    }
     public function sendIndividualBilling($clientID)
     {
         $response = array();
+    
         $clientData = $this->queryDataForInvoice($clientID);
-        $billingID = $clientData['billing_id'];
-        $generatedBilling = $this->generateIndividualBilling($clientData);
-        $this->mailBillingInvoice($clientData, $generatedBilling);
-
-        if (!empty($errors)) {
-            return $response = array(
+        if (!$clientData) {
+            $response = array (
                 "status" => "error",
-                "message" => "There were errors sending some emails.",
-                "errors" => $errors
+                "message" => "Unable to retrieve client data for billing."
             );
+            return $response;
         }
-
-        $this->checkSentEmail($billingID);
-
+    
+        $billingID = $clientData['billing_id'];
+        if ($this->checkSentEmail($billingID)) {
+            $response = array (
+                "status" => "error",
+                "message" => "Email for billing ID $billingID has already been sent."
+            );
+            return $response;
+        }
+    
+        $generatedBilling = $this->generateIndividualBilling($clientData);
+        if (!$generatedBilling) {
+            $response = array (
+                "status" => "error",
+                "message" => "Unable to generate billing for client."
+            );
+            return $response;
+        }
+    
+        $emailSent = $this->mailBillingInvoice($clientData, $generatedBilling);
+        if (!$emailSent) {
+            $response = array (
+                "status" => "error",
+                "message" => "Failed to send billing email."
+            );
+            return $response;
+        }
+    
+        $response = array (
+            "status" => "success",
+            "message" => "Billing email sent successfully."
+        );
         return $response;
     }
+    
 
 }
 class DatabaseQueries extends BaseQuery
@@ -458,7 +407,6 @@ class DatabaseQueries extends BaseQuery
         return null;
     }
 
-
     public function getPeriodTo(): string
     {
         $currentDate = new DateTime();
@@ -500,7 +448,6 @@ class DatabaseQueries extends BaseQuery
         }
         return true;
     }
-
 
     public function updateClientReadingStatus(string $clientID, string $readingStatus): bool
     {
@@ -651,18 +598,13 @@ class DatabaseQueries extends BaseQuery
 
     public function verifyReadingData($formData)
     {
-        $mailer = new WBSMailer($this->conn);
+
         $response = array();
         $this->conn->beginTransaction();
         try {
             if(!$this->updateAndVerifiedBillingData($formData)) {
                 throw new Exception("Failed to update and verified billing data.");
             }
-
-            if (!$mailer->sendIndividualBilling($formData['clientID'])) {
-                throw new Exception("Failed to send individual billing.");
-            }
-
             $this->conn->commitTransaction();
             $response = array(
                 "status" => "success",

@@ -69,20 +69,12 @@ class BillUIHandler {
                         self.animationElements.sendingAnim.hide();
                         self.animationElements.errorAnim.show();
 
-
                     } else if (response === 'success') {
                         self.elements.messageHeader.text('Success.');
                         self.elements.messageBody.text(message);
                         self.animationElements.sendingAnim.hide();
                         self.animationElements.errorAnim.hide();
                         self.animationElements.successAnim.show();
-
-                        setTimeout(() => {
-                            $("#generateBillingPDF").show();
-                            alert('Click the generate button to generate billing PDF.');
-                        }, 1000)
-
-                        $("#generateBillingPDF").hide();
                     }
 
                     clearInterval(animationInterval);
