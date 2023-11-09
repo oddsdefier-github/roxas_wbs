@@ -2,7 +2,19 @@
 
 use Admin\Database\DatabaseConnection;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
+
+use League\OAuth2\Client\Provider\Google;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 require 'database/connection.php';
+require __DIR__ . "/vendor/autoload.php";
+
+
 class BaseQuery
 {
     protected $conn;
@@ -12,7 +24,162 @@ class BaseQuery
         $this->conn = $databaseConnection;
     }
 }
+class PdfGenerator extends BaseQuery
+{
+    public function queryApplicationFees($applicationFeeID)
+    {
+        $sql = "SELECT * FROM client_application_fees WHERE application_fee_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
 
+        if (!$stmt) {
+            return null;
+        }
+        mysqli_stmt_bind_param($stmt, "s", $applicationFeeID);
+        if (!mysqli_stmt_execute($stmt)) {
+            return null;
+        }
+        $result = mysqli_stmt_get_result($stmt);
+        if ($row = mysqli_fetch_assoc($result)) {
+            return $row;
+        }
+        return null;
+    }
+    public function generateRegCertificate($clientID, $applicationFeeID)
+    {
+        $applicationFeeData = $this->queryApplicationFees($applicationFeeID);
+        if ($applicationFeeData) {
+            $applicationFee = $applicationFeeData['application_fee'];
+            $inspectionFee = $applicationFeeData['inspection_fee'];
+            $registrationFee = $applicationFeeData['registration_fee'];
+            $connectionFee = $applicationFeeData['connection_fee'];
+            $installationFee = $applicationFeeData['installation_fee'];
+
+            $totalApplicationFee = intval($applicationFee) + intval($inspectionFee) + intval($registrationFee) + intval($connectionFee) + intval($installationFee);
+
+            $formattedApplicationFee = number_format($applicationFee, 2, '.', ',');
+            $formattedInspectionFee = number_format($inspectionFee, 2, '.', ',');
+            $formattedRegistrationFee = number_format($registrationFee, 2, '.', ',');
+            $formattedConnectionFee = number_format($connectionFee, 2, '.', ',');
+            $formattedInstallationFee = number_format($installationFee, 2, '.', ',');
+            $formattedTotalApplicationFee = number_format($totalApplicationFee, 2, '.', ',');
+        }
+
+        $sql = "SELECT * FROM client_data WHERE client_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, "s", $clientID);
+        mysqli_stmt_execute($stmt);
+        $result = $this->conn->getResultSet($stmt);
+        $clientRow = mysqli_fetch_assoc($result);
+
+        if ($clientRow) {
+            $data = $clientRow;
+            $name = $data['full_name'];
+            $address = $data['full_address'];
+            $propertyType = $data['property_type'];
+            $date = $data['date'];
+            $regID = $data['reg_id'];
+            $meterNumber = $data['meter_number'];
+
+            $options = new Options();
+            $options->setChroot(__DIR__);
+            $options->setIsRemoteEnabled(true);
+            $options->set('defaultFont', 'Helvetica');
+            $options->set('isHtml5ParserEnabled', true);
+
+            $options->set('margin-top', '0mm');
+            $options->set('margin-right', '0mm');
+            $options->set('margin-bottom', '0mm');
+            $options->set('margin-left', '0mm');
+
+            $dompdf = new Dompdf($options);
+
+            $dompdf->setPaper("A4", "portrait");
+
+
+            $html = file_get_contents("./templates/reg-template.html");
+
+            $html = str_replace(["{{ name }}", "{{ address }}", "{{ meter_number }}", "{{ reg_id }}", "{{ client_id }}", "{{ date }}", "{{ property_type }}", "{{ application_fee }}", "{{ inspection_fee }}", "{{ registration_fee }}", "{{ connection_fee }}", "{{ installation_fee }}", "{{ total_application_fee }}"], [$name, $address, $meterNumber, $regID, $clientID, $date, $propertyType, $formattedApplicationFee, $formattedInspectionFee, $formattedRegistrationFee, $formattedConnectionFee, $formattedInstallationFee, $formattedTotalApplicationFee], $html);
+
+            $dompdf->loadHtml($html);
+            $dompdf->render();
+            $dompdf->addInfo("Title", "Registration");
+
+            $fileName = __DIR__ . '/temp/' . $regID . '.pdf';
+            if (file_put_contents($fileName, $dompdf->output())) {
+                return $fileName;
+            } else {
+                return null;
+            }
+
+        }
+
+        mysqli_stmt_free_result($stmt);
+        mysqli_stmt_close($stmt);
+    }
+}
+class WBSMailer extends PdfGenerator
+{
+    public function handleEmailSend($mailData, $filepath)
+    {
+        $requiredFields = ['email', 'first_name', 'last_name'];
+
+        foreach ($requiredFields as $field) {
+            if (empty($mailData[$field])) {
+                return "Error: Field '{$field}' is missing from client data.";
+            }
+        }
+
+        if (!file_exists($filepath) || !is_readable($filepath)) {
+            return "Error: The file at {$filepath} does not exist or is not readable.";
+        }
+
+        $email = $mailData['email'];
+        $firstName = $mailData['first_name'];
+        $lastName = $mailData['last_name'];
+
+        $sender = 'roxaswaterbillingsystem@gmail.com';
+
+        $mail = new PHPMailer(true);
+        try {
+            $credentials = json_decode(file_get_contents('config/credentials.json'), true);
+
+            $provider = new Google([
+                'clientId'     => $credentials['clientId'],
+                'clientSecret' => $credentials['clientSecret'],
+                'redirectUri'  => $credentials['redirectUri'],
+            ]);
+
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            //to view proper logging details for success and error messages
+            // $mail->SMTPDebug = 1;
+            $mail->Host = 'smtp.gmail.com';  //gmail SMTP server
+            $mail->Username = $sender;   //email
+            $mail->Password = 'sluzmpnriimiseul';   //16 character obtained from app password created
+            $mail->Port = 465;                    //SMTP port
+            $mail->SMTPSecure = "ssl";
+
+            $mail->setFrom($sender, 'Roxas Water Billing System Inc.');
+            $mail->addAddress($email, $firstName . ' ' . $lastName); // Add a recipient
+
+            $mail->addAttachment($filepath); // Add the PDF generated
+
+            // Content
+            $mail->isHTML(true); // Set email format to HTML
+            $mail->Subject = 'Your Copy of Certificate of Registration';
+            $mail->Body    = 'Please find your certificate attached.';
+
+            $mail->send();
+            return 'Message has been sent';
+
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return 'An error occurred while sending the email. Please try again later.';
+        }
+    }
+}
 class DatabaseQueries extends BaseQuery
 {
     public function retrieveClientData($clientID)
@@ -223,8 +390,9 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
-    public function insertIntoClientData($formData, $clientID)
+    public function insertIntoClientData($formData, $clientID): bool
     {
+        $this->conn->beginTransaction();
         $applicationID = htmlspecialchars($formData['applicationID'], ENT_QUOTES, 'UTF-8');
         $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
         $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
@@ -266,30 +434,32 @@ class DatabaseQueries extends BaseQuery
         );
 
         if (mysqli_stmt_execute($stmt)) {
-
-            $markNotificationAsRead =  $this->markNotificationAsRead($applicationID);
+            $this->conn->commitTransaction();
+            $markNotificationAsRead = $this->markNotificationAsRead($applicationID);
             if (!$markNotificationAsRead) {
-                return "Error: " . $markNotificationAsRead;
+                return false;
             }
 
-            $insertIntoClientSecondaryData =  $this->insertIntoClientSecondaryData($formData, $clientID);
+            $insertIntoClientSecondaryData = $this->insertIntoClientSecondaryData($formData, $clientID);
             if (!$insertIntoClientSecondaryData) {
-                return "Error: " . $insertIntoClientSecondaryData;
+                return false;
             }
 
             $insertIntoBillingData = $this->insertIntoBillingData($formData, $clientID);
             if (!$insertIntoBillingData) {
-                return "Error: " . $insertIntoBillingData;
+                return false;
             }
 
             return true;
         } else {
-            return "Error: " . $this->conn->getErrorMessage();
+            $this->conn->rollbackTransaction();
+            return false;
         }
     }
 
     public function insertIntoClientSecondaryData($formData, $clientID)
     {
+        $this->conn->beginTransaction();
         $applicationID = htmlspecialchars($formData['applicationID'], ENT_QUOTES, 'UTF-8');
         $firstName = htmlspecialchars($formData['firstName'], ENT_QUOTES, 'UTF-8');
         $middleName = htmlspecialchars($formData['middleName'], ENT_QUOTES, 'UTF-8');
@@ -313,6 +483,7 @@ class DatabaseQueries extends BaseQuery
         $updateStmt->bind_param("ss", $status, $applicationID);
 
         if (mysqli_stmt_execute($updateStmt)) {
+            $this->conn->commitTransaction();
             $insert_sec_data = "INSERT INTO client_secondary_data (client_id, first_name, middle_name, last_name, name_suffix, property_type, gender, street, brgy, municipality, province, region, valid_id, proof_of_ownership, deed_of_sale, affidavit, time, date, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?,?, ?, ?,?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
             $stmt = $this->conn->prepareStatement($insert_sec_data);
 
@@ -337,9 +508,11 @@ class DatabaseQueries extends BaseQuery
                 $affidavit,
             );
             if (mysqli_stmt_execute($stmt)) {
+                $this->conn->commitTransaction();
                 return true;
             } else {
-                return "Error: " . $this->conn->getErrorMessage();
+                $this->conn->rollbackTransaction();
+                return false;
             }
         }
     }
@@ -396,6 +569,27 @@ class DatabaseQueries extends BaseQuery
         }
     }
 
+    public function getApplicationFeeID($applicationID)
+    {
+        $sql = "SELECT application_fee_id FROM client_application WHERE application_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return null;
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $applicationID);
+        if  (!mysqli_stmt_execute($stmt)) {
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+        if ($row = mysqli_fetch_assoc($result)) {
+            return $row['application_fee_id'];
+        }
+        return null;
+    }
+
     public function approveClientApplication($formData)
     {
         $response = array();
@@ -421,38 +615,44 @@ class DatabaseQueries extends BaseQuery
         $currDate = date('mdy');
         $clientID = "WBS-" . $initials . "-" . $paddedTotal . $currDate;
 
-        if ($this->checkDuplicate("meter_number", $meterNumber, $table)) {
-            $response = array(
-                "status" => "error",
-                "message" => "Meter No: " . $meterNumber . " already exists."
-            );
-            return $response;
-        };
+        $mailData = array(
+            "first_name" => $firstName,
+            "last_name" => $lastName,
+            "email" => $email
+        );
 
-        if ($this->checkDuplicate("email", $email, $table)) {
-            $response = array(
-                "status" => "error",
-                "message" => $email . " already exists."
-            );
-            return $response;
-        };
+        $pdf = new PdfGenerator($this->conn);
+        $wbsMailer = new WbsMailer($this->conn);
 
-        $insertIntoClientData = $this->insertIntoClientData($formData, $clientID);
+        $applicationFeeID = $this->getApplicationFeeID($formData['applicationID']);
+        $filepath = $pdf->generateRegCertificate($clientID, $applicationFeeID);
+        try {
+            if ($this->checkDuplicate("meter_number", $meterNumber, $table)) {
+                throw new Exception("Meter No: ' . $meterNumber . ' already exists.");
+            };
+            if ($this->checkDuplicate("email", $email, $table)) {
+                throw new Exception($email . " already exists.");
+            };
+            if (!$this->insertIntoClientData($formData, $clientID)) {
+                throw new Exception("Failed to insert into client data.");
+            };
 
-        if ($insertIntoClientData === true) {
+            $wbsMailer->handleEmailSend($mailData, $filepath);
+
             $response = array(
                 "status" => "success",
                 "client_id" => $clientID,
-                "message" => $fullName . "'s application has been approved."
+                "message" => $fullName . "'s application has been approved.",
             );
             return $response;
-        } else {
+        } catch(Exception $e) {
             $response = array(
                 "status" => "error",
-                "message" => "Failed: " . $insertIntoClientData
+                "message" => "Error: " . $e->getMessage()
             );
             return $response;
         }
+
     }
 
 
@@ -904,9 +1104,9 @@ class DataTable extends BaseQuery
         $params = array_merge($params, [$itemPerPage, $offset]);
         $types .= "ii";
 
-        echo $sql;
-        print_r($params);
-        
+        // echo $sql;
+        // print_r($params);
+
         $stmt = $this->conn->prepareStatement($sql);
         mysqli_stmt_bind_param($stmt, $types, ...$params);
         mysqli_stmt_execute($stmt);

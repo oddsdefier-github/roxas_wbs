@@ -399,12 +399,12 @@ class DatabaseQueries extends BaseQuery
         }
     }
 
-    public function updateClientApplication($applicationID)
+    public function updateClientApplication($applicationID, $applicationFeeID)
     {
-        $sql = "UPDATE client_application SET billing_status = 'paid' WHERE application_id = ?";
+        $sql = "UPDATE client_application SET billing_status = 'paid', application_fee_id = ?  WHERE application_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
 
-        mysqli_stmt_bind_param($stmt, "s", $applicationID);
+        mysqli_stmt_bind_param($stmt, "ss", $applicationFeeID, $applicationID);
         if (!mysqli_stmt_execute($stmt)) {
             return false;
         }
@@ -424,6 +424,8 @@ class DatabaseQueries extends BaseQuery
         $referenceID = $applicationID;
 
         $clientApplicationFees = $this->retrieveClientApplicationFees();
+
+        $applicationFeeID = $clientApplicationFees['client_application_fees']['application_fee_id'];
         $applicationFee = $clientApplicationFees['client_application_fees']['application_fee'];
         $inspectionFee = $clientApplicationFees['client_application_fees']['inspection_fee'];
         $registrationFee = $clientApplicationFees['client_application_fees']['registration_fee'];
@@ -463,7 +465,7 @@ class DatabaseQueries extends BaseQuery
                 throw new Exception("Failed to update client application.");
             }
 
-            if (!$this->updateClientApplication($applicationID)) {
+            if (!$this->updateClientApplication($applicationID, $applicationFeeID)) {
                 throw new Exception("Failed to update client application.");
             }
 
@@ -482,7 +484,7 @@ class DatabaseQueries extends BaseQuery
 
             $response = array(
                 "status" => "success",
-                "message" => "Payment confirmed successfully."
+                "message" => "Payment has been confirmed."
             );
         } catch (Exception $e) {
             $this->conn->rollbackTransaction();

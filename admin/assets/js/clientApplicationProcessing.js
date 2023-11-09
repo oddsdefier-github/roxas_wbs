@@ -446,7 +446,7 @@ $(document).ready(function () {
                         alert(`${responseData['message']}`)
                         setTimeout(() => {
                             window.location.reload();
-                            window.open(`http://localhost/${folderName}/admin/print.php?id=${clientID}`, '_blank');
+                            // window.open(`http://localhost/${folderName}/admin/print.php?id=${clientID}`, '_blank');
                         }, 200)
                     }
                 }

@@ -16,7 +16,7 @@
     }
 
     .modal-inner-container {
-        width: 30rem;
+        width: 25rem;
     }
 </style>
 

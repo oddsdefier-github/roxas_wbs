@@ -92,41 +92,41 @@
             <tr>
                 <th style="width: 30%; text-align: left; padding-left: 10px;"><h4>Pre-Installation Charges</h4></th>
                 <th style="width: 50%; text-align: left; padding-left: 10px;"><h4>Description</h4></th>
-                <th style="width: ; text-align: left; padding-left: 10px;"><h4>Amount (PHP)</h4></th>
+                <th style="text-align: left; padding-left: 10px;"><h4>Amount (PHP)</h4></th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td style="width: 30%; padding-left: 10px;"><p>Application Fee</p></td>
                 <td style="width: 50%; padding-left: 10px;"><p>Covers the inspection related costs.</p></td>
-                <td style="width: ; padding-left: 10px;"><p>50 PHP</p></td>
+                <td style="padding-left: 10px;"><p style="text-align: left; margin-left: 2px;">Php {{ application_fee }}</p></td>
             </tr>
             <tr>
                 <td style="width: 30%; padding-left: 10px;"><p>Inspection Fee</p></td>
                 <td style="width: 50%; padding-left: 10px;"><p>Covers the administrative processing and setup costs associated with new service requests.</p></td>
-                <td style="width: ; padding-left: 10px;"><p>250 PHP</p></td>
+                <td style="padding-left: 10px;"><p style="text-align: left; margin-left: 2px;">Php {{ inspection_fee }}</p></td>
             </tr>
             <tr>
                 <td style="width: 30%; padding-left: 10px;"><p>Registration Fee</p></td>
                 <td style="width: 50%; padding-left: 10px;"><p>Bookkeeping and Setting of new accounts.</p></td>
-                <td style="width: ; padding-left: 10px;"><p>100 PHP</p></td>
+                <td style="padding-left: 10px;"><p style="text-align: left; margin-left: 2px;">Php {{ registration_fee }}</p></td>
             </tr>
             <tr>
                 <td style="width: 30%; padding-left: 10px;"><p>Connection Fee</p></td>
                 <td style="width: 50%; padding-left: 10px;"><p>Includes the cost of meter and ball valve.</p></td>
-                <td style="width: ; padding-left: 10px;"><p>4100 PHP</p></td>
+                <td style="padding-left: 10px;"><p style="text-align: left; margin-left: 2px;">Php {{ connection_fee }}</p></td>
             </tr>
             <tr>
                 <td style="width: 30%; padding-left: 10px;"><p>Installation Fee</p></td>
                 <td style="width: 50%; padding-left: 10px;"><p>Cover the labor for installation of connection</p></td>
-                <td style="width: ; padding-left: 10px;"><p>400 PHP</p></td>
+                <td style="padding-left: 10px;"><p style="text-align: left; margin-left: 2px;">Php {{ installation_fee }}</p></td>
             </tr>
         </tbody>
     </table>
 
 
     <h4 style="margin: 0; margin-top: 50px; margin-left: 2px; text-align: right;">Total Assessment Amount</h4>
-    <h2 style="margin-top: 5px; padding-left: 15px; text-align: right;">PHP 4,900.00</h2>
+    <h2 style="margin-top: 5px; padding-left: 15px; text-align: right;">Php {{ total_application_fee }}</h2>
 
 
     <table style="margin-top: 100px">

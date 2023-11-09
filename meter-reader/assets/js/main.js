@@ -20,7 +20,6 @@ $(document).ready(function () {
 
     switch (filename) {
         case 'encode_meter_reading.php':
-
             $("#clientStatusFilter").show();
 
             const today = new Date();

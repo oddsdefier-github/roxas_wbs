@@ -28,10 +28,6 @@ export class DataTableWithPagination {
         this.startDate = localStorage.getItem(this.startDateKey) || "";
         this.endDate = localStorage.getItem(this.endDateKey) || "";
 
-        console.log('START DATE: ', this.startDate)
-        console.log('END DATE: ', this.endDate)
-
-
 
         this.totalItems = 0;
         this.lastPageNumber = 0;
@@ -79,6 +75,7 @@ export class DataTableWithPagination {
         this.elements.startBtn.on("click", () => this.handlePageChange("start"));
         this.elements.endBtn.on("click", () => this.handlePageChange("end"));
 
+
         this.elements.itemsPerPageSelector.change(() => {
             this.itemsPerPage = parseInt(this.elements.itemsPerPageSelector.val(), 10);
             localStorage.setItem(this.itemsPerPageKey, this.itemsPerPage);
@@ -89,7 +86,6 @@ export class DataTableWithPagination {
             }
 
             this.currentPageNumber = 1;
-
 
             this.fetchTableData(this.savedSearch, this.filter, this.currentSortColumn, this.currentSortDirection, this.startDate, this.endDate);
         });
@@ -111,7 +107,7 @@ export class DataTableWithPagination {
 
     initializeDateRangePicker() {
         const self = this;
-        const start = moment().subtract(728, 'days');
+        const start = moment().subtract(312, 'days');
         const end = moment();
 
         function callback(start, end) {
@@ -132,6 +128,7 @@ export class DataTableWithPagination {
         }
 
         this.elements.dateRangePicker.daterangepicker({
+            "showDropdowns": true,
             startDate: start,
             endDate: end,
             ranges: {
@@ -140,7 +137,8 @@ export class DataTableWithPagination {
                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Last 10 Months': [moment().subtract(10, 'month').startOf('month'), moment()]
             }
         }, callback);
 
@@ -316,11 +314,12 @@ export class DataTableWithPagination {
     }
 
     fetchTableData(searchTerm, filters, sortColumn, sortDirection, startDate, endDate) {
+
         console.log("Page Number:" + this.currentPageNumber);
         console.log("Search Term:" + searchTerm);
         console.log("Filters:" + filters);
         console.log("Sort Column:" + sortColumn)
-        console.log("Sending data to server:", startDate, endDate); // Add this line to log the data being sent
+        console.log("Sending data to server:", startDate, endDate);
         $.ajax({
             url: "database_actions.php",
             type: 'post',

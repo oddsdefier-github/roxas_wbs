@@ -12,7 +12,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require 'database/connection.php';
-require 'bill_handler.php';
 require __DIR__ . "/vendor/autoload.php";
 
 class BaseQuery
@@ -214,7 +213,7 @@ class WBSMailer extends PdfGenerator
                 'clientSecret' => $credentials['clientSecret'],
                 'redirectUri'  => $credentials['redirectUri'],
             ]);
-            
+
             $mail = new PHPMailer(true);
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
@@ -251,50 +250,50 @@ class WBSMailer extends PdfGenerator
     public function sendIndividualBilling($clientID)
     {
         $response = array();
-    
+
         $clientData = $this->queryDataForInvoice($clientID);
         if (!$clientData) {
-            $response = array (
+            $response = array(
                 "status" => "error",
                 "message" => "Unable to retrieve client data for billing."
             );
             return $response;
         }
-    
+
         $billingID = $clientData['billing_id'];
         if ($this->checkSentEmail($billingID)) {
-            $response = array (
+            $response = array(
                 "status" => "error",
                 "message" => "Email for billing ID $billingID has already been sent."
             );
             return $response;
         }
-    
+
         $generatedBilling = $this->generateIndividualBilling($clientData);
         if (!$generatedBilling) {
-            $response = array (
+            $response = array(
                 "status" => "error",
                 "message" => "Unable to generate billing for client."
             );
             return $response;
         }
-    
+
         $emailSent = $this->mailBillingInvoice($clientData, $generatedBilling);
         if (!$emailSent) {
-            $response = array (
+            $response = array(
                 "status" => "error",
                 "message" => "Failed to send billing email."
             );
             return $response;
         }
-    
-        $response = array (
+
+        $response = array(
             "status" => "success",
             "message" => "Billing email sent successfully."
         );
         return $response;
     }
-    
+
 
 }
 class DatabaseQueries extends BaseQuery
@@ -598,7 +597,6 @@ class DatabaseQueries extends BaseQuery
 
     public function verifyReadingData($formData)
     {
-
         $response = array();
         $this->conn->beginTransaction();
         try {

@@ -24,6 +24,7 @@ $(document).ready(function () {
 
     filename === 'clients_application_table.php' ? $("#clientAppFilter").show() : $("#clientAppFilter").hide();
     filename === 'clients.php' ? $("#clientFilter").show() : $("#clientFilter").hide();
+    filename === 'transactions.php' ? $("#transactionFilter").show() : $("#transactionFilter").hide();
 
 });
 
