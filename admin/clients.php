@@ -30,6 +30,7 @@ include './auth_guard.php';
         </main>
     </section>
     <?php include './layouts/scripts.php'; ?>
+    <?php include './layouts/date_range_scripts.php' ?>
     <script src="./assets/js/clientProfile.js"></script>
     <script>
         $("#subheader-title").siblings("h5").text("Manage, Update, or Delete Client.");

@@ -1,8 +1,10 @@
 export class DataTableWithPagination {
     constructor (tableName, tableContainerSelector = '#displayClientApplicationTable', filter = []) {
         this.tableName = tableName;
+
         this.currentSortColumn = "timestamp";
         this.currentSortDirection = 'DESC';
+
         this.tableContainerSelector = tableContainerSelector;
 
         this.itemsPerPageKey = `${this.tableContainerSelector}-itemsPerPage`;
@@ -11,11 +13,24 @@ export class DataTableWithPagination {
         this.searchKey = `${this.tableContainerSelector}-searchKey`;
         this.filterKey = `${this.tableContainerSelector}-filterKey`;
 
+
         this.savedSearch = localStorage.getItem(this.searchKey) || "";
         this.filter = JSON.parse(localStorage.getItem(this.filterKey)) || filter;
 
         this.itemsPerPage = parseInt(localStorage.getItem(this.itemsPerPageKey), 10) || 10;
         this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
+
+
+
+        this.startDateKey = `${this.tableContainerSelector}-startDateKey`;
+        this.endDateKey = `${this.tableContainerSelector}-endDateKey`;
+
+        this.startDate = localStorage.getItem(this.startDateKey) || "";
+        this.endDate = localStorage.getItem(this.endDateKey) || "";
+
+        console.log('START DATE: ', this.startDate)
+        console.log('END DATE: ', this.endDate)
+
 
 
         this.totalItems = 0;
@@ -33,24 +48,25 @@ export class DataTableWithPagination {
             nextBtn: $("#next"),
             startBtn: $("#start"),
             endBtn: $("#end"),
-            itemsPerPageSelector: $("#item-per-page")
+            itemsPerPageSelector: $("#item-per-page"),
+            dateRangePicker: $("#date_range_picker")
         };
-
-
 
         this.elements.searchInput.val(this.savedSearch);
         this.elements.itemsPerPageSelector.val(this.itemsPerPage);
 
+
         this.bindEvents();
         this.bindFilterEvents();
-        this.fetchTableData(this.savedSearch, this.filter);
         this.updateButtonsState();
+
+        this.initializeDateRangePicker();
     }
     bindEvents() {
         let debounceTimeout;
         this.elements.searchInput.on("keyup", () => {
 
-            
+
             this.handleClearInput();
             clearTimeout(debounceTimeout);
             debounceTimeout = setTimeout(() => this.handleSearch(), 300);
@@ -75,20 +91,7 @@ export class DataTableWithPagination {
             this.currentPageNumber = 1;
 
 
-            const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
-            let currentFilters = [];
-
-            if (radios.length > 0) {
-                currentFilters = radios.map((_, radio) => {
-                    return {
-                        column: $(radio).data('column'),
-                        value: radio.value
-                    };
-                }).get();
-            }
-
-            this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
-
+            this.fetchTableData(this.savedSearch, this.filter, this.currentSortColumn, this.currentSortDirection, this.startDate, this.endDate);
         });
 
 
@@ -105,22 +108,63 @@ export class DataTableWithPagination {
         this.elements.resetFilter.prop("disabled", false)
     }
 
-    applyFilter() {
-        const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
-        const selectedFilters = radios.map((_, radio) => {
-            return {
-                column: $(radio).data('column'),
-                value: radio.value
-            };
-        }).get();
-        console.log(selectedFilters)
-        this.currentPageNumber = 1;
 
-        localStorage.setItem(this.filterKey, JSON.stringify(selectedFilters))
-        console.log('Constructor filter:', this.filter);
+    initializeDateRangePicker() {
+        const self = this;
+        const start = moment().subtract(728, 'days');
+        const end = moment();
 
-        this.fetchTableData(this.elements.searchInput.val(), selectedFilters, this.currentSortColumn, this.currentSortDirection);
+        function callback(start, end) {
+            $('#date_range_picker span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
 
+            const startDate = start.format('YYYY-MM-DD');
+            const endDate = end.format('YYYY-MM-DD');
+
+            localStorage.setItem(self.startDateKey, startDate);
+            localStorage.setItem(self.endDateKey, endDate);
+
+            self.startDate = startDate;
+            self.endDate = endDate;
+
+            self.fetchTableData(self.savedSearch, self.filter, self.currentSortColumn, self.currentSortDirection, startDate, endDate);
+
+            console.log('SELF FILTER: ', self.filter)
+        }
+
+        this.elements.dateRangePicker.daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, callback);
+
+
+        this.elements.dateRangePicker.on('apply.daterangepicker', function (ev, picker) {
+            const startDate = picker.startDate.format('YYYY-MM-DD');
+            const endDate = picker.endDate.format('YYYY-MM-DD');
+
+
+            localStorage.setItem(self.startDateKey, startDate);
+            localStorage.setItem(self.endDateKey, endDate);
+
+            self.startDate = startDate;
+            self.endDate = endDate;
+
+            self.fetchTableData(self.savedSearch, self.filter, self.currentSortColumn, self.currentSortDirection, startDate, endDate);
+
+            console.log('SELF FILTER: ', self.filter)
+        });
+
+        callback(start, end);
+    }
+
+    updateBtnUI() {
         const checkedRadio = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
         const checkedValues = checkedRadio.map((_, radio) => {
             return {
@@ -135,6 +179,28 @@ export class DataTableWithPagination {
         $(".filter_text").text(statusText);
         this.elements.resetFilter.prop("disabled", false)
     }
+    applyFilter() {
+        const self = this;
+        const radios = self.elements.radioDropDownContainer.find("input[type='radio']:checked");
+        const selectedFilters = radios.map((_, radio) => {
+            return {
+                column: $(radio).data('column'),
+                value: radio.value
+            };
+        }).get();
+
+        self.currentPageNumber = 1;
+
+
+        localStorage.setItem(self.filterKey, JSON.stringify(selectedFilters))
+        self.filter = selectedFilters;
+
+        self.fetchTableData(self.savedSearch, selectedFilters, self.currentSortColumn, self.currentSortDirection, self.startDate, self.endDate);
+
+        self.updateBtnUI();
+
+        console.log(self.startDate, self.endDate)
+    } q
 
     bindFilterEvents() {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
@@ -178,35 +244,28 @@ export class DataTableWithPagination {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
         radios.prop('checked', false);
         this.applyFilter();
-        this.elements.resetFilter.prop("disabled", true)
+        this.initializeDateRangePicker();
     }
 
 
     handleSort(event) {
+        const self = this;
         const column = $(event.target).closest('th').attr('data-column-name');
         const isSortable = $(event.target).closest('th').attr('data-sortable') !== 'false';
 
         if (!isSortable) return;
 
-        if (this.currentSortColumn === column) {
-            this.currentSortDirection = this.currentSortDirection === 'ASC' ? 'DESC' : 'ASC';
+        if (self.currentSortColumn === column) {
+            self.currentSortDirection = self.currentSortDirection === 'ASC' ? 'DESC' : 'ASC';
         } else {
-            this.currentSortColumn = column;
-            this.currentSortDirection = 'ASC';
+            self.currentSortColumn = column;
+            self.currentSortDirection = 'ASC';
         }
 
-        const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
-        let currentFilters = [];
 
-        if (radios.length > 0) {
-            currentFilters = radios.map((_, radio) => {
-                return {
-                    column: $(radio).data('column'),
-                    value: radio.value
-                };
-            }).get();
-        }
-        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
+
+        self.fetchTableData(self.savedSearch, self.filter, self.currentSortColumn, self.currentSortDirection, self.startDate, self.endDate);
+        console.log(self.startDate, self.endDate)
     }
 
 
@@ -233,7 +292,7 @@ export class DataTableWithPagination {
                 value: radio.value
             };
         }).get();
-        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection, this.startDate, this.endDate);
     }
 
     handleClearInput() {
@@ -256,7 +315,12 @@ export class DataTableWithPagination {
         $('a[aria-current="page"]').text(this.currentPageNumber);
     }
 
-    fetchTableData(searchTerm = this.searchKey, filters = this.filter, sortColumn = this.currentSortColumn, sortDirection = this.currentSortDirection) {
+    fetchTableData(searchTerm, filters, sortColumn, sortDirection, startDate, endDate) {
+        console.log("Page Number:" + this.currentPageNumber);
+        console.log("Search Term:" + searchTerm);
+        console.log("Filters:" + filters);
+        console.log("Sort Column:" + sortColumn)
+        console.log("Sending data to server:", startDate, endDate); // Add this line to log the data being sent
         $.ajax({
             url: "database_actions.php",
             type: 'post',
@@ -270,7 +334,9 @@ export class DataTableWithPagination {
                     searchTerm: searchTerm,
                     filters: filters,
                     sortColumn: sortColumn,
-                    sortDirection: sortDirection
+                    sortDirection: sortDirection,
+                    startDate: startDate,
+                    endDate: endDate
                 }
             },
             success: (data, status) => {
@@ -333,7 +399,7 @@ export class DataTableWithPagination {
         }).get();
 
         // Pass the filters to fetchTableData
-        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection);
+        this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection, this.startDate, this.endDate);
     }
 
 }

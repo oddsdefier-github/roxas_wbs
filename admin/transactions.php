@@ -28,8 +28,15 @@ include './auth_guard.php';
                 <?php include './components/transactions_main.php'; ?>
             </div>
         </main>
+        <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+            <i class="fa fa-calendar"></i>&nbsp;
+            <span></span> <i class="fa fa-caret-down"></i>
+        </div>
+
     </section>
     <?php include './layouts/scripts.php'; ?>
+    <?php include './layouts/date_range_scripts.php' ?>
+
     <script>
         $("#subheader-title").text("Transaction");
         $("#subheader-title").siblings("h5").text("Manage, Update, or Delete Client.");

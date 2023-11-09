@@ -853,6 +853,8 @@ class DataTable extends BaseQuery
         $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
         $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
         $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+        $startDate = isset($dataTableParam['startDate']) ? $dataTableParam['startDate'] : "";
+        $endDate = isset($dataTableParam['endDate']) ? $dataTableParam['endDate'] : "";
 
         $conditions = [];
         $params = [];
@@ -871,6 +873,12 @@ class DataTable extends BaseQuery
                 $params[] = $filter['value'];
                 $types .= "s";
             }
+        }
+
+        if ($startDate && $endDate) {
+            $conditions[] = "date BETWEEN ? AND ?";
+            $params = array_merge($params, [$startDate, $endDate]);
+            $types .= "ss";  // Assuming dates are strings, adjust if not
         }
 
         if (!empty($conditions)) {
@@ -896,6 +904,9 @@ class DataTable extends BaseQuery
         $params = array_merge($params, [$itemPerPage, $offset]);
         $types .= "ii";
 
+        echo $sql;
+        print_r($params);
+        
         $stmt = $this->conn->prepareStatement($sql);
         mysqli_stmt_bind_param($stmt, $types, ...$params);
         mysqli_stmt_execute($stmt);
@@ -1087,6 +1098,8 @@ class DataTable extends BaseQuery
         $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
         $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
         $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+        $startDate = isset($dataTableParam['startDate']) ? $dataTableParam['startDate'] : "";
+        $endDate = isset($dataTableParam['endDate']) ? $dataTableParam['endDate'] : "";
         $conditions = [];
         $params = [];
         $types = "";
@@ -1104,6 +1117,12 @@ class DataTable extends BaseQuery
                 $params[] = $filter['value'];
                 $types .= "s";  // Assuming all filter values are strings, adjust if not
             }
+        }
+
+        if ($startDate && $endDate) {
+            $conditions[] = "date BETWEEN ? AND ?";
+            $params = array_merge($params, [$startDate, $endDate]);
+            $types .= "ss";  // Assuming dates are strings, adjust if not
         }
 
         if (!empty($conditions)) {
@@ -1314,7 +1333,8 @@ class DataTable extends BaseQuery
         $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
         $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
         $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
-        $conditions = [];
+        $startDate = isset($dataTableParam['startDate']) ? $dataTableParam['startDate'] : "";
+        $endDate = isset($dataTableParam['endDate']) ? $dataTableParam['endDate'] : "";
         $params = [];
         $types = "";
 
@@ -1329,8 +1349,14 @@ class DataTable extends BaseQuery
             foreach ($filters as $filter) {
                 $conditions[] = "{$filter['column']} = ?";
                 $params[] = $filter['value'];
-                $types .= "s";  // Assuming all filter values are strings, adjust if not
+                $types .= "s";
             }
+        }
+
+        if ($startDate && $endDate) {
+            $conditions[] = "date BETWEEN ? AND ?";
+            $params = array_merge($params, [$startDate, $endDate]);
+            $types .= "ss";
         }
 
         if (!empty($conditions)) {

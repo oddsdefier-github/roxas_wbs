@@ -21,6 +21,7 @@ function updateBillingData($conn, string $billingID)
     mysqli_stmt_close($stmt);
     return $result;
 }
+
 function updateClientStatus($conn, string $clientID)
 {
     $sql = "UPDATE client_data SET reading_status = 'read' WHERE client_id = ?";
@@ -34,8 +35,6 @@ function updateClientStatus($conn, string $clientID)
     mysqli_stmt_close($stmt);
     return $result;
 }
-
-
 
 function generateBillingPDF($conn)
 {

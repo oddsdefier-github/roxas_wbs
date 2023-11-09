@@ -33,6 +33,7 @@ include './auth_guard.php';
     </section>
 
     <?php include './layouts/scripts.php'; ?>
+    <?php include './layouts/date_range_scripts.php' ?>
     <script>
         $("#subheader-title").text("Clients Application");
         $("#subheader-title").siblings("h5").text("Manage, Evaluate, Approve, or Decline Client Applications.")
