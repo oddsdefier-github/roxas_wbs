@@ -107,8 +107,15 @@ export class DataTableWithPagination {
 
     initializeDateRangePicker() {
         const self = this;
-        const start = moment().subtract(312, 'days');
-        const end = moment();
+
+        let start = moment(self.startDate, 'YYYY-MM-DD', true);
+        console.log(start)
+        let end = moment(self.endDate, 'YYYY-MM-DD', true);
+
+        if (!start.isValid() || !end.isValid()) {
+            start = moment().subtract(312, 'days');
+            end = moment();
+        }
 
         function callback(start, end) {
             $('#date_range_picker span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));

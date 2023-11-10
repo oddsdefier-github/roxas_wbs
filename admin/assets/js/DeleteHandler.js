@@ -70,16 +70,25 @@ class EnhancedDeleteHandler extends DeleteHandler {
 
         let searchKey = '';
         let filterKey = '';
-
+        let startDateKey = '';
+        let endDateKey = '';
         if (filename === 'clients.php') {
             searchKey = '#displayClientDataTable-searchKey';
             filterKey = '#displayClientDataTable-filterKey';
+            startDateKey = '#displayClientDataTable-startDateKey';
+            endDateKey = '#displayClientDataTable-endDateKey';
         } else if (filename === 'clients_application_table.php') {
+
             searchKey = '#displayClientApplicationTable-searchKey';
             filterKey = '#displayClientApplicationTable-filterKey';
+            startDateKey = '#displayClientApplicationTable-startDateKey';
+            endDateKey = '#displayClientApplicationTable-endDateKey';
         }
         const savedSearch = localStorage.getItem(searchKey) || "";
         const savedFilter = JSON.parse(localStorage.getItem(filterKey)) || [];
+        const savedStartDate = localStorage.getItem(startDateKey) || "";
+        const savedEndDate = localStorage.getItem(endDateKey) || "";
+
         $.ajax({
             url: "database_actions.php",
             type: "post",
@@ -90,7 +99,7 @@ class EnhancedDeleteHandler extends DeleteHandler {
             },
             success: (data) => {
                 alert(data);
-                this.tableInstance.fetchTableData(savedSearch, savedFilter);
+                this.tableInstance.fetchTableData(savedSearch, savedFilter, 'timestamp', 'DESC', savedStartDate, savedEndDate);
             }
         });
     }
