@@ -2,7 +2,17 @@
 
 use Cashier\Database\DatabaseConnection;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
+
+use League\OAuth2\Client\Provider\Google;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 require 'database/connection.php';
+require __DIR__ . "/vendor/autoload.php";
 
 class BaseQuery
 {
@@ -14,6 +24,71 @@ class BaseQuery
     }
 }
 
+class PdfGenerator extends BaseQuery {}
+class WBSMailer extends PdfGenerator
+{
+    public function handleEmailSend($mailData, $filepath)
+    {
+        $requiredFields = ['email', 'first_name', 'last_name'];
+
+        foreach ($requiredFields as $field) {
+            if (empty($mailData[$field])) {
+                return "Error: Field '{$field}' is missing from client data.";
+            }
+        }
+
+        if (!file_exists($filepath) || !is_readable($filepath)) {
+            return "Error: The file at {$filepath} does not exist or is not readable.";
+        }
+
+        $email = $mailData['email'];
+        $firstName = $mailData['first_name'];
+        $lastName = $mailData['last_name'];
+
+        $sender = 'roxaswaterbillingsystem@gmail.com';
+
+        $mail = new PHPMailer(true);
+        try {
+            $credentials = json_decode(file_get_contents('config/credentials.json'), true);
+
+            $provider = new Google([
+                'clientId'     => $credentials['clientId'],
+                'clientSecret' => $credentials['clientSecret'],
+                'redirectUri'  => $credentials['redirectUri'],
+            ]);
+
+            $mail = new PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            //to view proper logging details for success and error messages
+            // $mail->SMTPDebug = 1;
+            $mail->Host = 'smtp.gmail.com';  //gmail SMTP server
+            $mail->Username = $sender;   //email
+            $mail->Password = 'sluzmpnriimiseul';   //16 character obtained from app password created
+            $mail->Port = 465;                    //SMTP port
+            $mail->SMTPSecure = "ssl";
+
+            $mail->setFrom($sender, 'Roxas Water Billing System Inc.');
+            $mail->addAddress($email, $firstName . ' ' . $lastName); // Add a recipient
+
+            $mail->addAttachment($filepath); // Add the PDF generated
+
+            // Content
+            $mail->isHTML(true); // Set email format to HTML
+            $mail->Subject = 'Your Copy of Certificate of Registration';
+            $mail->Body    = 'Please find your certificate attached.';
+
+            $mail->send();
+            $mail->smtpClose();
+            return 'Message has been sent';
+
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return 'An error occurred while sending the email. Please try again later.';
+        }
+    }
+}
 class DatabaseQueries extends BaseQuery
 {
     public function notificationExists($user_id, $type, $reference_id)
@@ -568,7 +643,7 @@ class DatabaseQueries extends BaseQuery
                 }
 
                 $output .= "
-                    <button onclick=\"acceptClientAppPayment('$applicationID')\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
+                    <button onclick=\"window.location.href='$url'\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
                         <div class=\"flex-shrink-0\">
                             <img class=\"rounded-full w-11 h-11\" src='$icon' alt=\"Confirm Icon\">
                         </div>

@@ -32,7 +32,7 @@ include './auth_guard.php';
         </main>
     </section>
     <?php include './layouts/scripts.php'; ?>
-    
+
     <script src="./assets/libs/html5-qrcode/html5-qrcode.min.js"></script>
     <script type="module" src="./assets/js/acceptBillingPayment.js"></script>
     <script>
