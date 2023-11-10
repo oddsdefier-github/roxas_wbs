@@ -20,8 +20,14 @@ $(document).ready(function () {
                 $(this).removeClass('inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50').addClass('inline-block font-bold p-4 text-primary-700 bg-primary-100 rounded-t-lg active');
             }
         });
-    })
-    filename === 'billing_payments.php' ? $("#billingFilter").show() : $("#billingFilter").hide();
+    });
+    if (filename === 'billing_payments.php') {
+        $("#billingFilter").show();
+        $("#qrBilling").show();
+    } else {
+        $("#billingFilter").hide();
+        $("#qrBilling").hide();
+    }
     filename === 'application_payments.php' ? $("#clientAppFilter").show() : $("#clientAppFilter").hide();
 
 

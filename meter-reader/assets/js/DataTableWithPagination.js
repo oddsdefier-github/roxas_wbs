@@ -98,7 +98,6 @@ export class DataTableWithPagination {
 
         this.applySavedFiltersToUI();
         this.handleClearInput();
-        this.elements.resetFilter.prop("disabled", false)
     }
 
     applyFilter() {
@@ -174,7 +173,6 @@ export class DataTableWithPagination {
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']");
         radios.prop('checked', false);
         this.applyFilter();
-        this.elements.resetFilter.prop("disabled", true)
     }
 
 

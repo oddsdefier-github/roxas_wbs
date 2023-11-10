@@ -496,6 +496,54 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
+
+    function checkClientIDExistence($clientID) {
+        $sql = "SELECT client_id FROM client_data WHERE client_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+    
+        if (!$stmt) {
+            $response = array(
+                "status" => "error",
+                "message" => "Error preparing statement",
+                "is_exist" => false
+            );
+            return $response;
+        }
+    
+        mysqli_stmt_bind_param($stmt, "s", $clientID);
+    
+        if (!mysqli_stmt_execute($stmt)) {
+            $response = array(
+                "status" => "error",
+                "message" => "Error executing statement",
+                "is_exist" => false
+            );
+            mysqli_stmt_close($stmt);
+            return $response;
+        }
+    
+        $result = mysqli_stmt_get_result($stmt);
+    
+        if ($result->num_rows > 0) {
+            $response = array(
+                "status" => "success",
+                "message" => "Client ID exists",
+                "is_exist" => true
+            );
+        } else {
+            $response = array(
+                "status" => "success",
+                "message" => "Client ID does not exist",
+                "is_exist" => false
+            );
+        }
+    
+        mysqli_stmt_close($stmt);
+    
+        return $response;
+    }
+    
+    
 }
 
 

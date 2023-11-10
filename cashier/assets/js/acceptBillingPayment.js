@@ -94,6 +94,7 @@ function setModalSettings() {
 
 function acceptClientBillingPayment(clientID) {
     console.log(clientID)
+
     retrieveBillingData(clientID, function (jsonData) {
         console.log(jsonData)
         const fullName = jsonData.full_name;
@@ -269,3 +270,79 @@ function sendPaymentConfirmationRequest(totalBill, clientID) {
 
 
 window.acceptClientBillingPayment = acceptClientBillingPayment
+
+
+const qrScan = $("#qrBilling");
+const qrBillPaymentModal = $("#qrBillPaymentModal");
+
+
+let permissionGranted = false; // Flag to track if permission is granted
+
+qrScan.on('click', async function () {
+    if (!permissionGranted) {
+        try {
+            await navigator.mediaDevices.getUserMedia({ video: true });
+            permissionGranted = true;
+        } catch (error) {
+            console.error("Error getting camera permission:", error);
+            return;
+        }
+    }
+
+    qrBillPaymentModal.css({
+        'display': 'grid',
+        'place-items': 'center',
+        'justify-content': 'center',
+        'align-items': 'center'
+    });
+
+    function checkClientIDExistence(decodedText) {
+        $.ajax({
+            url: "database_actions.php",
+            type: "post",
+            data: {
+                action: "checkClientIDExistence",
+                clientID: decodedText 
+            },
+            success: function(data) {
+                console.log(data)
+                const isClientIDExist = JSON.parse(data).is_exist;
+    
+                if (isClientIDExist) {
+                    acceptClientBillingPayment(decodedText);
+                    console.log("Payment accepted successfully.");
+                } else {
+                    alert("Invalid QR data.");
+                }
+            }
+        });
+    }
+    
+    function onScanSuccess(decodedText, decodedResult) {
+        console.log("Decoded Result:", decodedResult);
+        console.log("Decoded Text:", decodedText);
+    
+        try {
+            qrBillPaymentModal.hide();
+            checkClientIDExistence(decodedText);
+        } catch (error) {
+            console.error("Error in acceptClientBillingPayment:", error);
+        }
+    
+        html5QrcodeScanner.clear();
+    }
+
+    
+    let qrboxFunction = function (viewfinderWidth, viewfinderHeight) {
+        let minEdgePercentage = 0.5; // 70%
+        let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+        let qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
+        return {
+            width: qrboxSize,
+            height: qrboxSize,
+        };
+    };
+
+    let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: qrboxFunction, rememberLastUsedCamera: true });
+    html5QrcodeScanner.render(onScanSuccess);
+});

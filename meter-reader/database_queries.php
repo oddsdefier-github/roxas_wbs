@@ -43,7 +43,7 @@ class PdfGenerator extends BaseQuery
         }
         $meterReader = $_SESSION['user_name'];
 
-        $qrCode = new QrCode($data['billing_id']);
+        $qrCode = new QrCode($data['client_id']);
         $writer = new PngWriter();
         $result = $writer->write($qrCode);
 

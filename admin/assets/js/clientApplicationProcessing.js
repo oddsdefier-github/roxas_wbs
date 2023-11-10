@@ -439,9 +439,10 @@ $(document).ready(function () {
                 console.log(data)
 
                 if (responseData) {
-                    const clientID = responseData['client_id']; //for printing its not the id in the url
+                    const clientID = responseData['client_id']; 
                     if (responseData['status'] === 'error') {
-                        alert(`${responseData['message']}`)
+                        alert(`${responseData['message']}`);
+                        window.location.reload();
                     } else if ((responseData['status'] === 'success')) {
                         alert(`${responseData['message']}`)
                         setTimeout(() => {

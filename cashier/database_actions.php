@@ -59,6 +59,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'retrieveBillingData':
             handleRetrieveBillingData($dbQueries);
             break;
+        case 'checkClientIDExistence':
+            handleCheckClientIDExistence($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -132,4 +135,14 @@ function handleConfirmBillingPayment($dbQueries)
         $confirmBillPayment = $dbQueries->confirmBillingPayment($formData);
         echo json_encode($confirmBillPayment);
     }
+}
+
+function handleCheckClientIDExistence($dbQueries)
+{
+    if (isset($_POST['clientID'])) {
+        $clientID = $_POST['clientID'];
+        $checkClientIDExistence = $dbQueries->checkClientIDExistence($clientID );
+        echo json_encode( $checkClientIDExistence);
+    }
+
 }
