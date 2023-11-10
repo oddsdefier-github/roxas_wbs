@@ -839,13 +839,6 @@ class DataTable extends BaseQuery
         $params = [];
         $types = "";
 
-        $conditions[] = "status = ?";
-        $params[] = 'confirmed';
-        $types .= "s";
-
-        $conditions[] = "billing_status = ?";
-        $params[] = 'unpaid';
-        $types .= "s";
 
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
@@ -858,14 +851,14 @@ class DataTable extends BaseQuery
             foreach ($filters as $filter) {
                 $conditions[] = "{$filter['column']} = ?";
                 $params[] = $filter['value'];
-                $types .= "s";  // Assuming all filter values are strings, adjust if not
+                $types .= "s";
             }
         }
 
         if (!empty($conditions)) {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application WHERE " . implode(" AND ", $conditions);
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application WHERE status = 'confirmed' AND billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
         } else {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM client_application WHERE status = 'confirmed' AND billing_status = 'unpaid'";
         }
 
 
@@ -884,6 +877,8 @@ class DataTable extends BaseQuery
         $params = array_merge($params, [$itemPerPage, $offset]);
         $types .= "ii";
 
+        // echo $sql;
+        // print_r($params);
         $stmt = $this->conn->prepareStatement($sql);
         mysqli_stmt_bind_param($stmt, $types, ...$params);
         mysqli_stmt_execute($stmt);
