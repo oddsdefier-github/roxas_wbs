@@ -172,6 +172,7 @@ class WBSMailer extends PdfGenerator
             $mail->Body    = 'Please find your certificate attached.';
 
             $mail->send();
+            $mail->smtpClose();
             return 'Message has been sent';
 
         } catch (Exception $e) {
@@ -621,11 +622,6 @@ class DatabaseQueries extends BaseQuery
             "email" => $email
         );
 
-        $pdf = new PdfGenerator($this->conn);
-        $wbsMailer = new WbsMailer($this->conn);
-
-        $applicationFeeID = $this->getApplicationFeeID($formData['applicationID']);
-        $filepath = $pdf->generateRegCertificate($clientID, $applicationFeeID);
         try {
             if ($this->checkDuplicate("meter_number", $meterNumber, $table)) {
                 throw new Exception("Meter No: ' . $meterNumber . ' already exists.");
@@ -637,6 +633,11 @@ class DatabaseQueries extends BaseQuery
                 throw new Exception("Failed to insert into client data.");
             };
 
+            $pdf = new PdfGenerator($this->conn);
+            $wbsMailer = new WbsMailer($this->conn);
+
+            $applicationFeeID = $this->getApplicationFeeID($formData['applicationID']);
+            $filepath = $pdf->generateRegCertificate($clientID, $applicationFeeID);
             $wbsMailer->handleEmailSend($mailData, $filepath);
 
             $response = array(
