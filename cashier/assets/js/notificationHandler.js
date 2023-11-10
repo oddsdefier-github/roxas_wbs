@@ -6,6 +6,7 @@ const viewAllBtn = $("#view_all_notifications");
 
 notificationContainer.data('state', 'limited');
 
+
 notificationBtn.off("click");
 notificationBtn.on("click", function () {
     loadNotifications(10);
@@ -76,5 +77,18 @@ function countUnreadNotifications() {
         }
     });
 }
+
+
+const currentPath = window.location.pathname;
+const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
+
+if (filename === 'billing_payments.php') {
+    notificationContainer.addClass('pointer-events-none');
+} else if (filename === 'application_payments.php') {
+    notificationContainer.removeClass('pointer-events-none');
+} else {
+    notificationContainer.addClass('pointer-events-none');
+}
+
 
 countUnreadNotifications();

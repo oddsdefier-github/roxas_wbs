@@ -999,9 +999,7 @@ class DatabaseQueries extends BaseQuery
                 ";
             }
         } else {
-            $sql = "TRUNCATE TABLE notifications";
-            $this->conn->query($sql);
-            $output .= "<div class=\"flex justify-center items-center px-4 py-3 hover:bg-gray-100\">None</div>";
+            $output .= "<div class=\"font-medium italic text-gray-600 flex justify-center items-center px-4 py-5 hover:bg-gray-100\">Empty</div>";
         }
 
         $output = '<input id="notif_count_hidden" type="hidden" value="' . $notifCount . '">' . $output;

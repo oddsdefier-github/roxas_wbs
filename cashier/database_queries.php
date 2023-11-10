@@ -545,7 +545,7 @@ class DatabaseQueries extends BaseQuery
             while ($row = $result->fetch_assoc()) {
                 $icon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0idy02IGgtNiIgc3R5bGU9IndpZHRoOiAxLjhyZW07IGhlaWdodDogMS44cmVtOyBjb2xvcjogIzE2YTM0YSI+DQogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTguNjAzIDMuNzk5QTQuNDkgNC40OSAwIDAxMTIgMi4yNWMxLjM1NyAwIDIuNTczLjYgMy4zOTcgMS41NDlhNC40OSA0LjQ5IDAgMDEzLjQ5OCAxLjMwNyA0LjQ5MSA0LjQ5MSAwIDAxMS4zMDcgMy40OTdBNC40OSA0LjQ5IDAgMDEyMS43NSAxMmE0LjQ5IDQuNDkgMCAwMS0xLjU0OSAzLjM5NyA0LjQ5MSA0LjQ5MSAwIDAxLTEuMzA3IDMuNDk3IDQuNDkxIDQuNDkxIDAgMDEtMy40OTcgMS4zMDdBNC40OSA0LjQ5IDAgMDExMiAyMS43NWE0LjQ5IDQuNDkgMCAwMS0zLjM5Ny0xLjU0OSA0LjQ5IDQuNDkgMCAwMS0zLjQ5OC0xLjMwNiA0LjQ5MSA0LjQ5MSAwIDAxLTEuMzA3LTMuNDk4QTQuNDkgNC40OSAwIDAxMi4yNSAxMmMwLTEuMzU3LjYtMi41NzMgMS41NDktMy4zOTdhNC40OSA0LjQ5IDAgMDExLjMwNy0zLjQ5NyA0LjQ5IDQuNDkgMCAwMTMuNDk3LTEuMzA3em03LjAwNyA2LjM4N2EuNzUuNzUgMCAxMC0xLjIyLS44NzJsLTMuMjM2IDQuNTNMOS41MyAxMi4yMmEuNzUuNzUgMCAwMC0xLjA2IDEuMDZsMi4yNSAyLjI1YS43NS43NSAwIDAwMS4xNC0uMDk0bDMuNzUtNS4yNXoiIGNsaXAtcnVsZT0iZXZlbm9kZCIgLz4NCjwvc3ZnPg0K";
                 $notificationContent = $row['message'];
-                $userID = $row['user_id'];
+                $applicationID = $row['reference_id'];
                 $url = BASE_URL . '/cashier/application_payments.php';
 
 
@@ -568,21 +568,19 @@ class DatabaseQueries extends BaseQuery
                 }
 
                 $output .= "
-                    <a href=\"$url\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
+                    <button onclick=\"acceptClientAppPayment('$applicationID')\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
                         <div class=\"flex-shrink-0\">
                             <img class=\"rounded-full w-11 h-11\" src='$icon' alt=\"Confirm Icon\">
                         </div>
                         <div class=\"w-full pl-3\">
-                            <div class=\"text-gray-500 text-sm mb-1.5 dark:text-gray-400\">$notificationContent</div>
-                            <div class=\"text-xs text-blue-600 dark:text-blue-500\">$timeAgo</div>
+                            <div class=\"text-left text-gray-500 text-sm mb-1.5 dark:text-gray-400\">$notificationContent</div>
+                            <div class=\"text-left text-xs text-blue-600 dark:text-blue-500\">$timeAgo</div>
                         </div>
-                    </a>
-                ";
+                    </button>
+                    ";
             }
         } else {
-            $sql = "TRUNCATE TABLE notifications";
-            $this->conn->query($sql);
-            $output .= "<div class=\"flex justify-center items-center px-4 py-3 hover:bg-gray-100\">None</div>";
+            $output .= "<div class=\"font-medium italic text-gray-600 flex justify-center items-center px-4 py-5 hover:bg-gray-100\">Empty</div>";
         }
 
         $output = '<input id="notif_count_hidden" type="hidden" value="' . $notifCount . '">' . $output;

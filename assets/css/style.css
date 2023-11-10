@@ -1696,10 +1696,6 @@ input:checked + .toggle-bg {
   right: -0.5rem;
 }
 
-.-top-2 {
-  top: -0.5rem;
-}
-
 .-top-3 {
   top: -0.75rem;
 }
@@ -1754,10 +1750,6 @@ input:checked + .toggle-bg {
 
 .right-2\.5 {
   right: 0.625rem;
-}
-
-.right-3 {
-  right: 0.75rem;
 }
 
 .start-1 {
@@ -3919,10 +3911,6 @@ input:checked + .toggle-bg {
 
 .stroke-gray-800 {
   stroke: #1F2937;
-}
-
-.stroke-green-400 {
-  stroke: #31C48D;
 }
 
 .object-contain {

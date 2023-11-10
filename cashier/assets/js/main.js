@@ -9,6 +9,8 @@ $(document).ready(function () {
         const billingTable = new DataTableWithPagination("billing_data", '#displayBillingTable');
     } else if (filename === 'application_payments.php') {
         const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientAppBillingTable');
+        
+
     }
 
     $('.payments_nav').each(function () {
