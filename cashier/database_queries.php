@@ -48,54 +48,6 @@ class DatabaseQueries extends BaseQuery
             return false;
         }
     }
-    // public function markAllNotificationsAsRead()
-    // {
-    //     $sql = "UPDATE notifications SET status = 'read' WHERE user_id = ? AND status = 'unread'";
-    //     $stmt = $this->conn->prepareStatement($sql);
-
-    //     session_start();
-    //     $user_id = $_SESSION['user_id'];
-    //     mysqli_stmt_bind_param($stmt, "s", $user_id);
-
-    //     if (mysqli_stmt_execute($stmt)) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    public function handleLoadNotification()
-    {
-
-        $sql = "SELECT * FROM notifications ORDER BY timestamp DESC LIMIT 10";
-        $result = $this->conn->query($sql);
-
-        $output = "";
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $url = "https://www.facebook.com";
-                $icon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBjbGFzcz0idy02IGgtNiI+DQogIDxwYXRoIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZD0iTTEwLjEyNSAyLjI1aC00LjVjLS42MjEgMC0xLjEyNS41MDQtMS4xMjUgMS4xMjV2MTcuMjVjMCAuNjIxLjUwNCAxLjEyNSAxLjEyNSAxLjEyNWgxMi43NWMuNjIxIDAgMS4xMjUtLjUwNCAxLjEyNS0xLjEyNXYtOU0xMC4xMjUgMi4yNWguMzc1YTkgOSAwIDAxOSA5di4zNzVNMTAuMTI1IDIuMjVBMy4zNzUgMy4zNzUgMCAwMTEzLjUgNS42MjV2MS41YzAgLjYyMS41MDQgMS4xMjUgMS4xMjUgMS4xMjVoMS41YTMuMzc1IDMuMzc1IDAgMDEzLjM3NSAzLjM3NU05IDE1bDIuMjUgMi4yNUwxNSAxMiIgLz4NCjwvc3ZnPg0K"; // Your SVG data
-                $notificationContent = $row['content'];
-                $userName = $row['user_name'];
-                $timeAgo = "a few moments ago";
-
-                $output .= "
-                    <a href=\"$url\" target=\"_blank\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
-                        <div class=\"flex-shrink-0\">
-                            <img class=\"rounded-full w-11 h-11\" src='$icon' alt=\"Confirm Icon\">
-                        </div>
-                        <div class=\"w-full pl-3\">
-                            <div class=\"text-gray-500 text-sm mb-1.5 dark:text-gray-400\">$notificationContent <span class=\"font-semibold text-gray-900 dark:text-white\">$userName</span></div>
-                            <div class=\"text-xs text-blue-600 dark:text-blue-500\">$timeAgo</div>
-                        </div>
-                    </a>
-                ";
-            }
-        }
-
-        return $output; // This will return our generated HTML to wherever you call the function
-    }
 
     public function retrieveBillingRates()
     {
@@ -410,6 +362,23 @@ class DatabaseQueries extends BaseQuery
         }
         return true;
     }
+    public function markNotificationAsRead($applicationID)
+    {
+        $sqlUpdate = "UPDATE notifications SET status = 'read' WHERE reference_id = ?";
+        $stmtUpdate = $this->conn->prepareStatement($sqlUpdate);
+        if (!$stmtUpdate) {
+
+            return false;
+        }
+        mysqli_stmt_bind_param($stmtUpdate, "s", $applicationID);
+
+        if (mysqli_stmt_execute($stmtUpdate)) {
+            return true;
+        } else {
+
+            return false;
+        }
+    }
 
     public function confirmAppPayment($formData)
     {
@@ -468,8 +437,11 @@ class DatabaseQueries extends BaseQuery
             if (!$this->updateClientApplication($applicationID, $applicationFeeID)) {
                 throw new Exception("Failed to update client application.");
             }
+            if (!$this->markNotificationAsRead($applicationID)) {
+                throw new Exception("Failed to mark notification as read.");
+            }
 
-            $message = "Payment confirmed for application ID: " . $applicationID;
+            $message = "$clientName's payment for Application: $applicationID has been confirmed.";
             $type = "payment_confirmation";
 
             if ($this->notificationExists($userID, $type, $applicationID)) {
@@ -477,7 +449,7 @@ class DatabaseQueries extends BaseQuery
             }
 
             if (!$this->addNotification($userID, $message, $type, $applicationID)) {
-                throw new Exception("Failed to add notification.");
+                throw new Exception("Failed t o add notification.");
             }
 
             $this->conn->commitTransaction();
@@ -497,10 +469,11 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 
-    function checkClientIDExistence($clientID) {
+    public function checkClientIDExistence($clientID)
+    {
         $sql = "SELECT client_id FROM client_data WHERE client_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
-    
+
         if (!$stmt) {
             $response = array(
                 "status" => "error",
@@ -509,9 +482,9 @@ class DatabaseQueries extends BaseQuery
             );
             return $response;
         }
-    
+
         mysqli_stmt_bind_param($stmt, "s", $clientID);
-    
+
         if (!mysqli_stmt_execute($stmt)) {
             $response = array(
                 "status" => "error",
@@ -521,9 +494,9 @@ class DatabaseQueries extends BaseQuery
             mysqli_stmt_close($stmt);
             return $response;
         }
-    
+
         $result = mysqli_stmt_get_result($stmt);
-    
+
         if ($result->num_rows > 0) {
             $response = array(
                 "status" => "success",
@@ -537,13 +510,112 @@ class DatabaseQueries extends BaseQuery
                 "is_exist" => false
             );
         }
-    
+
         mysqli_stmt_close($stmt);
-    
+
         return $response;
     }
-    
-    
+
+
+    public function loadNotificationHtml($limit)
+    {
+        $limit = isset($_POST['limit']) ? $_POST['limit'] : 10;
+
+        $countSql = "SELECT COUNT(*) as notificationCount FROM notifications WHERE status = 'unread' AND type = 'application_confirmation'";
+
+        if ($limit !== 'all') {
+            $countSql .= " ORDER BY created_at DESC LIMIT $limit";
+        }
+
+        $countResult = $this->conn->query($countSql);
+        $row = $countResult->fetch_assoc();
+        $notifCount = $row['notificationCount'];
+
+        $sql = "SELECT * FROM notifications WHERE status = 'unread' AND type = 'application_confirmation' ORDER BY created_at DESC";
+
+        if ($limit !== 'all') {
+            $sql .= " LIMIT $limit";
+        }
+
+        $result = $this->conn->query($sql);
+
+        $output = "";
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $icon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0idy02IGgtNiIgc3R5bGU9IndpZHRoOiAxLjhyZW07IGhlaWdodDogMS44cmVtOyBjb2xvcjogIzE2YTM0YSI+DQogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTguNjAzIDMuNzk5QTQuNDkgNC40OSAwIDAxMTIgMi4yNWMxLjM1NyAwIDIuNTczLjYgMy4zOTcgMS41NDlhNC40OSA0LjQ5IDAgMDEzLjQ5OCAxLjMwNyA0LjQ5MSA0LjQ5MSAwIDAxMS4zMDcgMy40OTdBNC40OSA0LjQ5IDAgMDEyMS43NSAxMmE0LjQ5IDQuNDkgMCAwMS0xLjU0OSAzLjM5NyA0LjQ5MSA0LjQ5MSAwIDAxLTEuMzA3IDMuNDk3IDQuNDkxIDQuNDkxIDAgMDEtMy40OTcgMS4zMDdBNC40OSA0LjQ5IDAgMDExMiAyMS43NWE0LjQ5IDQuNDkgMCAwMS0zLjM5Ny0xLjU0OSA0LjQ5IDQuNDkgMCAwMS0zLjQ5OC0xLjMwNiA0LjQ5MSA0LjQ5MSAwIDAxLTEuMzA3LTMuNDk4QTQuNDkgNC40OSAwIDAxMi4yNSAxMmMwLTEuMzU3LjYtMi41NzMgMS41NDktMy4zOTdhNC40OSA0LjQ5IDAgMDExLjMwNy0zLjQ5NyA0LjQ5IDQuNDkgMCAwMTMuNDk3LTEuMzA3em03LjAwNyA2LjM4N2EuNzUuNzUgMCAxMC0xLjIyLS44NzJsLTMuMjM2IDQuNTNMOS41MyAxMi4yMmEuNzUuNzUgMCAwMC0xLjA2IDEuMDZsMi4yNSAyLjI1YS43NS43NSAwIDAwMS4xNC0uMDk0bDMuNzUtNS4yNXoiIGNsaXAtcnVsZT0iZXZlbm9kZCIgLz4NCjwvc3ZnPg0K";
+                $notificationContent = $row['message'];
+                $userID = $row['user_id'];
+                $url = BASE_URL . '/cashier/application_payments.php';
+
+
+                $currentDateTime = new DateTime();
+                $notificationDateTime = new DateTime($row['created_at'], new DateTimeZone('Asia/Manila'));
+                $interval = $notificationDateTime->diff($currentDateTime);
+
+                if ($interval->y > 0) {
+                    $timeAgo = $interval->y . " year" . ($interval->y > 1 ? "s" : "") . " ago";
+                } elseif ($interval->m > 0) {
+                    $timeAgo = $interval->m . " month" . ($interval->m > 1 ? "s" : "") . " ago";
+                } elseif ($interval->d > 0) {
+                    $timeAgo = $interval->d . " day" . ($interval->d > 1 ? "s" : "") . " ago";
+                } elseif ($interval->h > 0) {
+                    $timeAgo = $interval->h . " hour" . ($interval->h > 1 ? "s" : "") . " ago";
+                } elseif ($interval->i > 0) {
+                    $timeAgo = $interval->i . " minute" . ($interval->i > 1 ? "s" : "") . " ago";
+                } else {
+                    $timeAgo = "a few moments ago";
+                }
+
+                $output .= "
+                    <a href=\"$url\" class=\"flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700\">
+                        <div class=\"flex-shrink-0\">
+                            <img class=\"rounded-full w-11 h-11\" src='$icon' alt=\"Confirm Icon\">
+                        </div>
+                        <div class=\"w-full pl-3\">
+                            <div class=\"text-gray-500 text-sm mb-1.5 dark:text-gray-400\">$notificationContent</div>
+                            <div class=\"text-xs text-blue-600 dark:text-blue-500\">$timeAgo</div>
+                        </div>
+                    </a>
+                ";
+            }
+        } else {
+            $sql = "TRUNCATE TABLE notifications";
+            $this->conn->query($sql);
+            $output .= "<div class=\"flex justify-center items-center px-4 py-3 hover:bg-gray-100\">None</div>";
+        }
+
+        $output = '<input id="notif_count_hidden" type="hidden" value="' . $notifCount . '">' . $output;
+        echo $output;
+    }
+
+    public function countUnreadNotifications()
+    {
+        $sql = "SELECT COUNT(*) as unread_count FROM notifications WHERE status = 'unread' AND type = 'application_confirmation'";
+        $response = array();
+
+        $result = $this->conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $unread_count = $row['unread_count'];
+
+            if ($unread_count > 0) {
+                $response['status'] = 'success';
+                $response['unread_count'] = $unread_count;
+            } else {
+                $response['status'] = 'empty';
+                $response['unread_count'] = 0;
+            }
+        } else {
+            $response['status'] = 'error';
+            $response['message'] = 'Unable to fetch data';
+        }
+
+        return json_encode($response);
+    }
+
+
 }
 
 

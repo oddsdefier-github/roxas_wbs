@@ -590,11 +590,44 @@ class DatabaseQueries extends BaseQuery
         }
         return null;
     }
+    public function notificationExists($user_id, $type, $reference_id)
+    {
+        $sql = "SELECT id FROM notifications WHERE user_id = ? AND type = ? AND reference_id = ? LIMIT 1";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+
+        mysqli_stmt_bind_param($stmt, "sss", $user_id, $type, $reference_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+
+        $num_rows = mysqli_stmt_num_rows($stmt);
+        mysqli_stmt_close($stmt);
+        return $num_rows > 0;
+    }
+
+    public function addNotification($user_id, $message, $type, $reference_id = null)
+    {
+        $sql = "INSERT INTO notifications (user_id, message, type, reference_id) VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        mysqli_stmt_bind_param($stmt, "ssss", $user_id, $message, $type, $reference_id);
+
+        if (mysqli_stmt_execute($stmt)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public function approveClientApplication($formData)
     {
+        $this->conn->beginTransaction();
         $response = array();
         $table = "client_data";
+        $applicationID = htmlspecialchars($formData['applicationID'], ENT_QUOTES, 'UTF-8');
         $firstName = htmlspecialchars($formData['firstName'], ENT_QUOTES, 'UTF-8');
         $middleName = htmlspecialchars($formData['middleName'], ENT_QUOTES, 'UTF-8');
         $lastName = htmlspecialchars($formData['lastName'], ENT_QUOTES, 'UTF-8');
@@ -622,6 +655,7 @@ class DatabaseQueries extends BaseQuery
             "email" => $email
         );
 
+
         try {
             if ($this->checkDuplicate("meter_number", $meterNumber, $table)) {
                 throw new Exception("Meter No: ' . $meterNumber . ' already exists.");
@@ -632,6 +666,10 @@ class DatabaseQueries extends BaseQuery
             if (!$this->insertIntoClientData($formData, $clientID)) {
                 throw new Exception("Failed to insert into client data.");
             };
+
+
+
+            $this->conn->commitTransaction();
 
             $pdf = new PdfGenerator($this->conn);
             $wbsMailer = new WbsMailer($this->conn);
@@ -647,6 +685,7 @@ class DatabaseQueries extends BaseQuery
             );
             return $response;
         } catch(Exception $e) {
+            $this->conn->rollbackTransaction();
             $response = array(
                 "status" => "error",
                 "message" => "Error: " . $e->getMessage()
@@ -780,8 +819,11 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
+
+
     public function updatedClientAppStatus($applicantID, $documentsData)
     {
+        $response = array();
         $meterNumber = htmlspecialchars($documentsData['meterNumber'], ENT_QUOTES, 'UTF-8');
         $firstName = htmlspecialchars($documentsData['firstName'], ENT_QUOTES, 'UTF-8');
         $middleName = htmlspecialchars($documentsData['middleName'], ENT_QUOTES, 'UTF-8');
@@ -854,34 +896,71 @@ class DatabaseQueries extends BaseQuery
         );
 
         if ($stmt->execute()) {
-            return [
+            $applicationID = $applicantID;
+
+            session_start();
+            $userID = $_SESSION['user_id'];
+            $message = "$fullName's application has  been confirmed.";
+            $type = "application_confirmation";
+
+            if ($this->notificationExists($userID, $type, $applicationID)) {
+                $response = array(
+                    'status' => 'error',
+                    'message' => "Notification exists."
+                );
+                return $response;
+            }
+            if (!$this->addNotification($userID, $message, $type, $applicationID)) {
+                $response = array(
+                    'status' => 'error',
+                    'message' => "Failed to add notification."
+                );
+                return $response;
+            }
+
+            $response = array(
                 'status' => 'success',
                 'message' => 'Successfully updated the client application status.'
-            ];
+            );
+            return $response;
         } else {
-            return [
+            $response =  array(
                 'status' => 'error',
                 'message' => 'Failed to update the client application status.'
-            ];
+            );
+            return $response;
         }
     }
 
     public function loadNotificationHtml($limit)
     {
         $limit = isset($_POST['limit']) ? $_POST['limit'] : 10;
-        if ($limit === 'all') {
-            $sql = "SELECT * FROM notifications WHERE status = 'unread' ORDER BY created_at DESC";
-        } else {
-            $sql = "SELECT * FROM notifications WHERE status = 'unread' ORDER BY created_at DESC LIMIT $limit";
+
+        // Counting query with the same conditions as the main query
+        $countSql = "SELECT COUNT(*) as notificationCount FROM notifications WHERE status = 'unread' AND type = 'payment_confirmation'";
+
+        if ($limit !== 'all') {
+            // Append limit to counting query
+            $countSql .= " ORDER BY created_at DESC LIMIT $limit";
         }
+
+        $countResult = $this->conn->query($countSql);
+        $row = $countResult->fetch_assoc();
+        $notifCount = $row['notificationCount'];
+
+        // Main query for fetching notifications
+        $sql = "SELECT * FROM notifications WHERE status = 'unread' AND type = 'payment_confirmation' ORDER BY created_at DESC";
+
+        if ($limit !== 'all') {
+            $sql .= " LIMIT $limit";
+        }
+
         $result = $this->conn->query($sql);
 
-        $notifCount = 0;
         $output = "";
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                $notifCount++;
                 $icon = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0idy02IGgtNiIgc3R5bGU9IndpZHRoOiAxLjhyZW07IGhlaWdodDogMS44cmVtOyBjb2xvcjogIzE2YTM0YSI+DQogIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTguNjAzIDMuNzk5QTQuNDkgNC40OSAwIDAxMTIgMi4yNWMxLjM1NyAwIDIuNTczLjYgMy4zOTcgMS41NDlhNC40OSA0LjQ5IDAgMDEzLjQ5OCAxLjMwNyA0LjQ5MSA0LjQ5MSAwIDAxMS4zMDcgMy40OTdBNC40OSA0LjQ5IDAgMDEyMS43NSAxMmE0LjQ5IDQuNDkgMCAwMS0xLjU0OSAzLjM5NyA0LjQ5MSA0LjQ5MSAwIDAxLTEuMzA3IDMuNDk3IDQuNDkxIDQuNDkxIDAgMDEtMy40OTcgMS4zMDdBNC40OSA0LjQ5IDAgMDExMiAyMS43NWE0LjQ5IDQuNDkgMCAwMS0zLjM5Ny0xLjU0OSA0LjQ5IDQuNDkgMCAwMS0zLjQ5OC0xLjMwNiA0LjQ5MSA0LjQ5MSAwIDAxLTEuMzA3LTMuNDk4QTQuNDkgNC40OSAwIDAxMi4yNSAxMmMwLTEuMzU3LjYtMi41NzMgMS41NDktMy4zOTdhNC40OSA0LjQ5IDAgMDExLjMwNy0zLjQ5NyA0LjQ5IDQuNDkgMCAwMTMuNDk3LTEuMzA3em03LjAwNyA2LjM4N2EuNzUuNzUgMCAxMC0xLjIyLS44NzJsLTMuMjM2IDQuNTNMOS41MyAxMi4yMmEuNzUuNzUgMCAwMC0xLjA2IDEuMDZsMi4yNSAyLjI1YS43NS43NSAwIDAwMS4xNC0uMDk0bDMuNzUtNS4yNXoiIGNsaXAtcnVsZT0iZXZlbm9kZCIgLz4NCjwvc3ZnPg0K"; // Your SVG data
                 $notificationContent = $row['message'];
                 $userID = $row['user_id'];
@@ -913,7 +992,7 @@ class DatabaseQueries extends BaseQuery
                             <img class=\"rounded-full w-11 h-11\" src='$icon' alt=\"Confirm Icon\">
                         </div>
                         <div class=\"w-full pl-3\">
-                            <div class=\"text-gray-500 text-sm mb-1.5 dark:text-gray-400\">$notificationContent <span class=\"font-semibold text-gray-900 dark:text-white\">$userID</span></div>
+                            <div class=\"text-gray-500 text-sm mb-1.5 dark:text-gray-400\">$notificationContent</div>
                             <div class=\"text-xs text-blue-600 dark:text-blue-500\">$timeAgo</div>
                         </div>
                     </a>
@@ -924,13 +1003,14 @@ class DatabaseQueries extends BaseQuery
             $this->conn->query($sql);
             $output .= "<div class=\"flex justify-center items-center px-4 py-3 hover:bg-gray-100\">None</div>";
         }
+
         $output = '<input id="notif_count_hidden" type="hidden" value="' . $notifCount . '">' . $output;
         echo $output;
     }
 
     public function countUnreadNotifications()
     {
-        $sql = "SELECT COUNT(*) as unread_count FROM notifications WHERE status = 'unread'";
+        $sql = "SELECT COUNT(*) as unread_count FROM notifications WHERE status = 'unread' AND type = 'payment_confirmation'";
         $response = array();
 
         $result = $this->conn->query($sql);

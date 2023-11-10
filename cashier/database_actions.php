@@ -59,6 +59,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'retrieveBillingData':
             handleRetrieveBillingData($dbQueries);
             break;
+        case 'countUnreadNotifications':
+            handleCountUnreadNotification($dbQueries);
+            break;
         case 'checkClientIDExistence':
             handleCheckClientIDExistence($dbQueries);
             break;
@@ -103,7 +106,10 @@ function handleConfirmAppPayment($dbQueries)
 
 function handleLoadNotification($dbQueries)
 {
-    $dbQueries->loadNotificationHtml();
+    if (isset($_POST['limit'])) {
+        $limit = $_POST['limit'];
+        $dbQueries->loadNotificationHtml($limit);
+    }
 }
 
 function handleRetrieveClientApplication($dbQueries)
@@ -136,13 +142,17 @@ function handleConfirmBillingPayment($dbQueries)
         echo json_encode($confirmBillPayment);
     }
 }
-
+function handleCountUnreadNotification($dbQueries)
+{
+    $count = $dbQueries->countUnreadNotifications();
+    echo $count;
+}
 function handleCheckClientIDExistence($dbQueries)
 {
     if (isset($_POST['clientID'])) {
         $clientID = $_POST['clientID'];
-        $checkClientIDExistence = $dbQueries->checkClientIDExistence($clientID );
-        echo json_encode( $checkClientIDExistence);
+        $checkClientIDExistence = $dbQueries->checkClientIDExistence($clientID);
+        echo json_encode($checkClientIDExistence);
     }
 
 }
