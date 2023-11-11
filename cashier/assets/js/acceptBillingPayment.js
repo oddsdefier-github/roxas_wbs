@@ -158,7 +158,6 @@ function validateField(fieldName, fieldValue, totalBill) {
             }
         }
     };
-
     const fieldErrors = validate({ [fieldName]: fieldValue.trim() }, validationRules);
     return fieldErrors ? fieldErrors[fieldName] : null;
 }
@@ -254,10 +253,10 @@ function sendPaymentConfirmationRequest(totalBill, clientID) {
                 clientID: clientID,
                 amountPaid: amountPaid,
                 remainingBalance: remainingBalance
-
             }
         },
         success: function (data) {
+            console.log(data)
             setTimeout(function () {
                 alert(JSON.parse(data).message)
                 acceptBillingPaymentModal.hide();
@@ -302,12 +301,11 @@ qrScan.on('click', async function () {
             type: "post",
             data: {
                 action: "checkClientIDExistence",
-                clientID: decodedText 
+                clientID: decodedText
             },
-            success: function(data) {
+            success: function (data) {
                 console.log(data)
                 const isClientIDExist = JSON.parse(data).is_exist;
-    
                 if (isClientIDExist) {
                     acceptClientBillingPayment(decodedText);
                     console.log("Payment accepted successfully.");
@@ -317,22 +315,22 @@ qrScan.on('click', async function () {
             }
         });
     }
-    
+
     function onScanSuccess(decodedText, decodedResult) {
         console.log("Decoded Result:", decodedResult);
         console.log("Decoded Text:", decodedText);
-    
+
         try {
             qrBillPaymentModal.hide();
             checkClientIDExistence(decodedText);
         } catch (error) {
             console.error("Error in acceptClientBillingPayment:", error);
         }
-    
+
         html5QrcodeScanner.clear();
     }
 
-    
+
     let qrboxFunction = function (viewfinderWidth, viewfinderHeight) {
         let minEdgePercentage = 0.5; // 70%
         let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);

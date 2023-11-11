@@ -51,7 +51,7 @@ if (isset($_GET['id'])) {
 
         $html = file_get_contents("./templates/reg-template.html");
 
-        $html = str_replace(["{{ name }}", "{{ address }}", "{{ meter_number }}", "{{ reg_id }}", "{{ client_id }}", "{{ date }}", " {{ property_type }}"], [$name, $address, $meterNumber, $regID, $id, $date, $propertyType], $html);
+        $html = str_replace(["{{ name }}", "{{ address }}", "{{ meter_number }}", "{{ reg_id }}", "{{ client_id }}", "{{ date }}", "{{ property_type }}"], [$name, $address, $meterNumber, $regID, $id, $date, $propertyType], $html);
 
 
         $dompdf->loadHtml($html);

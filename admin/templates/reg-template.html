@@ -18,6 +18,8 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            padding: 0;
+            margin: 0;
         }
         th, td {
             border: 1px solid black; /* Add a 1px solid black border to table cells */
@@ -45,44 +47,103 @@
         <td class="header" style="margin: 0; width: 60px;">
             <img src="./quality.png" style="width: 50px; height: 50px; margin: auto;">
         </td>
-        <td class="header" style="text-align: left; vertical-align: middle;">
+        <td class="header" style="text-align: left; vertical-align: middle; width: 45%;">
             <h3 style="margin: 0;">Water Billing System Inc.</h3>
             <h6 style="margin: 0;">Odiong, Roxas, Oriental Mindoro</h6>
             <h6 style="margin: 0;">Tel No.(043)289-7056 Email: waterbillingsystem@gmail.com</h6>
         </td>
-        <td class="header" style="text-align: left; vertical-align: middle;">
-            <h6 style="margin: 0;">Registration No.:
-                &nbsp;&nbsp;&nbsp;
-                <span>{{ reg_id }}</span>
-            </h6>
-            <h6 style="margin: 0;">Client ID:
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>{{ client_id }}</span>
-            </h6>
-            <h6 style="margin: 0;">Date:
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <span>{{ date }}</span>
-            </h6>
+        <td class="header" style="text-align: left; vertical-align: middle; width: 45%;">
+            <table>
+                <tr>
+                    <td style="width: 40%; border: none;">
+                        <p style="margin: 0; text-align: left;"><strong>Registration No.</strong></p>
+                    </td>
+                    <td style="width: 3%; border: none;">
+                        <p style="margin: 0; text-align: center;">:</p>
+                    </td>
+                    <td style="width: 50%; border: none;">
+                        <p style="margin: 0; text-align: left;">{{ reg_id }}</p>
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td style="width: 40%; border: none;">
+                        <p style="margin: 0; text-align: left;"><strong>Date</strong></p>
+                    </td>
+                    <td style="width: 3%; border: none;">
+                        <p style="margin: 0; text-align: center;">:</p>
+                    </td>
+                    <td style="width: 50%; border: none;">
+                        <p style="margin: 0; text-align: left;">{{ date }}</p>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
     
-    <h3 style="text-align: center;"><strong>CERTIFICATE OF REGISTRATION</strong></h3>
+    <h2 style="text-align: center; margin-top: 30px;"><strong>CERTIFICATE OF REGISTRATION</strong></h2>
     
-    <h5 style="margin: 0; margin-top: 50px; margin-left: 2px;">Client Information</h5>
+    <h5 style="margin: 0; margin-top: 30px; margin-left: 6px;">Client Information</h5>
     <table>
     	<thead>
     		<tr>
-    			<td class="header" style="width: 70%;">
-	    			<p style="margin: 0;"><strong>Name: </strong> {{ name }}</p>
-	    			<p style="margin: 0;"><strong>Address: </strong> {{ address }}</p>
-    			</td class="header">
-    			
-				<td class="header" style="width: 30%;">
-		    		<p style="margin: 0;"><strong>Meter No.: </strong> {{ meter_number }}</p>
-	    			<p style="margin: 0;"><strong>Property Type: </strong> {{ property_type }}</p>
-				</td>
-
+    			<td class="header">
+                    <table>
+                        <tr>
+                            <td style="width: 15%; border: none;">
+                                <p style="margin: 0; text-align: left;"><strong>Name</strong></p>
+                            </td>
+                            <td style="width: 3%; border: none;">
+                                <p style="margin: 0; text-align: center;">:</p>
+                            </td>
+                            <td style="width: 82%; border: none;">
+                                <p style="margin: 0; text-align: left;">{{ name }}</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td style="width: 15%; border: none;">
+                                <p style="margin: 0; text-align: left;"><strong>Meter No.</strong></p>
+                            </td>
+                            <td style="width: 3%; border: none;">
+                                <p style="margin: 0; text-align: center;">:</p>
+                            </td>
+                            <td style="width: 82%; border: none;">
+                                <p style="margin: 0; text-align: left;">{{ meter_number }}</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td style="width: 15%; border: none;">
+                                <p style="margin: 0; text-align: left;"><strong>Property Type</strong></p>
+                            </td>
+                            <td style="width: 3%; border: none;">
+                                <p style="margin: 0; text-align: center;">:</p>
+                            </td>
+                            <td style="width: 82%; border: none;">
+                                <p style="margin: 0; text-align: left;">{{ property_type }}</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td style="width: 15%; border: none;">
+                                <p style="margin: 0; text-align: left;"><strong>Address</strong></p>
+                            </td>
+                            <td style="width: 3%; border: none;">
+                                <p style="margin: 0; text-align: center;">:</p>
+                            </td>
+                            <td style="width: 82%; border: none;">
+                                <p style="margin: 0; text-align: left;">{{ address }}</p>
+                            </td>
+                        </tr>
+                    </table>
+    			</td>
+    		
     		</tr>
     	</thead>
     </table>

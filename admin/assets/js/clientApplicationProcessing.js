@@ -439,7 +439,7 @@ $(document).ready(function () {
                 console.log(data)
 
                 if (responseData) {
-                    const clientID = responseData['client_id']; 
+                    const clientID = responseData['client_id'];
                     if (responseData['status'] === 'error') {
                         alert(`${responseData['message']}`);
                         window.location.reload();

@@ -24,10 +24,98 @@ class BaseQuery
     }
 }
 
-class PdfGenerator extends BaseQuery {
-    
-    
-    public function generateBillingReceipt($billingID) {
+class PdfGenerator extends BaseQuery
+{
+    public function selectClientData($clientID)
+    {
+        $sql = "SELECT * FROM client_data
+        LEFT JOIN client_secondary_data ON client_data.client_id = client_secondary_data.client_id
+        WHERE client_data.client_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return null;
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $clientID);
+
+        if (!mysqli_stmt_execute($stmt)) {
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            mysqli_stmt_free_result($stmt);
+            mysqli_stmt_close($stmt);
+            return $row;
+        } else {
+            mysqli_stmt_free_result($stmt);
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+    }
+
+    public function generateBillingReceipt($receiptData)
+    {
+        $options = new Options();
+        $options->setChroot(__DIR__);
+        $options->setIsRemoteEnabled(true);
+        $options->set('defaultFont', 'Helvetica');
+        $options->set('isHtml5ParserEnabled', true);
+
+        $options->set('margin-top', '0mm');
+        $options->set('margin-right', '0mm');
+        $options->set('margin-bottom', '0mm');
+        $options->set('margin-left', '0mm');
+        $dompdf = new Dompdf($options);
+
+        $dompdf->setPaper(array(0, 0, 504, 504), 'portrait');
+
+        $qrCode = new QrCode($receiptData['no']);
+        $writer = new PngWriter();
+        $result = $writer->write($qrCode);
+        $qrDataUri = $result->getDataUri();
+
+
+        $no = $receiptData['no'];
+        $date = date("Y-m-d");
+        $accountNo = $receiptData['account_no'];
+        $propertyType = $receiptData['property_type'];
+        $consumption = $receiptData['consumption'];
+        $penalty = $receiptData['penalty'];
+        $tax = $receiptData['tax'];
+        $amountDue = $receiptData['amount_due'];
+        $cashier = $receiptData['cashier'];
+
+        $formattedPenalty = number_format($penalty, 2, '.', ',');
+        $formattedTax = number_format($tax, 2, '.', ',');
+        $formattedAmountDue = number_format($amountDue, 2, '.', ',');
+
+        $clientData = $this->selectClientData($accountNo);
+        $firstName = $clientData['first_name'];
+        $lastName = $clientData['last_name'];
+        $meterNumber = $clientData['meter_number'];
+        $street = $clientData['street'];
+        $brgy = $clientData['brgy'];
+
+        $template = file_get_contents('templates/invoice-billing.html');
+        $invoiceHtml = str_replace(
+            ['{{tx_qr}}', '{{transaction_id}}', '{{date}}', '{{account_no}}', '{{last_name}}', '{{first_name}}', '{{meter_number}}','{{property_type}}', '{{street}}', '{{brgy}}', '{{consumption}}', '{{penalty}}', '{{tax}}', '{{amount_due}}', '{{cashier}}'],
+            [$qrDataUri, $no, $date, $accountNo, $lastName, $firstName, $meterNumber, $propertyType, $street, $brgy, $consumption,$formattedPenalty, $formattedTax, $formattedAmountDue, $cashier],
+            $template
+        );
+        $dompdf->loadHtml($invoiceHtml);
+        $dompdf->render();
+        $dompdf->addInfo("Title", "Receipt");
+
+        $fileName = __DIR__ . '/temp/' . $no . '.pdf';
+        if (file_put_contents($fileName, $dompdf->output())) {
+            return $fileName;
+        } else {
+            return null;
+        }
 
     }
 }
@@ -82,8 +170,8 @@ class WBSMailer extends PdfGenerator
 
             // Content
             $mail->isHTML(true); // Set email format to HTML
-            $mail->Subject = 'Your Copy of Certificate of Registration';
-            $mail->Body    = 'Please find your certificate attached.';
+            $mail->Subject = 'Billing Receipt';
+            $mail->Body    = 'Please find your receipt attached.';
 
             $mail->send();
             $mail->smtpClose();
@@ -304,10 +392,13 @@ class DatabaseQueries extends BaseQuery
         $billingID = $billingData['billingData']['billing_id'];
         $billingAmount = $billingData['billingData']['billing_amount'];
         $billingMonth = $billingData['billingData']['billing_month'];
+        $propertyType = $billingData['billingData']['rate_type'];
+        $consumption = $billingData['billingData']['consumption'];
         $taxRate = $rates['rates']['tax'];
         $penalty = $billingData['billingData']['penalty'];
 
         $calculatedTotalBill = $this->calculateTotalBill($billingAmount, $penalty, $taxRate);
+        $taxAmount =  $calculatedTotalBill[0];
         $totalWithTax = $calculatedTotalBill[1];
 
         $clientName = $this->getClientName($clientID);
@@ -333,6 +424,20 @@ class DatabaseQueries extends BaseQuery
             "confirmedBy" => $userID
         );
 
+        $receiptData = array(
+            "no" => $transactionID,
+            "account_no" => $clientID,
+            "name" => $clientName,
+            "property_type" => $propertyType,
+            "consumption" => $consumption,
+            "rates" => $rates,
+            "penalty" => $penalty,
+            "tax" => $taxAmount,
+            "amount_due" => $totalWithTax,
+            "cashier" => $userName
+        );
+
+
         try {
             if ($this->checkDuplicate('reference_id', $referenceID, 'transactions')) {
                 throw new Exception("Failed to do insert new transaction. $clientName already paid, please check transaction history.");
@@ -342,6 +447,23 @@ class DatabaseQueries extends BaseQuery
             }
             if (!$this->updateBillingData($billingID)) {
                 throw new Exception("Failed to update billing data.");
+            }
+
+            $generatedBillingReceipt = new PdfGenerator($this->conn);
+            $filepath = $generatedBillingReceipt->generateBillingReceipt($receiptData);
+            if (!$generatedBillingReceipt->generateBillingReceipt($receiptData)) {
+                throw new Exception("Failed to generate new billing receipt.");
+            }
+
+            $emailSend = new WBSMailer($this->conn);
+            $clientData = $generatedBillingReceipt->selectClientData($clientID);
+            $emailSent = $emailSend->handleEmailSend($clientData, $filepath);
+            if (!$emailSent) {
+                $response = array(
+                    "status" => "error",
+                    "message" => "Failed to send receipt to email."
+                );
+                return $response;
             }
 
             $this->conn->commitTransaction();
