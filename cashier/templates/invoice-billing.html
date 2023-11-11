@@ -1,332 +1,148 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/gutenberg-css@0.6"> -->
     <style>
         /* * {
-            outline: 1px solid red;
-        } */
-    	body {
-		    font-family: "Helvetica", sans-serif;
-            margin-left: auto;
-            margin-right: auto;
-            width: 60%; /* or any specific width */
-		}
-        .main-container {
-            border: 1px dashed gray;
+    		outline: 1px solid red;
+    	} */
+
+        body {
+            font-family: "Helvetica", sans-serif;
+            background-image: url('./quality.png');
+            background-position: center;
+            background-size: 45%;
+            background-repeat: no-repeat;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        .header {
-        	border: 0;
+
+        th,
+        td {
+            padding: 4px;
+            text-align: left;
         }
+
+        .header {
+            border: 0;
+        }
+
         footer {
             text-align: center;
             font-style: italic;
         }
+
         p {
-        	font-size: 12px;
-        	font-family: "Helvetica", sans-serif;
+            font-size: 12px;
+            margin-top: 2px;
+            margin-bottom: 2px;
         }
-
-        hr {
-            width: 80%;
-            border-top: 1px dashed #000;  /* 1px thickness and dashed */
-            border-bottom: none; /* Remove bottom border */
-            border-left: none;  /* Remove left border */
-            border-right: none;  /* Remove right border */
-        }
-
     </style>
 </head>
+
 <body>
-<div class="main-container">
-    <div style="margin: 20px;">
-    <table cellspacing="0" cellpadding="0">
+
+    <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
-            <td class="header" style="text-align: center; vertical-align: middle; padding: 30px 0px;">
-                <h3 style="margin: 0;">Water Billing System Inc.</h3>
-                <h5 style="margin: 0;">Odiong, Roxas, Oriental Mindoro</h5>
-                <h5 style="margin: 0;">Email: waterbillingsystem@gmail.com</h5>
-                <h5 style="margin: 0;">Tel No.(043)289-7056</h5>
+            <td class="header" style="margin: 0; width: 60px;">
+                <img src="./quality.png" style="width: 50px; height: 50px; margin: auto;">
             </td>
-        </tr> 
-    </table>
-    <table>
-        <tr>
-            <td class="header" style="text-align: center; vertical-align: middle; padding-bottom: 10px;">
-                <h2 style="margin: 0;"><strong>STATEMENT OF ACCOUNT</strong></h2>
-            </td>
-        </tr>
-        <tr>
-            <td class="header" style="text-align: center; vertical-align: middle; padding-bottom: 15px;">
-                <hr>
-                <h2 style="margin: 0;">{{billing_id}}</h2>
-                <hr>
-                <h6 style="margin: 0;">{{datetime}}</h6>
-            </td>
-        </tr>
-        <tr>
             <td class="header" style="text-align: left; vertical-align: middle;">
-                <h5 style="margin: 0; font-weight: lighter;">Account Number</h5>
-                <h4 style="margin: 0; padding-bottom: 10px; font-weight: bold; letter-spacing: 1px;">{{client_id}}</h4>
-                <h4 style="margin: 0; text-transform: uppercase;"><strong><span>{{last_name}}</span>, <span>{{first_name}}</span></strong></h4>
-                <h4 style="margin: 0; text-transform: uppercase;"><strong><span>{{brgy}}</span>, {{municipality}}</strong></h4>
-            </td>
-        </tr>
-    </table> 
-    
-    <table cellspacing="0" cellpadding="0">
-        <tr>
-            <td class="header" style="padding: 20px 0px; text-align: left; vertical-align: middle; width: 45%; padding-right: 10px ;">
-
-                <table>
-                    <tr>
-                        <td style="width: 45%;"> 
-                            <p style="margin: 0; text-align: left;">Billing Month</p>
-                        </td>
-                        <td style="width: 5%;"> 
-                            <p style="margin: 0; text-align: center;">:</p>
-                        </td>
-                        <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">{{billing_month}}</p>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                         <td style="width: 45%;">  
-                            <p style="margin: 0; text-align: left;">Meter Number</p>
-                        </td>
-                        <td style="width: 5%;"> 
-                            <p style="margin: 0; text-align: center;">:</p>
-                        </td>
-                         <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">{{meter_number}}</p>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                         <td style="width: 45%;">  
-                            <p style="margin: 0; text-align: left;">Period To</p>
-                        </td>
-                        <td style="width: 5%;">  
-                            <p style="margin: 0; text-align: center;">:</p>
-                        </td>
-                         <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">{{period_to}}</p>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                         <td style="width: 45%;">  
-                            <p style="margin: 0; text-align: left;">Period From</p>
-                        </td>
-                        <td style="width: 5%;">   
-                            <p style="margin: 0; text-align: center;">:</p>
-                        </td>
-                         <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">{{period_from}}</p>
-                        </td>
-                    </tr>
-                </table>
-
-            </td>
-            <td class="header" style="padding: 20px 0px; text-align: left; vertical-align: middle; width: 45%; padding-left: 10px ;">
-
-                <table>
-                    <tr>
-                         <td style="width: 45%;">  
-                            <p style="margin: 0; text-align: left;">Rate Type</p>
-                        </td>
-                        <td style="width: 5%;">   
-                            <p style="margin: 0; text-align: center;">:</p>
-                        </td>
-                         <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right; text-transform: uppercase;">{{property_type}}</p>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                         <td style="width: 45%;">  
-                            <p style="margin: 0; text-align: left;">Curr Reading</p>
-                        </td>
-                        <td style="width: 5%;">   
-                            <p style="margin: 0; text-align: center;">:</p>
-                        </td>
-                         <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">{{curr_reading}}</p>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                         <td style="width: 45%;">  
-                            <p style="margin: 0; text-align: left;">Prev Reading</p>
-                        </td>
-                        <td style="width: 5%;">   
-                            <p style="margin: 0; text-align: center;">:</p>
-                        </td>
-                         <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">{{prev_reading}}</p>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                         <td style="width: 45%;">  
-                            <p style="margin: 0; text-align: left;">Consumption</p>
-                        </td>
-                        <td style="width: 5%;">   
-                            <p style="margin: 0; text-align: center;">:</p>
-                        </td>
-                         <td style="width: 50%;"> 
-                            <p style="margin: 0; text-align: right;">{{consumption}}</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-    <table cellspacing="0" cellpadding="0">
-        <tr>
-            <td style="width: 50%; text-align: left;">
-                <p style="margin: 0;">RATE COMPONENTS</p>
-            </td>
-            <td style="width: 5%; text-align: center;">
-                <p style="margin: 0;">:</p>
-            </td>
-            <td style="width: 45%; text-align: right;">
-                <p style="margin: 0;">AMOUNT</p>
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 50%; text-align: left;">
-                <p style="margin: 0;">Charging fee per cubic meter</p>
-            </td>
-            <td style="width: 5%; text-align: center;">
-                <p style="margin: 0;">:</p>
-            </td>
-            <td style="width: 45%; text-align: right;">
-                <p style="margin: 0;"><span>{{rates}}</span>.00</p>
-            </td>
-        </tr>
-        <tr>
-            <td style="width: 50%; text-align: left;">
-                <p>CURRENT GROSS AMOUNT</p>
-            </td>
-            <td style="width: 5%; text-align: center;">
-                <p style="margin: 0;">:</p>
-            </td>
-            <td style="width: 45%; text-align: right;">
-                <p>Php <span>{{billing_amount}}</span>.00</p>
-            </td>
-        </tr>
-    </table>
-    <table cellspacing="0" cellpadding="0">
-        <tr>
-            <td style="width: 55%; text-align: left;">
-                <h3 style="margin-bottom: 0; margin-top: 5px;">CURRENT MONTH BILL</h3>
-            </td>
-            <td style="width: 5%; text-align: center;">
-                <h4 style="margin-bottom: 0; margin-top: 5px;">:</h4>
-            </td>
-            <td style="width: 40%; text-align: right;">
-                <h2 style="margin: 2px;">Php <span>{{billing_amount}}</span>.00</h2>
-            </td>
-        </tr>
-    </table>
-    <table>
-        <tr style="padding: 20px 0px;">
-            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
-                <h5 style="margin: 0; margin-top: 15px; text-transform: uppercase; width: 100%; font-weight: bolder;">Important Notice</h5>
-                <p style="margin: 0; width: 100%; text-align: justify;">Your current bill is due upon receipt. Prompt payment ensures continued service and avoids any unnecessary late fees. For inquiries or alternative payment arrangements, please reach out to us at 0912-345-6789 or email waterbillingsystem@gmail.com. Thank you for your attention to this matter.</p>
-            </td>
-        </tr>
-
-        <tr style="padding: 20px 0px;">
-            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
-                <table cellspacing="0" cellpadding="0">
-                    <tr style="padding: 20px 0px;">
-                        <td style="width: 60%; padding: 10px; text-align: center;">
-                            <h3 style="margin-bottom: 0; margin-top: 5px;">DUE DATE</h3>
-                        </td>
-                        <td style="width: 5%; padding: 10px; text-align: center;">
-                            <h3 style="margin-bottom: 0; margin-top: 5px;">:</h3>
-                        </td>
-                        <td style="width: 35%; padding: 10px; text-align: center;">
-                            <h3 style="margin: 2px;"><span>{{due_date}}</span></h3>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr style="padding: 20px 0px;">
-            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
-                <h5 style="margin: 0; margin-top: 15px; text-transform: uppercase; width: 100%; font-weight: bolder;">Disconnection Notice</h5>
-                <p style="margin: 0; width: 100%; text-align: justify;">
-                    Your current bill is due upon receipt and must be settled within 30 days to avoid service disconnection. Late payments will incur additional fees. For inquiries or alternative payment arrangements, please reach out to us at 0912-345-6789 or email waterbillingsystem@gmail.com. Thank you for your immediate attention to this matter.
-                </p>
-            </td>
-        </tr>
-
-        <tr style="padding: 20px 0px;">
-            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
-                <table cellspacing="0" cellpadding="0">
-                    <tr style="padding: 20px 0px;">
-                        <td style="width: 60%; padding: 10px; text-align: center;">
-                            <h3 style="margin-bottom: 0; margin-top: 5px;">DISCONNECTION DATE</h3>
-                        </td>
-                        <td style="width: 5%; padding: 10px; text-align: center;">
-                            <h3 style="margin-bottom: 0; margin-top: 5px;">:</h3>
-                        </td>
-                        <td style="width: 35%; padding: 10px; text-align: center;">
-                            <h3 style="margin: 2px;"><span>{{disconnection_date}}</span></h3>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td class="header" style="text-align: center; vertical-align: middle; padding: 10px 0px;">
-                <img src="{{qr_code_path}}" alt="QR Code" style="width: 120px; height: 120px;">
+                <h3 style="margin: 0;">Water Billing System Inc.</h3>
+                <h6 style="margin: 0;">Odiong, Roxas, Oriental Mindoro</h6>
+                <h6 style="margin: 0;">Tel No.(043)289-7056 Email: waterbillingsystem@gmail.com</h6>
             </td>
         </tr>
     </table>
 
     <table>
-        <tr style="padding: 20px 0px;">
-            <td class="header" style="margin: 20px 0px; text-align: center; vertical-align: middle;">
-                <h5 style="margin: 0; margin-top: 15px; text-transform: uppercase; width: 100%; font-weight: bolder;">
-                    ** PLEASE PRESENT THIS UPON PAYMENT **
-                </h5>
-            </td>
-            
-        </tr>
+        <thead>
+            <tr>
+                <td style="width: 70%;">
+                    <h3 style="text-align: left; font-size: 2.5rem; font-weight: 700;"><strong>OFFICIAL RECEIPT</strong></h3>
+                </td>
+                <td>
+                    <p style="margin: 0;"><strong>No: </strong> {{ meter_number }}</p>
+                    <p style="margin: 0;"><strong>Date: </strong> {{ property_type }}</p>
+                </td>
+            </tr>
+        </thead>
     </table>
     <table>
-        <tr style="padding-top: 20px;">
-            <td style="width: 45%; padding-top: 10px; text-align: right;">
-                <p style="margin: 0;">Meter Reader</p>
-            </td>
-            <td style="width: 5%; padding-top: 10px; text-align: center;">
-                <p style="margin: 0;">:</p>
-            </td>
-            <td style="width: 45%;padding-top: 10px; text-align: left;">
-                <p style="margin: 0;"><span>{{meter_reader}}</span></p>
-            </td>
-        </tr>
+        <thead>
+            <tr>
+                <td style="width: 70%;">
+                    <p style="margin: 0; padding: 2px 5px;"><strong>Account No.: </strong> {{ account_no }}</p>
+                    <p style="margin: 0; padding: 2px 5px;"><strong>Name: </strong> {{ name }}</p>
+                    <p style="margin: 0; padding: 2px 5px;"><strong>Meter No.: </strong> {{ meter_number }}</p>
+                    <p style="margin: 0; padding: 2px 5px;"><strong>Property Type: </strong> {{ property_type }}</p>
+                    <p style="margin: 0; padding: 2px 5px;"><strong>Address: </strong> {{ address }}</p>
+                </td>
+                <td>
+                </td>
+            </tr>
+        </thead>
     </table>
+    <div style="margin-top: 2rem;height: 20rem;  border: 1px gray dashed;">
+        <table style="margin: 5px 5px;">
+            <thead>
+                <tr>
+                    <td style="width: 50%;">
+                       <p style="margin: 0; padding: 2px 5px;"><strong>Consumption: </strong> {{ consumption }}</p>
+                       <p style="margin: 0; padding: 2px 5px;"><strong>Rates: </strong> {{ rates }}</p>
+                       <p style="margin: 0; padding: 2px 5px;"><strong>Amount Due: </strong> {{ amount_due }}</p>
+
+                    </td>
+                    <td style="width: 50%;">
+
+                    </td>
+                </tr>
+            </thead>
+        </table>
     </div>
 
-</div>
 
+
+
+    <table style="margin-top: 100px">
+        <thead>
+            <tr>
+                <td class="header" style="border-top: 1px solid black; width: 25%;">
+                    <p style="margin: 0; text-align: center;"></p>
+                </td>
+                <td class="header" style="width: 30%">
+                </td>
+                <td class="header" style="border-top: 1px solid black; width: 45%;">
+                    <p style="margin: 0; text-align: center; text-align: left; font-weight: 600;">TOTAL AMOUNT</p>
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <table style="margin-top: 20px">
+        <thead>
+            <tr>
+                <td class="header" style="border-top: 1px solid black; width: 25%;">
+                    <p style="margin: 0; text-align: center;">Cashier</p>
+                </td>
+                <td class="header" style="width: 50%">
+
+                </td>
+                <td class="header" style="border-top: 1px solid black; width: 25%;">
+                    <p style="margin: 0; text-align: center;">Administrator</p>
+                </td>
+            </tr>
+        </thead>
+    </table>
+
+    <!--     <footer>
+        This is an example
+    </footer> -->
 
 </body>
-</html>
 
+</html>

@@ -24,7 +24,13 @@ class BaseQuery
     }
 }
 
-class PdfGenerator extends BaseQuery {}
+class PdfGenerator extends BaseQuery {
+    
+    
+    public function generateBillingReceipt($billingID) {
+
+    }
+}
 class WBSMailer extends PdfGenerator
 {
     public function handleEmailSend($mailData, $filepath)
@@ -91,39 +97,6 @@ class WBSMailer extends PdfGenerator
 }
 class DatabaseQueries extends BaseQuery
 {
-    public function notificationExists($user_id, $type, $reference_id)
-    {
-        $sql = "SELECT id FROM notifications WHERE user_id = ? AND type = ? AND reference_id = ? LIMIT 1";
-        $stmt = $this->conn->prepareStatement($sql);
-
-        if (!$stmt) {
-            return false;
-        }
-
-        mysqli_stmt_bind_param($stmt, "sss", $user_id, $type, $reference_id);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_store_result($stmt);
-
-        $num_rows = mysqli_stmt_num_rows($stmt);
-        mysqli_stmt_close($stmt);
-        return $num_rows > 0;
-    }
-
-
-    public function addNotification($user_id, $message, $type, $reference_id = null)
-    {
-        $sql = "INSERT INTO notifications (user_id, message, type, reference_id) VALUES (?, ?, ?, ?)";
-        $stmt = $this->conn->prepareStatement($sql);
-
-        mysqli_stmt_bind_param($stmt, "ssss", $user_id, $message, $type, $reference_id);
-
-        if (mysqli_stmt_execute($stmt)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public function retrieveBillingRates()
     {
         $response = array();
@@ -279,7 +252,6 @@ class DatabaseQueries extends BaseQuery
         return $isDuplicate;
     }
 
-
     public function insertIntoTransactions($data)
     {
         $transactionID = $data['transactionID'];
@@ -314,7 +286,6 @@ class DatabaseQueries extends BaseQuery
             }
         }
     }
-
 
     public function confirmBillingPayment($formData)
     {
@@ -590,7 +561,37 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
+    public function notificationExists($user_id, $type, $reference_id)
+    {
+        $sql = "SELECT id FROM notifications WHERE user_id = ? AND type = ? AND reference_id = ? LIMIT 1";
+        $stmt = $this->conn->prepareStatement($sql);
 
+        if (!$stmt) {
+            return false;
+        }
+
+        mysqli_stmt_bind_param($stmt, "sss", $user_id, $type, $reference_id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+
+        $num_rows = mysqli_stmt_num_rows($stmt);
+        mysqli_stmt_close($stmt);
+        return $num_rows > 0;
+    }
+
+    public function addNotification($user_id, $message, $type, $reference_id = null)
+    {
+        $sql = "INSERT INTO notifications (user_id, message, type, reference_id) VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        mysqli_stmt_bind_param($stmt, "ssss", $user_id, $message, $type, $reference_id);
+
+        if (mysqli_stmt_execute($stmt)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public function loadNotificationHtml($limit)
     {
