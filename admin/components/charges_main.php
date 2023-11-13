@@ -18,7 +18,7 @@
                     <div class="shadow">
                         <div>
                             <div class="border-b border-gray-900/10 py-5 mb-5 pb-5 px-5">
-                                <h2 class="text-base font-semibold leading-7 text-gray-900">Application Fees</h2>
+                                <h2 class="uppercase text-base font-bold leading-7 text-gray-700">Application Fees</h2>
                                 <p class="mt-1 text-sm leading-6 text-gray-600">Please do not change this too often.</p>
                             </div>
                             <div class="grid sm:grid-cols-6 grid-cols-1 gap-x-6 gap-y-4 pb-5 px-5">
@@ -154,7 +154,7 @@
                         </div>
                         <div class="flex items-center justify-end gap-x-6 pb-5 px-5">
                             <button id="applicationFeeSubmit" type="submit" class="rounded-md bg-indigo-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                Edit
+                                Update
                             </button>
                         </div>
                     </div>
@@ -165,7 +165,7 @@
                     <div class="shadow">
                         <div>
                             <div class="border-b border-gray-900/10 pb-5 mb-5 p-5 px-5">
-                                <h2 class="text-base font-semibold leading-7 text-gray-900">Penalty Fees</h2>
+                                <h2 class="uppercase text-base font-bold leading-7 text-gray-700">Penalty Fees</h2>
                                 <p class="mt-1 text-sm leading-6 text-gray-600">Please do not change this too often.</p>
                             </div>
                             <div class="sm:col-span-6 grid sm:grid-cols-6 pb-5 px-5">
@@ -227,8 +227,8 @@
                         </div>
                         <div class="flex items-center justify-end gap-x-6 pb-5 px-5">
                             <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
-                            <button id="rates_submit" type="submit" class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                Edit
+                            <button id="rates_submit" type="submit" class="rounded-md bg-indigo-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Update
                             </button>
                         </div>
                     </div>

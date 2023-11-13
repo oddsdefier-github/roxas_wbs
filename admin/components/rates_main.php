@@ -8,7 +8,7 @@
                 <form id="rates_form">
                     <div class="shadow">
                         <div class="border-b border-gray-900/10 pb-5 mb-5 p-5 px-5">
-                            <h2 class="text-base font-semibold leading-7 text-gray-900">Update Rates</h2>
+                            <h2 class="uppercase text-base font-bold leading-7 text-gray-700">Update Rates</h2>
                             <p class="mt-1 text-sm leading-6 text-gray-600">Please be reasonable with the input.</p>
                         </div>
                         <div class="sm:col-span-6 grid sm:grid-cols-6 px-5 pb-5">
