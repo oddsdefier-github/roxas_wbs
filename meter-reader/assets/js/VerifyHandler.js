@@ -233,7 +233,7 @@ class VerifyHandler {
                     this.tableDisplay.fetchTableData(searchTerm, filters);
                     this.hideModal();
 
-                    this.handleSendEmail(client_id);
+                    // this.handleSendEmail(client_id);
                 }, 300)
             }
         });

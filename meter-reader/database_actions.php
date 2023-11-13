@@ -54,6 +54,12 @@ function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
         case 'sendIndividualBilling':
             handleSendIndividualBilling($wbsMailer);
             break;
+        case 'checkVerifiedBill':
+            handleCheckVerifiedBill($dbQueries);
+            break;
+        case 'checkEncodedBill':
+            handleCheckEncodedBill($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -129,4 +135,15 @@ function handleSendIndividualBilling($wbsMailer)
         $sendIndividualBilling = $wbsMailer->sendIndividualBilling($clientID);
         echo json_encode($sendIndividualBilling);
     }
+}
+function handleCheckVerifiedBill($dbQueries)
+{
+    $checkVerifiedBill = $dbQueries->checkVerifiedBill();
+    echo json_encode($checkVerifiedBill);
+}
+
+function handleCheckEncodedBill($dbQueries)
+{
+    $checkEncodedBill = $dbQueries->checkEncodedBill();
+    echo json_encode($checkEncodedBill);
 }

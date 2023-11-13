@@ -129,12 +129,10 @@ class EncodeHandler {
         this.elements.propertyType.text(property_type);
         this.elements.meterNumber.text(meter_number);
         this.elements.prevReading.val(curr_reading);
-        this.ha //current_reading in the dbndleStatus(status);
 
         this.elements.fullName.on('mouseover', () => { this.elements.fullName.text(client_id) });
         this.elements.fullName.on('mouseout', () => { this.elements.fullName.text(full_name) });
         this.elements.copyClientID.on('click', this.copyClientID.bind(this, client_id));
-
 
     }
 
@@ -212,7 +210,6 @@ class EncodeHandler {
         this.encodeReadingDataModal.css('display', 'none');
     }
 }
-
 
 function encodeReadingData(clientID) {
     const handler = new EncodeHandler(clientID, new DataTableWithPagination("client_data", '#displayClientForReadingEncoding'));

@@ -1,38 +1,30 @@
-<div class="px-10 mb-10 container">
+<div class="px-10 mb-10">
     <div>
         <?php include './layouts/rates_charges_nav.php' ?>
     </div>
-    <div class="mt-2">
+    <div class="mt-0">
         <div class="grid grid-cols-6 gap-5">
-            <div class="col-span-2 bg-red-50 p-5 rounded">
-                Rates Summary for Oct 2023 </br>
-
-                Commercial: 42 </br>
-                Residential: 27
-            </div>
-            <div class="col-span-2 row-start-2">
+            <div class="col-span-2">
                 <form id="rates_form">
-                    <div class="space-y-6 shadow p-5 px-5">
-                        <div>
-                            <div class="border-b border-gray-900/10 py-5 mb-5">
-                                <h2 class="text-base font-semibold leading-7 text-gray-900">Update Rates</h2>
-                                <p class="mt-1 text-sm leading-6 text-gray-600">Please be reasonable with the input.</p>
-                            </div>
-                            <div class="sm:col-span-6 grid sm:grid-cols-6">
-                                <div class="sm:col-span-6 grid grid-cols-6">
-                                    <div class="sm:col-span-3">
-                                        <label for="propertyType" class="block text-sm font-medium leading-6 text-gray-900">Property Type</label>
-                                        <div class="mt-2 relative">
-                                            <select id="propertyType" name="propertyType" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
-                                                <option value="Residential">Residential</option>
-                                                <option value="Commercial">Commercial</option>
-                                            </select>
-                                        </div>
+                    <div class="shadow">
+                        <div class="border-b border-gray-900/10 pb-5 mb-5 p-5 px-5">
+                            <h2 class="text-base font-semibold leading-7 text-gray-900">Update Rates</h2>
+                            <p class="mt-1 text-sm leading-6 text-gray-600">Please be reasonable with the input.</p>
+                        </div>
+                        <div class="sm:col-span-6 grid sm:grid-cols-6 px-5 pb-5">
+                            <div class="sm:col-span-6 grid grid-cols-6">
+                                <div class="sm:col-span-3">
+                                    <label for="propertyType" class="block text-sm font-medium leading-6 text-gray-900">Property Type</label>
+                                    <div class="mt-2 relative">
+                                        <select id="propertyType" name="propertyType" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
+                                            <option value="Residential">Residential</option>
+                                            <option value="Commercial">Commercial</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="grid sm:grid-cols-6 grid-cols-1 gap-x-6 gap-y-4">
+                        <div class="grid sm:grid-cols-6 grid-cols-1 px-5">
                             <div class="sm:col-span-6 grid sm:grid-cols-6">
                                 <div class="sm:col-span-6">
                                     <label class="flex items-center text-sm font-medium leading-6 text-gray-600">
@@ -60,7 +52,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex items-center justify-end gap-x-6">
+                        <div class="flex items-center justify-end gap-x-6 p-5 px-5">
                             <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button> -->
                             <button id="submit-application" type="submit" class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 Update
@@ -69,6 +61,7 @@
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>

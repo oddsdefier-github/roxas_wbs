@@ -119,10 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
         $('span[data-input-state="normal"]')
             .css({ "display": "absolute", "top": "0", "right": "0.1rem" });
 
-
-        const audio = new Audio('./failed.mp3');
-        audio.play();
-
         $("#form-signin").addClass("shake");
 
         setTimeout(function () {
@@ -131,10 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 500);
     }
 
-    function playSuccessAudio() {
-        const audio = new Audio('./assets/sounds/success.wav');
-        audio.play();
-    }
 
     async function preloadPages(pages) {
         let promises = pages.map(page => $.get(page));
@@ -184,12 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const baseDir = data.redirect.substring(0, data.redirect.lastIndexOf('/') + 1);
             const pagesToPreload = data.preload.map(page => baseDir + page);
 
-            console.log(pagesToPreload)
             await preloadPages(pagesToPreload);
 
             setTimeout(() => {
                 $('#loading-message').text('Loading the page, please wait....')
-            }, 200);
+            }, 500);
 
             await new Promise(resolve => setTimeout(resolve, 2000));
             loader.hide();
@@ -361,7 +352,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 processSignIn()
                     .then(responseData => {
                         if (responseData && responseData.user_role) {
-                            playSuccessAudio();
                             redirectToRolePage(responseData.user_role);
                         } else {
                             console.error('Unexpected responseData structure:', responseData);

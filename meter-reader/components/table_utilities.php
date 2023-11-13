@@ -12,33 +12,55 @@
                     </svg>
                 </div>
             </div>
-            <div>
-                <select id="address-dropdown" name="add_client_address" class="add_client_address hidden bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                </select>
-            </div>
+
         </div>
         <div class="flex justify-center items-center gap-3">
 
+
+            <div id="verified-counter" class="py-2 px-4 font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
+                <div class="flex gap-1 text-xs text-gray-500">
+                    <p class="font-bold">
+                        <span class="total_verified">0</span>
+                        <span>/</span>
+                        <span class="total_billing">0</span>
+                    </p>
+                </div>
+            </div>
+            <div id="encoded-counter" class="py-2 px-4 font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
+                <div class="flex gap-1 text-xs text-gray-500">
+                    <p class="font-bold">
+                        <span class="total_encoded">0</span>
+                        <span>/</span>
+                        <span class="total_active">0</span>
+                    </p>
+                </div>
+            </div>
             <button id="filterReset" class="py-2 px-4 font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button">
                 <svg xmlns=" http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                 </svg>
             </button>
 
-            <button id="generateBillingPDF" onclick="generateBillingPDF()" class="flex py-2 px-4 font-medium text-gray-600 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                    <path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4"></path>
-                    <path d="M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6"></path>
-                    <path d="M17 18h2"></path>
-                    <path d="M20 15h-3v6"></path>
-                    <path d="M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1z"></path>
-                </svg>
+
+            <button id="generateBillingPDF" onclick="generateBillingPDF()" class="flex justify-center items-center py-2 px-4 font-medium text-gray-600 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" disabled style="display: none;">
+                <span class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="lock w-5 h-5 hidden">
+                        <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="pdf w-5 h-5 hidden" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                        <path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4"></path>
+                        <path d="M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6"></path>
+                        <path d="M17 18h2"></path>
+                        <path d="M20 15h-3v6"></path>
+                        <path d="M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1z"></path>
+                    </svg>
+                </span>
                 <span class="ml-2 text-sm font-medium">Generate</span>
             </button>
 
-            <button id="sendIndividualBilling" onclick="sendIndividualBilling()" class="flex py-2 px-4 font-medium text-gray-600 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
+            <!-- <button id="sendIndividualBilling" onclick="sendIndividualBilling()" class="flex py-2 px-4 font-medium text-gray-600 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M12 18h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5"></path>
@@ -47,7 +69,7 @@
                     <path d="M18 15l3 3l-3 3"></path>
                 </svg>
                 <span class="ml-2 text-sm font-medium">Send Bill</span>
-            </button>
+            </button> -->
 
             <button id="clientStatusFilter" data-dropdown-toggle="clientStatusFilterDropDown" class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 group hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">

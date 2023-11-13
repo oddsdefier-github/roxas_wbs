@@ -33,10 +33,11 @@ include './auth_guard.php';
     </section>
 
     <?php include './components/modal/encode_reading_data_modal.php'; ?>
-    <?php include './components/modal/view_reading_data_modal.php'; ?>
+    <?php include './components/modal/flag_client_modal.php'; ?>
 
     <?php include './layouts/scripts.php'; ?>
     <script type="module" src="./assets/js/EncodeHandler.js"></script>
+    <script src="./assets/js/flagClientHandler.js"></script>
     <script>
         $("#subheader-title").text("Encode Billing Data");
         $("#subheader-title").siblings("h5").text("Handle, Assess, or Encode Billing Data.")

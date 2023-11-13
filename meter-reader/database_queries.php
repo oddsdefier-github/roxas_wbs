@@ -298,6 +298,103 @@ class WBSMailer extends PdfGenerator
 }
 class DatabaseQueries extends BaseQuery
 {
+    public function checkEncodedBill() {
+        $sqlActive = "SELECT COUNT(*) as total_active FROM client_data WHERE status = 'active'";
+        $stmtActive = $this->conn->prepareStatement($sqlActive);
+
+        if (!$stmtActive) {
+            return null;
+        }
+
+        $stmtActive->execute();
+        $resultVerified = $stmtActive->get_result();
+        $totalActive = $resultVerified->fetch_assoc()['total_active'];
+        
+        $sqlEncoded = "SELECT COUNT(*) as total_encoded FROM client_data WHERE status = 'active' AND reading_status = 'encoded'";
+        $stmtEncoded = $this->conn->prepareStatement($sqlEncoded);
+
+        if (!$stmtEncoded) {
+            return null;
+        }
+
+        $stmtEncoded->execute();
+        $resultVerified = $stmtEncoded->get_result();
+        $totalEncoded = $resultVerified->fetch_assoc()['total_encoded'];
+        
+        $isMatch = ($totalActive === $totalEncoded);
+
+        $response = array(
+            'total_active' => $totalActive,
+            'total_encoded' => $totalEncoded,
+            'is_match' => $isMatch
+        );
+        $stmtActive->close();
+        $stmtEncoded->close();
+        return $response;
+    }
+
+    public function getBillingCycle()
+    {
+        $sql = "SELECT billing_month FROM billing_data WHERE billing_type = 'verified' ORDER BY timestamp LIMIT 1";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return null;
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $billingCycle = $result->fetch_assoc()['billing_month'];
+            $stmt->close();
+            return $billingCycle;
+        } else {
+            $stmt->close();
+            return null;
+        }
+    }
+
+    public function checkVerifiedBill()
+    {
+        $response = array();
+        $billingCycle = $this->getBillingCycle();
+        if ($billingCycle === null) {
+            return null;
+        }
+
+        $sqlVerified = "SELECT COUNT(*) as total_verified FROM billing_data WHERE billing_month = ? AND billing_type = 'verified'AND billing_status = 'unpaid'";
+        $stmtVerified = $this->conn->prepareStatement($sqlVerified);
+
+        if (!$stmtVerified) {
+            return null;
+        }
+
+        $stmtVerified->bind_param("s", $billingCycle);
+        $stmtVerified->execute();
+        $resultVerified = $stmtVerified->get_result();
+        $totalVerified = $resultVerified->fetch_assoc()['total_verified'];
+
+        $sqlTotalBilling = "SELECT COUNT(*) as total_billing FROM billing_data WHERE billing_month = ? AND billing_status = 'unpaid'";
+        $stmtTotalBilling = $this->conn->prepareStatement($sqlTotalBilling);
+
+        if (!$stmtTotalBilling) {
+            return null;
+        }
+        $stmtTotalBilling->bind_param("s", $billingCycle);
+        $stmtTotalBilling->execute();
+        $resultTotalBilling = $stmtTotalBilling->get_result();
+        $totalBilling = $resultTotalBilling->fetch_assoc()['total_billing'];
+
+        $isMatch = ($totalVerified === $totalBilling);
+
+        $response = array(
+            'total_verified' => $totalVerified,
+            'total_billing' => $totalBilling,
+            'is_match' => $isMatch
+        );
+        $stmtVerified->close();
+        $stmtTotalBilling->close();
+        return $response;
+    }
     public function retrieveClientData($clientID)
     {
         $response = array();
@@ -952,10 +1049,16 @@ class DataTable extends BaseQuery
 
             <td class="flex items-center px-6 py-4 space-x-3">
                 <button  title="Encode Reading" onclick="encodeReadingData(\'' . $clientID . '\')" class="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded text-sm p-2 text-center inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span class="sr-only">Icon description</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="sr-only">Icon description</span>
+                </button>
+                <button  title="Flag Client" onclick="flagClient(\'' . $clientID . '\')" class="text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded text-sm p-2 text-center inline-flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                    <path fill-rule="evenodd" d="M3 2.25a.75.75 0 01.75.75v.54l1.838-.46a9.75 9.75 0 016.725.738l.108.054a8.25 8.25 0 005.58.652l3.109-.732a.75.75 0 01.917.81 47.784 47.784 0 00.005 10.337.75.75 0 01-.574.812l-3.114.733a9.75 9.75 0 01-6.594-.77l-.108-.054a8.25 8.25 0 00-5.69-.625l-2.202.55V21a.75.75 0 01-1.5 0V3A.75.75 0 013 2.25z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="sr-only">Icon description</span>
                 </button>
 
             </td>

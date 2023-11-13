@@ -5,7 +5,36 @@ $(document).ready(function () {
     const currentPath = window.location.pathname;
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
+    function checkEncodedBill() {
+        $.ajax({
+            url: "database_actions.php",
+            type: "POST",
+            data: {
+                action: "checkEncodedBill"
+            },
+            success: function (data) {
+                console.log(data);
+                const responseData = JSON.parse(data);
+                updateUI(responseData);
+            }
+        })
+    }
+    
+    function updateUI(responseData) {
+        const encodedBill = responseData.total_encoded;
+        const activeClients = responseData.total_active;
+        const isMatch = responseData.is_match;
 
+        $(".total_encoded").text(encodedBill);
+        $(".total_active").text(activeClients);
+
+        if (isMatch) {
+            new DataTableWithPagination("billing_data", '#displayClientForReadingVerification');
+        } else {
+            const html = `<div class="text-center font-semibold italic text-gray-600 dark:text-gray-400 mt-4 py-10">Encode all client first.</div>`;
+            $("#displayClientForReadingVerification").html(html)
+        }
+    }
     $('.page_nav').each(function () {
         $(this).find('a').each(function () {
             const linkHref = $(this).attr('href');
@@ -16,7 +45,6 @@ $(document).ready(function () {
             }
         });
     })
-
 
     switch (filename) {
         case 'encode_meter_reading.php':
@@ -38,12 +66,12 @@ $(document).ready(function () {
 
             break;
         case 'verify_meter_reading.php':
-
             $(".main-content").show();
-            new DataTableWithPagination("billing_data", '#displayClientForReadingVerification');
-
+            $("#encoded-counter").show();
+            checkEncodedBill()
             break;
         case 'bill_meter_reading.php':
+            $("#verified-counter").show();
             $("#generateBillingPDF").show();
             $("#sendIndividualBilling").show();
             $(".main-content").show();
@@ -55,7 +83,8 @@ $(document).ready(function () {
             $("#clientStatusFilter").hide();
             $("#sendIndividualBilling").hide();
             $("#generateBillingPDF").hide();
-            break;
+            $("#verified-counter").hide();
+            $("#encoded-counter").show();
     }
 
 

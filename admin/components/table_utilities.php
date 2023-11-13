@@ -186,7 +186,7 @@
                 </svg>
             </button>
 
-            <div id="transactionFilterDropDown" class="dropdown-container z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
+            <div id="transactionFilterDropDown" class="dropdown-container z-10 hidden w-52 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600">
                 <ul class="px-3 py-2 space-y-1 text-sm text-gray-700" aria-labelledby="dropdownRadioBgHoverButton">
                     <div class="">
                         <ul>
