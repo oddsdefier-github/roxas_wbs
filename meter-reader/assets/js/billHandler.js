@@ -9,7 +9,7 @@ function checkVerifiedBill() {
         success: function (data) {
             console.log(data);
             if (data) {
-            if (data !== 'null') {
+                if (data !== 'null') {
                     updateUI(data);
                 }
             }
@@ -20,10 +20,10 @@ function checkVerifiedBill() {
 function updateUI(data) {
     const responseData = JSON.parse(data);
     const verifiedBill = responseData.total_verified;
-    const totalBill = responseData.total_billing;
+    const totalActive = responseData.total_active;
 
     $(".total_verified").text(verifiedBill);
-    $(".total_billing").text(totalBill);
+    $(".total_active").text(totalActive);
 
     if (responseData.is_match) {
         $("#generateBillingPDF").prop('disabled', false);

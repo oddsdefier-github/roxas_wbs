@@ -298,7 +298,8 @@ class WBSMailer extends PdfGenerator
 }
 class DatabaseQueries extends BaseQuery
 {
-    public function checkEncodedBill() {
+    public function checkEncodedBill()
+    {
         $sqlActive = "SELECT COUNT(*) as total_active FROM client_data WHERE status = 'active'";
         $stmtActive = $this->conn->prepareStatement($sqlActive);
 
@@ -309,7 +310,7 @@ class DatabaseQueries extends BaseQuery
         $stmtActive->execute();
         $resultVerified = $stmtActive->get_result();
         $totalActive = $resultVerified->fetch_assoc()['total_active'];
-        
+
         $sqlEncoded = "SELECT COUNT(*) as total_encoded FROM client_data WHERE status = 'active' AND reading_status = 'encoded'";
         $stmtEncoded = $this->conn->prepareStatement($sqlEncoded);
 
@@ -320,7 +321,7 @@ class DatabaseQueries extends BaseQuery
         $stmtEncoded->execute();
         $resultVerified = $stmtEncoded->get_result();
         $totalEncoded = $resultVerified->fetch_assoc()['total_encoded'];
-        
+
         $isMatch = ($totalActive === $totalEncoded);
 
         $response = array(
@@ -373,26 +374,26 @@ class DatabaseQueries extends BaseQuery
         $resultVerified = $stmtVerified->get_result();
         $totalVerified = $resultVerified->fetch_assoc()['total_verified'];
 
-        $sqlTotalBilling = "SELECT COUNT(*) as total_billing FROM billing_data WHERE billing_month = ? AND billing_status = 'unpaid'";
-        $stmtTotalBilling = $this->conn->prepareStatement($sqlTotalBilling);
+        $sqlActive = "SELECT COUNT(*) as total_active FROM client_data WHERE status = 'active'";
+        $stmtActive = $this->conn->prepareStatement($sqlActive);
 
-        if (!$stmtTotalBilling) {
+        if (!$stmtActive) {
             return null;
         }
-        $stmtTotalBilling->bind_param("s", $billingCycle);
-        $stmtTotalBilling->execute();
-        $resultTotalBilling = $stmtTotalBilling->get_result();
-        $totalBilling = $resultTotalBilling->fetch_assoc()['total_billing'];
 
-        $isMatch = ($totalVerified === $totalBilling);
+        $stmtActive->execute();
+        $resultVerified = $stmtActive->get_result();
+        $totalActive = $resultVerified->fetch_assoc()['total_active'];
+
+        $isMatch = ($totalVerified === $totalActive);
 
         $response = array(
             'total_verified' => $totalVerified,
-            'total_billing' => $totalBilling,
+            'total_active' => $totalActive,
             'is_match' => $isMatch
         );
         $stmtVerified->close();
-        $stmtTotalBilling->close();
+        $stmtActive->close();
         return $response;
     }
     public function retrieveClientData($clientID)
@@ -851,6 +852,91 @@ class DatabaseQueries extends BaseQuery
         $response['address'] = $address_array;
         return $response;
     }
+
+    public function updateClientStatusUponReport($clientID)
+    {
+        $sql = "UPDATE client_data SET status = 'under_review', reading_status = 'under_review' WHERE client_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+        $stmt->bind_param("s", $clientID);
+        if (!$stmt->execute()) {
+            return false;
+        }
+        $stmt->execute();
+        return true;
+
+    }
+
+    public function insertIntoMeterReports($formData, $filePaths)
+    {
+        $reportID = 'R' . time() . rand(1000, 9999);
+        $clientID = $formData['client_id'];
+        $issueType = $formData['issue_type'];
+        $otherSpecify = $formData['other_specify'];
+        $meterNumber = $formData['meter_number'];
+        $description = $formData['report_description'];
+
+        // Convert the array of file paths to JSON
+        $imgPathsJSON = json_encode($filePaths);
+
+        $sql = "INSERT INTO meter_reports (report_id, client_id, meter_number, issue_type, other_specify, description, report_img_paths, time, date, timestamp) VALUES (?, ?, ?, ?, ?,?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        $stmt->bind_param("sssssss", $reportID, $clientID, $meterNumber, $issueType, $otherSpecify, $description, $imgPathsJSON);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function submitMeterReport($formData)
+    {
+        $this->conn->beginTransaction();
+        $response = array();
+        $filePaths = $this->handleFileUploads($formData['files']);
+        try {
+            if (!$this->insertIntoMeterReports($formData, $filePaths)) {
+                throw new Exception("Failed to insert Meter Report");
+            }
+            if (!$this->updateClientStatusUponReport($formData['client_id'])) {
+                throw new Exception("Failed to update Client Status");
+            }
+
+            $this->conn->commitTransaction();
+            $response = array(
+                'status' => 'success',
+                "message" => 'Meter Report successfully submitted'
+            );
+            return $response;
+        } catch(Exception $e) {
+            $this->conn->rollbackTransaction();
+            $response = array(
+                'status' => 'error',
+                "message" => $e->getMessage()
+            );
+            return $response;
+        }
+    }
+
+    private function handleFileUploads($files)
+    {
+        $filePaths = array();
+
+        foreach ($files['tmp_name'] as $index => $tmpName) {
+            $filename = uniqid() . '_' . basename($files['name'][$index]);
+            $uploadDir = '../uploads/report_images/';
+            $filePath = $uploadDir . $filename;
+            if (move_uploaded_file($tmpName, $filePath)) {
+                $filePaths[] = $filePath;
+            } else {
+                error_log("Failed to move file: " . $files['name'][$index]);
+            }
+        }
+
+        return $filePaths;
+    }
+
 }
 
 class DataTable extends BaseQuery

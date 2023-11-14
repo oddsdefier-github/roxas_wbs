@@ -22,6 +22,7 @@ class EncodeHandler {
         };
         this.elements = {
             fullName: $('.full_name'),
+            clientID: $('.client_id'),
             statusBadge: $('.status_badge'),
             propertyType: $('.property_type'),
             meterNumber: $('.meter_number'),
@@ -126,12 +127,11 @@ class EncodeHandler {
         this.elements.currReadingInput.prop('disabled', status === 'inactive');
 
         this.elements.fullName.text(full_name);
+        this.elements.clientID.text(client_id)
         this.elements.propertyType.text(property_type);
         this.elements.meterNumber.text(meter_number);
         this.elements.prevReading.val(curr_reading);
 
-        this.elements.fullName.on('mouseover', () => { this.elements.fullName.text(client_id) });
-        this.elements.fullName.on('mouseout', () => { this.elements.fullName.text(full_name) });
         this.elements.copyClientID.on('click', this.copyClientID.bind(this, client_id));
 
     }
@@ -159,7 +159,7 @@ class EncodeHandler {
             success: data => {
                 console.log(data);
 
-                
+
                 setTimeout(() => {
                     alert(JSON.parse(data).message)
                     const filters = JSON.parse(localStorage.getItem('#displayClientForReadingEncoding-filterKey'));

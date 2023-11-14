@@ -60,6 +60,9 @@ function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
         case 'checkEncodedBill':
             handleCheckEncodedBill($dbQueries);
             break;
+        case 'submitMeterReport':
+            handleSubmitMeterReport($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -146,4 +149,30 @@ function handleCheckEncodedBill($dbQueries)
 {
     $checkEncodedBill = $dbQueries->checkEncodedBill();
     echo json_encode($checkEncodedBill);
+}
+
+function handleSubmitMeterReport($dbQueries)
+{
+    if (isset($_FILES['add_img']) && !empty($_FILES['add_img']) && isset($_POST['report_description']) && !empty($_POST['report_description'])) {
+        $filesArray = $_FILES['add_img'];
+        $reportDescription = $_POST['report_description'];
+        $otherSpecify = $_POST['other_specify'];
+        $issueType = $_POST['issue_type'];
+        $clientID = $_POST['clientID'];
+        $meterNumber = $_POST['meterNumber'];
+
+        $formData = array(
+            'client_id' => $clientID,
+            'meter_number' => $meterNumber,
+            'issue_type' => $issueType,
+            'other_specify' => $otherSpecify,
+            'report_description' => $reportDescription,
+            'files' => $filesArray
+        );
+
+        $submitReport = $dbQueries->submitMeterReport($formData);
+        echo json_encode($submitReport);
+    } else {
+        echo json_encode(array('error' => 'Missing data'));
+    }
 }

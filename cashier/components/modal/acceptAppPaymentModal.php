@@ -18,9 +18,9 @@
 <section id="acceptAppPaymentModal" class="absolute h-screen w-screen z-50 hidden" data-container="modal" data-modal-name="add_client">
     <div class=" relative p-4 w-[36.18rem] max-w-[618px] h-full md:h-auto rounded-md">
         <!-- Modal content -->
-        <div class="relative p-5 bg-white rounded-lg shadow-lg">
+        <div class="relative bg-white rounded-lg shadow-lg">
             <!-- Modal header -->
-            <div class="flex justify-between items-center rounded-t pb-4 border-b dark:border-gray-600">
+            <div class="flex justify-between items-center rounded-t p-5 pb-4 border-b dark:border-gray-600">
                 <h3 class="text-xl font-bold text-gray-800 dark:text-white">
                     <div class="flex gap-2 items-center">
                         <span>
@@ -41,7 +41,7 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <form id="client_app_payment_confirmation" class="">
+            <form id="client_app_payment_confirmation" class="p-5">
                 <div class="pt-3 rounded-md">
                     <div class="flex justify-between w-full py-3 px-3 rounded-md bg-gray-100 hover:bg-gray-50">
                         <div class="text-gray-500">

@@ -24,31 +24,49 @@
     <div class="modal-inner-container">
         <div class="relative w-full max-h-full">
             <div class="bg-white rounded-lg shadow">
-                <button data-button-type="close-modal" type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
-                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-                <form class="encode_form p-6">
+                <div class="flex justify-between items-center rounded-t px-5 py-5 pb-2 border-b dark:border-gray-600">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+                        <div class="flex gap-2 items-center">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                    <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zM12.75 12a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V18a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V12z" clip-rule="evenodd" />
+                                    <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
+                                </svg>
+
+                            </span>
+                            <h3>
+                                Encode Reading
+                            </h3>
+                        </div>
+                    </h3>
+                    <button type="button" data-button-type="close-modal" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <form class="encode_form px-5 py-6">
                     <div class="flex flex-col gap-2 mb-3">
                         <div class="mb-2">
                             <h4 class="client-name text-lg font-semibold flex justify-start items-center gap-2">
-                                <span class="full_name font-bold cursor-default text-primary-800">Jeffry James M. Paner</span>
-                                <button type="button" class="copy_client_id hover:bg-gray-200 rounded-full p-2 cursor-pointer" href="" target="_blank" title="Copy the Client ID">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="stroke-gray-500 w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
-                                    </svg>
-                                </button>
+                                <span class="full_name font-bold cursor-default text-gray-800">Jeffry James M. Paner</span>
                                 <span class="status_badge">
                                     <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                         <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
                                         Active
                                     </span>
-
                                 </span>
                             </h4>
-                            <h6 class="text-sm text-gray-600"><span class="property_type cursor-default uppercase font-semibold" title="Property Type">Residential</span> • <span class="meter_number cursor-default" title="Meter No.">W-12323</span></h6>
+                            <h4 class="text-lg font-semibold flex items-center gap-2">
+                                <span class="client_id text-sm font-semibold cursor-default text-gray-500">Jeffry James M. Paner</span>
+                                <button type="button" class="copy_client_id hover:bg-gray-200 rounded-full p-2 cursor-pointer" href="" target="_blank" title="Copy the Client ID">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="stroke-gray-500 w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+                                    </svg>
+                                </button>
+                            </h4>
+                            <h6 class="text-sm text-gray-500"><span class="property_type cursor-default uppercase font-semibold" title="Property Type">Residential</span> • <span class="meter_number cursor-default" title="Meter No.">W-12323</span></h6>
                         </div>
                         <div class="py-4">
                             <div class="pb-4">

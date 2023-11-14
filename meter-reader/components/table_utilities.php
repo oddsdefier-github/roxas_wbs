@@ -18,17 +18,17 @@
 
 
             <div id="verified-counter" class="py-2 px-4 font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
-                <div class="flex gap-1 text-xs text-gray-500">
+                <div class="flex gap-1 text-xs text-gray-500" title="Total Verified Bill / Total Active Clients">
                     <p class="font-bold">
                         <span class="total_verified">0</span>
                         <span>/</span>
-                        <span class="total_billing">0</span>
+                        <span class="total_active">0</span>
                     </p>
                 </div>
             </div>
             <div id="encoded-counter" class="py-2 px-4 font-medium text-gray-900 focus:outline-none bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200" type="button" style="display: none;">
                 <div class="flex gap-1 text-xs text-gray-500">
-                    <p class="font-bold">
+                    <p class="font-bold" title="Total Encoded Clients / Total Active Clients">
                         <span class="total_encoded">0</span>
                         <span>/</span>
                         <span class="total_active">0</span>
