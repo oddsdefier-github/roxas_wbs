@@ -10,7 +10,7 @@ include './auth_guard.php';
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Transaction</title>
+    <title>Billing</title>
     <?php include './layouts/links.php'; ?>
 </head>
 
@@ -25,16 +25,15 @@ include './auth_guard.php';
         <?php include './components/subheader.php'; ?>
         <main class="relative flex flex-1 flex-col justify-start overflow-auto">
             <div class="flex flex-col gap-5">
-                <?php include './components/transactions_main.php'; ?>
+                <?php include './components/billing_main.php'; ?>
             </div>
         </main>
     </section>
     <?php include './layouts/scripts.php'; ?>
     <?php include './layouts/date_range_scripts.php' ?>
-
     <script>
-        $("#subheader-title").text("Transaction");
-        $("#subheader-title").siblings("h5").text("Manage, Update, or Delete Client.");
+        $("#subheader-title").text("Billing");
+        $("#subheader-title").siblings("h5").text("View and Analyze Billing Data.");
     </script>
 </body>
 

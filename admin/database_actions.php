@@ -133,6 +133,12 @@ function handleGetDataTable($dataTable)
             case "transactions":
                 $dataTable->transactionTable($dataTableParam);
                 break;
+            case "billing":
+                $dataTable->billingTable($dataTableParam);
+                break;
+            case "meter_reports":
+                $dataTable->meterReportsTable($dataTableParam);
+                break;
 
             default:
                 echo "Invalid table name provided.";
@@ -194,7 +200,7 @@ function handleSetInitialBillingData($dbQueries)
     }
 }
 
-function  handleUpdatedClientAppStatus($dbQueries)
+function handleUpdatedClientAppStatus($dbQueries)
 {
     if (isset($_POST['applicantID']) && isset($_POST['documentsData'])) {
         $applicantID = $_POST['applicantID'];

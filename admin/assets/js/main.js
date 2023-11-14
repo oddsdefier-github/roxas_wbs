@@ -4,13 +4,32 @@ $(document).ready(function () {
     const currentPath = window.location.pathname;
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
-    if (filename === 'clients.php') {
-        const clientTable = new DataTableWithPagination("client_data", '#displayClientDataTable');
-    } else if (filename === 'clients_application_table.php') {
-        const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
-    } else if (filename === 'transactions.php') {
-        const clientTable = new DataTableWithPagination("transactions", '#displayTxTable');
+    let table;
+
+    switch (filename) {
+        case 'clients.php':
+            table = new DataTableWithPagination("client_data", '#displayClientDataTable');
+            $("#clientFilter").show();
+            break;
+
+        case 'clients_application_table.php':
+            table = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
+            $("#clientAppFilter").show();
+            break;
+        case 'transactions.php':
+            table = new DataTableWithPagination("transactions", '#displayTxTable');
+            $("#transactionFilter").show();
+            break;
+        case 'billing.php':
+            table = new DataTableWithPagination("billing", '#displayBillingTable');
+            break;
+        case 'meter_reports.php':
+            table = new DataTableWithPagination("meter_reports", '#displayMeterReportsTable');
+            break;
+        default:
+            break;
     }
+
     $('.page_nav').each(function () {
         $(this).find('a').each(function () {
             const linkHref = $(this).attr('href');
@@ -20,13 +39,9 @@ $(document).ready(function () {
                 $(this).removeClass('inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50').addClass('inline-block font-bold p-4 text-primary-700 bg-primary-100 rounded-t-lg active');
             }
         });
-    })
-
-    filename === 'clients_application_table.php' ? $("#clientAppFilter").show() : $("#clientAppFilter").hide();
-    filename === 'clients.php' ? $("#clientFilter").show() : $("#clientFilter").hide();
-    filename === 'transactions.php' ? $("#transactionFilter").show() : $("#transactionFilter").hide();
-
+    });
 });
+
 
 function openPage(event, id, page) {
     if (event.target.tagName === 'BUTTON' || event.target.closest('svg')) { return }

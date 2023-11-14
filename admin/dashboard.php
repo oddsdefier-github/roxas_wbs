@@ -36,6 +36,7 @@ include './auth_guard.php';
 
 
 	<?php include './layouts/scripts.php'; ?>
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script>
 		$("#subheader-title").text("Dashboard")
 	</script>

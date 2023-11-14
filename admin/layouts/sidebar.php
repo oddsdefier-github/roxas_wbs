@@ -128,7 +128,26 @@
                             </ul>
 
                         </li>
-
+                        <li class="my-2">
+                            <a href="billing.php" class="tab flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
+                                <div class="flex items-center gap-2">
+                                    <div class="p-2 rounded-md" style="background-color: #3730a3;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                                            <path d="M9 7l1 0"></path>
+                                            <path d="M9 13l6 0"></path>
+                                            <path d="M13 17l2 0"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-2">Billing</p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </li>
                         <li class="my-2">
                             <a href="" class="tab-menu flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
                                 <div class="flex items-center gap-2">
@@ -172,17 +191,54 @@
                                     </a>
                                 </li>
                             </ul>
-
                         </li>
                         <li class="my-2">
                             <a href="transactions.php" class="tab flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
+                                <div class="flex items-center gap-2">
+                                    <div class="p-2 rounded-md" style="background-color: #3730a3;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M6 6h8a3 3 0 0 1 0 6a3 3 0 0 1 0 6h-8"></path>
+                                    <path d="M8 6l0 12"></path>
+                                    <path d="M8 12l6 0"></path>
+                                    <path d="M9 3l0 3"></path>
+                                    <path d="M13 3l0 3"></path>
+                                    <path d="M9 18l0 3"></path>
+                                    <path d="M13 18l0 3"></path>
+                                    </svg>
+                                    </div>
+                                    <p class="ml-2">Transaction</p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="my-2">
+                            <a href="meter_reports.php" class="tab flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
+                                <div class="flex items-center gap-2">
+                                    <div class="p-2 rounded-md" style="background-color: #3730a3;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M19 4a1 1 0 0 1 .993 .883l.007 .117v9a1 1 0 0 1 -.883 .993l-.117 .007h-13v6a1 1 0 0 1 -.883 .993l-.117 .007a1 1 0 0 1 -.993 -.883l-.007 -.117v-16a1 1 0 0 1 .883 -.993l.117 -.007h14z" stroke-width="0" fill="currentColor"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="ml-2">Meter Reports</p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="my-2">
+                            <a href="reports.php" class="tab flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
                                 <div class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
                                         </svg>
                                     </div>
-                                    <p class="ml-2">Transaction</p>
+                                    <p class="ml-2">Reports</p>
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
                                     <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />

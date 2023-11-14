@@ -26,6 +26,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        padding: 10px;
     }
 
     #reader {
@@ -50,21 +51,38 @@
     }
 
     #html5-qrcode-button-camera-start {
-        padding: 5px 5px;
+        margin-top: 10px;
+        padding: 7px 15px;
         background-color: #e0e7ff;
         border-radius: 5px;
+        font-size: 0.75rem;
+        line-height: 1rem;
     }
+
+    #html5-qrcode-button-camera-start:hover {
+        background-color: #a5b4fc;
+    }
+
+    #html5-qrcode-select-camera {
+        width: 250px !important;
+        border-color: #e0e7ff !important;
+        border-radius: 10px !important;
+    }
+
     #html5-qrcode-button-camera-stop {
-        padding: 5px 5px;
+        margin-top: 10px;
+        padding: 7px 15px;
         background-color: #f87171;
         border-radius: 5px;
+        font-size: 0.75rem;
+        line-height: 1rem;
     }
 </style>
 
 <section id="qrBillPaymentModal" class="absolute h-screen w-screen z-50 hidden">
     <div class="modal-inner-container">
         <div class="relative w-full max-h-full">
-            <div class="bg-white rounded-lg shadow p-5" style="width: 350px">
+            <div class="bg-white rounded-lg shadow p-5 text-xs" style="width: 350px">
                 <!-- <button data-button-type="close-modal" type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />

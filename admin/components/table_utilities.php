@@ -167,6 +167,13 @@
                                         <span class="peer-checked:text-indigo-500">inactive</span></label>
                                 </div>
                             </li>
+                            <li title='Status'>
+                                <div class="flex items-center rounded hover:bg-gray-100">
+                                    <label for="under_review" class="p-2 w-full text-sm font-medium text-gray-600 rounded dark:text-gray-300">
+                                        <input id="under_review" type="radio" value="Under_Review" data-column="status" name="status" class="mr-1 w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-transparent">
+                                        <span class="peer-checked:text-indigo-500">under_review</span></label>
+                                </div>
+                            </li>
                         </ul>
 
                     </div>
