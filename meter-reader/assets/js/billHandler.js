@@ -39,6 +39,6 @@ function updateUI(data) {
 checkVerifiedBill();
 
 function generateBillingPDF() {
-    // window.open('./billing-pdf.php');
+    window.open('./billing-pdf.php');
     alert('This feature is not yet available.')
 }

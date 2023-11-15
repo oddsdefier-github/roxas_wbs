@@ -135,7 +135,6 @@ export class DataTableWithPagination {
         }
 
         this.elements.dateRangePicker.daterangepicker({
-            "showDropdowns": true,
             startDate: start,
             endDate: end,
             ranges: {

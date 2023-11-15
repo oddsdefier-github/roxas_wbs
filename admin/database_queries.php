@@ -24,6 +24,8 @@ class BaseQuery
         $this->conn = $databaseConnection;
     }
 }
+
+
 class PdfGenerator extends BaseQuery
 {
     public function queryApplicationFees($applicationFeeID)
@@ -76,7 +78,7 @@ class PdfGenerator extends BaseQuery
             $name = $data['full_name'];
             $address = $data['full_address'];
             $propertyType = $data['property_type'];
-            $date = $data['date'];
+            $date = $data['timestamp'];
             $regID = $data['reg_id'];
             $meterNumber = $data['meter_number'];
 
@@ -104,11 +106,27 @@ class PdfGenerator extends BaseQuery
             $dompdf->render();
             $dompdf->addInfo("Title", "Registration");
 
-            $fileName = __DIR__ . '/temp/' . $regID . '.pdf';
-            if (file_put_contents($fileName, $dompdf->output())) {
-                return $fileName;
+            $outputDirectory = 'temp/registration/';
+
+            if (!is_dir($outputDirectory)) {
+                mkdir($outputDirectory, 0755, true);
+            }
+
+            $filename = $regID . '.pdf';
+            $filepath = $outputDirectory . $filename;
+
+            if (file_put_contents($filepath, $dompdf->output())) {
+                return [
+                    'status' => 'success',
+                    'filename' => $filename,
+                    'path' => $filepath,
+                ];
             } else {
-                return null;
+                $errorMessage = error_get_last()['message'];
+                return [
+                    'status' => 'error',
+                    'message' => "Failed to save PDF file. Error: $errorMessage",
+                ];
             }
 
         }
@@ -655,19 +673,16 @@ class DatabaseQueries extends BaseQuery
             "email" => $email
         );
 
-
         try {
             if ($this->checkDuplicate("meter_number", $meterNumber, $table)) {
-                throw new Exception("Meter No: ' . $meterNumber . ' already exists.");
+                throw new DuplicateMeterNumberException("Meter No: ' . $meterNumber . ' already exists.");
             };
             if ($this->checkDuplicate("email", $email, $table)) {
-                throw new Exception($email . " already exists.");
+                throw new DuplicateEmailException($email . " already exists.");
             };
             if (!$this->insertIntoClientData($formData, $clientID)) {
-                throw new Exception("Failed to insert into client data.");
+                throw new InsertClientDataException("Failed to insert into client data.");
             };
-
-
 
             $this->conn->commitTransaction();
 
@@ -675,23 +690,48 @@ class DatabaseQueries extends BaseQuery
             $wbsMailer = new WbsMailer($this->conn);
 
             $applicationFeeID = $this->getApplicationFeeID($formData['applicationID']);
-            $filepath = $pdf->generateRegCertificate($clientID, $applicationFeeID);
-            $wbsMailer->handleEmailSend($mailData, $filepath);
+            $regCertificateData = $pdf->generateRegCertificate($clientID, $applicationFeeID);
 
-            $response = array(
-                "status" => "success",
-                "client_id" => $clientID,
-                "message" => $fullName . "'s application has been approved.",
-            );
-            return $response;
-        } catch(Exception $e) {
+            if ($regCertificateData['status'] === 'success') {
+                $filename = $regCertificateData['filename'];
+                $filepath = $regCertificateData['path'];
+                $wbsMailer->handleEmailSend($mailData, $filepath);
+
+                $response = [
+                    "status" => "success",
+                    "client_id" => $clientID,
+                    "filename" => $filename,
+                    "filepath" => $filepath,
+                    "message" => $fullName . "'s application has been approved.",
+                ];
+                return $response;
+            }
+        } catch (DuplicateMeterNumberException | DuplicateEmailException | InsertClientDataException $e) {
             $this->conn->rollbackTransaction();
-            $response = array(
+
+            error_log("Error: " . $e->getMessage());
+
+            $response = [
                 "status" => "error",
-                "message" => "Error: " . $e->getMessage()
-            );
+                "message" => "Error: " . $e->getMessage(),
+            ];
+
+            return $response;
+
+        } catch (Exception $e) {
+
+            $this->conn->rollbackTransaction();
+
+            error_log("Error: " . $e->getMessage());
+
+            $response = [
+                "status" => "error",
+                "message" => "An unexpected error occurred.",
+            ];
+
             return $response;
         }
+
 
     }
 
@@ -1557,7 +1597,7 @@ class DataTable extends BaseQuery
                     $statusBadge = '';
                     break;
             }
-            
+
             $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $clientID . '</td>

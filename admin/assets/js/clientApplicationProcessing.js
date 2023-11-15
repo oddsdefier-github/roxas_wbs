@@ -437,18 +437,16 @@ $(document).ready(function () {
             success: function (data) {
                 responseData = data;
                 console.log(data)
-
                 if (responseData) {
-                    const clientID = responseData['client_id'];
-                    if (responseData['status'] === 'error') {
-                        alert(`${responseData['message']}`);
+                    const { status, message, client_id, filename, filepath } = responseData;
+                    if (status === 'error') {
+                        alert(`${message}`);
                         window.location.reload();
-                    } else if ((responseData['status'] === 'success')) {
-                        alert(`${responseData['message']}`)
-                        setTimeout(() => {
-                            window.location.reload();
-                            // window.open(`http://localhost/${folderName}/admin/print.php?id=${clientID}`, '_blank');
-                        }, 200)
+                    } else if (status === 'success') {
+                        alert(`${message}`);
+                        if (filename && filepath) {
+                            downloadPDF(filepath, filename);
+                        }
                     }
                 }
             },
@@ -459,7 +457,14 @@ $(document).ready(function () {
 
     };
 
-
+    function downloadPDF(filepath, filename) {
+        const link = document.createElement('a');
+        link.href = filepath;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
     function validateField(fieldName, fieldValue) {
         const validationRules = {
