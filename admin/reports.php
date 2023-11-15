@@ -23,8 +23,8 @@ include './auth_guard.php';
     <section class="flex min-h-screen grow flex-col bg-white">
         <?php include './layouts/header.php'; ?>
         <?php include './components/subheader.php'; ?>
-        <main class="relative flex flex-1 flex-col justify-start overflow-auto">
-            <div class="flex flex-col gap-5" style="height: 62rem;">
+        <main class="relative flex flex-col justify-start overflow-auto">
+            <div class="flex flex-col gap-5 bg-gray-50">
                 <?php include './components/reports_main.php'; ?>
             </div>
         </main>

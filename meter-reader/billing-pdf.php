@@ -75,7 +75,7 @@ function generateBillingPDF($conn)
     $all_billings = "";
 
     foreach ($billing_data as $billing) {
-        $qrCode = new QrCode($billing['billing_id']);
+        $qrCode = new QrCode($billing['client_id']);
         $writer = new PngWriter();
         $result = $writer->write($qrCode);
 

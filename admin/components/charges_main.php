@@ -7,11 +7,11 @@
         font-size: 0.725rem;
     }
 </style>
-<div class="px-10 mb-10">
+<div class="px-10">
     <div>
         <?php include './layouts/rates_charges_nav.php' ?>
     </div>
-    <div class="mt-0">
+    <div class="mt-0 bg-50">
         <div class="grid grid-cols-6 gap-5">
             <div class="col-span-2">
                 <form id="application_fee_form">
