@@ -69,6 +69,7 @@ $(document).ready(function () {
     }
 
     applicantID = $('#review-id-hidden').val();
+
     retrieveClientApplicationData(applicantID, function (applicationData) {
         const status = applicationData.status;
         const meterNumber = applicationData.meter_number
@@ -115,13 +116,16 @@ $(document).ready(function () {
                 el.prop("disabled", true)
             });
         }
+
         const inputs = $('input');
         const selects = $('select');
+
         function enableInput(elementsArray) {
             elementsArray.forEach((el) => {
                 el.prop("disabled", false)
             });
         }
+
         if (status === 'confirmed') {
             disableInput([inputs, selects])
 
@@ -130,8 +134,7 @@ $(document).ready(function () {
                 .prop('disabled', true)
                 .hide();
             $("#approved_client").show();
-            $("#review-submit")
-                .prop("disabled", false)
+            $("#review-submit").prop("disabled", false)
             if (billingStatus === 'unpaid') {
                 $('.billing_status_badge').html(badgeElements.unpaid);
                 $("#review-submit")
@@ -446,6 +449,7 @@ $(document).ready(function () {
                         alert(`${message}`);
                         if (filename && filepath) {
                             downloadPDF(filepath, filename);
+                            window.reload();
                         }
                     }
                 }
@@ -465,6 +469,7 @@ $(document).ready(function () {
         link.click();
         document.body.removeChild(link);
     }
+
 
     function validateField(fieldName, fieldValue) {
         const validationRules = {

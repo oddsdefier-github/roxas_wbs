@@ -108,14 +108,38 @@ class PdfGenerator extends BaseQuery
         );
         $dompdf->loadHtml($invoiceHtml);
         $dompdf->render();
-        $dompdf->addInfo("Title", "Receipt");
+        $dompdf->addInfo("Title", "Receipt: $no");
 
-        $fileName = __DIR__ . '/temp/' . $no . '.pdf';
-        if (file_put_contents($fileName, $dompdf->output())) {
-            return $fileName;
-        } else {
-            return null;
+        $outputDirectory = 'temp/receipts/';
+
+        if (!is_dir($outputDirectory)) {
+            mkdir($outputDirectory, 0755, true);
         }
+
+        $filename = $no . '.pdf';
+        $filepath = $outputDirectory . $filename;
+
+        if (file_put_contents($filepath, $dompdf->output())) {
+            return [
+                'status' => 'success',
+                'filename' => $filename,
+                'path' => $filepath,
+            ];
+        } else {
+            $errorMessage = error_get_last()['message'];
+            return [
+                'status' => 'error',
+                'message' => "Failed to save PDF file. Error: $errorMessage",
+            ];
+        }
+
+
+        // $fileName = __DIR__ . '/temp/' . $no . '.pdf';
+        // if (file_put_contents($fileName, $dompdf->output())) {
+        //     return $fileName;
+        // } else {
+        //     return null;
+        // }
 
     }
 }
@@ -413,7 +437,7 @@ class DatabaseQueries extends BaseQuery
         $description = "Payment received from $clientName - Billing Month of $billingMonth - Confirmed by $userName";
 
 
-        $data = array(
+        $transactionData = array(
             "transactionID" => $transactionID,
             "transactionType" =>  $transactionType,
             "referenceID" => $referenceID,
@@ -442,36 +466,40 @@ class DatabaseQueries extends BaseQuery
             if ($this->checkDuplicate('reference_id', $referenceID, 'transactions')) {
                 throw new Exception("Failed to do insert new transaction. $clientName already paid, please check transaction history.");
             }
-            if (!$this->insertIntoTransactions($data)) {
+            if (!$this->insertIntoTransactions($transactionData)) {
                 throw new Exception("Failed to update client application.");
             }
             if (!$this->updateBillingData($billingID)) {
                 throw new Exception("Failed to update billing data.");
             }
 
-            $generatedBillingReceipt = new PdfGenerator($this->conn);
-            $filepath = $generatedBillingReceipt->generateBillingReceipt($receiptData);
-            if (!$generatedBillingReceipt->generateBillingReceipt($receiptData)) {
-                throw new Exception("Failed to generate new billing receipt.");
-            }
+            $pdfGenerator = new PdfGenerator($this->conn);
+            $wbsMailer = new WBSMailer($this->conn);
 
-            $emailSend = new WBSMailer($this->conn);
-            $clientData = $generatedBillingReceipt->selectClientData($clientID);
-            $emailSent = $emailSend->handleEmailSend($clientData, $filepath);
-            if (!$emailSent) {
+            $generatedBillingReceipt = $pdfGenerator->generateBillingReceipt($receiptData);
+
+            if ($generatedBillingReceipt['status'] === 'success') {
+                $filename = $generatedBillingReceipt['filename'];
+                $filepath = $generatedBillingReceipt['path'];
+
+                $clientData = $pdfGenerator->selectClientData($clientID);
+                $emailSent = $wbsMailer->handleEmailSend($clientData, $filepath);
+
+                if (!$emailSent) {
+                    throw new Exception("Failed to send receipt to email.");
+                }
+                $this->conn->commitTransaction();
+
                 $response = array(
-                    "status" => "error",
-                    "message" => "Failed to send receipt to email."
+                    "status" => "success",
+                    "client_id" => $clientID,
+                    "filename" => $filename,
+                    "filepath" => $filepath,
+                    "message" => "Billing has been confirmed. Receipt has been sent to email.",
                 );
                 return $response;
             }
 
-            $this->conn->commitTransaction();
-
-            $response = array(
-                "status" => "success",
-                "message" => "Payment confirmed successfully."
-            );
         } catch (Exception $e) {
             $this->conn->rollbackTransaction();
             $response = array(
@@ -482,6 +510,8 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
+
+
     public function retrieveClientApplicationFees()
     {
         $sql = "SELECT * FROM client_application_fees ORDER BY timestamp DESC LIMIT 1";

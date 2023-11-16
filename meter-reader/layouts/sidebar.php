@@ -33,6 +33,7 @@
     }
 </style>
 <aside class="flex flex-col min-h-screen cursor-pointer text-gray-50 text-sm pb-5" id="sidebar" style="background-color: #1e1b4b">
+
     <div class="h-full w-64">
         <div class="h-16 text-white w-full">
             <div class="grid grid-cols-4 gap-10 h-full justify-center items-start px-5">

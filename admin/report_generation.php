@@ -99,7 +99,7 @@ class QueryReportsData extends BaseQuery
                     width: 100%;
                 }
                 th, td {
-                    border: 1px solid black;
+                    border: 0.728px solid black;
                     padding: 5px;
                     text-align: left;
                     font-size: 10px;
@@ -126,7 +126,7 @@ class QueryReportsData extends BaseQuery
                         <table>
                             <tr>
                                 <td style="width: 78%; border: none;">
-                                    <p style="margin: 0; text-align: right;">' . $currentDate . '</p>
+                                    <p style="margin: 0; text-align: right; font-size: 11px">' . $currentDate . '</p>
                                 </td>
                             </tr>
                         </table>
@@ -140,13 +140,13 @@ class QueryReportsData extends BaseQuery
                             <td style="border: none;">
                                 <table width="100%" cellspacing="0" cellpadding="0" class="header">
                                     <tr style="width: 40%; border: none;">
-                                        <td style="width: 17%; border: none;">
+                                        <td style="width: 25%; border: none;">
                                             <h3 style="margin: 0; text-align: right;">Period</h3>
                                         </td>
                                         <td style="width: 3%; border: none;">
                                             <h3 style="margin: 0; text-align: center;">:</h3>
                                         </td>
-                                        <td style="width: 80%; border: none;">
+                                        <td style="width: 72%; border: none;">
                                             <h3 style="margin: 0; text-align: right;">
                                                 <span>' . $startDate . '</span>
                                                 <span> - </span>
@@ -162,28 +162,36 @@ class QueryReportsData extends BaseQuery
         $html .= '<tr>
                     <th>Transaction ID</th>
                     <th>Reference ID</th>
-                    <th>Amount Due</th>
-                    <th>Amount Paid</th>
+                    <th>Type</th>
+                    <th>Revenue</th>
                     <th>Time</th>
                     <th>Date</th>
                 </tr>';
-        $totalAmountPaid = 0;
+        $totalRevenue = 0;
 
         foreach ($data as $row) {
+
+            $type = '';
+            if ($row['transaction_type'] === 'application_payment') {
+                $type .= 'application';
+            } else {
+                $type .= 'billing';
+            }
+
             $html .= '<tr>';
             $html .= '<td>' . $row['transaction_id'] . '</td>';
             $html .= '<td>' . $row['reference_id'] . '</td>';
+            $html .= '<td>' . $type . '</td>';
             $html .= '<td>Php ' . number_format($row['amount_due'], 2, '.', ',') . '</td>';
-            $html .= '<td>Php ' . number_format($row['amount_paid'], 2, '.', ',') . '</td>';
             $html .= '<td>' . date("h:i A", strtotime($row['time'])) . '</td>';
             $html .= '<td>' . $row['date'] . '</td>';
             $html .= '</tr>';
 
-            $totalAmountPaid += $row['amount_paid'];
+            $totalRevenue += $row['amount_due'];
         }
 
         $html .= '</table>';
-        $html .= '<p class="total-revenue">Total Revenue: Php ' . number_format($totalAmountPaid, 2, '.', ',') . '</p>';
+        $html .= '<p class="total-revenue">Total Revenue: Php ' . number_format($totalRevenue, 2, '.', ',') . '</p>';
         $html .= '</body></html>';
 
 

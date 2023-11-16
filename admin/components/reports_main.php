@@ -1,6 +1,6 @@
 <div class="px-10 py-10">
     <div class="flex justify-center items-start" style="">
-        <div class="shadow-lg bg-white" style="width: 40rem;">
+        <div class="shadow-lg bg-white rounded-md" style="width: 40rem;">
             <div class="py-5 px-6 rounded-t pb-4 border-b flex justify-start items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />

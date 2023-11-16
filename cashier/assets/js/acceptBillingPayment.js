@@ -257,11 +257,20 @@ function sendPaymentConfirmationRequest(totalBill, clientID) {
         },
         success: function (data) {
             console.log(data)
+            alert(JSON.parse(data).message)
+            acceptBillingPaymentModal.hide();
+            new DataTableWithPagination("billing_data", '#displayBillingTable');
+
             setTimeout(function () {
-                alert(JSON.parse(data).message)
-                acceptBillingPaymentModal.hide();
-                new DataTableWithPagination("billing_data", '#displayBillingTable');
-            }, 500);
+                const responseData = JSON.parse(data);
+                if (responseData.status === 'success') {
+                    var pdfPath = responseData.filepath;
+                    var dynamicFilename = responseData.filename;
+                    downloadPDF(pdfPath, dynamicFilename);
+                } else {
+                    console.error("Error in report generation:", responseData.error);
+                }
+            }, 100);
         }
     });
 }
@@ -269,6 +278,15 @@ function sendPaymentConfirmationRequest(totalBill, clientID) {
 
 
 window.acceptClientBillingPayment = acceptClientBillingPayment
+
+function downloadPDF(pdfPath, dynamicFilename) {
+    var link = document.createElement("a");
+    link.href = pdfPath;
+    link.download = dynamicFilename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
 
 const qrScan = $("#qrBilling");
