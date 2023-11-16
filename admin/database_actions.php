@@ -202,10 +202,10 @@ function handleSetInitialBillingData($dbQueries)
 
 function handleUpdatedClientAppStatus($dbQueries)
 {
-    if (isset($_POST['applicantID']) && isset($_POST['documentsData'])) {
-        $applicantID = $_POST['applicantID'];
+    if (isset($_POST['applicationID']) && isset($_POST['documentsData'])) {
+        $applicationID = $_POST['applicationID'];
         $documentsData = $_POST['documentsData'];
-        $updateClientAppStatus = $dbQueries->updatedClientAppStatus($applicantID, $documentsData);
+        $updateClientAppStatus = $dbQueries->updatedClientAppStatus($applicationID, $documentsData);
         echo json_encode($updateClientAppStatus);
     }
 }

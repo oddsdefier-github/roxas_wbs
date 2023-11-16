@@ -248,31 +248,12 @@ class DatabaseQueries extends BaseQuery
     }
 
 
-
     public function insertIntoClientApplication($formData)
     {
-        $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
-        $firstName = htmlspecialchars($formData['firstName'], ENT_QUOTES, 'UTF-8');
-        $middleName = htmlspecialchars($formData['middleName'], ENT_QUOTES, 'UTF-8');
-        $lastName = htmlspecialchars($formData['lastName'], ENT_QUOTES, 'UTF-8');
-        $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
-        $nameSuffix = htmlspecialchars($formData['nameSuffix'], ENT_QUOTES, 'UTF-8');
-        $birthDate = htmlspecialchars($formData['birthDate'], ENT_QUOTES, 'UTF-8');
-        $age = htmlspecialchars($formData['age'], ENT_QUOTES, 'UTF-8');
-        $email = htmlspecialchars($formData['email'], ENT_QUOTES, 'UTF-8');
-        $gender = htmlspecialchars($formData['gender'], ENT_QUOTES, 'UTF-8');
-        $phoneNumber = htmlspecialchars($formData['phoneNumber'], ENT_QUOTES, 'UTF-8');
-        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
-        $streetAddress = htmlspecialchars($formData['streetAddress'], ENT_QUOTES, 'UTF-8');
-        $brgy = htmlspecialchars($formData['brgy'], ENT_QUOTES, 'UTF-8');
-        $municipality = htmlspecialchars($formData['municipality'], ENT_QUOTES, 'UTF-8');
-        $province = htmlspecialchars($formData['province'], ENT_QUOTES, 'UTF-8');
-        $region = htmlspecialchars($formData['region'], ENT_QUOTES, 'UTF-8');
-        $fullAddress = htmlspecialchars($formData['fullAddress'], ENT_QUOTES, 'UTF-8');
-        $validID = htmlspecialchars($formData['validID'], ENT_QUOTES, 'UTF-8');
-        $proofOfOwnership = htmlspecialchars($formData['proofOfOwnership'], ENT_QUOTES, 'UTF-8');
-        $deedOfSale = htmlspecialchars($formData['deedOfSale'], ENT_QUOTES, 'UTF-8');
-        $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
+        foreach ($formData as $key => $value) {
+            $formData[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+        extract($formData);
 
         $status = 'unconfirmed';
         $billingStatus = 'unpaid';
@@ -412,17 +393,10 @@ class DatabaseQueries extends BaseQuery
     public function insertIntoClientData($formData, $clientID): bool
     {
         $this->conn->beginTransaction();
-        $applicationID = htmlspecialchars($formData['applicationID'], ENT_QUOTES, 'UTF-8');
-        $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
-        $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
-        $birthDate = htmlspecialchars($formData['birthDate'], ENT_QUOTES, 'UTF-8');
-        $age = htmlspecialchars($formData['age'], ENT_QUOTES, 'UTF-8');
-        $email = htmlspecialchars($formData['email'], ENT_QUOTES, 'UTF-8');
-        $phoneNumber = htmlspecialchars($formData['phoneNumber'], ENT_QUOTES, 'UTF-8');
-        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
-        $streetAddress = htmlspecialchars($formData['streetAddress'], ENT_QUOTES, 'UTF-8');
-        $brgy = htmlspecialchars($formData['brgy'], ENT_QUOTES, 'UTF-8');
-        $fullAddress = htmlspecialchars($formData['fullAddress'], ENT_QUOTES, 'UTF-8');
+        foreach ($formData as $key => $value) {
+            $formData[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+        extract($formData);
 
         $status = "active";
         $readingStatus = "pending";
@@ -479,22 +453,11 @@ class DatabaseQueries extends BaseQuery
     public function insertIntoClientSecondaryData($formData, $clientID)
     {
         $this->conn->beginTransaction();
-        $applicationID = htmlspecialchars($formData['applicationID'], ENT_QUOTES, 'UTF-8');
-        $firstName = htmlspecialchars($formData['firstName'], ENT_QUOTES, 'UTF-8');
-        $middleName = htmlspecialchars($formData['middleName'], ENT_QUOTES, 'UTF-8');
-        $lastName = htmlspecialchars($formData['lastName'], ENT_QUOTES, 'UTF-8');
-        $nameSuffix = htmlspecialchars($formData['nameSuffix'], ENT_QUOTES, 'UTF-8');
-        $gender = htmlspecialchars($formData['gender'], ENT_QUOTES, 'UTF-8');
-        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
-        $streetAddress = htmlspecialchars($formData['streetAddress'], ENT_QUOTES, 'UTF-8');
-        $brgy = htmlspecialchars($formData['brgy'], ENT_QUOTES, 'UTF-8');
-        $municipality = htmlspecialchars($formData['municipality'], ENT_QUOTES, 'UTF-8');
-        $province = htmlspecialchars($formData['province'], ENT_QUOTES, 'UTF-8');
-        $region = htmlspecialchars($formData['region'], ENT_QUOTES, 'UTF-8');
-        $validID = htmlspecialchars($formData['validID'], ENT_QUOTES, 'UTF-8');
-        $proofOfOwnership = htmlspecialchars($formData['proofOfOwnership'], ENT_QUOTES, 'UTF-8');
-        $deedOfSale = htmlspecialchars($formData['deedOfSale'], ENT_QUOTES, 'UTF-8');
-        $affidavit = htmlspecialchars($formData['affidavit'], ENT_QUOTES, 'UTF-8');
+
+        foreach ($formData as $key => $value) {
+            $formData[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+        extract($formData);
 
         $status = 'approved';
         $sql = "UPDATE client_application SET status = ? WHERE application_id = ?";
@@ -640,6 +603,25 @@ class DatabaseQueries extends BaseQuery
         }
     }
 
+    public function updateApplicationTransaction($clientID, $applicationID)
+    {
+        $sql = "UPDATE transactions SET client_id = ? WHERE reference_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("ss", $clientID, $applicationID);
+        $result = $stmt->execute();
+
+        if (!$result) {
+            return false;
+        }
+
+        $stmt->close();
+        return true;
+    }
+
     public function approveClientApplication($formData)
     {
         $this->conn->beginTransaction();
@@ -682,6 +664,9 @@ class DatabaseQueries extends BaseQuery
             };
             if (!$this->insertIntoClientData($formData, $clientID)) {
                 throw new InsertClientDataException("Failed to insert into client data.");
+            };
+            if (!$this->updateApplicationTransaction($clientID, $applicationID)) {
+                throw new InsertClientDataException("Failed to update application transaction.");
             };
 
             $this->conn->commitTransaction();
@@ -861,54 +846,16 @@ class DatabaseQueries extends BaseQuery
     }
 
 
-    public function updatedClientAppStatus($applicantID, $documentsData)
+    public function updatedClientAppStatus($applicationID, $documentsData)
     {
+        $this->conn->beginTransaction();
         $response = array();
-        $meterNumber = htmlspecialchars($documentsData['meterNumber'], ENT_QUOTES, 'UTF-8');
-        $firstName = htmlspecialchars($documentsData['firstName'], ENT_QUOTES, 'UTF-8');
-        $middleName = htmlspecialchars($documentsData['middleName'], ENT_QUOTES, 'UTF-8');
-        $lastName = htmlspecialchars($documentsData['lastName'], ENT_QUOTES, 'UTF-8');
-        $fullName = htmlspecialchars($documentsData['fullName'], ENT_QUOTES, 'UTF-8');
-        $nameSuffix = htmlspecialchars($documentsData['nameSuffix'], ENT_QUOTES, 'UTF-8');
-        $birthDate = htmlspecialchars($documentsData['birthDate'], ENT_QUOTES, 'UTF-8');
-        $age = htmlspecialchars($documentsData['age'], ENT_QUOTES, 'UTF-8');
-        $email = htmlspecialchars($documentsData['email'], ENT_QUOTES, 'UTF-8');
-        $gender = htmlspecialchars($documentsData['gender'], ENT_QUOTES, 'UTF-8');
-        $phoneNumber = htmlspecialchars($documentsData['phoneNumber'], ENT_QUOTES, 'UTF-8');
-        $propertyType = htmlspecialchars($documentsData['propertyType'], ENT_QUOTES, 'UTF-8');
-        $streetAddress = htmlspecialchars($documentsData['streetAddress'], ENT_QUOTES, 'UTF-8');
-        $brgy = htmlspecialchars($documentsData['brgy'], ENT_QUOTES, 'UTF-8');
-        $fullAddress = htmlspecialchars($documentsData['fullAddress'], ENT_QUOTES, 'UTF-8');
-        $validID = htmlspecialchars($documentsData['validID'], ENT_QUOTES, 'UTF-8');
-        $proofOfOwnership = htmlspecialchars($documentsData['proofOfOwnership'], ENT_QUOTES, 'UTF-8');
-        $deedOfSale = htmlspecialchars($documentsData['deedOfSale'], ENT_QUOTES, 'UTF-8');
-        $affidavit = htmlspecialchars($documentsData['affidavit'], ENT_QUOTES, 'UTF-8');
+        foreach ($documentsData as $key => $value) {
+            $documentsData[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+        extract($documentsData);
 
-
-        $sql = "UPDATE client_application SET 
-                status = 'confirmed',
-                meter_number = ?,
-                first_name = ?,
-                middle_name = ?,
-                last_name = ?,
-                full_name = ?,
-                name_suffix = ?,
-                birthdate = ?,
-                age = ?,
-                email = ?,
-                gender = ?,
-                phone_number = ?,
-                property_type = ?,
-                street = ?,
-                brgy = ?,
-                full_address = ?,
-                valid_id = ?,
-                proof_of_ownership = ?, 
-                deed_of_sale = ?, 
-                affidavit = ?,
-                billing_status = 'unpaid',
-                timestamp = CURRENT_TIMESTAMP 
-                WHERE application_id = ?";
+        $sql = "UPDATE client_application SET status = 'confirmed', meter_number = ?, first_name = ?, middle_name = ?, last_name = ?, full_name = ?, name_suffix = ?, birthdate = ?, age = ?, email = ?, gender = ?, phone_number = ?, property_type = ?, street = ?, brgy = ?, full_address = ?, valid_id = ?, proof_of_ownership = ?,  deed_of_sale = ?,  affidavit = ?, billing_status = 'unpaid', timestamp = CURRENT_TIMESTAMP  WHERE application_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
 
         $stmt->bind_param(
@@ -932,55 +879,72 @@ class DatabaseQueries extends BaseQuery
             $proofOfOwnership,
             $deedOfSale,
             $affidavit,
-            $applicantID
+            $applicationID
         );
 
-        if ($stmt->execute()) {
-            $applicationID = $applicantID;
 
-            session_start();
-            $userID = $_SESSION['user_id'];
-            $message = "$fullName's application has  been confirmed.";
-            $type = "application_confirmation";
-
-            if ($this->notificationExists($userID, $type, $applicationID)) {
-                $response = array(
-                    'status' => 'error',
-                    'message' => "Notification exists."
-                );
-                return $response;
-            }
-            if (!$this->addNotification($userID, $message, $type, $applicationID)) {
-                $response = array(
-                    'status' => 'error',
-                    'message' => "Failed to add notification."
-                );
-                return $response;
-            }
-
+        if ($this->checkDuplicate("email", $email, 'client_data')) {
+            $this->conn->rollbackTransaction();
             $response = array(
-                'status' => 'success',
-                'message' => 'Successfully updated the client application status.'
+                "status" => "error",
+                "message" => "Email: " . $email . " already exists."
             );
             return $response;
-        } else {
+        }
+
+        if ($this->checkDuplicate("meter_number", $meterNumber, 'client_data')) {
+            $this->conn->rollbackTransaction();
+            $response = array(
+                "status" => "error",
+                "message" => "Meter No: " . $meterNumber . " already exists."
+            );
+            return $response;
+        }
+
+        if (!$stmt->execute()) {
             $response =  array(
                 'status' => 'error',
                 'message' => 'Failed to update the client application status.'
             );
             return $response;
         }
+
+        session_start();
+        $userID = $_SESSION['user_id'];
+        $type = "application_confirmation";
+        $message = "$fullName's application has  been confirmed.";
+
+        if ($this->notificationExists($userID, $type, $applicationID)) {
+            $this->conn->rollbackTransaction();
+            $response = array(
+                'status' => 'error',
+                'message' => "Notification exists."
+            );
+            return $response;
+        }
+        if (!$this->addNotification($userID, $message, $type, $applicationID)) {
+            $this->conn->rollbackTransaction();
+            $response = array(
+                'status' => 'error',
+                'message' => "Failed to add notification."
+            );
+            return $response;
+        }
+
+        $this->conn->commitTransaction();
+        $response = array(
+            'status' => 'success',
+            'message' => $message
+        );
+        return $response;
     }
 
     public function loadNotificationHtml($limit)
     {
         $limit = isset($_POST['limit']) ? $_POST['limit'] : 10;
-
-        // Counting query with the same conditions as the main query
         $countSql = "SELECT COUNT(*) as notificationCount FROM notifications WHERE status = 'unread' AND type = 'payment_confirmation'";
 
         if ($limit !== 'all') {
-            // Append limit to counting query
             $countSql .= " ORDER BY created_at DESC LIMIT $limit";
         }
 
@@ -988,7 +952,6 @@ class DatabaseQueries extends BaseQuery
         $row = $countResult->fetch_assoc();
         $notifCount = $row['notificationCount'];
 
-        // Main query for fetching notifications
         $sql = "SELECT * FROM notifications WHERE status = 'unread' AND type = 'payment_confirmation' ORDER BY created_at DESC";
 
         if ($limit !== 'all') {
@@ -1197,7 +1160,7 @@ class DataTable extends BaseQuery
         if ($startDate && $endDate) {
             $conditions[] = "date BETWEEN ? AND ?";
             $params = array_merge($params, [$startDate, $endDate]);
-            $types .= "ss";  // Assuming dates are strings, adjust if not
+            $types .= "ss";
         }
 
         if (!empty($conditions)) {
@@ -1335,14 +1298,25 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $approvedBadge = '<span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Approved</span>';
+            $approvedBadge = '<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-1 rounded">
+                            <span class="mr-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="fill-green-500 w-4 h-4">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                            Approved 
+                        </span>';
+
             $unconfirmedBadge = '<span class="bg-yellow-100 text-yellow-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Unconfirmed</span>';
             $confirmedBadge = '<span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Confirmed</span>';
             $statusBadge = ($status === 'approved') ? $approvedBadge : (($status === 'confirmed') ? $confirmedBadge : ($status === 'unconfirmed' ? $unconfirmedBadge : ''));
 
 
             $unpaidBillingStatusBadge = '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-yellow-300 border border-yellow-300">Unpaid</span>';
+
             $paidBillingStatusBadge = '<span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400">Paid</span>';
+
+
 
             $billingStatusBadge = $billingStatus === 'paid' ? $paidBillingStatusBadge : $unpaidBillingStatusBadge;
 
@@ -2034,6 +2008,7 @@ class DataTable extends BaseQuery
         $countArr = array();
         $number = ($pageNumber - 1) * $itemPerPage + 1;
 
+
         while ($row = mysqli_fetch_assoc($result)) {
             $id = $row['id'];
             $billingID = $row['billing_id'];
@@ -2042,6 +2017,32 @@ class DataTable extends BaseQuery
             $propertyType = $row['property_type'];
             $billingAmount = $row['billing_amount'];
             $billingStatus = $row['billing_status'];
+
+            switch ($billingStatus) {
+                case 'paid':
+                    $statusBadge = '<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-1 rounded">
+                                    <span class="mr-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="fill-green-500 w-4 h-4">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                        Paid 
+                                    </span>';
+                    break;
+                case 'unpaid':
+                    $statusBadge = '<span class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-1 rounded">
+                                    <span class="mr-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="fill-red-400 w-4 h-4">
+                                        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                        Unpaid 
+                                    </span>';
+                    break;
+                default:
+                    $statusBadge = '';
+                    break;
+            }
             $formattedBillingAmount = "₱" . number_format($billingAmount, 2, '.', ',');
             $time = $row['time'];
             $date = $row['date'];
@@ -2055,7 +2056,7 @@ class DataTable extends BaseQuery
             <td  class="px-6 py-3 text-sm">' . $clientName . '</td>
             <td class="px-6 py-3 text-sm">' . $propertyType . '</td>
             <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $formattedBillingAmount . '</td>
-            <td class="px-6 py-3 text-sm">' . $billingStatus . '</td>
+            <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>

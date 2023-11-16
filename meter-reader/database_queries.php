@@ -27,6 +27,124 @@ class BaseQuery
 
 class PdfGenerator extends BaseQuery
 {
+    public function generateAllBilling($billingMonth)
+    {
+        $dbQueries = new DatabaseQueries($this->conn);
+
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $meterReader = $_SESSION['user_name'];
+
+        $options = new Options();
+        $options->setChroot(__DIR__);
+        $options->setIsRemoteEnabled(true);
+        $options->set('defaultFont', 'Helvetica');
+        $options->set('isHtml5ParserEnabled', true);
+
+        $dompdf = new Dompdf($options);
+
+        $sql = "SELECT cd.*, bd.*, sd.* 
+            FROM client_data cd 
+            JOIN billing_data bd ON cd.client_id = bd.client_id 
+            JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
+            WHERE bd.billing_status = 'unpaid' AND bd.billing_type = 'billed' AND bd.billing_month = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        mysqli_stmt_bind_param($stmt, "s", $billingMonth);
+
+        $billing_data = [];
+
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            while ($row = mysqli_fetch_assoc($result)) {
+                $billing_data[] = $row;
+            }
+        }
+
+        $template = file_get_contents('templates/billing-template.html');
+        $all_billings = "";
+
+        foreach ($billing_data as $billing) {
+            $qrCode = new QrCode($billing['client_id']);
+            $writer = new PngWriter();
+            $result = $writer->write($qrCode);
+
+            $qrDataUri = $result->getDataUri();
+
+            $billingID = $billing['billing_id'];
+            $accountNumber = $billing['client_id'];
+
+            $dbQueries->updateBillingData($billingID);
+            $dbQueries->updateClientStatus($accountNumber);
+
+            $meterNumber = $billing['meter_number'];
+            $propertyType = $billing['property_type'];
+            $firstName = $billing['first_name'];
+            $lastName = $billing['last_name'];
+            $brgy = $billing['brgy'];
+            $municipality = $billing['municipality'];
+            $propertyType = $billing['property_type'];
+            $billingMonth = $billing['billing_month'];
+
+            $currReading = $billing['curr_reading'];
+            $prevReading = $billing['prev_reading'];
+            $consumption = $billing['consumption'];
+            $rates = $billing['rates'];
+            $formattedRates = number_format($rates, 2, '.', ',');
+            $billingAmount = $billing['billing_amount'];
+            $formattedBillingAmount = number_format($billingAmount, 2, '.', ',');
+            $periodTo = $billing['period_to'];
+            $periodFrom = $billing['period_from'];
+            $dueDate = $billing['due_date'];
+            $disconnectionDate = $billing['disconnection_date'];
+            $timestamp = $billing['timestamp'];
+
+            $date = new DateTime($timestamp, new DateTimeZone('Asia/Manila'));
+            $formattedDate = $date->format('D M d, Y h:i A');
+
+            $billingHtml = str_replace(
+                ['{{billing_id}}', '{{datetime}}', '{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{curr_reading}}', '{{prev_reading}}', '{{consumption}}', '{{rates}}', '{{billing_amount}}', '{{billing_month}}', '{{meter_number}}', '{{property_type}}', '{{period_to}}', '{{period_from}}', '{{due_date}}', '{{disconnection_date}}', '{{meter_reader}}', '{{qr_code_path}}'],
+                [$billingID, $formattedDate, $accountNumber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $formattedRates, $formattedBillingAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
+                $template
+            );
+
+            $all_billings .= $billingHtml;
+        }
+
+        $currentMonth = strtoupper(date("M"));
+        $currentYear = date("Y");
+
+
+        $dompdf->loadHtml($all_billings);
+        $dompdf->setPaper('legal');
+        $dompdf->render();
+        $dompdf->addInfo("Title", "Billing");
+
+        $outputDirectory = 'temp/all_billing/';
+
+        if (!is_dir($outputDirectory)) {
+            mkdir($outputDirectory, 0755, true);
+        }
+
+        $filename = $currentYear . $currentMonth . '.pdf';
+        $filepath = $outputDirectory . $filename;
+
+        if (file_put_contents($filepath, $dompdf->output())) {
+            return [
+                'status' => 'success',
+                'filename' => $filename,
+                'filepath' => $filepath,
+                "sql" => $sql
+            ];
+        } else {
+            $errorMessage = error_get_last()['message'];
+            return [
+                'status' => 'error',
+                'message' => "Failed to save PDF file. Error: $errorMessage",
+            ];
+        }
+    }
     public function generateIndividualBilling($data)
     {
         $template = file_get_contents('templates/billing-template.html');
@@ -298,9 +416,176 @@ class WBSMailer extends PdfGenerator
 }
 class DatabaseQueries extends BaseQuery
 {
+    public function insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID)
+    {
+        $sql = "INSERT INTO generated_billing_logs (billing_month, filename, filepath, user_id, time, date, timestamp) VALUES (?, ?, ?,?,CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $stmt = $this->conn->prepareStatement($sql);
+
+
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param('ssss', $billingMonth, $filename, $filepath, $userID);
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return false;
+        }
+        $stmt->close();
+        return true;
+
+    }
+
+    public function getLatestBillingLogForMonth($billingMonth)
+    {
+        $sql = "SELECT filename, filepath FROM generated_billing_logs WHERE billing_month = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return null;
+        }
+
+        $stmt->bind_param('s', $billingMonth);
+
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return null;
+        }
+        $stmt->bind_result($filename, $filepath);
+        $stmt->fetch();
+        $stmt->close();
+
+        return ($filename && $filepath) ? ['filename' => $filename, 'filepath' => $filepath] : null;
+    }
+
+    public function isBillingLogExists()
+    {
+        $pdfGenerator = new PdfGenerator($this->conn);
+        $billingMonth = $this->getBillingCycle();
+        $getLatestBillingLogForMonth = $this->getLatestBillingLogForMonth($billingMonth);
+        
+        // $filepath = $getLatestBillingLogForMonth['filepath'];
+
+        // if (!file_exists($filepath)) {
+        //     $this->deleteBillingLogForMonth($billingMonth);
+
+        //     $generateAllBillingResult = $pdfGenerator->generateAllBilling($billingMonth);
+
+        //     if ($generateAllBillingResult['status'] === 'success') {
+        //         if (session_status() == PHP_SESSION_NONE) {
+        //             session_start();
+        //         }
+        //         $userID = $_SESSION['user_id'];
+        //         $filename = $generateAllBillingResult['filename'];
+        //         $filepath = $generateAllBillingResult['filepath'];
+
+        //         $this->insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID);
+        //         return $generateAllBillingResult;
+        //     }
+        // }
+
+        return $getLatestBillingLogForMonth;
+    }
+
+    public function deleteBillingLogForMonth($billingMonth)
+    {
+        $sql = "DELETE FROM generated_billing_logs WHERE billing_month = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param('s', $billingMonth);
+
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return false;
+        }
+
+        $stmt->close();
+        return true;
+    }
+
+    public function generateAllBilling()
+    {
+        $pdfGenerator = new PdfGenerator($this->conn);
+        $billingMonth = $this->getBillingCycle();
+        $latestBillingLogForMonth = $this->getLatestBillingLogForMonth($billingMonth);
+
+        if (!$latestBillingLogForMonth) {
+            $generateAllBillingResult = $pdfGenerator->generateAllBilling($billingMonth);
+
+            if ($generateAllBillingResult['status'] === 'success') {
+                if (session_status() == PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $userID = $_SESSION['user_id'];
+                $filename = $generateAllBillingResult['filename'];
+                $filepath = $generateAllBillingResult['filepath'];
+                $this->insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID);
+                return $generateAllBillingResult;
+            }
+        } else {
+            if (!file_exists($latestBillingLogForMonth['filepath'])) {
+
+                $this->deleteBillingLogForMonth($billingMonth);
+
+                $generateAllBillingResult = $pdfGenerator->generateAllBilling($billingMonth);
+
+                if ($generateAllBillingResult['status'] === 'success') {
+                    if (session_status() == PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    $userID = $_SESSION['user_id'];
+                    $filename = $generateAllBillingResult['filename'];
+                    $filepath = $generateAllBillingResult['filepath'];
+
+                    $this->insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID);
+
+                    return $generateAllBillingResult;
+                }
+            } else {
+                $filename = $latestBillingLogForMonth['filename'];
+                $filepath = $latestBillingLogForMonth['filepath'];
+                return [
+                    'status' => 'success',
+                    'filename' => $filename,
+                    'filepath' => $filepath
+                ];
+            }
+        }
+    }
+
+    public function updateBillingData(string $billingID)
+    {
+        $sql = "UPDATE billing_data SET billing_type = 'billed' WHERE billing_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+        mysqli_stmt_bind_param($stmt, "s", $billingID);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $result;
+    }
+
+    public function updateClientStatus(string $clientID)
+    {
+        $sql = "UPDATE client_data SET reading_status = 'read' WHERE client_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+        mysqli_stmt_bind_param($stmt, "s", $clientID);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $result;
+    }
     public function checkEncodedBill()
     {
-        $sqlActive = "SELECT COUNT(*) as total_active FROM client_data WHERE status = 'active'";
+        $sqlActive = "SELECT COUNT(*) as total_active FROM client_data WHERE status = 'active' AND reading_status = 'encoded'";
         $stmtActive = $this->conn->prepareStatement($sqlActive);
 
         if (!$stmtActive) {
@@ -336,7 +621,7 @@ class DatabaseQueries extends BaseQuery
 
     public function getBillingCycle()
     {
-        $sql = "SELECT billing_month FROM billing_data WHERE billing_type = 'verified' ORDER BY timestamp LIMIT 1";
+        $sql = "SELECT billing_month FROM billing_data ORDER BY timestamp LIMIT 1";
         $stmt = $this->conn->prepareStatement($sql);
 
         if (!$stmt) {
@@ -354,48 +639,6 @@ class DatabaseQueries extends BaseQuery
         }
     }
 
-    public function checkVerifiedBill()
-    {
-        $response = array();
-        $billingCycle = $this->getBillingCycle();
-        if ($billingCycle === null) {
-            return null;
-        }
-
-        $sqlVerified = "SELECT COUNT(*) as total_verified FROM billing_data WHERE billing_month = ? AND billing_type = 'verified'AND billing_status = 'unpaid'";
-        $stmtVerified = $this->conn->prepareStatement($sqlVerified);
-
-        if (!$stmtVerified) {
-            return null;
-        }
-
-        $stmtVerified->bind_param("s", $billingCycle);
-        $stmtVerified->execute();
-        $resultVerified = $stmtVerified->get_result();
-        $totalVerified = $resultVerified->fetch_assoc()['total_verified'];
-
-        $sqlActive = "SELECT COUNT(*) as total_active FROM client_data WHERE status = 'active'";
-        $stmtActive = $this->conn->prepareStatement($sqlActive);
-
-        if (!$stmtActive) {
-            return null;
-        }
-
-        $stmtActive->execute();
-        $resultVerified = $stmtActive->get_result();
-        $totalActive = $resultVerified->fetch_assoc()['total_active'];
-
-        $isMatch = ($totalVerified === $totalActive);
-
-        $response = array(
-            'total_verified' => $totalVerified,
-            'total_active' => $totalActive,
-            'is_match' => $isMatch
-        );
-        $stmtVerified->close();
-        $stmtActive->close();
-        return $response;
-    }
     public function retrieveClientData($clientID)
     {
         $response = array();
@@ -1439,12 +1682,13 @@ class DataTable extends BaseQuery
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'verified' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
+            $sql .= " WHERE (bd.billing_type = 'verified' OR bd.billing_type = 'billed') AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
         } else {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE bd.billing_type = 'verified' AND bd.billing_status = 'unpaid'";
+            $sql .= " WHERE (bd.billing_type = 'verified' OR bd.billing_type = 'billed') AND bd.billing_status = 'unpaid'";
         }
+
 
         // echo $sql;
         // print_r($params);

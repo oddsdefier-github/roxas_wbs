@@ -3936,6 +3936,10 @@ input:checked + .toggle-bg {
   fill: #1F2937;
 }
 
+.fill-green-500 {
+  fill: #0E9F6E;
+}
+
 .fill-red-600 {
   fill: #E02424;
 }

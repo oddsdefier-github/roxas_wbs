@@ -196,16 +196,16 @@
                             <a href="transactions.php" class="tab flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
                                 <div class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M6 6h8a3 3 0 0 1 0 6a3 3 0 0 1 0 6h-8"></path>
-                                    <path d="M8 6l0 12"></path>
-                                    <path d="M8 12l6 0"></path>
-                                    <path d="M9 3l0 3"></path>
-                                    <path d="M13 3l0 3"></path>
-                                    <path d="M9 18l0 3"></path>
-                                    <path d="M13 18l0 3"></path>
-                                    </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M6 6h8a3 3 0 0 1 0 6a3 3 0 0 1 0 6h-8"></path>
+                                            <path d="M8 6l0 12"></path>
+                                            <path d="M8 12l6 0"></path>
+                                            <path d="M9 3l0 3"></path>
+                                            <path d="M13 3l0 3"></path>
+                                            <path d="M9 18l0 3"></path>
+                                            <path d="M13 18l0 3"></path>
+                                        </svg>
                                     </div>
                                     <p class="ml-2">Transaction</p>
                                 </div>
@@ -234,8 +234,15 @@
                             <a href="reports.php" class="tab flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
                                 <div class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M8 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h5.697" />
+                                            <path d="M18 14v4h4" />
+                                            <path d="M18 11v-4a2 2 0 0 0 -2 -2h-2" />
+                                            <path d="M8 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                                            <path d="M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                                            <path d="M8 11h4" />
+                                            <path d="M8 15h3" />
                                         </svg>
                                     </div>
                                     <p class="ml-2">Reports</p>

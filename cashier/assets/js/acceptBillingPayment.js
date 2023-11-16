@@ -292,8 +292,7 @@ function downloadPDF(pdfPath, dynamicFilename) {
 const qrScan = $("#qrBilling");
 const qrBillPaymentModal = $("#qrBillPaymentModal");
 
-
-let permissionGranted = false; // Flag to track if permission is granted
+let permissionGranted = false;
 
 qrScan.on('click', async function () {
     if (!permissionGranted) {
@@ -359,6 +358,6 @@ qrScan.on('click', async function () {
         };
     };
 
-    let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 20, qrbox: qrboxFunction, rememberLastUsedCamera: true });
+    let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: qrboxFunction, rememberLastUsedCamera: true });
     html5QrcodeScanner.render(onScanSuccess);
 });

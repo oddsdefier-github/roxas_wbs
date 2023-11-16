@@ -33,10 +33,9 @@ $(document).ready(function () {
                 applicationID: applicationID,
             },
             success: function (data) {
-                console.log(data)
                 var applicationData = JSON.parse(data).applicationData;
                 console.log(applicationData);
-                callback(applicationData); // Call the callback function with the data
+                callback(applicationData);
             },
             error: function (error) {
                 console.log(error)
@@ -68,123 +67,37 @@ $(document).ready(function () {
         });
     }
 
-    applicantID = $('#review-id-hidden').val();
+    applicationID = $('#review-id-hidden').val(); //contains the application id get from the url
 
-    retrieveClientApplicationData(applicantID, function (applicationData) {
-        const status = applicationData.status;
-        const meterNumber = applicationData.meter_number
-        const firstName = applicationData.first_name
-        const middleName = applicationData.middle_name
-        const lastName = applicationData.last_name
-        const nameSuffix = applicationData.name_suffix
-        const birthDate = applicationData.birthdate
-        const age = applicationData.age
-        const gender = applicationData.gender
-        const phoneNumber = applicationData.phone_number
-        const email = applicationData.email
-        const propertyType = applicationData.property_type
-        const streetAddress = applicationData.street
-        const brgy = applicationData.brgy
-        const validID = applicationData.valid_id
-        const proofOfOwnership = applicationData.proof_of_ownership
-        const deedOfSale = applicationData.deed_of_sale
-        const affidavit = applicationData.affidavit
-        const billingStatus = applicationData.billing_status
+    retrieveClientApplicationData(applicationID, function (applicationData) {
 
-        $('.name-title').text(applicationData.full_name)
-        $('.address-subtitle').text(applicationData.full_address)
+        const { application_id, status, meter_number, first_name, middle_name, last_name, name_suffix, full_name, full_address, birthdate, age, gender, phone_number, email, property_type, street, brgy, valid_id, proof_of_ownership, deed_of_sale, affidavit, billing_status } = applicationData;
 
-        const badgeElements = {
-            approved: `<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-            <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
-            Approved </span>`,
-            unconfirmed: `<span class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-            <span class="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
-            Unconfirmed </span>`,
-            confirmed: `<span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-            <span class="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span>
-            Confirmed </span>`,
-            paid: `<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-            <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
-            Paid </span>`,
-            unpaid: `<span class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-            <span class="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
-            Unpaid </span>`,
-        };
-        function disableInput(elementsArray) {
-            elementsArray.forEach((el) => {
-                el.prop("disabled", true)
-            });
-        }
+        const inputs = $('main input');
+        const selects = $('main select');
+        const nameTitle = $('.name-title');
+        const addressSubtitle = $('.address-subtitle');
+        const statusBadge = $('.status_badge');
+        const billingStatusBadge = $('.billing_status_badge');
+        const waitingBadge = $('.waiting_badge');
+        const reviewConfirm = $('#review_confirm');
+        const reviewSubmit = $("#review-submit");
+        const approveClient = $("#approved_client");
 
-        const inputs = $('input');
-        const selects = $('select');
-
-        function enableInput(elementsArray) {
-            elementsArray.forEach((el) => {
-                el.prop("disabled", false)
-            });
-        }
-
-        if (status === 'confirmed') {
-            disableInput([inputs, selects])
-
-            $('.status_badge').html(badgeElements.confirmed);
-            $('#review_confirm')
-                .prop('disabled', true)
-                .hide();
-            $("#approved_client").show();
-            $("#review-submit").prop("disabled", false)
-            if (billingStatus === 'unpaid') {
-                $('.billing_status_badge').html(badgeElements.unpaid);
-                $("#review-submit")
-                    .prop("disabled", true)
-                $(".review-submit-text").text("Waiting for Payment");
-                $(".btn-status-spinner").removeClass('hidden')
-            } else if (billingStatus === 'paid') {
-                $('.billing_status_badge').html(badgeElements.paid);
-                $("#review-submit")
-                    .show()
-                $(".review-submit-text").text("Waiting for Approval");
-                $(".btn-status-spinner").removeClass('hidden')
-                enableInput([inputs, selects])
-            } else {
-                $('.billing_status_badge').html('');
-                $("#review-submit").hide()
-            }
-
-        } else if (status === 'unconfirmed') {
-            $('.status_badge').html(badgeElements.unconfirmed);
-            $('#review_confirm')
-                .show();
-            $("#approved_client").hide();
-            $("#review-submit").prop("disabled", false);
-        } else {
-            $('.status_badge').html(badgeElements.approved);
-            $("#review-submit")
-                .prop("disabled", true)
-                .text("Already Approved");
-            $('#review_confirm')
-                .prop('disabled', true)
-                .hide()
-            $("#approved_client").hide();
-            disableInput([inputs, selects])
-        }
-
-
-
-        meterNumberInput.val(meterNumber);
-        firstNameInput.val(firstName);
-        middleNameInput.val(middleName);
-        lastNameInput.val(lastName);
-        nameSuffixInput.val(nameSuffix);
-        birthDateInput.val(birthDate);
+        nameTitle.text(full_name);
+        addressSubtitle.text(full_address)
+        meterNumberInput.val(meter_number);
+        firstNameInput.val(first_name);
+        middleNameInput.val(middle_name);
+        lastNameInput.val(last_name);
+        nameSuffixInput.val(name_suffix);
+        birthDateInput.val(birthdate);
         ageInput.val(age + (parseInt(age) > 1 ? ' years old' : ' year old'));
         genderInput.val(gender);
-        phoneNumberInput.val(phoneNumber);
+        phoneNumberInput.val(phone_number);
         emailInput.val(email);
-        propertyTypeInput.val(propertyType);
-        streetAddressInput.val(streetAddress);
+        propertyTypeInput.val(property_type);
+        streetAddressInput.val(street);
 
         function formatDate(dateString) {
             const [month, day, year] = dateString.split('/');
@@ -193,21 +106,111 @@ $(document).ready(function () {
             return formattedDate;
         }
 
-        $(".readable-date").text(formatDate(birthDate))
+        $(".readable-date").text(formatDate(birthdate))
+        $("#application-id-hidden").val(application_id)
 
-        $("#application-id-hidden").val(applicationData.application_id)
 
-        if (validID == 'Yes') {
-            validIdCheck.prop('checked', true)
+        valid_id === 'Yes' && validIdCheck.prop('checked', true);
+        proof_of_ownership === 'Yes' && proofOfOwnershipCheck.prop('checked', true);
+        deed_of_sale === 'Yes' && deedOfSaleCheck.prop('checked', true);
+        affidavit === 'Yes' && affidavitCheck.prop('checked', true);
+
+
+        const badgeElements = {
+            approved: `<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-full">
+            <span class="mr-1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="fill-green-500 w-4 h-4">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+            </svg>
+            </span>
+            
+            Approved </span>`,
+            unconfirmed: `<span class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
+            Unconfirmed </span>`,
+            confirmed: `<span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-blue-500 rounded-full"></span>
+            Confirmed </span>`,
+            paid: `<span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-green-500 rounded-full"></span>
+            Paid </span>`,
+            unpaid: `<span class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
+            Unpaid </span>`,
+            waiting_for_payment: `<span class="inline-flex items-center bg-orange-100 text-orange-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-orange-500 rounded-full"></span>
+            Waiting For Payment </span>`,
+            waiting_for_approval: `<span class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-full">
+            <span class="w-2 h-2 mr-1 bg-yellow-500 rounded-full"></span>
+            Waiting For Approval </span>`,
+        };
+
+        function disableInput(elementsArray) {
+            elementsArray.forEach((el) => {
+                el.prop("disabled", true)
+            });
         }
-        if (proofOfOwnership == 'Yes') {
-            proofOfOwnershipCheck.prop('checked', true)
+
+        function enableInput(elementsArray) {
+            elementsArray.forEach((el) => {
+                el.prop("disabled", false)
+            });
         }
-        if (deedOfSale == 'Yes') {
-            deedOfSaleCheck.prop('checked', true)
-        }
-        if (affidavit == 'Yes') {
-            affidavitCheck.prop('checked', true)
+
+
+        switch (status) {
+            case 'confirmed':
+
+                disableInput([inputs, selects]);
+                statusBadge.html(badgeElements.confirmed);
+                reviewConfirm
+                    .prop('disabled', true)
+                    .hide();
+                approveClient.show();
+                reviewSubmit.prop("disabled", false);
+
+                switch (billing_status) {
+                    case 'unpaid':
+                        billingStatusBadge.html(badgeElements.unpaid);
+                        waitingBadge.html(badgeElements.waiting_for_payment);
+                        reviewSubmit.prop("disabled", true);
+                        $(".review-submit-text").text("Waiting for Payment");
+                        $(".btn-status-spinner").removeClass('hidden');
+                        break;
+                    case 'paid':
+                        billingStatusBadge.html(badgeElements.paid);
+                        waitingBadge.html(badgeElements.waiting_for_approval);
+                        reviewSubmit.show();
+                        $(".review-submit-text").text("Approve");
+                        $(".btn-status-spinner").removeClass('hidden');
+                        disableInput([inputs, selects]);
+                        $("#confirm_review_check").prop('disabled', false);
+
+                        break;
+                    default:
+                        billingStatusBadge.html('');
+                        reviewSubmit.hide();
+                }
+                break;
+
+            case 'unconfirmed':
+                statusBadge.html(badgeElements.unconfirmed);
+                reviewConfirm.show();
+                approveClient.hide();
+                reviewSubmit.prop("disabled", false);
+                break;
+
+            default:
+                statusBadge.html(badgeElements.approved);
+                waitingBadge.html('');
+                reviewSubmit
+                    .prop("disabled", true)
+                    .text("Already Approved");
+                reviewConfirm
+                    .prop('disabled', true)
+                    .hide();
+                approveClient.hide();
+                disableInput([inputs, selects]);
         }
 
         fetchAddressData()
@@ -215,33 +218,22 @@ $(document).ready(function () {
                 $('.applicant-address').each(function () {
                     let selectElement = $(this);
                     selectElement.empty();
-                    $.each(addressData, function (index, item) {
+                    $.each(addressData, function (_, item) {
                         let option = $('<option>', {
                             value: item.id,
                             text: item.brgy
                         });
-
-                        if (item.brgy === brgy) {
-                            option.prop('selected', true);
-                        }
+                        item.brgy === brgy ? option.prop('selected', true) : option.prop('selected', false);
                         selectElement.append(option);
-
                     });
                 });
             })
             .catch((error) => {
                 console.error(error);
             });
-
     });
 
 
-
-    /**
-     * Validates the birth date input and calculates the age of the client.
-     * Displays error messages if the input is invalid or the client is under 18 or over 100 years old.
-     * If the input is valid, displays the age and the birth date in a readable format and focuses on the gender input.
-     */
     function validateAndCalculateAge() {
         const dateText = birthDateInput.val();
         const parts = dateText.split("/");
@@ -333,7 +325,8 @@ $(document).ready(function () {
         </svg></span>`
     };
 
-    function processApplication() {
+    function approveClientApplication() {
+
         function getSelectedItemValue(selectEl) {
             let value = selectEl.find(':selected').text();
             selectEl.on('change', function () {
@@ -442,15 +435,20 @@ $(document).ready(function () {
                 console.log(data)
                 if (responseData) {
                     const { status, message, client_id, filename, filepath } = responseData;
-                    if (status === 'error') {
-                        alert(`${message}`);
-                        window.location.reload();
-                    } else if (status === 'success') {
-                        alert(`${message}`);
-                        if (filename && filepath) {
-                            downloadPDF(filepath, filename);
-                            window.reload();
-                        }
+                    switch (status) {
+                        case 'error':
+                            alert(message);
+                            window.location.reload();
+                            break;
+                        case 'success':
+                            alert(message);
+                            if (filename && filepath) {
+                                downloadPDF(filepath, filename);
+                                window.location.reload();
+                            }
+                        default:
+                            console.log(client_id);
+                            break;
                     }
                 }
             },
@@ -709,11 +707,6 @@ $(document).ready(function () {
         const reviewConfirmationModal = $('#reviewConfirmationModal');
         const confirmReviewCheck = $('#confirm_review_check');
 
-        /**
-         * Checks if the validID, proofOfOwnership, and deedOfSale checkboxes are all checked.
-         * @returns {boolean} Returns true if all checkboxes are checked, false otherwise.
-         */
-
         let isChecked = validID.prop('checked') && proofOfOwnership.prop('checked') && deedOfSale.prop('checked');
         if (!isChecked) {
             alert('Please upload valid documents!');
@@ -738,16 +731,25 @@ $(document).ready(function () {
             approvedClient.off('click');
 
             if (isConfirmed) {
-                confirmUpdateApplication();
+
+                reviewConfirm.on("click", function () {
+                    $(this).html(confirmStatus);
+                    $(this).prop('disabled', true);
+                    $('button[data-button-type="close-modal"]').prop('disabled', true);
+                    setTimeout(() => {
+                        confirmUpdateApplication();
+                    }, 400);
+                });
+
                 approvedClient.on('click', function () {
                     $(this).html(approveStatus);
                     $(this).prop('disabled', true);
-                    $(this).prev('button').prop('disabled', true);
+                    $('button[data-button-type="close-modal"]').prop('disabled', true);
                     setTimeout(() => {
-                        processApplication();
-                        reviewConfirmationModal.hide();
-                    }, 800);
+                        approveClientApplication();
+                    }, 400);
                 });
+
             }
         });
     });
@@ -824,52 +826,67 @@ $(document).ready(function () {
             }
         };
 
-        $("#review_confirm").on("click", function () {
-            localStorage.setItem("polling_interval", "5000")
-            $(this).html(confirmStatus);
-            $.ajax({
-                url: "database_actions.php",
-                type: "post",
-                dataType: "json",
-                data: {
-                    action: "updatedClientAppStatus",
-                    applicantID: applicantID,
-                    documentsData: {
-                        meterNumber: formInput.meterNumber,
-                        firstName: formInput.firstName,
-                        middleName: formInput.middleName,
-                        lastName: formInput.lastName,
-                        fullName: formInput.getFullNameWithInitial(),
-                        nameSuffix: formInput.nameSuffix,
-                        birthDate: formInput.birthDate,
-                        age: formInput.age,
-                        gender: formInput.gender,
-                        phoneNumber: formInput.phoneNumber,
-                        email: formInput.email,
-                        propertyType: formInput.propertyType,
-                        streetAddress: formInput.streetAddress,
-                        brgy: formInput.brgy,
-                        municipality: formInput.municipality,
-                        province: formInput.province,
-                        region: formInput.region,
-                        fullAddress: formInput.getFullAddress(),
-                        validID: formInput.validID,
-                        proofOfOwnership: formInput.proofOfOwnership,
-                        deedOfSale: formInput.deedOfSale,
-                        affidavit: formInput.affidavit
-                    }
-                },
-                success: function (data) {
-                    console.log(data);
-                    $("#review_confirm").prop('disabled', true);
-                    $("#review_confirm").prev('button').prop('disabled', true);
-                    setTimeout(() => {
-                        $('#reviewConfirmationModal').hide();
-                        window.location.reload();
-                    }, 800);
+        const reviewConfirm = $("#review_confirm");
+        const reviewConfirmationModal = $('#reviewConfirmationModal');
+        $.ajax({
+            url: "database_actions.php",
+            type: "POST",
+            data: {
+                action: "updatedClientAppStatus",
+                applicationID: applicationID,
+                documentsData: {
+                    meterNumber: formInput.meterNumber,
+                    firstName: formInput.firstName,
+                    middleName: formInput.middleName,
+                    lastName: formInput.lastName,
+                    fullName: formInput.getFullNameWithInitial(),
+                    nameSuffix: formInput.nameSuffix,
+                    birthDate: formInput.birthDate,
+                    age: formInput.age,
+                    gender: formInput.gender,
+                    phoneNumber: formInput.phoneNumber,
+                    email: formInput.email,
+                    propertyType: formInput.propertyType,
+                    streetAddress: formInput.streetAddress,
+                    brgy: formInput.brgy,
+                    municipality: formInput.municipality,
+                    province: formInput.province,
+                    region: formInput.region,
+                    fullAddress: formInput.getFullAddress(),
+                    validID: formInput.validID,
+                    proofOfOwnership: formInput.proofOfOwnership,
+                    deedOfSale: formInput.deedOfSale,
+                    affidavit: formInput.affidavit
                 }
-            })
-        });
+            },
+            success: function (data) {
+                console.log(data);
+                const responseData = JSON.parse(data);
+                const { status, message } = responseData;
+
+                switch (status) {
+                    case 'error':
+                        alert(message);
+                        reviewConfirmationModal.hide();
+                        reviewConfirm.html('Confirm');
+                        break;
+                    case 'success':
+                        reviewConfirm.prop('disabled', true);
+                        reviewConfirm.prev('button').prop('disabled', true);
+                        setTimeout(() => {
+                            reviewConfirmationModal.hide();
+                            alert(message);
+                            window.location.reload();
+                        }, 800);
+                        break;
+                    default:
+                        break;
+                }
+            },
+            error: function (error) {
+                console.error("An error occurred:", error);
+            }
+        })
     };
 
 });

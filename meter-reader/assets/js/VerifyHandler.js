@@ -163,8 +163,6 @@ class VerifyHandler {
         this.elements.fullName.on('mouseover', () => { this.elements.fullName.text(client_id) });
         this.elements.fullName.on('mouseout', () => { this.elements.fullName.text(full_name) });
         this.elements.copyClientID.on('click', this.copyClientID.bind(this, client_id));
-
-
     }
 
     validateInput(responseData) {
@@ -253,8 +251,11 @@ class VerifyHandler {
     }
 
     handleSendEmail(clientID) {
-        const self = this;
+        this.elements.messageHeader.text('Sending Email...');
+        this.elements.messageBody.text('Please be patient. This may take a minute or more.');
         this.showSendingEmailModal();
+
+        const self = this;
         $.ajax({
             url: "database_actions.php",
             type: "post",

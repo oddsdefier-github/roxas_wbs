@@ -369,13 +369,14 @@ class DatabaseQueries extends BaseQuery
         $transactionID = $data['transactionID'];
         $transactionType = $data['transactionType'];
         $referenceID = $data['referenceID'];
+        $clientID = $data['clientID'];
         $description = $data['description'];
         $amountDue = $data['amountDue'];
         $amountPaid = $data['amountPaid'];
         $remainingBalance = $data['remainingBalance'];
         $userID = $data['confirmedBy'];
 
-        $sql = "INSERT INTO transactions (transaction_id, reference_id, transaction_type, transaction_desc, amount_due, amount_paid, remaining_balance, confirmed_by, time, date, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
+        $sql = "INSERT INTO transactions (transaction_id, reference_id, client_id, transaction_type, transaction_desc, amount_due, amount_paid, remaining_balance, confirmed_by, time, date, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
         $stmt = $this->conn->prepareStatement($sql);
         if (!$stmt) {
@@ -383,9 +384,10 @@ class DatabaseQueries extends BaseQuery
         } else {
             mysqli_stmt_bind_param(
                 $stmt,
-                "ssssddds",
+                "sssssddds",
                 $transactionID,
                 $referenceID,
+                $clientID,
                 $transactionType,
                 $description,
                 $amountDue,
@@ -441,6 +443,7 @@ class DatabaseQueries extends BaseQuery
             "transactionID" => $transactionID,
             "transactionType" =>  $transactionType,
             "referenceID" => $referenceID,
+            "clientID" => $clientID,
             "description" => $description,
             "amountDue" => $amountDue,
             "amountPaid" => $amountPaid,
@@ -616,6 +619,7 @@ class DatabaseQueries extends BaseQuery
             "transactionID" => $transactionID,
             "transactionType" =>  $transactionType,
             "referenceID" => $referenceID,
+            "clientID" => '',
             "description" => $description,
             "amountDue" => $amountDue,
             "amountPaid" => $amountPaid,

@@ -54,14 +54,17 @@ function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
         case 'sendIndividualBilling':
             handleSendIndividualBilling($wbsMailer);
             break;
-        case 'checkVerifiedBill':
-            handleCheckVerifiedBill($dbQueries);
+        case 'isBillingLogExists':
+            handleCheckBillingLogExistence($dbQueries);
             break;
         case 'checkEncodedBill':
             handleCheckEncodedBill($dbQueries);
             break;
         case 'submitMeterReport':
             handleSubmitMeterReport($dbQueries);
+            break;
+        case 'generateAllBilling':
+            handleGenerateAllBilling($dbQueries);
             break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
@@ -139,11 +142,7 @@ function handleSendIndividualBilling($wbsMailer)
         echo json_encode($sendIndividualBilling);
     }
 }
-function handleCheckVerifiedBill($dbQueries)
-{
-    $checkVerifiedBill = $dbQueries->checkVerifiedBill();
-    echo json_encode($checkVerifiedBill);
-}
+
 
 function handleCheckEncodedBill($dbQueries)
 {
@@ -175,4 +174,16 @@ function handleSubmitMeterReport($dbQueries)
     } else {
         echo json_encode(array('error' => 'Missing data'));
     }
+}
+
+function handleGenerateAllBilling($dbQueries)
+{
+    $generateAllBilling = $dbQueries->generateAllBilling();
+    echo json_encode($generateAllBilling);
+}
+
+function handleCheckBillingLogExistence($dbQueries)
+{
+    $latestBillingLog = $dbQueries->isBillingLogExists();
+    echo json_encode($latestBillingLog);
 }

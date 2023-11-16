@@ -22,7 +22,10 @@ if (isset($_GET['id'])) {
         <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
                 <div class="border-b border-gray-900/10 py-3">
-                    <h2 class="name-title inline-flex text-base font-semibold leading-7 text-gray-900">Personal Information </h2><span class="status_badge ml-2"></span><span class="billing_status_badge ml-2"></span>
+                    <h2 class="name-title inline-flex text-base font-semibold leading-7 text-gray-900">Personal Information </h2>
+                    <span class="status_badge ml-2"></span>
+                    <span class="billing_status_badge ml-2"></span>
+                    <span class="waiting_badge ml-2"></span>
                     <p class="address-subtitle mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
 
                 </div>
@@ -252,7 +255,6 @@ if (isset($_GET['id'])) {
         </div>
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
-            <!-- <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Reject</button> -->
             <button id="back" onclick="window.history.back()" type="button" class="text-gray-500 bg-gray-50 hover:bg-gray-100 focus:ring-3 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10">
                 Back
             </button>
