@@ -45,10 +45,12 @@ class PdfGenerator extends BaseQuery
         $dompdf = new Dompdf($options);
 
         $sql = "SELECT cd.*, bd.*, sd.* 
-            FROM client_data cd 
-            JOIN billing_data bd ON cd.client_id = bd.client_id 
-            JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
-            WHERE bd.billing_status = 'unpaid' AND bd.billing_type = 'billed' AND bd.billing_month = ?";
+        FROM client_data cd 
+        JOIN billing_data bd ON cd.client_id = bd.client_id 
+        JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
+        WHERE bd.billing_status = 'unpaid' 
+              AND (bd.billing_type = 'billed' OR bd.billing_type = 'verified') 
+              AND bd.billing_month = ? ";
         $stmt = $this->conn->prepareStatement($sql);
 
         mysqli_stmt_bind_param($stmt, "s", $billingMonth);
@@ -462,7 +464,7 @@ class DatabaseQueries extends BaseQuery
         $pdfGenerator = new PdfGenerator($this->conn);
         $billingMonth = $this->getBillingCycle();
         $getLatestBillingLogForMonth = $this->getLatestBillingLogForMonth($billingMonth);
-        
+
         // $filepath = $getLatestBillingLogForMonth['filepath'];
 
         // if (!file_exists($filepath)) {
@@ -583,6 +585,8 @@ class DatabaseQueries extends BaseQuery
         mysqli_stmt_close($stmt);
         return $result;
     }
+
+
     public function checkEncodedBill()
     {
         $sqlActive = "SELECT COUNT(*) as total_active FROM client_data WHERE status = 'active' AND reading_status = 'encoded'";
