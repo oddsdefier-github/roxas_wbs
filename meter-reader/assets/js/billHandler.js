@@ -9,7 +9,7 @@ function checkVerifiedBill() {
         url: "database_actions.php",
         type: "POST",
         data: {
-            action: "isBillingLogExists"
+            action: "getLatestBillingLogDataForMonth"
         },
         success: function (data) {
             console.log(data)

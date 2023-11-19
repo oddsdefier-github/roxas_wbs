@@ -10,18 +10,18 @@ function flagClient(clientID) {
         'align-items': 'center'
     });
 
-    retrieveClientData(clientID);
+    getClientData(clientID);
 }
 
 window.flagClient = flagClient;
 
-function retrieveClientData(clientID) {
+function getClientData(clientID) {
     $.ajax({
         url: "database_actions.php",
         type: "post",
         data:
         {
-            action: "retrieveClientData",
+            action: "getClientData",
             clientID: clientID
         },
         success: function (data) {

@@ -36,8 +36,8 @@ if (isset($_POST['action'])) {
 function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
 {
     switch ($action) {
-        case 'retrieveClientData':
-            handleRetrieveClientData($dbQueries);
+        case 'getClientData':
+            handleGetClientData($dbQueries);
             break;
         case 'getDataTable':
             handleGetDataTable($dataTable);
@@ -48,14 +48,14 @@ function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
         case 'encodeMeterReadingData':
             handleEncodeMeterReadingData($dbQueries);
             break;
-        case 'verifyReadingData':
-            handleVerifyReadingData($dbQueries);
-            break;
+            // case 'verifyReadingData':
+            //     handleVerifyReadingData($dbQueries);
+            //     break;
         case 'sendIndividualBilling':
             handleSendIndividualBilling($wbsMailer);
             break;
-        case 'isBillingLogExists':
-            handleCheckBillingLogExistence($dbQueries);
+        case 'getLatestBillingLogDataForMonth':
+            handleGetLatestBillingLogDataForMonth($dbQueries);
             break;
         case 'checkEncodedBill':
             handleCheckEncodedBill($dbQueries);
@@ -72,11 +72,11 @@ function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
     }
 }
 
-function handleRetrieveClientData($dbQueries)
+function handleGetClientData($dbQueries)
 {
     if (isset($_POST['clientID'])) {
         $clientID = $_POST['clientID'];
-        $retrieveData = $dbQueries->retrieveClientData($clientID);
+        $retrieveData = $dbQueries->getClientData($clientID);
         echo json_encode($retrieveData);
     }
 }
@@ -91,18 +91,12 @@ function handleGetDataTable($dataTable)
             case "client_data":
                 $dataTable->clientTable($dataTableParam);
                 break;
-
             case "billing_data":
                 $dataTable->billingTable($dataTableParam);
                 break;
             case "billing_data_verified":
                 $dataTable->verifiedBillingTable($dataTableParam);
                 break;
-
-                // Add more cases if you have more tables with similar functionality.
-                // case "another_table":
-                //     $dataTable->anotherTableFunction($dataTableParam);
-                //     break;
             default:
                 echo "Invalid table name provided.";
         }
@@ -124,14 +118,14 @@ function handleEncodeMeterReadingData($dbQueries)
     }
 }
 
-function handleVerifyReadingData($dbQueries)
-{
-    if (isset($_POST['formData'])) {
-        $formData = $_POST['formData'];
-        $verifyReadingData = $dbQueries->verifyReadingData($formData);
-        echo json_encode($verifyReadingData);
-    }
-}
+// function handleVerifyReadingData($dbQueries)
+// {
+//     if (isset($_POST['formData'])) {
+//         $formData = $_POST['formData'];
+//         $verifyReadingData = $dbQueries->verifyReadingData($formData);
+//         echo json_encode($verifyReadingData);
+//     }
+// }
 
 
 function handleSendIndividualBilling($wbsMailer)
@@ -182,8 +176,8 @@ function handleGenerateAllBilling($dbQueries)
     echo json_encode($generateAllBilling);
 }
 
-function handleCheckBillingLogExistence($dbQueries)
+function handleGetLatestBillingLogDataForMonth($dbQueries)
 {
-    $latestBillingLog = $dbQueries->isBillingLogExists();
+    $latestBillingLog = $dbQueries->getLatestBillingLogDataForMonth();
     echo json_encode($latestBillingLog);
 }

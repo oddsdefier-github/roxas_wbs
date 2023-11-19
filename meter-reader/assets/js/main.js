@@ -5,6 +5,7 @@ $(document).ready(function () {
     const currentPath = window.location.pathname;
     const filename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
 
+
     function checkEncodedBill() {
         $.ajax({
             url: "database_actions.php",
@@ -20,6 +21,7 @@ $(document).ready(function () {
         })
     }
     
+
     function updateUI(responseData) {
         const encodedBill = responseData.total_encoded;
         const activeClients = responseData.total_active;
@@ -35,6 +37,7 @@ $(document).ready(function () {
             $("#displayClientForReadingVerification").html(html)
         }
     }
+
     $('.page_nav').each(function () {
         $(this).find('a').each(function () {
             const linkHref = $(this).attr('href');
@@ -70,6 +73,7 @@ $(document).ready(function () {
             $("#encoded-counter").show();
             checkEncodedBill()
             break;
+        
         case 'bill_meter_reading.php':
             $("#verified-counter").show();
             $("#generateBillingPDF").show();
@@ -77,7 +81,6 @@ $(document).ready(function () {
             $(".main-content").show();
 
             new DataTableWithPagination("billing_data_verified", '#displayClientForBillingGeneration');
-
             break;
         default:
             $("#clientStatusFilter").hide();

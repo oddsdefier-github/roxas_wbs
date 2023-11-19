@@ -55,7 +55,6 @@ class PdfGenerator extends BaseQuery
             $registrationFee = $applicationFeeData['registration_fee'];
             $connectionFee = $applicationFeeData['connection_fee'];
             $installationFee = $applicationFeeData['installation_fee'];
-
             $totalApplicationFee = intval($applicationFee) + intval($inspectionFee) + intval($registrationFee) + intval($connectionFee) + intval($installationFee);
 
             $formattedApplicationFee = number_format($applicationFee, 2, '.', ',');
@@ -114,12 +113,14 @@ class PdfGenerator extends BaseQuery
 
             $filename = $regID . '.pdf';
             $filepath = $outputDirectory . $filename;
+            $emailPath = __DIR__ . '/' . $filepath;
 
             if (file_put_contents($filepath, $dompdf->output())) {
                 return [
                     'status' => 'success',
                     'filename' => $filename,
-                    'path' => $filepath,
+                    'email_path' => $emailPath,
+                    'filepath' => $filepath,
                 ];
             } else {
                 $errorMessage = error_get_last()['message'];
@@ -379,7 +380,7 @@ class DatabaseQueries extends BaseQuery
 
     public function fetchAddressData()
     {
-        $sql = "SELECT * FROM `address`";
+        $sql = "SELECT * FROM address ORDER BY brgy";
         $result = $this->conn->query($sql);
 
         $address_array = array();
@@ -679,13 +680,15 @@ class DatabaseQueries extends BaseQuery
 
             if ($regCertificateData['status'] === 'success') {
                 $filename = $regCertificateData['filename'];
-                $filepath = $regCertificateData['path'];
-                $wbsMailer->handleEmailSend($mailData, $filepath);
+                $filepath = $regCertificateData['filepath'];
+                $emailPath = $regCertificateData['email_path'];
+                $wbsMailer->handleEmailSend($mailData, $emailPath);
 
                 $response = [
                     "status" => "success",
                     "client_id" => $clientID,
                     "filename" => $filename,
+                    "emailPath" => $emailPath,
                     "filepath" => $filepath,
                     "message" => $fullName . "'s application has been approved.",
                 ];
@@ -752,7 +755,6 @@ class DatabaseQueries extends BaseQuery
 
     public function retrieveClientApplicationData($applicationID)
     {
-
         $data = array();
         $sql = "SELECT * FROM client_application WHERE application_id = ?";
         $stmt = $this->conn->prepareStatement($sql);

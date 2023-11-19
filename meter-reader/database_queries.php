@@ -24,11 +24,12 @@ class BaseQuery
     }
 }
 
-
 class PdfGenerator extends BaseQuery
 {
-    public function generateAllBilling($billingMonth)
+    public function generateAllBillingPDF(string $billingMonth): array
     {
+        $wbsMailer = new WBSMailer($this->conn);
+        $resultTaxRate = $wbsMailer->getTaxRate();
         $dbQueries = new DatabaseQueries($this->conn);
 
         if (session_status() == PHP_SESSION_NONE) {
@@ -49,8 +50,8 @@ class PdfGenerator extends BaseQuery
         JOIN billing_data bd ON cd.client_id = bd.client_id 
         JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
         WHERE bd.billing_status = 'unpaid' 
-              AND (bd.billing_type = 'billed' OR bd.billing_type = 'verified') 
-              AND bd.billing_month = ? ";
+                AND (bd.billing_type = 'billed' OR bd.billing_type = 'verified') 
+                AND bd.billing_month = ? ";
         $stmt = $this->conn->prepareStatement($sql);
 
         mysqli_stmt_bind_param($stmt, "s", $billingMonth);
@@ -77,7 +78,7 @@ class PdfGenerator extends BaseQuery
             $billingID = $billing['billing_id'];
             $accountNumber = $billing['client_id'];
 
-            $dbQueries->updateBillingData($billingID);
+            $dbQueries->updateBillingDataToBilled($billingID);
             $dbQueries->updateClientStatus($accountNumber);
 
             $meterNumber = $billing['meter_number'];
@@ -95,7 +96,12 @@ class PdfGenerator extends BaseQuery
             $rates = $billing['rates'];
             $formattedRates = number_format($rates, 2, '.', ',');
             $billingAmount = $billing['billing_amount'];
-            $formattedBillingAmount = number_format($billingAmount, 2, '.', ',');
+            $taxRate = $resultTaxRate['tax_rate'];
+            $taxAmount = $billingAmount * ($taxRate / 100);
+            $formattedTaxAmount = number_format($taxAmount, 2, '.', ',');
+            $totalAmount = $billingAmount + $taxAmount;
+            $formattedTotalAmount = number_format($totalAmount, 2, '.', ',');
+            // $formattedBillingAmount = number_format($billingAmount, 2, '.', ',');
             $periodTo = $billing['period_to'];
             $periodFrom = $billing['period_from'];
             $dueDate = $billing['due_date'];
@@ -106,8 +112,8 @@ class PdfGenerator extends BaseQuery
             $formattedDate = $date->format('D M d, Y h:i A');
 
             $billingHtml = str_replace(
-                ['{{billing_id}}', '{{datetime}}', '{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{curr_reading}}', '{{prev_reading}}', '{{consumption}}', '{{rates}}', '{{billing_amount}}', '{{billing_month}}', '{{meter_number}}', '{{property_type}}', '{{period_to}}', '{{period_from}}', '{{due_date}}', '{{disconnection_date}}', '{{meter_reader}}', '{{qr_code_path}}'],
-                [$billingID, $formattedDate, $accountNumber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $formattedRates, $formattedBillingAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
+                ['{{billing_id}}', '{{datetime}}', '{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{curr_reading}}', '{{prev_reading}}', '{{consumption}}', '{{rates}}', '{{tax}}', '{{billing_amount}}', '{{billing_month}}', '{{meter_number}}', '{{property_type}}', '{{period_to}}', '{{period_from}}', '{{due_date}}', '{{disconnection_date}}', '{{meter_reader}}', '{{qr_code_path}}'],
+                [$billingID, $formattedDate, $accountNumber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $formattedRates, $formattedTaxAmount, $formattedTotalAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
                 $template
             );
 
@@ -131,11 +137,13 @@ class PdfGenerator extends BaseQuery
 
         $filename = $currentYear . $currentMonth . '.pdf';
         $filepath = $outputDirectory . $filename;
+        $emailPath = __DIR__ . '/' . $filepath;
 
         if (file_put_contents($filepath, $dompdf->output())) {
             return [
                 'status' => 'success',
                 'filename' => $filename,
+                'email_path' => $emailPath,
                 'filepath' => $filepath,
                 "sql" => $sql
             ];
@@ -147,7 +155,7 @@ class PdfGenerator extends BaseQuery
             ];
         }
     }
-    public function generateIndividualBilling($data)
+    public function generateIndividualBilling(array $data): ?string
     {
         $template = file_get_contents('templates/billing-template.html');
 
@@ -187,6 +195,11 @@ class PdfGenerator extends BaseQuery
         $formattedRates = number_format($rates, 2, '.', ',');
         $billingAmount = $data['billing_amount'];
         $formattedBillingAmount = number_format($billingAmount, 2, '.', ',');
+        $taxRate = $data['tax_rate'];
+        $taxAmount = $billingAmount * ($taxRate / 100);
+        $formattedTaxAmount = number_format($taxAmount, 2, '.', ',');
+        $totalAmount = $billingAmount + $taxAmount;
+        $formattedTotalAmount = number_format($totalAmount, 2, '.', ',');
         $periodTo = $data['period_to'];
         $periodFrom = $data['period_from'];
         $dueDate = $data['due_date'];
@@ -197,8 +210,8 @@ class PdfGenerator extends BaseQuery
         $formattedDate = $date->format('D M d, Y h:i A');  // Format the date
 
         $billingHtml = str_replace(
-            ['{{billing_id}}', '{{datetime}}', '{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{curr_reading}}', '{{prev_reading}}', '{{consumption}}', '{{rates}}', '{{billing_amount}}', '{{billing_month}}', '{{meter_number}}', '{{property_type}}', '{{period_to}}', '{{period_from}}', '{{due_date}}', '{{disconnection_date}}', '{{meter_reader}}', '{{qr_code_path}}'],
-            [$billingID, $formattedDate, $accountNUmber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $formattedRates, $formattedBillingAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
+            ['{{billing_id}}', '{{datetime}}', '{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{curr_reading}}', '{{prev_reading}}', '{{consumption}}', '{{rates}}', '{{tax}}', '{{billing_amount}}', '{{billing_month}}', '{{meter_number}}', '{{property_type}}', '{{period_to}}', '{{period_from}}', '{{due_date}}', '{{disconnection_date}}', '{{meter_reader}}', '{{qr_code_path}}'],
+            [$billingID, $formattedDate, $accountNUmber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $formattedRates, $formattedTaxAmount, $formattedTotalAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
             $template
         );
 
@@ -213,18 +226,40 @@ class PdfGenerator extends BaseQuery
             return null;
         }
     }
-
 }
 
 class WBSMailer extends PdfGenerator
 {
-    public function queryDataForInvoice($clientID)
+    public function getTaxRate(): ?float
     {
-        $sql = "SELECT cd.*, bd.*, sd.* 
-        FROM client_data cd 
-        JOIN billing_data bd ON cd.client_id = bd.client_id 
-        JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
-        WHERE cd.client_id = ? AND bd.billing_status = 'unpaid' AND bd.billing_type = 'verified'";
+        $sql = "SELECT tax FROM rates ORDER BY timestamp DESC LIMIT 1";
+        $stmt = $this->conn->prepareStatement($sql);
+        if (!$stmt) {
+            return null;
+        }
+
+        if (!$stmt->execute()) {
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row['tax'];
+        } else {
+            return null;
+        }
+    }
+
+    public function queryDataForInvoice(string $clientID): ?array
+    {
+        $taxRate = $this->getTaxRate();
+
+        $sql = "SELECT cd.*, bd.*, sd.*
+            FROM client_data cd 
+            JOIN billing_data bd ON cd.client_id = bd.client_id 
+            JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
+            WHERE cd.client_id = ? AND bd.billing_status = 'unpaid' AND bd.billing_type = 'verified'";
 
         $stmt = $this->conn->prepareStatement($sql);
 
@@ -237,15 +272,19 @@ class WBSMailer extends PdfGenerator
         if (!mysqli_stmt_execute($stmt)) {
             return null;
         }
+
         $result = mysqli_stmt_get_result($stmt);
         $data = mysqli_fetch_assoc($result);
 
+        $data['tax_rate'] = $taxRate;
+
         mysqli_stmt_free_result($stmt);
         mysqli_stmt_close($stmt);
+
         return $data;
     }
 
-    public function insertIntoEmailLogs($data)
+    public function insertIntoEmailLogs(array $data): bool
     {
         $clientID = $data['client_id'];
         $referenceID = $data['billing_id'];
@@ -269,7 +308,7 @@ class WBSMailer extends PdfGenerator
             return false;
         }
     }
-    public function checkSentEmail($billingID)
+    public function checkSentEmail(string $billingID): bool
     {
         $sql = "SELECT reference_id FROM email_logs WHERE reference_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
@@ -294,7 +333,7 @@ class WBSMailer extends PdfGenerator
         return $isExist;
     }
 
-    public function mailBillingInvoice($clientData, $filepath)
+    public function mailBillingInvoice(string $clientData, string $filepath): string
     {
         $requiredFields = ['email', 'first_name', 'last_name'];
         foreach ($requiredFields as $field) {
@@ -366,11 +405,9 @@ class WBSMailer extends PdfGenerator
             return 'An error occurred while sending the email. Please try again later.';
         }
     }
-
-    public function sendIndividualBilling($clientID)
+    public function sendIndividualBilling(string $clientID): array
     {
         $response = array();
-
         $clientData = $this->queryDataForInvoice($clientID);
         if (!$clientData) {
             $response = array(
@@ -414,38 +451,30 @@ class WBSMailer extends PdfGenerator
         return $response;
     }
 
-
 }
 class DatabaseQueries extends BaseQuery
 {
-    public function insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID)
+    public function fetchAddressData(): array
     {
-        $sql = "INSERT INTO generated_billing_logs (billing_month, filename, filepath, user_id, time, date, timestamp) VALUES (?, ?, ?,?,CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
-        $stmt = $this->conn->prepareStatement($sql);
+        $sql = "SELECT * FROM `address`";
+        $result = $this->conn->query($sql);
 
-
-        if (!$stmt) {
-            return false;
+        $address_array = array();
+        while ($rows = mysqli_fetch_assoc($result)) {
+            $address_array[] = $rows;
         }
-        $stmt->bind_param('ssss', $billingMonth, $filename, $filepath, $userID);
-        if (!$stmt->execute()) {
-            $stmt->close();
-            return false;
-        }
-        $stmt->close();
-        return true;
-
+        $response['address'] = $address_array;
+        return $response;
     }
-
-    public function getLatestBillingLogForMonth($billingMonth)
+    public function getLatestBillingLogDataForMonth(): ?array
     {
+        $billingMonth = $this->getBillingCycle();
         $sql = "SELECT filename, filepath FROM generated_billing_logs WHERE billing_month = ? ORDER BY timestamp DESC LIMIT 1";
         $stmt = $this->conn->prepareStatement($sql);
 
         if (!$stmt) {
             return null;
         }
-
         $stmt->bind_param('s', $billingMonth);
 
         if (!$stmt->execute()) {
@@ -458,136 +487,114 @@ class DatabaseQueries extends BaseQuery
 
         return ($filename && $filepath) ? ['filename' => $filename, 'filepath' => $filepath] : null;
     }
-
-    public function isBillingLogExists()
+    public function getBillingCycle(): ?string
     {
-        $pdfGenerator = new PdfGenerator($this->conn);
-        $billingMonth = $this->getBillingCycle();
-        $getLatestBillingLogForMonth = $this->getLatestBillingLogForMonth($billingMonth);
-
-        // $filepath = $getLatestBillingLogForMonth['filepath'];
-
-        // if (!file_exists($filepath)) {
-        //     $this->deleteBillingLogForMonth($billingMonth);
-
-        //     $generateAllBillingResult = $pdfGenerator->generateAllBilling($billingMonth);
-
-        //     if ($generateAllBillingResult['status'] === 'success') {
-        //         if (session_status() == PHP_SESSION_NONE) {
-        //             session_start();
-        //         }
-        //         $userID = $_SESSION['user_id'];
-        //         $filename = $generateAllBillingResult['filename'];
-        //         $filepath = $generateAllBillingResult['filepath'];
-
-        //         $this->insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID);
-        //         return $generateAllBillingResult;
-        //     }
-        // }
-
-        return $getLatestBillingLogForMonth;
-    }
-
-    public function deleteBillingLogForMonth($billingMonth)
-    {
-        $sql = "DELETE FROM generated_billing_logs WHERE billing_month = ?";
+        $sql = "SELECT billing_month FROM billing_data ORDER BY timestamp DESC LIMIT 1";
         $stmt = $this->conn->prepareStatement($sql);
 
         if (!$stmt) {
-            return false;
+            return null;
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $billingCycle = $result->fetch_assoc()['billing_month'];
+            $stmt->close();
+            return $billingCycle;
+        } else {
+            $stmt->close();
+            return null;
+        }
+    }
+    // public function getTotalBilling($billingMonth)
+    // {
+    //     $sqlTotalBilling = "SELECT COUNT(*) as total_billing FROM billing_data WHERE billing_month = ?";
+    //     $stmtTotalBilling = $this->conn->prepareStatement($sqlTotalBilling);
+
+    //     if (!$stmtTotalBilling) {
+    //         return null;
+    //     }
+    //     $stmtTotalBilling->bind_param("s", $billingMonth);
+    //     if (!$stmtTotalBilling->execute()) {
+    //         return null;
+    //     }
+
+    //     $resultTotalBilling = $stmtTotalBilling->get_result();
+    //     $totalBilling = $resultTotalBilling->fetch_assoc()['total_billing'];
+    //     $stmtTotalBilling->close();
+    //     return $totalBilling;
+    // }
+
+    // public function getTotalVerifiedBilling($billingMonth)
+    // {
+    //     $sqlTotalVerifiedBilling = "SELECT COUNT(*) as total_verified_billing FROM billing_data WHERE billing_type = 'verified' AND billing_month = ?";
+    //     $stmtTotalVerifiedBilling = $this->conn->prepareStatement($sqlTotalVerifiedBilling);
+
+    //     if (!$stmtTotalVerifiedBilling) {
+    //         return null;
+    //     }
+    //     $stmtTotalVerifiedBilling->bind_param("s", $billingMonth);
+    //     if (!$stmtTotalVerifiedBilling->execute()) {
+    //         return null;
+    //     }
+    //     $resultTotalVerifiedBilling = $stmtTotalVerifiedBilling->get_result();
+    //     $totalVerifiedBilling = $resultTotalVerifiedBilling->fetch_assoc()['total_verified_billing'];
+    //     $stmtTotalVerifiedBilling->close();
+    //     return $totalVerifiedBilling;
+    // }
+
+    public function getTotalBilling(string $billingMonth, ?string $billingType = null): ?string
+    {
+        $sql = "SELECT COUNT(*) as total_billing FROM billing_data WHERE billing_month = ?";
+        if ($billingType !== null) {
+            $sql .= " AND billing_type = ?";
         }
 
-        $stmt->bind_param('s', $billingMonth);
+        $stmt = $this->conn->prepareStatement($sql);
 
+        if (!$stmt) {
+            return null;
+        }
+
+        $stmt->bind_param("s", $billingMonth);
+
+        if ($billingType !== null) {
+            $stmt->bind_param("s", $billingType);
+        }
         if (!$stmt->execute()) {
             $stmt->close();
-            return false;
+            return null;
         }
 
+        $result = $stmt->get_result();
+        $totalBilling = $result->fetch_assoc()['total_billing'];
         $stmt->close();
-        return true;
+        return $totalBilling;
     }
 
-    public function generateAllBilling()
+    public function checkDuplicate(string $clientID, string $billingMonthAndYear): bool
     {
-        $pdfGenerator = new PdfGenerator($this->conn);
-        $billingMonth = $this->getBillingCycle();
-        $latestBillingLogForMonth = $this->getLatestBillingLogForMonth($billingMonth);
-
-        if (!$latestBillingLogForMonth) {
-            $generateAllBillingResult = $pdfGenerator->generateAllBilling($billingMonth);
-
-            if ($generateAllBillingResult['status'] === 'success') {
-                if (session_status() == PHP_SESSION_NONE) {
-                    session_start();
-                }
-                $userID = $_SESSION['user_id'];
-                $filename = $generateAllBillingResult['filename'];
-                $filepath = $generateAllBillingResult['filepath'];
-                $this->insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID);
-                return $generateAllBillingResult;
-            }
-        } else {
-            if (!file_exists($latestBillingLogForMonth['filepath'])) {
-
-                $this->deleteBillingLogForMonth($billingMonth);
-
-                $generateAllBillingResult = $pdfGenerator->generateAllBilling($billingMonth);
-
-                if ($generateAllBillingResult['status'] === 'success') {
-                    if (session_status() == PHP_SESSION_NONE) {
-                        session_start();
-                    }
-                    $userID = $_SESSION['user_id'];
-                    $filename = $generateAllBillingResult['filename'];
-                    $filepath = $generateAllBillingResult['filepath'];
-
-                    $this->insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID);
-
-                    return $generateAllBillingResult;
-                }
-            } else {
-                $filename = $latestBillingLogForMonth['filename'];
-                $filepath = $latestBillingLogForMonth['filepath'];
-                return [
-                    'status' => 'success',
-                    'filename' => $filename,
-                    'filepath' => $filepath
-                ];
-            }
-        }
-    }
-
-    public function updateBillingData(string $billingID)
-    {
-        $sql = "UPDATE billing_data SET billing_type = 'billed' WHERE billing_id = ?";
-        $stmt = $this->conn->prepareStatement($sql);
-
+        $checkDuplicateQuery = "SELECT client_id FROM billing_data WHERE client_id = ? AND billing_month = ? AND (billing_type = 'unverified' OR billing_type = 'verified')";
+        $stmt = $this->conn->prepareStatement($checkDuplicateQuery);
         if (!$stmt) {
             return false;
         }
-        mysqli_stmt_bind_param($stmt, "s", $billingID);
-        $result = mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-        return $result;
-    }
+        mysqli_stmt_bind_param($stmt, "ss", $clientID, $billingMonthAndYear);
 
-    public function updateClientStatus(string $clientID)
-    {
-        $sql = "UPDATE client_data SET reading_status = 'read' WHERE client_id = ?";
-        $stmt = $this->conn->prepareStatement($sql);
-
-        if (!$stmt) {
+        if (!mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
             return false;
         }
-        mysqli_stmt_bind_param($stmt, "s", $clientID);
-        $result = mysqli_stmt_execute($stmt);
+
+        mysqli_stmt_store_result($stmt);
+
+        $isDuplicate = mysqli_stmt_num_rows($stmt) > 0;
+
         mysqli_stmt_close($stmt);
-        return $result;
+
+        return $isDuplicate;
     }
-
-
-    public function checkEncodedBill()
+    public function checkEncodedBill(): ?array
     {
         $sqlActive = "SELECT COUNT(*) as total_active FROM client_data WHERE status = 'active' AND reading_status = 'encoded'";
         $stmtActive = $this->conn->prepareStatement($sqlActive);
@@ -622,44 +629,158 @@ class DatabaseQueries extends BaseQuery
         $stmtEncoded->close();
         return $response;
     }
-
-    public function getBillingCycle()
+    public function checkAllBillingType()
     {
-        $sql = "SELECT billing_month FROM billing_data ORDER BY timestamp LIMIT 1";
+        $billingMonth = $this->getBillingCycle();
+        // $totalBilling = $this->getTotalBilling($billingMonth);
+        // $totalVerifiedBilling = $this->getTotalVerifiedBilling($billingMonth);
+
+        $totalBilling = getTotalBilling($billingMonth);
+        $totalVerifiedBilling = getTotalBilling($billingMonth, "verified");
+
+        $isMatch = ($totalBilling === $totalVerifiedBilling);
+        $response = array(
+            'total_billing' => $totalBilling,
+            'total_verified_billing' => $totalVerifiedBilling,
+            'is_match' => $isMatch
+        );
+        $stmtActive->close();
+        $stmtTotalVerifiedBilling->close();
+        return $response;
+    }
+    public function insertIntoGeneratedBillingLogs(string $billingMonth, string $filename, string $filepath, string $userID): bool
+    {
+        $sql = "INSERT INTO generated_billing_logs (billing_month, filename, filepath, user_id, time, date, timestamp) VALUES (?, ?, ?,?,CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
         $stmt = $this->conn->prepareStatement($sql);
 
         if (!$stmt) {
-            return null;
+            return false;
         }
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            $billingCycle = $result->fetch_assoc()['billing_month'];
+        $stmt->bind_param('ssss', $billingMonth, $filename, $filepath, $userID);
+        if (!$stmt->execute()) {
             $stmt->close();
-            return $billingCycle;
+            return false;
+        }
+        $stmt->close();
+        return true;
+
+    }
+
+    public function deleteBillingLogForMonth(string $billingMonth): bool
+    {
+        $sql = "DELETE FROM generated_billing_logs WHERE billing_month = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param('s', $billingMonth);
+
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return false;
+        }
+
+        $stmt->close();
+        return true;
+    }
+
+    public function generateAllBilling(): array
+    {
+        $pdfGenerator = new PdfGenerator($this->conn);
+        $latestBillingLogForMonth = $this->getLatestBillingLogDataForMonth();
+
+        if (!$latestBillingLogForMonth) {
+            $generateAllBillingResult = $pdfGenerator->generateAllBillingPDF($billingMonth);
+
+            if ($generateAllBillingResult['status'] === 'success') {
+                if (session_status() == PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $userID = $_SESSION['user_id'];
+                $filename = $generateAllBillingResult['filename'];
+                $filepath = $generateAllBillingResult['filepath'];
+                $emailPath = $generateAllBillingResult['email_path'];
+                $this->insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID);
+                return $generateAllBillingResult;
+            }
         } else {
-            $stmt->close();
-            return null;
+            if (!file_exists($latestBillingLogForMonth['filepath'])) {
+
+                $this->deleteBillingLogForMonth($billingMonth);
+
+                $generateAllBillingResult = $pdfGenerator->generateAllBillingPDF($billingMonth);
+
+                if ($generateAllBillingResult['status'] === 'success') {
+                    if (session_status() == PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    $userID = $_SESSION['user_id'];
+                    $filename = $generateAllBillingResult['filename'];
+                    $filepath = $generateAllBillingResult['filepath'];
+
+                    $this->insertIntoGeneratedBillingLogs($billingMonth, $filename, $filepath, $userID);
+
+                    return $generateAllBillingResult;
+                }
+            } else {
+                $filename = $latestBillingLogForMonth['filename'];
+                $filepath = $latestBillingLogForMonth['filepath'];
+                return [
+                    'status' => 'success',
+                    'filename' => $filename,
+                    'filepath' => $filepath
+                ];
+            }
         }
     }
 
-    public function retrieveClientData($clientID)
+    public function updateBillingDataToBilled(string $billingID): bool
+    {
+        $sql = "UPDATE billing_data SET billing_type = 'billed' WHERE billing_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+        mysqli_stmt_bind_param($stmt, "s", $billingID);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $result;
+    }
+
+    public function updateClientStatus(string $clientID): bool
+    {
+        $sql = "UPDATE client_data SET reading_status = 'read' WHERE client_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+        mysqli_stmt_bind_param($stmt, "s", $clientID);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $result;
+    }
+
+    public function getClientData(string $clientID): array
     {
         $response = array();
 
-        $selectQuery = "SELECT * FROM client_data WHERE client_id = ?";
-        $stmt = $this->conn->prepareStatement($selectQuery);
-        if (!$stmt) {
+        $sqlSelectClientData = "SELECT * FROM client_data WHERE client_id = ?";
+        $stmtSelectClientData = $this->conn->prepareStatement($sqlSelectClientData);
+        if (!$stmtSelectClientData) {
             return ['error' => 'Failed to prepare statement for client_data query.'];
         }
 
-        mysqli_stmt_bind_param($stmt, "s", $clientID);
-        if (!mysqli_stmt_execute($stmt)) {
+        mysqli_stmt_bind_param($stmtSelectClientData, "s", $clientID);
+        if (!mysqli_stmt_execute($stmtSelectClientData)) {
             return ['error' => 'Error executing the client_data statement.'];
         }
 
-        $result = mysqli_stmt_get_result($stmt);
-        mysqli_stmt_close($stmt);
+        $result = mysqli_stmt_get_result($stmtSelectClientData);
+        mysqli_stmt_close($stmtSelectClientData);
 
         if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
@@ -674,19 +795,20 @@ class DatabaseQueries extends BaseQuery
             return ['error' => 'No client found with the provided ID.'];
         }
 
-        $sql = "SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
-        $stmt = $this->conn->prepareStatement($sql);
-        if (!$stmt) {
+
+        $sqlSelectBillingData = "SELECT * FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $stmtSelectBillingData = $this->conn->prepareStatement($sqlSelectBillingData);
+        if (!$stmtSelectBillingData) {
             return ['error' => 'Failed to prepare statement for billing_data query.'];
         }
 
-        mysqli_stmt_bind_param($stmt, "s", $clientID);
-        if (!mysqli_stmt_execute($stmt)) {
+        mysqli_stmt_bind_param($stmtSelectBillingData, "s", $clientID);
+        if (!mysqli_stmt_execute($stmtSelectBillingData)) {
             return ['error' => 'Error executing the billing_data statement.'];
         }
 
-        $result = mysqli_stmt_get_result($stmt);
-        mysqli_stmt_close($stmt);
+        $result = mysqli_stmt_get_result($stmtSelectBillingData);
+        mysqli_stmt_close($stmtSelectBillingData);
 
         if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
@@ -731,7 +853,7 @@ class DatabaseQueries extends BaseQuery
         ];
     }
 
-    public function getRates(string $propertyType, string $billingMonthAndYear)
+    public function getRates(string $propertyType, string $billingMonthAndYear): ?array
     {
         $query_rates = "SELECT rate_fee_id, rates FROM rates WHERE rate_type = ? AND billing_month = ? ORDER BY timestamp DESC LIMIT 1";
         $stmt = $this->conn->prepareStatement($query_rates);
@@ -811,50 +933,27 @@ class DatabaseQueries extends BaseQuery
         mysqli_stmt_close($stmt_update);
         return true;
     }
-
-    public function checkDuplicate($clientID, $billingMonthAndYear)
-    {
-        $checkDuplicateQuery = "SELECT client_id FROM billing_data WHERE client_id = ? AND billing_month = ? AND (billing_type = 'unverified' OR billing_type = 'verified')";
-        $stmt = $this->conn->prepareStatement($checkDuplicateQuery);
-        if (!$stmt) {
-            return false;
-        }
-        mysqli_stmt_bind_param($stmt, "ss", $clientID, $billingMonthAndYear);
-
-        if (!mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_close($stmt);
-            return false;
-        }
-
-        mysqli_stmt_store_result($stmt);
-
-        $isDuplicate = mysqli_stmt_num_rows($stmt) > 0;
-
-        mysqli_stmt_close($stmt);
-
-        return $isDuplicate;
-    }
-
-    public function retrievePreviousReading($clientID)
+    public function retrievePreviousReading(string $clientID): ?string
     {
         $sql = "SELECT prev_reading FROM billing_data WHERE client_id = ? ORDER BY timestamp DESC LIMIT 1";
         $stmt = $this->conn->prepareStatement($sql);
+
         if (!$stmt) {
-            return false;
+            return null;
         }
-        mysqli_stmt_bind_param($stmt, "s", $clientID);
-        if (!mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_close($stmt);
-            return false;
+        $stmt->bind_param("s", $clientID);
+        if (!$stmt->execute()) {
+            $stmt->close();
+            return null;
         }
         mysqli_stmt_bind_result($stmt, $prev_reading);
         $result = mysqli_stmt_fetch($stmt);
-        mysqli_stmt_close($stmt);
-        if ($result) {
-            return $prev_reading;
-        } else {
-            return false;
+        if (!$result) {
+            $stmt->close();
+            return null;
         }
+        $stmt->close();
+        return $prev_reading;
     }
 
     public function insertIntoMeterReadingLogs(array $data): bool
@@ -895,7 +994,30 @@ class DatabaseQueries extends BaseQuery
         return true;
     }
 
-    public function updateAndVerifiedBillingData($formData)
+    public function verifyBillingData(string $billingMonth): bool //button (verify all)
+    {
+        $sql = "UPDATE billing_data SET billing_type = 'verified' WHERE billing_month = ? AND billing_type = 'unverified'";
+        $stmt = $this->conn->prepareStatement($sql);
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param("s", $billingMonth);
+        $updateResult = $stmt->execute();
+
+        if ($stmt->affected_rows === 0) {
+            $stmt->close();
+            return false;
+        }
+        if (!$updateResult) {
+            $stmt->close();
+            return false;
+        }
+        $stmt->close();
+        return true;
+    }
+
+    public function updateAndVerifiedBillingData(array $formData): bool// rename this and make it just update
     {
         $this->conn->beginTransaction();
         $clientID = $formData['clientID'];
@@ -906,24 +1028,22 @@ class DatabaseQueries extends BaseQuery
         $consumption = intval($currReading) - intval($prevReading);
 
         $propertyType = $formData['propertyType'];
-        $billingType = 'verified';
 
         $rates = $this->getRates($propertyType, $billingMonth)['rates'];
         $rateFeeID = $this->getRates($propertyType, $billingMonth)['rate_fee_id'];
         $billingAmount = $consumption * $rates;
         $roundedBillingAmount = round($billingAmount, 2);
 
-        $sql = "UPDATE billing_data SET curr_reading = ?, consumption = ?, rates = ?, rate_fee_id = ?, billing_amount = ?, billing_type = ?, last_update = CURRENT_TIMESTAMP WHERE billing_id = ? ORDER BY timestamp DESC LIMIT 1";
+        $sql = "UPDATE billing_data SET curr_reading = ?, consumption = ?, rates = ?, rate_fee_id = ?, billing_amount = ?, last_update = CURRENT_TIMESTAMP WHERE billing_id = ? ORDER BY timestamp DESC LIMIT 1";
         $stmt_update = $this->conn->prepareStatement($sql);
         mysqli_stmt_bind_param(
             $stmt_update,
-            "dddsdss",
+            "dddsds",
             $currReading,
             $consumption,
             $rates,
             $rateFeeID,
             $roundedBillingAmount,
-            $billingType,
             $billingID
         );
         $updateResult = mysqli_stmt_execute($stmt_update);
@@ -940,7 +1060,7 @@ class DatabaseQueries extends BaseQuery
         return true;
     }
 
-    public function verifyReadingData($formData)
+    public function verifyReadingData(array $formData): ?array
     {
         $response = array();
         $this->conn->beginTransaction();
@@ -960,10 +1080,10 @@ class DatabaseQueries extends BaseQuery
                 "status" => "error",
                 "message" => $e->getMessage()
             );
-            return false;
+            return null;
         }
     }
-    public function insertIntoBillingData($formData)
+    public function insertIntoBillingData(array $formData): bool
     {
         $this->conn->beginTransaction();
 
@@ -1019,7 +1139,6 @@ class DatabaseQueries extends BaseQuery
             return false;
         }
 
-
         $sql_billing = "INSERT INTO billing_data (billing_id, client_id, meter_number,  prev_reading, curr_reading, reading_type, rate_type, consumption, billing_status, billing_type, billing_month, due_date, disconnection_date, period_to, period_from, encoder, time, date, timestamp ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP)";
 
         $stmt_billing = $this->conn->prepareStatement($sql_billing);
@@ -1056,8 +1175,7 @@ class DatabaseQueries extends BaseQuery
         return true;
     }
 
-
-    public function encodeCurrentReading($formData)
+    public function encodeCurrentReading(array $formData): array
     {
         $response = array();
         $clientID = $formData['clientID'];
@@ -1070,7 +1188,6 @@ class DatabaseQueries extends BaseQuery
             if (!$this->updateClientReadingStatus($clientID, 'encoded')) {
                 throw new Exception("Failed to update client reading status to encoded.");
             }
-
             $this->conn->commitTransaction();
             $response = array(
                 "status" => "success",
@@ -1087,20 +1204,7 @@ class DatabaseQueries extends BaseQuery
         return $response;
     }
 
-    public function fetchAddressData()
-    {
-        $sql = "SELECT * FROM `address`";
-        $result = $this->conn->query($sql);
-
-        $address_array = array();
-        while ($rows = mysqli_fetch_assoc($result)) {
-            $address_array[] = $rows;
-        }
-        $response['address'] = $address_array;
-        return $response;
-    }
-
-    public function updateClientStatusUponReport($clientID)
+    public function updateClientStatusUponReport(string $clientID): bool
     {
         $sql = "UPDATE client_data SET status = 'under_review', reading_status = 'under_review' WHERE client_id = ?";
         $stmt = $this->conn->prepareStatement($sql);
@@ -1110,10 +1214,9 @@ class DatabaseQueries extends BaseQuery
         }
         $stmt->execute();
         return true;
-
     }
 
-    public function insertIntoMeterReports($formData, $filePaths)
+    public function insertIntoMeterReports(array $formData, array $filePaths): bool
     {
         $reportID = 'R' . time() . rand(1000, 9999);
         $clientID = $formData['client_id'];
@@ -1137,7 +1240,7 @@ class DatabaseQueries extends BaseQuery
         }
     }
 
-    public function submitMeterReport($formData)
+    public function submitMeterReport(array $formData): array
     {
         $this->conn->beginTransaction();
         $response = array();
@@ -1166,7 +1269,7 @@ class DatabaseQueries extends BaseQuery
         }
     }
 
-    private function handleFileUploads($files)
+    private function handleFileUploads(array $files): array
     {
         $filePaths = array();
 
@@ -1180,15 +1283,13 @@ class DatabaseQueries extends BaseQuery
                 error_log("Failed to move file: " . $files['name'][$index]);
             }
         }
-
         return $filePaths;
     }
-
 }
 
 class DataTable extends BaseQuery
 {
-    public function clientTable($dataTableParam)
+    public function clientTable(array $dataTableParam)
     {
         $pageNumber = $dataTableParam['pageNumber'];
         $itemPerPage = $dataTableParam['itemPerPage'];
@@ -1422,7 +1523,7 @@ class DataTable extends BaseQuery
         echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
     }
 
-    public function billingTable($dataTableParam)
+    public function billingTable(array $dataTableParam)
     {
 
         $pageNumber = $dataTableParam['pageNumber'];
@@ -1437,11 +1538,11 @@ class DataTable extends BaseQuery
         $params = [];
         $types = "";
 
-        $currentDate = new DateTime();
-        $billingMonthAndYear = $currentDate->format('F Y');
+        $dbQueries = new DatabaseQueries($this->conn);
+        $billingMonth = $dbQueries->getBillingCycle();
 
         $conditions[] = "billing_month = ?";
-        $params[] = $billingMonthAndYear;
+        $params[] = $billingMonth;
         $types .= "s";
 
         if ($searchTerm) {
@@ -1462,11 +1563,11 @@ class DataTable extends BaseQuery
         if (!empty($conditions)) {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE cd.reading_status = 'encoded' AND bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
+            $sql .= " WHERE cd.reading_status = 'encoded' AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
         } else {
             $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
             $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE cd.reading_status = 'encoded' AND bd.billing_type = 'unverified' AND bd.billing_status = 'unpaid'";
+            $sql .= " WHERE cd.reading_status = 'encoded' AND bd.billing_status = 'unpaid'";
         }
 
         // echo $sql;
@@ -1565,6 +1666,14 @@ class DataTable extends BaseQuery
                     </span>
                 </div>
                 </th>
+                <th class="px-6 py-4" data-column-name="bd.billing_type" data-sortable="true" title="Current Reading">
+                <div class="flex items-center gap-2">
+                    <p>Status</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
                 <th class="px-6 py-4" data-column-name="bd.timestamp" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Reading Date</p>
@@ -1589,6 +1698,7 @@ class DataTable extends BaseQuery
             $brgy = $row['brgy'];
             $prevReading = $row['prev_reading'];
             $currReading = $row['curr_reading'];
+            $status = $row['billing_type'];
             $time = $row['time'];
             $date = $row['date'];
             $readable_date = date("F j, Y", strtotime($date));
@@ -1600,12 +1710,16 @@ class DataTable extends BaseQuery
             <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $clientName . '</td>
             <td class="px-6 py-3 text-sm">' . $propertyType . '</td>
             <td class="px-6 py-3 text-sm"> 
-            <span class="font-medium text-sm">' . $brgy . '</span> </br>
-            <span class="text-xs text-gray-400">' . $street . '</span>
+                <span class="font-medium text-sm">' . $brgy . '</span> </br>
+                <span class="text-xs text-gray-400">' . $street . '</span>
             </td>
             <td class="px-6 py-3 text-sm font-semibold">' . $prevReading . '</td>
             <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">
             ' . $currReading . '  <span class="hidden group-hover:flex text-xs">cubic meter</span></td>
+            <td class="px-6 py-3 text-sm">
+                <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400"> ' . $status . '</span>
+            </td>
+            </td>
             <td class="px-6 py-3 text-sm">            
                 <span class="font-medium text-sm">' . $readable_date . '</span> </br>
                 <span class="text-xs">' . $readable_time . '</span>
@@ -1645,224 +1759,223 @@ class DataTable extends BaseQuery
         echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
         echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
     }
-    public function verifiedBillingTable($dataTableParam)
-    {
+    // public function verifiedBillingTable($dataTableParam)
+    // {
 
-        $pageNumber = $dataTableParam['pageNumber'];
-        $itemPerPage = $dataTableParam['itemPerPage'];
-        $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
-        $offset = ($pageNumber - 1) * $itemPerPage;
-        $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
-        $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
-        $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+    //     $pageNumber = $dataTableParam['pageNumber'];
+    //     $itemPerPage = $dataTableParam['itemPerPage'];
+    //     $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
+    //     $offset = ($pageNumber - 1) * $itemPerPage;
+    //     $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
+    //     $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
+    //     $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
 
-        $conditions = [];
-        $params = [];
-        $types = "";
+    //     $conditions = [];
+    //     $params = [];
+    //     $types = "";
 
-        $currentDate = new DateTime();
-        $billingMonthAndYear = $currentDate->format('F Y');
+    //     $dbQueries = new DatabaseQueries($this->conn);
+    //     $billingMonth = $dbQueries->getBillingCycle();
 
-        $conditions[] = "billing_month = ?";
-        $params[] = $billingMonthAndYear;
-        $types .= "s";
+    //     $conditions[] = "billing_month = ?";
+    //     $params[] = $billingMonth;
+    //     $types .= "s";
 
-        if ($searchTerm) {
-            $likeTerm = "%" . $searchTerm . "%";
-            $conditions[] = "(bd.billing_id LIKE ? OR bd.client_id LIKE ? OR cd.full_name LIKE ? OR bd.meter_number LIKE ? OR cd.property_type LIKE ? OR cd.status LIKE ?)";
-            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
-            $types .= "ssssss";
-        }
+    //     if ($searchTerm) {
+    //         $likeTerm = "%" . $searchTerm . "%";
+    //         $conditions[] = "(bd.billing_id LIKE ? OR bd.client_id LIKE ? OR cd.full_name LIKE ? OR bd.meter_number LIKE ? OR cd.property_type LIKE ? OR cd.status LIKE ?)";
+    //         $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+    //         $types .= "ssssss";
+    //     }
 
-        if (!empty($filters)) {
-            foreach ($filters as $filter) {
-                $conditions[] = "{$filter['column']} = ?";
-                $params[] = $filter['value'];
-                $types .= "s";
-            }
-        }
-
-
-        if (!empty($conditions)) {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
-            $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE (bd.billing_type = 'verified' OR bd.billing_type = 'billed') AND bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
-        } else {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
-            $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
-            $sql .= " WHERE (bd.billing_type = 'verified' OR bd.billing_type = 'billed') AND bd.billing_status = 'unpaid'";
-        }
+    //     if (!empty($filters)) {
+    //         foreach ($filters as $filter) {
+    //             $conditions[] = "{$filter['column']} = ?";
+    //             $params[] = $filter['value'];
+    //             $types .= "s";
+    //         }
+    //     }
 
 
-        // echo $sql;
-        // print_r($params);
+    //     if (!empty($conditions)) {
+    //         $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
+    //         $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
+    //         $sql .= " WHERE bd.billing_status = 'unpaid' AND " . implode(" AND ", $conditions);
+    //     } else {
+    //         $sql = "SELECT SQL_CALC_FOUND_ROWS bd.*, cd.* FROM billing_data AS bd";
+    //         $sql .= " INNER JOIN client_data AS cd ON bd.client_id = cd.client_id";
+    //         $sql .= " WHERE bd.billing_status = 'unpaid'";
+    //     }
 
-        $validColumns = [
-            'bd.client_id', 'bd.meter_number', 'cd.full_name',  'cd.property_type', 'bd.timestamp', 'bd.prev_reading', 'bd.curr_reading', 'cd.brgy'
-        ];
-        $validDirections = ['ASC', 'DESC'];
+    //     // echo $sql;
+    //     // print_r($params);
 
-        if (in_array($sortColumn, $validColumns) && in_array($sortDirection, $validDirections)) {
-            $sql .= " ORDER BY {$sortColumn} {$sortDirection}";
-        } else {
-            $sql .= " ORDER BY bd.timestamp DESC";
-        }
+    //     $validColumns = [
+    //         'bd.client_id', 'bd.meter_number', 'cd.full_name',  'cd.property_type', 'bd.timestamp', 'bd.prev_reading', 'bd.curr_reading', 'cd.brgy'
+    //     ];
+    //     $validDirections = ['ASC', 'DESC'];
 
-        $sql .= " LIMIT ? OFFSET ?";
-        $params = array_merge($params, [$itemPerPage, $offset]);
-        $types .= "ii";
+    //     if (in_array($sortColumn, $validColumns) && in_array($sortDirection, $validDirections)) {
+    //         $sql .= " ORDER BY {$sortColumn} {$sortDirection}";
+    //     } else {
+    //         $sql .= " ORDER BY bd.timestamp DESC";
+    //     }
 
-        $stmt = $this->conn->prepareStatement($sql);
-        mysqli_stmt_bind_param($stmt, $types, ...$params);
-        mysqli_stmt_execute($stmt);
+    //     $sql .= " LIMIT ? OFFSET ?";
+    //     $params = array_merge($params, [$itemPerPage, $offset]);
+    //     $types .= "ii";
+
+    //     $stmt = $this->conn->prepareStatement($sql);
+    //     mysqli_stmt_bind_param($stmt, $types, ...$params);
+    //     mysqli_stmt_execute($stmt);
 
 
-        $result = mysqli_stmt_get_result($stmt);
+    //     $result = mysqli_stmt_get_result($stmt);
 
-        $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
+    //     $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
 
-        if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
-            $totalRecords = $row['total'];
-        } else {
-            $totalRecords = 0;
-        }
+    //     if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
+    //         $totalRecords = $row['total'];
+    //     } else {
+    //         $totalRecords = 0;
+    //     }
 
-        $descendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-    </svg>';
-        $ascendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-    </svg>';
+    //     $descendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+    //     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+    // </svg>';
+    //     $ascendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+    //     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    // </svg>';
 
-        $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
+    //     $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
 
-        $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
-        <thead class="text-xs text-gray-500 uppercase">
-            <tr class="bg-slate-100 border-b">
-                <th class="px-6 py-4">No.</th>
-                <th class="px-6 py-4" data-column-name="bd.client_id" data-sortable="true">
-                    <div class="flex items-center gap-2">
-                        <p>Client ID</p>
-                        <span class="sort-icon">
-                        ' . $sortIcon . '
-                        </span>
-                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span>
-                    </div>
-                </th>
-                <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
-                <th class="px-6 py-4" data-column-name="cd.full_name" data-sortable="true">
-                    <div class="flex items-center gap-2">
-                        <p>Client Name</p>
-                        <span class="sort-icon">
-                        ' . $sortIcon . '
-                        </span>
-                    </div>
-                </th>
-                <th class="px-6 py-4" data-column-name="cd.property_type" data-sortable="true">
-                    <div class="flex items-center gap-2">
-                        <p>Property Type</p>
-                        <span class="sort-icon">
-                        ' . $sortIcon . '
-                        </span>
-                    </div>
-                </th>
-                <th class="px-6 py-4" data-column-name="cd.brgy" data-sortable="true">
-                <div class="flex items-center gap-2">
-                    <p>Address</p>
-                    <span class="sort-icon">
-                    ' . $sortIcon . '
-                    </span>
-                </div>
-                </th>
-                <th class="px-6 py-4" data-column-name="bd.curr_reading" data-sortable="true" title="Current Reading">
-                <div class="flex items-center gap-2">
-                    <p>Final Reading</p>
-                    <span class="sort-icon">
-                    ' . $sortIcon . '
-                    </span>
-                </div>
-                </th>
-                <th class="px-6 py-4" data-column-name="bd.billing_type" data-sortable="true" title="Current Reading">
-                <div class="flex items-center gap-2">
-                    <p>Status</p>
-                    <span class="sort-icon">
-                    ' . $sortIcon . '
-                    </span>
-                </div>
-                </th>
-                <th class="px-6 py-4" data-column-name="bd.timestamp" data-sortable="true">
-                    <div class="flex items-center gap-2">
-                        <p>Reading Date</p>
-                        <span class="sort-icon">
-                        ' . $sortIcon . '
-                        </span>
-                    </div>
-                </th>
-            </tr>
-        </thead>';
+    //     $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
+    //     <thead class="text-xs text-gray-500 uppercase">
+    //         <tr class="bg-slate-100 border-b">
+    //             <th class="px-6 py-4">No.</th>
+    //             <th class="px-6 py-4" data-column-name="bd.client_id" data-sortable="true">
+    //                 <div class="flex items-center gap-2">
+    //                     <p>Client ID</p>
+    //                     <span class="sort-icon">
+    //                     ' . $sortIcon . '
+    //                     </span>
+    //                     <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">' . $totalRecords . '</span>
+    //                 </div>
+    //             </th>
+    //             <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
+    //             <th class="px-6 py-4" data-column-name="cd.full_name" data-sortable="true">
+    //                 <div class="flex items-center gap-2">
+    //                     <p>Client Name</p>
+    //                     <span class="sort-icon">
+    //                     ' . $sortIcon . '
+    //                     </span>
+    //                 </div>
+    //             </th>
+    //             <th class="px-6 py-4" data-column-name="cd.property_type" data-sortable="true">
+    //                 <div class="flex items-center gap-2">
+    //                     <p>Property Type</p>
+    //                     <span class="sort-icon">
+    //                     ' . $sortIcon . '
+    //                     </span>
+    //                 </div>
+    //             </th>
+    //             <th class="px-6 py-4" data-column-name="cd.brgy" data-sortable="true">
+    //             <div class="flex items-center gap-2">
+    //                 <p>Address</p>
+    //                 <span class="sort-icon">
+    //                 ' . $sortIcon . '
+    //                 </span>
+    //             </div>
+    //             </th>
+    //             <th class="px-6 py-4" data-column-name="bd.curr_reading" data-sortable="true" title="Current Reading">
+    //             <div class="flex items-center gap-2">
+    //                 <p>Final Reading</p>
+    //                 <span class="sort-icon">
+    //                 ' . $sortIcon . '
+    //                 </span>
+    //             </div>
+    //             </th>
+    //             <th class="px-6 py-4" data-column-name="bd.billing_type" data-sortable="true" title="Current Reading">
+    //             <div class="flex items-center gap-2">
+    //                 <p>Status</p>
+    //                 <span class="sort-icon">
+    //                 ' . $sortIcon . '
+    //                 </span>
+    //             </div>
+    //             </th>
+    //             <th class="px-6 py-4" data-column-name="bd.timestamp" data-sortable="true">
+    //                 <div class="flex items-center gap-2">
+    //                     <p>Reading Date</p>
+    //                     <span class="sort-icon">
+    //                     ' . $sortIcon . '
+    //                     </span>
+    //                 </div>
+    //             </th>
+    //         </tr>
+    //     </thead>';
 
-        $countArr = array();
-        $number = ($pageNumber - 1) * $itemPerPage + 1;
+    //     $countArr = array();
+    //     $number = ($pageNumber - 1) * $itemPerPage + 1;
 
-        while ($row = mysqli_fetch_assoc($result)) {
-            $id = $row['id'];
-            $clientID = $row['client_id'];
-            $clientName = $row['full_name'];
-            $propertyType = $row['property_type'];
-            $street = $row['street'];
-            $brgy = $row['brgy'];
-            $currReading = $row['curr_reading'];
-            $status = $row['billing_type'];
-            $time = $row['time'];
-            $date = $row['date'];
-            $readable_date = date("F j, Y", strtotime($date));
-            $readable_time = date("h:i A", strtotime($time));
+    //     while ($row = mysqli_fetch_assoc($result)) {
+    //         $id = $row['id'];
+    //         $clientID = $row['client_id'];
+    //         $clientName = $row['full_name'];
+    //         $propertyType = $row['property_type'];
+    //         $street = $row['street'];
+    //         $brgy = $row['brgy'];
+    //         $currReading = $row['curr_reading'];
+    //         $status = $row['billing_type'];
+    //         $time = $row['time'];
+    //         $date = $row['date'];
+    //         $readable_date = date("F j, Y", strtotime($date));
+    //         $readable_time = date("h:i A", strtotime($time));
 
-            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
-            <td  class="px-6 py-3 text-sm">' . $number . '</td>
-            <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
-            <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $clientName . '</td>
-            <td class="px-6 py-3 text-sm">' . $propertyType . '</td>
-            <td class="px-6 py-3 text-sm"> 
-            <span class="font-medium text-sm">' . $brgy . '</span> </br>
-            <span class="text-xs text-gray-400">' . $street . '</span>
-            </td>
-            <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">
-            ' . $currReading . '  <span class="hidden group-hover:flex text-xs">cubic meter</span>
-            </td>
-            <td class="px-6 py-3 text-sm">
+    //         $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
+    //         <td  class="px-6 py-3 text-sm">' . $number . '</td>
+    //         <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
+    //         <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $clientName . '</td>
+    //         <td class="px-6 py-3 text-sm">' . $propertyType . '</td>
+    //         <td class="px-6 py-3 text-sm">
+    //         <span class="font-medium text-sm">' . $brgy . '</span> </br>
+    //         <span class="text-xs text-gray-400">' . $street . '</span>
+    //         </td>
+    //         <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">
+    //         ' . $currReading . '  <span class="hidden group-hover:flex text-xs">cubic meter</span>
+    //         </td>
+    //         <td class="px-6 py-3 text-sm">
 
-            <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400"> ' . $status . '</span>
-           </td>
-            <td class="px-6 py-3 text-sm">            
-                <span class="font-medium text-sm">' . $readable_date . '</span> </br>
-                <span class="text-xs">' . $readable_time . '</span>
-            </td>
-        </tr>';
-            array_push($countArr, $number);
-            $number++;
-        }
+    //         <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-green-400 border border-green-400"> ' . $status . '</span>
+    //        </td>
+    //         <td class="px-6 py-3 text-sm">
+    //             <span class="font-medium text-sm">' . $readable_date . '</span> </br>
+    //             <span class="text-xs">' . $readable_time . '</span>
+    //         </td>
+    //     </tr>';
+    //         array_push($countArr, $number);
+    //         $number++;
+    //     }
 
-        $start = 0;
-        $end = 0;
+    //     $start = 0;
+    //     $end = 0;
 
-        if (!empty($countArr)) {
-            $start = $countArr[0];
-            $end = end($countArr);
+    //     if (!empty($countArr)) {
+    //         $start = $countArr[0];
+    //         $end = end($countArr);
 
-            $table .= '</tbody></table>';
+    //         $table .= '</tbody></table>';
 
-            if ($number > 1) {
-                echo $table;
-            } else {
-                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
-            }
-        } else {
-            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
-        }
+    //         if ($number > 1) {
+    //             echo $table;
+    //         } else {
+    //             echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
+    //         }
+    //     } else {
+    //         echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No billing found.</div>';
+    //     }
 
-        echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
-        echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
-    }
+    //     echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
+    //     echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
+    // }
 
 }

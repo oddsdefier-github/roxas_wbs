@@ -118,12 +118,13 @@ class PdfGenerator extends BaseQuery
 
         $filename = $no . '.pdf';
         $filepath = $outputDirectory . $filename;
-
+        $emailPath = __DIR__ . '/' . $filepath;
         if (file_put_contents($filepath, $dompdf->output())) {
             return [
                 'status' => 'success',
                 'filename' => $filename,
-                'path' => $filepath,
+                'email_path' => $emailPath,
+                'filepath' => $filepath,
             ];
         } else {
             $errorMessage = error_get_last()['message'];
@@ -483,10 +484,11 @@ class DatabaseQueries extends BaseQuery
 
             if ($generatedBillingReceipt['status'] === 'success') {
                 $filename = $generatedBillingReceipt['filename'];
-                $filepath = $generatedBillingReceipt['path'];
+                $filepath = $generatedBillingReceipt['filepath'];
+                $emailPath = $generatedBillingReceipt['email_path'];
 
                 $clientData = $pdfGenerator->selectClientData($clientID);
-                $emailSent = $wbsMailer->handleEmailSend($clientData, $filepath);
+                $emailSent = $wbsMailer->handleEmailSend($clientData, $emailPath);
 
                 if (!$emailSent) {
                     throw new Exception("Failed to send receipt to email.");

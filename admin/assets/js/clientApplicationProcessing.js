@@ -438,7 +438,7 @@ $(document).ready(function () {
                     switch (status) {
                         case 'error':
                             alert(message);
-                            window.location.reload();
+                            // window.location.reload();
                             break;
                         case 'success':
                             alert(message);
@@ -621,8 +621,6 @@ $(document).ready(function () {
 
             if (errorMessage) {
                 console.log(errorMessage)
-
-
                 $(this).attr('data-input-track', 'error')
 
                 console.log(`Count of valid: ${count}`)
@@ -738,6 +736,7 @@ $(document).ready(function () {
                     $('button[data-button-type="close-modal"]').prop('disabled', true);
                     setTimeout(() => {
                         confirmUpdateApplication();
+                        reviewConfirmationModal.hide();
                     }, 400);
                 });
 
@@ -747,6 +746,7 @@ $(document).ready(function () {
                     $('button[data-button-type="close-modal"]').prop('disabled', true);
                     setTimeout(() => {
                         approveClientApplication();
+                        reviewConfirmationModal.hide();
                     }, 400);
                 });
 
