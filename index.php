@@ -8,7 +8,7 @@
 	<link href="./assets/css/style.css" rel="stylesheet" />
 </head>
 
-<body class="relative flex min-h-screen flex-col overflow-clip bg-gray-50 font-inter">
+<body class="relative flex min-h-screen flex-col overflow-clip bg-gray-50 font-sans">
 	<style>
 		/* * {
 			outline: 1px solid red;

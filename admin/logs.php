@@ -30,7 +30,7 @@ if ($_SESSION['user_role'] != "Admin") {
     <?php include './layouts/links.php'; ?>
 </head>
 
-<body class="flex h-screen w-screen overflow-hidden font-inter bg-gray-50">
+<body class="flex h-screen w-screen overflow-hidden font-sans bg-gray-50">
     <?php include './components/modal/modal.php'; ?>
     <?php include './components/logout_loader.php'; ?>
     <?php include './layouts/sidebar.php'; ?>

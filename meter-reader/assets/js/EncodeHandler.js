@@ -67,7 +67,7 @@ class EncodeHandler {
             type: "post",
             data:
             {
-                action: "retrieveClientData",
+                action: "getClientData",
                 clientID: this.client_id
             },
             success: function (data) {

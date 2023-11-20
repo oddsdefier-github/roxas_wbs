@@ -15,7 +15,7 @@ include 'database/connection.php';
 	<script defer src="./js/sign_up.js"></script>
 </head>
 
-<body class="flex min-h-screen flex-col bg-primary-600 font-inter">
+<body class="flex min-h-screen flex-col bg-primary-600 font-sans">
 	<main class="flex flex-1 items-center justify-center">
 		<div class="flex w-full max-w-sm flex-col gap-7">
 			<div class="flex w-full items-center justify-center">

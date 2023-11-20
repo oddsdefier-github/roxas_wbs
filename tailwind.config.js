@@ -2,13 +2,13 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   content: [
+    "./node_modules/flowbite/**/*.js",
     "./authentication/**/*.{html,php,js}",
     "./authentication/assets/**/*.{html,php,js}",
     "./admin/**/*.{html,php,js}",
     "./meter-reader/**/*.{html,php,js}",
     "./cashier/**/*.{html,php,js}",
     "./index.php",
-    "./node_modules/flowbite/**/*.js",
     "./**/*.html",
     "./**/*.php",
     "./**/*.js"
@@ -39,18 +39,14 @@ module.exports = {
         md: "0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -1px rgba(15, 23, 42, 0.03)",
         lg: "0 10px 15px -3px rgba(15, 23, 42, 0.07), 0 4px 6px -2px rgba(15, 23, 42, 0.02)",
         xl: "0 20px 25px -5px rgba(15, 23, 42, 0.07), 0 10px 10px -5px rgba(15, 23, 42, 0.02)",
-      }
+      },
+      fontFamily: {
+        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+      },
     },
   },
   plugins: [
     require('@tailwindcss/forms'),
-    require('tailwindcss-font-inter')({ // default settings
-      a: -0.0223,
-      b: 0.185,
-      c: -0.1745,
-      baseFontSize: 16,
-      importFontFace: true,
-    }),
     require('flowbite/plugin')
   ],
 };
