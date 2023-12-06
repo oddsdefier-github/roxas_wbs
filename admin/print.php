@@ -53,21 +53,14 @@ if (isset($_GET['id'])) {
 
         $html = str_replace(["{{ name }}", "{{ address }}", "{{ meter_number }}", "{{ reg_id }}", "{{ client_id }}", "{{ date }}", "{{ property_type }}"], [$name, $address, $meterNumber, $regID, $id, $date, $propertyType], $html);
 
-
         $dompdf->loadHtml($html);
-
         $dompdf->render();
-
         $dompdf->addInfo("Title", "Registration");
-
         $fileName = $regID . ".pdf";
         $dompdf->stream($fileName, ["Attachment" => 0]);
 
-
         $output = $dompdf->output();
-
         $fileName = "reg_pdf/" . $regID . ".pdf";
-
         file_put_contents($fileName, $output);
     }
 

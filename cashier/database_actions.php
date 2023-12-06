@@ -84,6 +84,9 @@ function handleGetDataTable($dataTable)
             case "client_application":
                 $dataTable->clientAppBillingTable($dataTableParam);
                 break;
+            case "reports":
+                $dataTable->reportsTable($dataTableParam);
+                break;
             default:
                 echo "Invalid table name provided.";
         }

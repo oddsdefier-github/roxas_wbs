@@ -12,7 +12,7 @@ include './auth_guard.php';
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Billing</title>
+    <title>Recent Meter Reading</title>
     <?php include './layouts/links.php'; ?>
 </head>
 
@@ -27,20 +27,16 @@ include './auth_guard.php';
         <?php include './components/subheader.php'; ?>
         <main class="relative flex flex-1 flex-col justify-start overflow-auto">
             <div class="flex flex-col gap-5">
-                <?php include './components/bill_meter_reading_main.php'; ?>
+                <?php include './components/recent_meter_reading_main.php'; ?>
             </div>
         </main>
     </section>
 
-    <?php include './components/modal/sending_email_modal.php'; ?>
-    <?php include './components/modal/view_reading_data_modal.php'; ?>
-
 
     <?php include './layouts/scripts.php'; ?>
-    <script src="./assets/js/billHandler.js"></script>
     <script>
-        $("#subheader-title").text("Encode Billing Data");
-        $("#subheader-title").siblings("h5").text("Handle, Assess, or Encode Billing Data.")
+        $("#subheader-title").text("Recent Meter Reading Data");
+        $("#subheader-title").siblings("h5").text("Handle, Assess, or View Recent Meter Reading Data.")
         $("#subheader-title").parent("div").siblings("div").hide()
     </script>
 </body>

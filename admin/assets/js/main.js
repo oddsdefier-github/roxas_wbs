@@ -11,7 +11,6 @@ $(document).ready(function () {
             table = new DataTableWithPagination("client_data", '#displayClientDataTable');
             $("#clientFilter").show();
             break;
-
         case 'clients_application_table.php':
             table = new DataTableWithPagination("client_application", '#displayClientApplicationTable');
             $("#clientAppFilter").show();
@@ -52,7 +51,6 @@ function openPage(event, id, page) {
         return;
     }
 
-    console.log(id);
     let location = window.location.href;
     console.log(location);
     window.location.href = `${page}?id=${id}`;

@@ -9,11 +9,11 @@ $(document).ready(function () {
         const billingTable = new DataTableWithPagination("billing_data", '#displayBillingTable');
     } else if (filename === 'application_payments.php') {
         const clientAppBillingTable = new DataTableWithPagination("client_application", '#displayClientAppBillingTable');
-        
-
+    } else if (filename === 'reports.php') {
+        const reportsTable = new DataTableWithPagination("reports", '#displayReportsTable');
     }
 
-    $('.payments_nav').each(function () {
+    $('.cashiers_nav').each(function () {
         $(this).find('a').each(function () {
             const linkHref = $(this).attr('href');
             const linkFilename = linkHref.substring(linkHref.lastIndexOf('/') + 1);
@@ -23,6 +23,7 @@ $(document).ready(function () {
             }
         });
     });
+
     if (filename === 'billing_payments.php') {
         $("#billingFilter").show();
         $("#qrBilling").show();

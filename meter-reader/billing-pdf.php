@@ -1,46 +1,73 @@
 <?php
 
+use MeterReader\Database\DatabaseConnection;
+
+require './database_queries.php';
+require __DIR__ . "/vendor/autoload.php";
+
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 
-require './database_queries.php';
-require __DIR__ . "/vendor/autoload.php";
+$clientID = null;
 
-function updateBillingData($conn, string $billingID)
-{
-    $sql = "UPDATE billing_data SET billing_type = 'billed' WHERE billing_id = ?";
-    $stmt = $conn->prepareStatement($sql);
-
-    if (!$stmt) {
-        return false;
-    }
-    mysqli_stmt_bind_param($stmt, "s", $billingID);
-    $result = mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-    return $result;
+if (isset($_GET['id'])) {
+    $clientID = strval($_GET['id']);
 }
 
-function updateClientStatus($conn, string $clientID)
+function getTaxRate($conn)
 {
-    $sql = "UPDATE client_data SET reading_status = 'read' WHERE client_id = ?";
+    $sql = "SELECT tax FROM rates ORDER BY timestamp DESC LIMIT 1";
     $stmt = $conn->prepareStatement($sql);
 
-    if (!$stmt) {
-        return false;
+    if (!$stmt || !$stmt->execute()) {
+        return null;
     }
-    mysqli_stmt_bind_param($stmt, "s", $clientID);
-    $result = mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-    return $result;
+
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['tax'];
+    } else {
+        return null;
+    }
+}
+function queryDataForInvoice($conn, $clientID)
+{
+    $taxRate = getTaxRate($conn);
+    if ($taxRate === null) {
+        return null;
+    }
+    $sql = "SELECT cd.*, bd.*, sd.*
+            FROM client_data cd 
+            JOIN billing_data bd ON cd.client_id = bd.client_id 
+            JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
+            WHERE cd.client_id = ? AND bd.billing_status = 'unpaid' AND bd.billing_type = 'billed'";
+
+    $stmt = $conn->prepareStatement($sql);
+
+    if (!$stmt || !$stmt->bind_param("s", $clientID) || !$stmt->execute()) {
+        return null;
+    }
+
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $data = $result->fetch_assoc();
+        $data['tax_rate'] = $taxRate;
+        $stmt->close();
+        return $data;
+    } else {
+        $stmt->close();
+        return null;
+    }
 }
 
-function generateBillingPDF($conn)
+function generateIndividualBilling($data)
 {
-
-    session_start();
-    $meterReader = $_SESSION['user_name'];
+    $template = file_get_contents('templates/billing-template.html');
 
     $options = new Options();
     $options->setChroot(__DIR__);
@@ -49,97 +76,69 @@ function generateBillingPDF($conn)
     $options->set('isHtml5ParserEnabled', true);
 
     $dompdf = new Dompdf($options);
-
-    $sql = "SELECT cd.*, bd.*, sd.* 
-            FROM client_data cd 
-            JOIN billing_data bd ON cd.client_id = bd.client_id 
-            JOIN client_secondary_data sd ON cd.client_id = sd.client_id 
-            WHERE bd.billing_status = 'unpaid' AND bd.billing_type = 'verified'";
-
-
-    $stmt = $conn->prepareStatement($sql);
-
-    $billing_data = [];
-
-    if (mysqli_stmt_execute($stmt)) {
-        $result = mysqli_stmt_get_result($stmt);
-        while ($row = mysqli_fetch_assoc($result)) {
-            $billing_data[] = $row;
-        }
-        echo "Error executing statement: " . mysqli_stmt_error($stmt);
-    }
-
-
-    $template = file_get_contents('templates/billing-template.html');
-
-    $all_billings = "";
-
-    foreach ($billing_data as $billing) {
-        $qrCode = new QrCode($billing['client_id']);
-        $writer = new PngWriter();
-        $result = $writer->write($qrCode);
-
-        $qrDataUri = $result->getDataUri();
-
-
-        $billingID = $billing['billing_id'];
-        $accountNumber = $billing['client_id'];
-
-        updateBillingData($conn, $billingID);
-        updateClientStatus($conn, $accountNumber);
-
-        $meterNumber = $billing['meter_number'];
-        $propertyType = $billing['property_type'];
-        $firstName = $billing['first_name'];
-        $lastName = $billing['last_name'];
-        $brgy = $billing['brgy'];
-        $municipality = $billing['municipality'];
-        $propertyType = $billing['property_type'];
-        $billingMonth = $billing['billing_month'];
-
-        $currReading = $billing['curr_reading'];
-        $prevReading = $billing['prev_reading'];
-        $consumption = $billing['consumption'];
-        $rates = $billing['rates'];
-        $formattedRates = number_format($rates, 2, '.', ',');
-        $billingAmount = $billing['billing_amount'];
-        $formattedBillingAmount = number_format($billingAmount, 2, '.', ',');
-        $periodTo = $billing['period_to'];
-        $periodFrom = $billing['period_from'];
-        $dueDate = $billing['due_date'];
-        $disconnectionDate = $billing['disconnection_date'];
-        $timestamp = $billing['timestamp'];
-
-        $date = new DateTime($timestamp, new DateTimeZone('Asia/Manila'));  // Explicitly specify the original timezone
-        $formattedDate = $date->format('D M d, Y h:i A');  // Format the date
-
-        $billingHtml = str_replace(
-            ['{{billing_id}}', '{{datetime}}', '{{client_id}}', '{{last_name}}', '{{first_name}}', '{{brgy}}', '{{municipality}}', '{{curr_reading}}', '{{prev_reading}}', '{{consumption}}', '{{rates}}', '{{billing_amount}}', '{{billing_month}}', '{{meter_number}}', '{{property_type}}', '{{period_to}}', '{{period_from}}', '{{due_date}}', '{{disconnection_date}}', '{{meter_reader}}', '{{qr_code_path}}'],
-            [$billingID, $formattedDate, $accountNumber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $formattedRates, $formattedBillingAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
-            $template
-        );
-
-        $all_billings .= $billingHtml;
-    }
-
-    $currentMonth = strtoupper(date("M"));
-    $currentYear = date("Y");
-
-
-    $dompdf->loadHtml($all_billings);
     $dompdf->setPaper('legal');
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    $meterReader = $_SESSION['user_name'];
+
+    $qrCode = new QrCode($data['client_id']);
+    $writer = new PngWriter();
+    $result = $writer->write($qrCode);
+
+    $qrDataUri = $result->getDataUri();
+    $billingID = $data['billing_id'];
+    $accountNumber = $data['client_id'];
+    $meterNumber = $data['meter_number'];
+    $propertyType = $data['property_type'];
+    $firstName = $data['first_name'];
+    $lastName = $data['last_name'];
+    $brgy = $data['brgy'];
+    $municipality = $data['municipality'];
+    $propertyType = $data['property_type'];
+    $billingMonth = $data['billing_month'];
+    $currReading = $data['curr_reading'];
+    $prevReading = $data['prev_reading'];
+    $consumption = $data['consumption'];
+    $rates = $data['rates'];
+    $formattedRates = number_format($rates, 2, '.', ',');
+    $billingAmount = $data['billing_amount'];
+    $formattedBillingAmount = number_format($billingAmount, 2, '.', ',');
+    $taxRate = $data['tax_rate'];
+    $taxAmount = $billingAmount * ($taxRate / 100);
+    $formattedTaxAmount = number_format($taxAmount, 2, '.', ',');
+    $totalAmount = $billingAmount + $taxAmount;
+    $formattedTotalAmount = number_format($totalAmount, 2, '.', ',');
+    $periodTo = $data['period_to'];
+    $periodFrom = $data['period_from'];
+    $dueDate = $data['due_date'];
+    $disconnectionDate = $data['disconnection_date'];
+    $timestamp = $data['timestamp'];
+
+    $date = new DateTime($timestamp, new DateTimeZone('Asia/Manila'));
+    $formattedDate = $date->format('D M d, Y h:i A');
+
+    $billingHtml = str_replace(
+        ["{{billing_id}}", "{{datetime}}", "{{client_id}}", "{{last_name}}", "{{first_name}}", "{{brgy}}", "{{municipality}}", "{{curr_reading}}", "{{prev_reading}}", "{{consumption}}", "{{rates}}", "{{tax}}", "{{billing_amount}}", "{{billing_month}}", "{{meter_number}}", "{{property_type}}", "{{period_to}}", "{{period_from}}", "{{due_date}}", "{{disconnection_date}}", "{{meter_reader}}", "{{qr_code_path}}"],
+        [$billingID, $formattedDate, $accountNumber, $lastName, $firstName, $brgy, $municipality, $currReading, $prevReading, $consumption, $formattedRates, $formattedTaxAmount, $formattedTotalAmount, $billingMonth, $meterNumber, $propertyType, $periodTo, $periodFrom, $dueDate, $disconnectionDate, $meterReader, $qrDataUri],
+        $template
+    );
+
+    $dompdf->loadHtml($billingHtml);
     $dompdf->render();
     $dompdf->addInfo("Title", "Billing");
-
-    // Stream PDF to client
-    $fileName = $currentMonth . "-" . $currentYear . "-BILLING-INVOICE.pdf";
+    $fileName = $billingID . ".pdf";
     $dompdf->stream($fileName, ["Attachment" => 0]);
 
     $output = $dompdf->output();
-    $randomName = uniqid();
-    $fileName = "./temp/" . $currentMonth . "-" . $currentYear . "-BILLING-INVOICE_" . $randomName . ".pdf";
+    $fileName = "temp/" . $billingID . ".pdf";
     file_put_contents($fileName, $output);
 }
 
+$clientData = queryDataForInvoice($conn, $clientID);
+if (!$clientData) {
+    echo "Error: Unable to retrieve valid data for billing.";
+}
 
-generateBillingPDF($conn);
+print_r($clientData);
+generateIndividualBilling($clientData);

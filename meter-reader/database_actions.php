@@ -48,9 +48,9 @@ function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
         case 'encodeMeterReadingData':
             handleEncodeMeterReadingData($dbQueries);
             break;
-            // case 'verifyReadingData':
-            //     handleVerifyReadingData($dbQueries);
-            //     break;
+        case 'editReadingData':
+            handleEditReadingData($dbQueries);
+            break;
         case 'sendIndividualBilling':
             handleSendIndividualBilling($wbsMailer);
             break;
@@ -59,6 +59,12 @@ function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
             break;
         case 'checkEncodedBill':
             handleCheckEncodedBill($dbQueries);
+            break;
+        case 'checkVerifiedBill':
+            handleCheckVerifiedBill($dbQueries);
+            break;
+        case 'verifyAllBillingData':
+            handleVerifyAllBillingData($dbQueries);
             break;
         case 'submitMeterReport':
             handleSubmitMeterReport($dbQueries);
@@ -94,8 +100,8 @@ function handleGetDataTable($dataTable)
             case "billing_data":
                 $dataTable->billingTable($dataTableParam);
                 break;
-            case "billing_data_verified":
-                $dataTable->verifiedBillingTable($dataTableParam);
+            case "recent_meter_reading_data":
+                $dataTable->recentReadingTable($dataTableParam);
                 break;
             default:
                 echo "Invalid table name provided.";
@@ -118,14 +124,14 @@ function handleEncodeMeterReadingData($dbQueries)
     }
 }
 
-// function handleVerifyReadingData($dbQueries)
-// {
-//     if (isset($_POST['formData'])) {
-//         $formData = $_POST['formData'];
-//         $verifyReadingData = $dbQueries->verifyReadingData($formData);
-//         echo json_encode($verifyReadingData);
-//     }
-// }
+function handleEditReadingData($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $editReadingData = $dbQueries->editReadingData($formData);
+        echo json_encode($editReadingData);
+    }
+}
 
 
 function handleSendIndividualBilling($wbsMailer)
@@ -142,6 +148,16 @@ function handleCheckEncodedBill($dbQueries)
 {
     $checkEncodedBill = $dbQueries->checkEncodedBill();
     echo json_encode($checkEncodedBill);
+}
+function handleCheckVerifiedBill($dbQueries)
+{
+    $checkVerifiedBill = $dbQueries->checkVerifiedBill();
+    echo json_encode($checkVerifiedBill);
+}
+function handleVerifyAllBillingData($dbQueries)
+{
+    $verifyAllBillingData = $dbQueries->verifyAllBillingData();
+    echo json_encode($verifyAllBillingData);
 }
 
 function handleSubmitMeterReport($dbQueries)

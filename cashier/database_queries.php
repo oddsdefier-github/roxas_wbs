@@ -1225,7 +1225,6 @@ class DataTable extends BaseQuery
                 <path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
                 <path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2"></path>
                 </svg>
-        
                 <span class="ml-2 text-sm">Payment</span>
             </button>
             </td>
@@ -1250,6 +1249,218 @@ class DataTable extends BaseQuery
             }
         } else {
             echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No client application found</div>';
+        }
+
+        echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';
+        echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
+    }
+    public function reportsTable($dataTableParam)
+    {
+        $pageNumber = $dataTableParam['pageNumber'];
+        $itemPerPage = $dataTableParam['itemPerPage'];
+        $searchTerm = isset($dataTableParam['searchTerm']) ? $dataTableParam['searchTerm'] : "";
+        $offset = ($pageNumber - 1) * $itemPerPage;
+        $sortColumn = isset($dataTableParam['sortColumn']) ? $dataTableParam['sortColumn'] : "timestamp";
+        $sortDirection = isset($dataTableParam['sortDirection']) ? $dataTableParam['sortDirection'] : "DESC";
+        $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
+        $startDate = isset($dataTableParam['startDate']) ? $dataTableParam['startDate'] : "";
+        $endDate = isset($dataTableParam['endDate']) ? $dataTableParam['endDate'] : "";
+        $params = [];
+        $types = "";
+
+        if ($searchTerm) {
+            $likeTerm = "%" . $searchTerm . "%";
+            $conditions[] = "(transaction_id LIKE ? OR reference_id LIKE ? OR transaction_type LIKE ? OR amount_due LIKE ? OR amount_paid LIKE ? OR confirmed_by LIKE ?)";
+            $params = array_merge($params, [$likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm, $likeTerm]);
+            $types .= "ssssss";
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $filter) {
+                $conditions[] = "{$filter['column']} = ?";
+                $params[] = $filter['value'];
+                $types .= "s";
+            }
+        }
+
+        if ($startDate && $endDate) {
+            $conditions[] = "date BETWEEN ? AND ?";
+            $params = array_merge($params, [$startDate, $endDate]);
+            $types .= "ss";
+        }
+
+        if (!empty($conditions)) {
+            $conditions[] = "date = CURDATE()";
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM transactions WHERE " . implode(" AND ", $conditions);
+        } else {
+            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM transactions WHERE date = CURDATE()";
+        }
+
+        $validColumns = [
+            'transaction_id', 'reference_id', 'transaction_type', 'transaction_desc', 'amount_due', 'amount_paid', 'confirmed_by', 'timestamp'
+        ];
+        $validDirections = ['ASC', 'DESC'];
+
+        if (in_array($sortColumn, $validColumns) && in_array($sortDirection, $validDirections)) {
+            $sql .= " ORDER BY {$sortColumn} {$sortDirection}";
+        } else {
+            $sql .= " ORDER BY timestamp DESC";
+        }
+
+        $sql .= " LIMIT ? OFFSET ?";
+        $params = array_merge($params, [$itemPerPage, $offset]);
+        $types .= "ii";
+
+
+
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+
+        $resultCount = $this->conn->query("SELECT FOUND_ROWS() as total");
+
+        if ($resultCount && $row = mysqli_fetch_assoc($resultCount)) {
+            $totalRecords = $row['total'];
+        } else {
+            $totalRecords = 0;
+        }
+        $ascendingIcon = ' <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+    </svg>';
+
+        $descendingIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+    </svg>';
+
+
+        $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
+        $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
+
+        
+        <thead class="text-xs text-gray-500 uppercase">
+            <tr class="bg-slate-100 border-b cursor-pointer">
+                <th class="px-6 py-4" data-sortable="false">No.</th>
+                <th class="px-6 py-4" data-column-name="transaction_id" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Transaction ID</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                        <span id="totalItemsSpan" class="bg-blue-200 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 cursor-pointer">
+                        ' . $totalRecords . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="transaction_type" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Type</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <input id="totalItemsHidden" type="hidden" value="' . $totalRecords . '">
+                <th class="px-6 py-4" data-column-name="transaction_desc" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Description</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="amount_paid" data-sortable="true">
+                <div class="flex items-center gap-2">
+                    <p>Amount Paid</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="amount_due" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Amount Due</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="timestamp" data-sortable="true">
+                    <div class="flex items-center gap-2">
+                        <p>Created at</p>
+                        <span class="sort-icon">
+                        ' . $sortIcon . '
+                        </span>
+                    </div>
+                </th>
+                <th class="px-6 py-4" data-column-name="confirmed_by" data-sortable="true">
+                <div class="flex items-center gap-2">
+                    <p>Confirmed by</p>
+                    <span class="sort-icon">
+                    ' . $sortIcon . '
+                    </span>
+                </div>
+            </th>
+            </tr>
+        </thead>';
+
+        $countArr = array();
+        $number = ($pageNumber - 1) * $itemPerPage + 1;
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id = $row['id'];
+            $transactionID = $row['transaction_id'];
+            $referenceID = $row['reference_id'];
+            $transactionType = $row['transaction_type'];
+            $description = $row['transaction_desc'];
+            $amountDue = $row['amount_due'];
+            $formattedAmountDue = "₱" . number_format($amountDue, 2, '.', ',');
+            $amountPaid = $row['amount_paid'];
+            $formattedAmountPaid = "₱" . number_format($amountPaid, 2, '.', ',');
+            $confirmedBy = $row['confirmed_by'];
+            $time = $row['time'];
+            $date = $row['date'];
+
+            $readable_date = date("F j, Y", strtotime($date));
+            $readable_time = date("h:i A", strtotime($time));
+
+
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
+            <td  class="px-6 py-3 text-sm">' . $number . '</td>
+            <td  class="px-6 py-3 text-sm">' . $transactionID . '</td>
+            <td class="px-6 py-3 text-sm">' . $transactionType . '</td>
+            <td class="px-6 py-3 text-sm" style="max-width: 20rem;">' . $description . '</td>
+            <td class="px-6 py-3 text-sm">' . $formattedAmountPaid . '</td>
+            <td class="px-6 py-3 text-sm">' . $formattedAmountDue . '</td>
+            <td class="px-6 py-3 text-sm">            
+                <span class="font-medium text-sm">' . $readable_date . '</span> </br>
+                <span class="text-xs">' . $readable_time . '</span>
+            </td>
+            <td class="px-6 py-3 text-sm">' . $confirmedBy . '</td>
+
+
+        </tr>';
+            array_push($countArr, $number);
+            $number++;
+        }
+
+        $start = 0;
+        $end = 0;
+
+        if (!empty($countArr)) {
+            $start = $countArr[0];
+            $end = end($countArr);
+
+            $table .= '</tbody></table>';
+
+            if ($number > 1) {
+                echo $table;
+            } else {
+                echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No reports found</div>';
+            }
+        } else {
+            echo '<div class="text-center text-gray-600 dark:text-gray-400 mt-4 py-10">No reports found</div>';
         }
 
         echo '<input data-hidden-name="start" type="hidden" value="' . $start . '">';

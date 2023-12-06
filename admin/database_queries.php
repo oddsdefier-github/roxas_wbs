@@ -1464,6 +1464,8 @@ class DataTable extends BaseQuery
     </svg>';
 
         $sortIcon = $sortDirection === 'DESC' ? $ascendingIcon : $descendingIcon;
+
+
         $table = '<table class="w-full text-sm text-left text-gray-500 rounded-b-lg">
 
         
@@ -1574,7 +1576,11 @@ class DataTable extends BaseQuery
                     break;
             }
 
-            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
+            $page = 'client_profile_update.php';
+
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" onclick="openPage(event, \'' . $clientID . '\', \'' . $page . '\')" data-client-id="' . $id . '" 
+            class="table-auto bg-white border-b hover:bg-gray-50  overflow-auto">
+
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $clientID . '</td>
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>

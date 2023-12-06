@@ -107,7 +107,7 @@
                                     </div>
                                     <div data-popper-arrow></div>
                                 </div>
-                                <input type="text" id="curr_reading" class="validate-input block w-full rounded-lg border-0 p-4 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-500" disabled readonly>
+                                <input type="text" id="curr_reading" class="validate-input block w-full rounded-lg border-0 p-4 text-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-500">
                                 <div>
                                     <p class="validate-message"></p>
                                 </div>
@@ -115,8 +115,8 @@
                         </div>
                     </div>
                     <div class=" flex justify-end items-center space-x-2 mt-4">
-                        <button type="button" class="edit_curr_input text-gray-700 ring-1 ring-gray-300 bg-white hover:bg-gray-100 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Edit</button>
-                        <button type="submit" class="submit_encode text-white bg-indigo-500 hover:bg-indigo-600 focus:ring-2 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Verify</button>
+                        <button type="button" class="cancel_edit text-gray-700 ring-1 ring-gray-300 bg-white hover:bg-gray-100 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Cancel</button>
+                        <button type="submit" class="submit_encode text-white bg-indigo-500 hover:bg-indigo-600 focus:ring-2 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">Edit</button>
                     </div>
                 </form>
             </div>

@@ -6,8 +6,8 @@
         <li class="mr-2">
             <a href="./verify_meter_reading.php" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">Verify</a>
         </li>
-        <li class="mr-2">
+        <!-- <li class="mr-2">
             <a href="./bill_meter_reading.php" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50">Bill</a>
-        </li>
+        </li> -->
     </ul>
 </nav>

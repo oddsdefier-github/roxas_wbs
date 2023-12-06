@@ -1,7 +1,6 @@
 <?php
 
 include './database/connection.php';
-
 include './auth_guard.php';
 ?>
 
@@ -39,8 +38,8 @@ include './auth_guard.php';
     <?php include './layouts/scripts.php'; ?>
     <script type="module" src="./assets/js/VerifyHandler.js"></script>
     <script>
-        $("#subheader-title").text("Encode Billing Data");
-        $("#subheader-title").siblings("h5").text("Handle, Assess, or Encode Billing Data.")
+        $("#subheader-title").text("Verify Billing Data");
+        $("#subheader-title").siblings("h5").text("Handle, Assess, or Verify Billing Data.")
         $("#subheader-title").parent("div").siblings("div").hide()
     </script>
 </body>

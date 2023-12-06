@@ -20,7 +20,27 @@ $(document).ready(function () {
             }
         })
     }
-    
+
+    function checkVerifiedBill() {
+        $.ajax({
+            url: "database_actions.php",
+            type: "POST",
+            data: {
+                action: "checkVerifiedBill",
+            },
+            success: data => {
+                console.log(data)
+                const responseData = JSON.parse(data);
+                const { total_billing, total_verified_billing, is_match } = responseData;
+                const isAllBillingVerified = is_match;
+                $(`div[data-billing-verified='${isAllBillingVerified}']`).show();
+            },
+            complete: function () {
+                setTimeout(checkVerifiedBill, 5000);
+            }
+        })
+    }
+
 
     function updateUI(responseData) {
         const encodedBill = responseData.total_encoded;
@@ -66,21 +86,17 @@ $(document).ready(function () {
                 const daysLeft = lastDayOfMonth.getDate() - today.getDate();
                 $(".main-content").html(`Wait for ${daysLeft}days to encode new reading again.</br>Have a nice day!`);
             }
-
             break;
         case 'verify_meter_reading.php':
             $(".main-content").show();
             $("#encoded-counter").show();
-            checkEncodedBill()
+            checkEncodedBill();
+            checkVerifiedBill();
             break;
-        
-        case 'bill_meter_reading.php':
-            $("#verified-counter").show();
-            $("#generateBillingPDF").show();
-            $("#sendIndividualBilling").show();
-            $(".main-content").show();
 
-            new DataTableWithPagination("billing_data_verified", '#displayClientForBillingGeneration');
+        case 'recent_meter_reading.php':
+            $(".main-content").show();
+            new DataTableWithPagination("recent_meter_reading_data", '#displayRecentMeterReadingTable');
             break;
         default:
             $("#clientStatusFilter").hide();

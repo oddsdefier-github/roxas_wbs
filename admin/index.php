@@ -1,9 +1,4 @@
 <?php
 
-include './database/connection.php';
-
-
-
-session_start();
-
+include './utils.php';
 header("Location: dashboard.php");

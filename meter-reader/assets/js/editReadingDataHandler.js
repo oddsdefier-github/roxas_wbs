@@ -1,5 +1,5 @@
 import { DataTableWithPagination } from './DataTableWithPagination.js';
-class EncodeHandler {
+class EditReadingDataHandler {
     constructor (clientID, tableDisplay) {
         this.client_id = clientID;
 
@@ -138,6 +138,7 @@ class EncodeHandler {
 
     submitData(responseData) {
         const { client_id, property_type, meter_number } = responseData;
+
         const prevReading = this.elements.prevReadingInput.val();
         const currReading = this.elements.currReadingInput.val();
 
@@ -211,7 +212,7 @@ class EncodeHandler {
 }
 
 function encodeReadingData(clientID) {
-    const handler = new EncodeHandler(clientID, new DataTableWithPagination("client_data", '#displayClientForReadingEncoding'));
+    const handler = new EditReadingDataHandler(clientID, new DataTableWithPagination("client_data", '#displayClientForReadingEncoding'));
 }
 
 window.encodeReadingData = encodeReadingData;
