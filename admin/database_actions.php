@@ -84,6 +84,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'updateRates':
             handleUpdateRates($dbQueries);
             break;
+        case 'updateClientProfile':
+            handleUpdateClientProfile($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -247,5 +250,14 @@ function handleUpdateRates($dbQueries)
         $formData = $_POST['formData'];
         $updateRates = $dbQueries->updateRates($formData);
         echo json_encode($updateRates);
+    }
+}
+
+function handleUpdateClientProfile($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $updateClientProfile = $dbQueries->updateClientProfile($formData);
+        echo json_encode($updateClientProfile);
     }
 }

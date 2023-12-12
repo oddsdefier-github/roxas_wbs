@@ -50,9 +50,7 @@ function openPage(event, id, page) {
     if (textSelected) {
         return;
     }
-
-    let location = window.location.href;
-    console.log(location);
+    localStorage.setItem('clientID', id);
     window.location.href = `${page}?id=${id}`;
 }
 

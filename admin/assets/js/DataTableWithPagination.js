@@ -21,7 +21,6 @@ export class DataTableWithPagination {
         this.currentPageNumber = parseInt(localStorage.getItem(this.currentPageNumberKey), 10) || 1;
 
 
-
         this.startDateKey = `${this.tableContainerSelector}-startDateKey`;
         this.endDateKey = `${this.tableContainerSelector}-endDateKey`;
 
@@ -61,8 +60,6 @@ export class DataTableWithPagination {
     bindEvents() {
         let debounceTimeout;
         this.elements.searchInput.on("keyup", () => {
-
-
             this.handleClearInput();
             clearTimeout(debounceTimeout);
             debounceTimeout = setTimeout(() => this.handleSearch(), 300);
@@ -195,7 +192,7 @@ export class DataTableWithPagination {
 
         self.currentPageNumber = 1;
 
-
+        console.log("SELECTED FILTERS:" + selectedFilters);
         localStorage.setItem(self.filterKey, JSON.stringify(selectedFilters))
         self.filter = selectedFilters;
 
@@ -267,7 +264,6 @@ export class DataTableWithPagination {
         }
 
 
-
         self.fetchTableData(self.savedSearch, self.filter, self.currentSortColumn, self.currentSortDirection, self.startDate, self.endDate);
         console.log(self.startDate, self.endDate)
     }
@@ -290,12 +286,14 @@ export class DataTableWithPagination {
         this.currentPageNumber = 1;
 
         const radios = this.elements.radioDropDownContainer.find("input[type='radio']:checked");
+
         const currentFilters = radios.map((_, radio) => {
             return {
                 column: $(radio).data('column'),
                 value: radio.value
             };
         }).get();
+
         this.fetchTableData(this.elements.searchInput.val(), currentFilters, this.currentSortColumn, this.currentSortDirection, this.startDate, this.endDate);
     }
 
@@ -320,12 +318,13 @@ export class DataTableWithPagination {
     }
 
     fetchTableData(searchTerm, filters, sortColumn, sortDirection, startDate, endDate) {
-
-        console.log("Page Number:" + this.currentPageNumber);
-        console.log("Search Term:" + searchTerm);
-        console.log("Filters:" + filters);
-        console.log("Sort Column:" + sortColumn)
-        console.log("Sending data to server:", startDate, endDate);
+        const clientID = localStorage.getItem('clientID');
+        console.log(clientID);
+        // console.log("Page Number:" + this.currentPageNumber);
+        // console.log("Search Term:" + searchTerm);
+        // console.log("Filters:" + filters);
+        // console.log("Sort Column:" + sortColumn)
+        // console.log("Sending data to server:", startDate, endDate);
         $.ajax({
             url: "database_actions.php",
             type: 'post',
@@ -336,6 +335,7 @@ export class DataTableWithPagination {
                 dataTableParam: {
                     pageNumber: this.currentPageNumber,
                     itemPerPage: this.itemsPerPage,
+                    clientID: clientID,
                     searchTerm: searchTerm,
                     filters: filters,
                     sortColumn: sortColumn,

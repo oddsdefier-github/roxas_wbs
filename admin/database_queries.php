@@ -205,7 +205,10 @@ class DatabaseQueries extends BaseQuery
     public function retrieveClientData($clientID)
     {
         $response = array();
-        $sql = "SELECT * FROM client_data WHERE client_id = ?";
+        $sql = "SELECT * FROM client_data 
+        INNER JOIN client_secondary_data ON client_data.client_id = client_secondary_data.client_id 
+        WHERE client_data.client_id = ?";
+
         $stmt = $this->conn->prepareStatement($sql);
         mysqli_stmt_bind_param($stmt, "s", $clientID);
 
@@ -723,7 +726,6 @@ class DatabaseQueries extends BaseQuery
 
     }
 
-
     public function getTotalItem($tableName, $searchTerm = "")
     {
         $total = array();
@@ -1120,6 +1122,141 @@ class DatabaseQueries extends BaseQuery
             return ['status' => 'success', 'message' => 'Rates are updated successfully'];
         } else {
             return ['status' => 'error', 'message' => 'Data insertion failed', 'error' => $this->conn->getErrorMessage()];
+        }
+    }
+
+    public function updateClientData($formData)
+    {
+        $clientID = htmlspecialchars($formData['clientID'], ENT_QUOTES, 'UTF-8');
+        $status = htmlspecialchars($formData['status'], ENT_QUOTES, 'UTF-8');
+        $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
+        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
+        $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
+        $fullAddress = htmlspecialchars($formData['fullAddress'], ENT_QUOTES, 'UTF-8');
+        $birthDate = htmlspecialchars($formData['birthDate'], ENT_QUOTES, 'UTF-8');
+        $age = htmlspecialchars($formData['age'], ENT_QUOTES, 'UTF-8');
+        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
+        $gender = htmlspecialchars($formData['gender'], ENT_QUOTES, 'UTF-8');
+        $phoneNumber = htmlspecialchars($formData['phoneNumber'], ENT_QUOTES, 'UTF-8');
+        $email = htmlspecialchars($formData['email'], ENT_QUOTES, 'UTF-8');
+        $brgy = htmlspecialchars($formData['brgy'], ENT_QUOTES, 'UTF-8');
+        $streetAddress = htmlspecialchars($formData['streetAddress'], ENT_QUOTES, 'UTF-8');
+
+        $sql = "UPDATE client_data SET 
+                status = ?,
+                meter_number = ?,
+                property_type = ?,
+                full_name = ?,
+                full_address = ?,
+                birthdate = ?,
+                age = ?,
+                property_type = ?,
+                phone_number = ?,
+                email = ?,
+                brgy = ?,
+                street = ?,
+                last_update = CURRENT_TIMESTAMP
+                WHERE client_id = ?";
+
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+
+
+        $stmt->bind_param(
+            'sssssssssssss',
+            $status,
+            $meterNumber,
+            $propertyType,
+            $fullName,
+            $fullAddress,
+            $birthDate,
+            $age,
+            $propertyType,
+            $phoneNumber,
+            $email,
+            $brgy,
+            $streetAddress,
+            $clientID
+        );
+
+        $result = $stmt->execute();
+        $stmt->close();
+        return $result;
+
+    }
+    public function updateClientSecondaryData($formData)
+    {
+        $clientID = htmlspecialchars($formData['clientID'], ENT_QUOTES, 'UTF-8');
+        $firstName = htmlspecialchars($formData['firstName'], ENT_QUOTES, 'UTF-8');
+        $middleName = htmlspecialchars($formData['middleName'], ENT_QUOTES, 'UTF-8');
+        $lastName = htmlspecialchars($formData['lastName'], ENT_QUOTES, 'UTF-8');
+        $nameSuffix = htmlspecialchars($formData['nameSuffix'], ENT_QUOTES, 'UTF-8');
+        $brgy = htmlspecialchars($formData['brgy'], ENT_QUOTES, 'UTF-8');
+        $street = htmlspecialchars($formData['streetAddress'], ENT_QUOTES, 'UTF-8');
+        $gender = htmlspecialchars($formData['gender'], ENT_QUOTES, 'UTF-8');
+        $propertyType = htmlspecialchars($formData['propertyType'], ENT_QUOTES, 'UTF-8');
+        $sql = "UPDATE client_secondary_data SET 
+                first_name = ?,
+                middle_name = ?,
+                last_name = ?,
+                name_suffix = ?,
+                brgy = ?,
+                street = ?,
+                gender = ?,
+                property_type = ?,
+                last_update = CURRENT_TIMESTAMP
+                WHERE client_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param(
+            'sssssssss',
+            $firstName,
+            $middleName,
+            $lastName,
+            $nameSuffix,
+            $brgy,
+            $street,
+            $gender,
+            $propertyType,
+            $clientID
+        );
+        $result = $stmt->execute();
+
+        $stmt->close();
+        return $result;
+    }
+
+
+    public function updateClientProfile($formData)
+    {
+        $this->conn->beginTransaction();
+        try {
+            if (!$this->updateClientData($formData)) {
+                throw new Exception("Failed to update client data.");
+            }
+            if (!$this->updateClientSecondaryData($formData)) {
+                throw new Exception("Failed to update client secondary data.");
+            }
+            $this->conn->commitTransaction();
+            $response = [
+                "status" => "success",
+                "message" => "Client profile updated successfully."
+            ];
+            return $response;
+        } catch(Exception $e) {
+            $this->conn->rollbackTransaction();
+            $response = [
+                "status" => "error",
+                "message" => "Client profile update failed."
+            ];
+            return $response;
         }
     }
 }
@@ -1656,8 +1793,15 @@ class DataTable extends BaseQuery
         $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
         $startDate = isset($dataTableParam['startDate']) ? $dataTableParam['startDate'] : "";
         $endDate = isset($dataTableParam['endDate']) ? $dataTableParam['endDate'] : "";
+        $clientID = isset($dataTableParam['clientID']) ? $dataTableParam['clientID'] : "";
         $params = [];
         $types = "";
+
+        if ($clientID) {
+            $conditions[] = "client_id = ?";
+            $params[] = $clientID;
+            $types .= "s";
+        }
 
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
@@ -1701,7 +1845,9 @@ class DataTable extends BaseQuery
         $params = array_merge($params, [$itemPerPage, $offset]);
         $types .= "ii";
 
-
+        // echo $clientID;
+        // echo $sql;
+        // print_r($params);
 
         $stmt = $this->conn->prepareStatement($sql);
         mysqli_stmt_bind_param($stmt, $types, ...$params);
@@ -1815,8 +1961,8 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-
-            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
+            $page = 'client_transactions.php';
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" onclick="openPage(event, \'' . $clientID . '\', \'' . $page . '\')" data-id="' . $id . '">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $transactionID . '</td>
             <td class="px-6 py-3 text-sm">' . $transactionType . '</td>
@@ -1869,10 +2015,16 @@ class DataTable extends BaseQuery
         $filters = isset($dataTableParam['filters']) ? $dataTableParam['filters'] : [];
         $startDate = isset($dataTableParam['startDate']) ? $dataTableParam['startDate'] : "";
         $endDate = isset($dataTableParam['endDate']) ? $dataTableParam['endDate'] : "";
-
+        $clientID = isset($dataTableParam['clientID']) ? $dataTableParam['clientID'] : "";
         $conditions = [];
         $params = [];
         $types = "";
+
+        if ($clientID) {
+            $conditions[] = "cd.client_id = ?";
+            $params[] = $clientID;
+            $types .= "s";
+        }
 
         if ($searchTerm) {
             $likeTerm = "%" . $searchTerm . "%";
@@ -2057,7 +2209,8 @@ class DataTable extends BaseQuery
             $readable_date = date("F j, Y", strtotime($date));
             $readable_time = date("h:i A", strtotime($time));
 
-            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" data-id="' . $id . '">
+            $page = 'client_billing.php';
+            $table .= '<tr class="table-auto bg-white border-b border-gray-200 group hover:bg-gray-100" onclick="openPage(event, \'' . $clientID . '\', \'' . $page . '\')" data-id="' . $id . '">
             <td  class="px-6 py-3 text-sm">' . $number . '</td>
             <td  class="px-6 py-3 text-sm">' . $billingID . '</td>
             <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
