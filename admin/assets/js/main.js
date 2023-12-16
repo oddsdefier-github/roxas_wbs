@@ -20,7 +20,7 @@ $(document).ready(function () {
             $("#transactionFilter").show();
             break;
         case 'billing.php':
-            table = new DataTableWithPagination("billing", '#displayBillingTable');
+            handleBillingPage();
             break;
         case 'meter_reports.php':
             table = new DataTableWithPagination("meter_reports", '#displayMeterReportsTable');
@@ -39,6 +39,23 @@ $(document).ready(function () {
             }
         });
     });
+
+
+    function handleBillingPage() {
+        const currentURL = window.location.href;
+        const urlParts = currentURL.split('/');
+        const lastPart = urlParts[urlParts.length - 1];
+
+        if (lastPart === 'billing.php') {
+            localStorage.removeItem('clientID');
+            table = new DataTableWithPagination("billing", '#displayBillingTable');
+        } else if (lastPart === 'transactions.php') {
+            localStorage.removeItem('clientID');
+            table = new DataTableWithPagination("transactions", '#displayTxTable');
+        }
+    }
+    handleBillingPage();
+
 });
 
 
