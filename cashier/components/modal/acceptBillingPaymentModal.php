@@ -64,14 +64,14 @@
                         <p class="font-medium text-gray-600">Rates •<span class="property_type font-normal text-gray-400 ml-2"></span></p>
                         <p class="rates font-semibold text-gray-500"></p>
                     </div>
-                    <div class="flex justify-between w-full py-3 px-2 border border-gray-200 rounded shadow hover:bg-gray-100">
-                        <p class="font-medium text-gray-600">Penalty</p>
-                        <p class="penalty font-semibold text-gray-500 "></p>
-                    </div>
                 </div>
                 <div class="flex justify-between w-full py-0 px-2 text-sm">
                     <p class="font-semibold text-gray-500">Subtotal</p>
                     <p class="subtotal_bill font-bold text-gray-600"></p>
+                </div>
+                <div class="flex justify-between w-full py-0 px-2 text-sm">
+                    <p class="font-semibold text-gray-500">Penalty</p>
+                    <p class="penalty font-bold text-gray-600"></p>
                 </div>
                 <div class="flex justify-between w-full py-0 px-2 text-sm">
                     <p class="font-medium text-gray-500">Tax(<span class="tax text-gray-400"></span>)</p>

@@ -110,7 +110,8 @@ function acceptClientBillingPayment(clientID) {
         const tax = taxEl.attr('data-tax-rate');
         const taxPercentage = tax + "%";
 
-        const billCalculation = totalCalculationWithTax(billingAmount, tax);
+        const totalAmount = parseFloat(billingAmount) + parseFloat(penalty);
+        const billCalculation = totalCalculationWithTax(totalAmount, tax);
         const taxAmount = billCalculation.taxAmount;
         const totalBill = billCalculation.totalWithTax;
 
