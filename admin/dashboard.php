@@ -1,6 +1,5 @@
 <?php
 include './database/connection.php';
-
 include './auth_guard.php';
 ?>
 
@@ -25,7 +24,7 @@ include './auth_guard.php';
 		<?php include './layouts/header.php'; ?>
 		<?php include './components/subheader.php'; ?>
 		<main class="relative flex flex-1 flex-col justify-start px-10 overflow-auto">
-			<div class="flex flex-col gap-5 bg-white p-5 rounded-md shadow-md mb-10">
+			<div class="flex flex-col gap-5 mb-10">
 				<?php include './components/dashboard_main.php'; ?>
 			</div>
 		</main>
@@ -36,6 +35,7 @@ include './auth_guard.php';
 
 
 	<?php include './layouts/scripts.php'; ?>
+	<script src="./assets/js/chartsData.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script>
 		$("#subheader-title").text("Dashboard")

@@ -13,11 +13,6 @@ include 'penalty.php';
 </head>
 
 <body class="relative flex min-h-screen flex-col overflow-clip bg-gray-50 font-sans">
-	<style>
-		/* * {
-			outline: 1px solid red;
-		} */
-	</style>
 	<section class="flex min-h-screen flex-col items-center justify-center bg-gray-50" id="main-content">
 
 		<header class="container z-10">

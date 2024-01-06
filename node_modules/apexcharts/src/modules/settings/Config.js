@@ -71,6 +71,10 @@ export default class Config {
         opts = defaults.dumbbell(opts)
       }
 
+      if (opts?.stroke?.curve === 'monotoneCubic') {
+        opts.stroke.curve = 'smooth'
+      }
+
       // If user has specified a dark theme, make the tooltip dark too
       this.checkForDarkTheme(window.Apex) // check global window Apex options
       this.checkForDarkTheme(opts) // check locally passed options
@@ -203,7 +207,7 @@ export default class Config {
 
     if (isLogY && series.length > 1 && series.length !== opts.yaxis.length) {
       console.warn(
-        'A multi-series logarithmic chart should have equal number of series and y-axes. Please make sure to equalize both.'
+        'A multi-series logarithmic chart should have equal number of series and y-axes'
       )
     }
     return opts

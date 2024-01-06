@@ -91,7 +91,7 @@ class Bar {
     if (w.config.dataLabels.enabled) {
       if (this.totalItems > this.barOptions.dataLabels.maxItems) {
         console.warn(
-          'WARNING: DataLabels are enabled but there are too many to display. This may cause performance issue when rendering.'
+          'WARNING: DataLabels are enabled but there are too many to display. This may cause performance issue when rendering - ApexCharts'
         )
       }
     }
@@ -162,11 +162,11 @@ class Bar {
       elDataLabelsWrap.node.classList.add('apexcharts-element-hidden')
 
       let elGoalsMarkers = graphics.group({
-        class: 'apexcharts-bar-goals-markers'        
+        class: 'apexcharts-bar-goals-markers',
       })
 
       let elBarShadows = graphics.group({
-        class: 'apexcharts-bar-shadows'        
+        class: 'apexcharts-bar-shadows',
       })
 
       w.globals.delayedElements.push({
@@ -518,31 +518,18 @@ class Bar {
     let barXPosition
 
     if (w.globals.isXNumeric) {
-      let sxI = realIndex
-      if (!w.globals.seriesX[realIndex].length) {
-        sxI = w.globals.maxValsInArrayIndex
-      }
-      if (w.globals.seriesX[sxI][j]) {
-        x =
-          (w.globals.seriesX[sxI][j] - w.globals.minX) / this.xRatio -
-          (barWidth * this.seriesLen) / 2
-      }
-
-      // re-calc barXPosition as x changed
-      barXPosition = x + barWidth * this.visibleI
+      const xForNumericX = this.getBarXForNumericXAxis({
+        x,
+        j,
+        realIndex,
+        barWidth,
+      })
+      x = xForNumericX.x
+      barXPosition = xForNumericX.barXPosition
     } else {
       if (w.config.plotOptions.bar.hideZeroBarsWhenGrouped) {
-        let nonZeroColumns = 0
-        let zeroEncounters = 0
-        w.globals.seriesPercent.forEach((_s, _si) => {
-          if (_s[j]) {
-            nonZeroColumns++
-          }
-
-          if (_si < i && _s[j] === 0) {
-            zeroEncounters++
-          }
-        })
+        const { nonZeroColumns, zeroEncounters } =
+          this.barHelpers.getZeroValueEncounters({ i, j })
 
         if (nonZeroColumns > 0) {
           barWidth = (this.seriesLen * barWidth) / nonZeroColumns
@@ -590,6 +577,24 @@ class Bar {
       goalY: this.barHelpers.getGoalValues('y', null, zeroH, i, j),
       barXPosition,
       barWidth,
+    }
+  }
+
+  getBarXForNumericXAxis({ x, barWidth, realIndex, j }) {
+    const w = this.w
+    let sxI = realIndex
+    if (!w.globals.seriesX[realIndex].length) {
+      sxI = w.globals.maxValsInArrayIndex
+    }
+    if (w.globals.seriesX[sxI][j]) {
+      x =
+        (w.globals.seriesX[sxI][j] - w.globals.minX) / this.xRatio -
+        (barWidth * this.seriesLen) / 2
+    }
+
+    return {
+      barXPosition: x + barWidth * this.visibleI,
+      x,
     }
   }
 

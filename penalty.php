@@ -39,7 +39,6 @@ function getCurrentPenalty($conn, $billingId)
 function updateBillingData($conn, $billingId)
 {
     $latePaymentData = getLatePaymentFee($conn);
-    $penalty_fee_id = $latePaymentData['penalty_fee_id'];
     $late_payment_fee = $latePaymentData['late_payment_fee'];
 
     $current_penalty = getCurrentPenalty($conn, $billingId);
@@ -93,7 +92,6 @@ function selectUnpaidBill($conn)
                 updateBillingData($conn, $billingId);
                 insertIntoPenaltyLogs($conn, $billingId, $penalty_fee_id, $late_payment_fee);
             }
-
         }
     }
 }
