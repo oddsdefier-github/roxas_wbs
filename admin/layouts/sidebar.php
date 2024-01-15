@@ -272,7 +272,7 @@
                 <ul class="w-full">
                     <li class="py-2 px-3 font-medium uppercase text-xs" style="color: #a5b4fc">Settings</li>
                     <li class="my-2">
-                        <a href="" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
+                        <a href="user_profile.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
                             <span class="flex items-center gap-2">
                                 <div class="p-2 rounded-md" style="background-color: #3730a3;">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">

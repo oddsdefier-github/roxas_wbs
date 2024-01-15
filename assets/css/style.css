@@ -4443,6 +4443,16 @@ select {
   color: rgb(66 56 157 / var(--tw-text-opacity));
 }
 
+.text-orange-400 {
+  --tw-text-opacity: 1;
+  color: rgb(255 138 76 / var(--tw-text-opacity));
+}
+
+.text-orange-500 {
+  --tw-text-opacity: 1;
+  color: rgb(255 90 31 / var(--tw-text-opacity));
+}
+
 .text-orange-800 {
   --tw-text-opacity: 1;
   color: rgb(138 44 13 / var(--tw-text-opacity));
@@ -4781,6 +4791,10 @@ select {
 
 .outline-double {
   outline-style: double;
+}
+
+.outline-gray-200 {
+  outline-color: #E5E7EB;
 }
 
 .ring {

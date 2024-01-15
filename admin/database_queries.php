@@ -232,6 +232,33 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
+    public function retrieveUserData($userID)
+    {
+        $response = array();
+        $sql = "SELECT * FROM users WHERE user_id = ?";
+
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, "s", $userID);
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            $user_data_array = array();
+
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    array_push($user_data_array, $row);
+                }
+                $response['user_data'] = $user_data_array;
+            } else {
+                $response['error'] = "No client found with the provided ID.";
+            }
+        } else {
+            $response['error'] = "There was an error executing the statement.";
+        }
+
+        mysqli_stmt_close($stmt);
+
+        return $response;
+    }
 
     public function markNotificationAsRead($applicationID)
     {

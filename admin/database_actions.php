@@ -39,6 +39,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'retrieveClientData':
             handleRetrieveClientData($dbQueries);
             break;
+        case 'retrieveUserData':
+            handleRetrieveUserData($dbQueries);
+            break;
         case 'processClientApplication':
             handleProcessClientApplication($dbQueries);
             break;
@@ -99,6 +102,14 @@ function handleRetrieveClientData($dbQueries)
         $client_id = $_POST['clientID'];
         $client_data = $dbQueries->retrieveClientData($client_id);
         echo json_encode($client_data);
+    }
+}
+function handleRetrieveUserData($dbQueries)
+{
+    if (isset($_POST['userID'])) {
+        $user_id = $_POST['userID'];
+        $user_data = $dbQueries->retrieveUserData($user_id);
+        echo json_encode($user_data);
     }
 }
 
