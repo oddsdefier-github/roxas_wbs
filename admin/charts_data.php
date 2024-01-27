@@ -125,7 +125,7 @@ function getRevenue($conn)
 {
     $query = "SELECT DATE_FORMAT(date, '%Y-%m') AS month,
                      transaction_type,
-                     SUM(amount_paid) AS total_revenue
+                     SUM(amount_due) AS total_revenue
               FROM transactions
               GROUP BY month, transaction_type
               ORDER BY month ASC, transaction_type";

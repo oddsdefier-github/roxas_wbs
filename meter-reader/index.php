@@ -1,6 +1,7 @@
 <?php
+
 include './database/connection.php';
 
 session_start();
 
-header("Location: dashboard.php");
+header("Location: encode_meter_reading.php");

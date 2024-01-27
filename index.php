@@ -1,6 +1,3 @@
-<?php
-include 'penalty.php';
-?>
 <!DOCTYPE html>
 <html lang="en">
 

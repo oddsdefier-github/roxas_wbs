@@ -22,7 +22,7 @@
                         <div class="sm:col-span-1">
                             <label for="designation" class="select-none block text-sm font-medium leading-6 text-gray-900">Designation</label>
                             <div class="mt-2 relative">
-                                <select id="designation" name="designation" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6">
+                                <select id="designation" name="designation" class="block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:max-w-xs sm:text-sm sm:leading-6" readonly disabled>
                                     <option value="Admin">Admin</option>
                                     <option value="Meter Reader">Meter Reader</option>
                                     <option value="Cashier">Cashier</option>
@@ -34,7 +34,7 @@
                         <div class="sm:col-span-1">
                             <label for="userId" class="select-none block text-sm font-medium leading-6 text-gray-900">User ID</label>
                             <div class="mt-2 relative">
-                                <input data-input-state="error" type="text" name="userId" id="userId" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                                <input data-input-state="error" type="text" name="userId" id="userId" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6" readonly disabled>
                             </div>
                             <div data-validate-input="userId" class="validate-message"></div>
                         </div>
@@ -63,6 +63,7 @@
                             <label for="password" class="select-none block text-sm font-medium leading-6 text-gray-900">Password</label>
                             <div class="mt-2 relative">
                                 <input data-input-state="error" type="text" name="password" id="password" class="validate-input block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+
                             </div>
                             <div data-validate-input="password" class="validate-message"></div>
                         </div>

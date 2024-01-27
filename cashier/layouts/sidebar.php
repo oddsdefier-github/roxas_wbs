@@ -51,7 +51,7 @@
                 <ul class="">
                     <li class="py-2 px-3 font-medium uppercase text-xs" style="color: #a5b4fc">Main</li>
                     <ul class="">
-                        <li class="my-2">
+                        <!-- <li class="my-2">
                             <a href="dashboard.php" class="tab flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
                                 <div class="flex items-center gap-2">
                                     <div class="p-2 rounded-md" style="background-color: #3730a3;">
@@ -67,7 +67,7 @@
                                     <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                                 </svg>
                             </a>
-                        </li>
+                        </li> -->
                         <li class="my-2">
                             <a href="" class="tab-menu flex items-center justify-between px-3 py-2 rounded-md hover:bg-primary-600">
                                 <div class="flex items-center gap-2">

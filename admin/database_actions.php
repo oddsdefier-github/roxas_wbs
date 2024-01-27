@@ -90,6 +90,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'updateClientProfile':
             handleUpdateClientProfile($dbQueries);
             break;
+        case 'updateUserProfile':
+            handleUpdateUserProfile($dbQueries);
+            break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
             break;
@@ -270,5 +273,14 @@ function handleUpdateClientProfile($dbQueries)
         $formData = $_POST['formData'];
         $updateClientProfile = $dbQueries->updateClientProfile($formData);
         echo json_encode($updateClientProfile);
+    }
+}
+
+function handleUpdateUserProfile($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $updateUserProfile = $dbQueries->updateUserProfile($formData);
+        echo json_encode($updateUserProfile);
     }
 }
