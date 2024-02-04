@@ -36,6 +36,12 @@ if (isset($_POST['action'])) {
 function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
 {
     switch ($action) {
+        case 'retrieveUserData':
+            handleRetrieveUserData($dbQueries);
+            break;
+        case 'updateUserProfile':
+            handleUpdateUserProfile($dbQueries);
+            break;
         case 'getClientData':
             handleGetClientData($dbQueries);
             break;
@@ -71,6 +77,9 @@ function handleAction($action, $dbQueries, $wbsMailer, $dataTable)
             break;
         case 'generateAllBilling':
             handleGenerateAllBilling($dbQueries);
+            break;
+        case 'resetGeneratedBillingLogs':
+            handleResetGeneratedBillingLogs($dbQueries);
             break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
@@ -196,4 +205,28 @@ function handleGetLatestBillingLogDataForMonth($dbQueries)
 {
     $latestBillingLog = $dbQueries->getLatestBillingLogDataForMonth();
     echo json_encode($latestBillingLog);
+}
+
+
+function handleRetrieveUserData($dbQueries)
+{
+    if (isset($_POST['userID'])) {
+        $user_id = $_POST['userID'];
+        $user_data = $dbQueries->retrieveUserData($user_id);
+        echo json_encode($user_data);
+    }
+}
+
+function handleUpdateUserProfile($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $updateUserProfile = $dbQueries->updateUserProfile($formData);
+        echo json_encode($updateUserProfile);
+    }
+}
+
+function handleResetGeneratedBillingLogs($dbQueries) {
+    $resetBillingLogs = $dbQueries->resetGeneratedBillingLogs();
+    echo json_encode($resetBillingLogs);
 }

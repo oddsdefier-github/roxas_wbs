@@ -61,9 +61,7 @@ $(document).ready(function () {
 
 function openPage(event, id, page) {
     if (event.target.tagName === 'BUTTON' || event.target.closest('svg')) { return }
-
     const textSelected = window.getSelection().toString().length > 0;
-
     if (textSelected) {
         return;
     }

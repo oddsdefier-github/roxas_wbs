@@ -38,6 +38,9 @@ function handleAction($action, $dbQueries, $dataTable)
         case 'getDataTable':
             handleGetDataTable($dataTable);
             break;
+        case 'retrieveUserData':
+            handleRetrieveUserData($dbQueries);
+            break;
         case 'confirmAppPayment':
             handleConfirmAppPayment($dbQueries);
             break;
@@ -64,6 +67,12 @@ function handleAction($action, $dbQueries, $dataTable)
             break;
         case 'checkClientIDExistence':
             handleCheckClientIDExistence($dbQueries);
+            break;
+        case 'updateUserProfile':
+            handleUpdateUserProfile($dbQueries);
+            break;
+        case 'updateUserProfile':
+            handleUpdateUserProfile($dbQueries);
             break;
         default:
             echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
@@ -93,6 +102,14 @@ function handleGetDataTable($dataTable)
     }
 }
 
+function handleRetrieveUserData($dbQueries)
+{
+    if (isset($_POST['userID'])) {
+        $user_id = $_POST['userID'];
+        $user_data = $dbQueries->retrieveUserData($user_id);
+        echo json_encode($user_data);
+    }
+}
 function handleRetrieveClientApplicationFee($dbQueries)
 {
     $retrieveClientApplicationFees = $dbQueries->retrieveClientApplicationFees();
@@ -158,4 +175,13 @@ function handleCheckClientIDExistence($dbQueries)
         echo json_encode($checkClientIDExistence);
     }
 
+}
+
+function handleUpdateUserProfile($dbQueries)
+{
+    if (isset($_POST['formData'])) {
+        $formData = $_POST['formData'];
+        $updateUserProfile = $dbQueries->updateUserProfile($formData);
+        echo json_encode($updateUserProfile);
+    }
 }

@@ -333,8 +333,25 @@ function validateField(fieldName, fieldValue) {
     return fieldErrors ? fieldErrors[fieldName] : null;
 }
 
+function getSelectedItemValue(selectEl) {
+    let value = selectEl.find(':selected').val();
 
+    selectEl.on('change', function () {
+        value = $(this).find(':selected').val();
+        console.log("Selected Value: " + value);
+    });
+
+    return value;
+}
 function updateClientProfile() {
+    function getSelectedStatusValue(selectEl) {
+        let value = selectEl.find(':selected').val();
+        selectEl.on('change', function () {
+            value = $(this).find(':selected').val();
+            console.log("Selected Value: " + value);
+        });
+        return value;
+    }
     function getSelectedItemValue(selectEl) {
         let value = selectEl.find(':selected').text();
         selectEl.on('change', function () {
@@ -370,7 +387,7 @@ function updateClientProfile() {
     }
 
     const formInput = {
-        status: getSelectedItemValue(statusInput),
+        status: getSelectedStatusValue(statusInput),
         meterNumber: meterNumberInput.val().toUpperCase(),
         firstName: formatName(firstNameInput.val()),
         middleName: formatName(middleNameInput.val()),

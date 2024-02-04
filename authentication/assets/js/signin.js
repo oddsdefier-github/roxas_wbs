@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 $('#loading-message').text('Loading the page, please wait....')
             }, 500);
 
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 1000));
             loader.hide();
 
             window.location.href = data.redirect;

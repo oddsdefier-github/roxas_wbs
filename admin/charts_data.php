@@ -27,7 +27,7 @@ function countRevenue($conn, $type)
         return false;
     }
 
-    $sql = "SELECT SUM(amount_paid) AS totalAmountPaid FROM transactions WHERE transaction_type = '$type'";
+    $sql = "SELECT SUM(amount_due) AS totalAmountPaid FROM transactions WHERE transaction_type = '$type'";
     $result = $conn->query($sql);
     if ($result !== false) {
         $row = $result->fetch_assoc();

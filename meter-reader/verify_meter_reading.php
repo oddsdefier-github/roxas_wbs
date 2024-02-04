@@ -37,6 +37,7 @@ include './auth_guard.php';
 
     <?php include './layouts/scripts.php'; ?>
     <script type="module" src="./assets/js/VerifyHandler.js"></script>
+    <script type="module" src="./assets/js/resetGeneratedBillingLogs.js"></script>
     <script>
         $("#subheader-title").text("Verify Billing Data");
         $("#subheader-title").siblings("h5").text("Handle, Assess, or Verify Billing Data.")

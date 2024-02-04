@@ -41,7 +41,7 @@ if (isset($_POST['emailSend']) && isset($_POST['passSend']) && isset($_POST['des
                 $email_db = $row["email"];
                 $role_db = $row["designation"];
 
-                if ($password == $pass_db && $emailSEND == $email_db && $designationSelectedSEND == $role_db) {
+               if (password_verify($password, $pass_db) && $emailSEND == $email_db && $designationSelectedSEND == $role_db) {
 
                     session_start();
 

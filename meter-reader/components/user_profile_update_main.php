@@ -101,4 +101,5 @@
         </div>
     </form>
 </div>
+<script src="./assets/libs/jquery/dist/jquery.min.js"></script>
 <script src="./assets/js/userProfileUpdate.js"></script>

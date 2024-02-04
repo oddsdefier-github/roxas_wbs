@@ -210,6 +210,33 @@ class WBSMailer extends PdfGenerator
 }
 class DatabaseQueries extends BaseQuery
 {
+    public function retrieveUserData($userID)
+    {
+        $response = array();
+        $sql = "SELECT * FROM users WHERE user_id = ?";
+
+        $stmt = $this->conn->prepareStatement($sql);
+        mysqli_stmt_bind_param($stmt, "s", $userID);
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            $user_data_array = array();
+
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    array_push($user_data_array, $row);
+                }
+                $response['user_data'] = $user_data_array;
+            } else {
+                $response['error'] = "No client found with the provided ID.";
+            }
+        } else {
+            $response['error'] = "There was an error executing the statement.";
+        }
+
+        mysqli_stmt_close($stmt);
+
+        return $response;
+    }
     public function retrieveBillingRates()
     {
         $response = array();
@@ -847,7 +874,61 @@ class DatabaseQueries extends BaseQuery
         return json_encode($response);
     }
 
-
+    public function updateUserData($formData) {
+        $userID = htmlspecialchars($formData['userID'], ENT_QUOTES, 'UTF-8');
+        $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
+        $email = htmlspecialchars($formData['email'], ENT_QUOTES, 'UTF-8');
+        $rawPassword = htmlspecialchars($formData['password'], ENT_QUOTES, 'UTF-8');
+    
+        $hashedPassword = password_hash($rawPassword, PASSWORD_BCRYPT);
+    
+        $sql = "UPDATE users SET 
+                user_name = ?,
+                email = ?,
+                password = ?
+                WHERE user_id = ?";
+    
+        $stmt = $this->conn->prepareStatement($sql);
+    
+        if (!$stmt) {
+            return false;
+        }
+    
+        $stmt->bind_param(
+            'ssss',
+            $fullName,
+            $email,
+            $hashedPassword, 
+            $userID
+        );
+    
+        $result = $stmt->execute();
+        $stmt->close();
+        return $result;
+    }
+    
+    
+    public function updateUserProfile($formData)     {
+        $this->conn->beginTransaction();
+        try {
+            if (!$this->updateUserData($formData)) {
+                throw new Exception("Failed to update user data.");
+            }
+            $this->conn->commitTransaction();
+            $response = [
+                "status" => "success",
+                "message" => "User profile updated successfully."
+            ];
+            return $response;
+        } catch(Exception $e) {
+            $this->conn->rollbackTransaction();
+            $response = [
+                "status" => "error",
+                "message" => "User profile update failed."
+            ];
+            return $response;
+        }
+    }
 }
 
 

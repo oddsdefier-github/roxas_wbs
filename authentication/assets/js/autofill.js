@@ -6,7 +6,7 @@ function autoFill(role) {
         password.val('jeffry123');
     } else if (role == "Meter Reader") {
         email.val('meterreader@gmail.com');
-        password.val('meterreader');
+        password.val('meterreader123');
     } else {
         email.val('cashier@gmail.com');
         password.val('cashier123');

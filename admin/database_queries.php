@@ -259,7 +259,6 @@ class DatabaseQueries extends BaseQuery
 
         return $response;
     }
-
     public function markNotificationAsRead($applicationID)
     {
         $sqlUpdate = "UPDATE notifications SET status = 'read' WHERE reference_id = ?";
@@ -277,8 +276,6 @@ class DatabaseQueries extends BaseQuery
             return false;
         }
     }
-
-
     public function insertIntoClientApplication($formData)
     {
         foreach ($formData as $key => $value) {
@@ -334,7 +331,6 @@ class DatabaseQueries extends BaseQuery
             return "Error: " . $this->conn->getErrorMessage();
         }
     }
-
     public function checkDuplicate($column, $value, $table)
     {
         $checkDuplicateQuery = "SELECT $column FROM $table WHERE $column = ?";
@@ -359,8 +355,6 @@ class DatabaseQueries extends BaseQuery
 
         return $isDuplicate;
     }
-
-
     public function processClientApplication($formData)
     {
         $table = "client_application";
@@ -407,7 +401,6 @@ class DatabaseQueries extends BaseQuery
             return $response;
         }
     }
-
     public function fetchAddressData()
     {
         $sql = "SELECT * FROM address ORDER BY brgy";
@@ -480,7 +473,6 @@ class DatabaseQueries extends BaseQuery
             return false;
         }
     }
-
     public function insertIntoClientSecondaryData($formData, $clientID)
     {
         $this->conn->beginTransaction();
@@ -529,7 +521,6 @@ class DatabaseQueries extends BaseQuery
             }
         }
     }
-
     public function insertIntoBillingData($formData, $clientID)
     {
         $meterNumber = htmlspecialchars($formData['meterNumber'], ENT_QUOTES, 'UTF-8');
@@ -581,7 +572,6 @@ class DatabaseQueries extends BaseQuery
             return "Error: " . $this->conn->getErrorMessage();
         }
     }
-
     public function getApplicationFeeID($applicationID)
     {
         $sql = "SELECT application_fee_id FROM client_application WHERE application_id = ?";
@@ -633,7 +623,6 @@ class DatabaseQueries extends BaseQuery
             return false;
         }
     }
-
     public function updateApplicationTransaction($clientID, $applicationID)
     {
         $sql = "UPDATE transactions SET client_id = ? WHERE reference_id = ?";
@@ -1287,35 +1276,40 @@ class DatabaseQueries extends BaseQuery
         $userID = htmlspecialchars($formData['userID'], ENT_QUOTES, 'UTF-8');
         $fullName = htmlspecialchars($formData['fullName'], ENT_QUOTES, 'UTF-8');
         $email = htmlspecialchars($formData['email'], ENT_QUOTES, 'UTF-8');
-        $password = htmlspecialchars($formData['password'], ENT_QUOTES, 'UTF-8');
-
+        $rawPassword = htmlspecialchars($formData['password'], ENT_QUOTES, 'UTF-8');
+    
+        $hashedPassword = password_hash($rawPassword, PASSWORD_BCRYPT);
+    
         $sql = "UPDATE users SET 
                 user_name = ?,
                 email = ?,
-                password = ?,
+                password = ?
                 WHERE user_id = ?";
-
+    
         $stmt = $this->conn->prepareStatement($sql);
-
+    
         if (!$stmt) {
             return false;
         }
+    
         $stmt->bind_param(
             'ssss',
             $fullName,
             $email,
-            $password,
+            $hashedPassword, 
             $userID
         );
-
+    
         $result = $stmt->execute();
         $stmt->close();
         return $result;
     }
+    
+    
     public function updateUserProfile($formData)     {
         $this->conn->beginTransaction();
         try {
-            if (!$this->updateClientData($formData)) {
+            if (!$this->updateUserData($formData)) {
                 throw new Exception("Failed to update user data.");
             }
             $this->conn->commitTransaction();
@@ -1594,7 +1588,20 @@ class DataTable extends BaseQuery
         echo '<input data-hidden-name="end" type="hidden" value="' . $end . '">';
     }
 
+    public function getClientTotalConsumption($clientID) {
+        $sql = "SELECT SUM(consumption) AS totalConsumption FROM billing_data
+        WHERE client_id = ?";
+        $stmt = $this->conn->prepareStatement($sql);
+        $stmt->bind_param("s", $clientID);
 
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $totalConsumption = $row['totalConsumption'];
+        $stmt->close();
+        return $totalConsumption;
+    }
     public function clientTable($dataTableParam)
     {
         $pageNumber = $dataTableParam['pageNumber'];
@@ -1716,6 +1723,11 @@ class DataTable extends BaseQuery
                         </span>
                     </div>
                 </th>
+                <th class="px-6 py-4" data-column-name="consumption" data-sortable="false">
+                    <div class="flex items-center gap-2">
+                        <p>Consumption</p>
+                    </div>
+                </th>
                 <th class="px-6 py-4" data-column-name="brgy" data-sortable="true">
                     <div class="flex items-center gap-2">
                         <p>Address</p>
@@ -1756,6 +1768,8 @@ class DataTable extends BaseQuery
             $street = $row['street'];
             $brgy = $row['brgy'];
             $property_type = $row['property_type'];
+
+            $totalConsumption = $this->getClientTotalConsumption($clientID);
             $status = $row['status'];
             $time = $row['time'];
             $date = $row['date'];
@@ -1797,6 +1811,10 @@ class DataTable extends BaseQuery
             <td class="px-6 py-3 text-sm">' . $meter_number . '</td>
             <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $name . '</td>
             <td class="px-6 py-3 text-sm">' . $property_type . '</td>
+            <td class="px-6 py-3 text-sm">
+                <span class="font-semibold text-sm">' . $totalConsumption . '</span>
+                <span class="text-xs text-gray-400">m³</span>
+            </td>
             <td class="px-6 py-3 text-sm"> 
                 <span class="font-medium text-sm">' . $brgy . '</span> </br>
                 <span class="text-xs text-gray-400">' . $street . '</span>
@@ -2205,6 +2223,11 @@ class DataTable extends BaseQuery
                         </span>
                     </div>
                 </th>
+                <th class="px-6 py-4" data-column-name="bd.billing_data" data-sortable="false">
+                    <div class="flex items-center gap-2">
+                        <p>Consumption</p>
+                    </div>
+                </th>
                 <th class="px-6 py-4" data-column-name="bd.billing_amount" data-sortable="true">
                 <div class="flex items-center gap-2">
                     <p>Amount</p>
@@ -2242,6 +2265,7 @@ class DataTable extends BaseQuery
             $clientID = $row['client_id'];
             $clientName = $row['full_name'];
             $propertyType = $row['property_type'];
+            $consumption = $row['consumption'];
             $billingAmount = $row['billing_amount'];
             $billingStatus = $row['billing_status'];
 
@@ -2283,6 +2307,10 @@ class DataTable extends BaseQuery
             <td  class="px-6 py-3 text-sm">' . $clientID . '</td>
             <td  class="px-6 py-3 text-sm">' . $clientName . '</td>
             <td class="px-6 py-3 text-sm">' . $propertyType . '</td>
+            <td class="px-6 py-3 text-sm">
+                <span class="font-semibold text-sm">' . $consumption . '</span>
+                <span class="text-xs text-gray-400">m³</span>
+            </td>
             <td class="px-6 py-3 text-sm font-semibold  group-hover:bg-gray-50 group-hover:text-indigo-500 group-hover:font-semibold ease-in-out duration-150">' . $formattedBillingAmount . '</td>
             <td class="px-6 py-3 text-sm">' . $statusBadge . '</td>
             <td class="px-6 py-3 text-sm">            

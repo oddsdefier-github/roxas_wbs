@@ -78,10 +78,6 @@
                                                 <option value="II">II</option>
                                                 <option value="III">III</option>
                                                 <option value="IV">IV</option>
-                                                <option value="Ph.D.">Ph.D.</option>
-                                                <option value="M.D.">M.D.</option>
-                                                <option value="MBA">MBA</option>
-                                                <option value="CPA">CPA</option>
                                             </select>
                                         </div>
                                     </div>
