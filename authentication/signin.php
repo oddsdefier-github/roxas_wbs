@@ -79,10 +79,10 @@ include 'database/connection.php';
 						</div>
 						<button id="submit-btn" type="submit" name="submit" class="inline-flex items-center justify-center gap-2 rounded border border-transparent bg-primary-500 px-3 py-2 text-sm font-semibold text-white transition-all hover:bg-primary-700 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-offset-2">Sign in </button>
 
-						<p class="text-sm text-gray-600">
+						<!-- <p class="text-sm text-gray-600">
 							Not registered?
 							<a class="font-medium text-blue-700 decoration-2 hover:underline" href="signup.php"> Create account </a>
-						</p>
+						</p> -->
 					</div>
 
 				</div>

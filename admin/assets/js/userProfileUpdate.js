@@ -96,6 +96,7 @@ function updateUserProfile() {
     $.ajax({
         url: "database_actions.php",
         type: "POST",
+        dataType: "json",
         data: {
             action: "updateUserProfile",
             formData: {
