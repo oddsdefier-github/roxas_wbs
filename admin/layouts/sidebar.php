@@ -1,37 +1,37 @@
 <style>
-    .submenu-container {
+.submenu-container {
+    max-height: 0px;
+    overflow: hidden;
+}
+
+@keyframes show {
+    0% {
         max-height: 0px;
-        overflow: hidden;
     }
 
-    @keyframes show {
-        0% {
-            max-height: 0px;
-        }
+    100% {
+        max-height: 500px;
+    }
+}
 
-        100% {
-            max-height: 500px;
-        }
+@keyframes hide {
+    0% {
+        max-height: 500px;
     }
 
-    @keyframes hide {
-        0% {
-            max-height: 500px;
-        }
-
-        100% {
-            max-height: 0px;
-        }
+    100% {
+        max-height: 0px;
     }
+}
 
 
-    .submenu-container.open {
-        animation: show 0.768s forwards;
-    }
+.submenu-container.open {
+    animation: show 0.768s forwards;
+}
 
-    .submenu-container.close {
-        animation: hide 0.5s forwards;
-    }
+.submenu-container.close {
+    animation: hide 0.5s forwards;
+}
 </style>
 <aside class="flex flex-col min-h-screen cursor-pointer bg-primary-700 text-gray-50 text-sm pb-5" id="sidebar">
     <div class="h-full w-64">
@@ -270,7 +270,23 @@
                     </ul>
                 </ul>
                 <ul class="w-full">
-                    <li class="py-2 px-3 font-medium uppercase text-xs" style="color: #a5b4fc">Settings</li>
+                    <li class="py-2 px-3 font-medium uppercase text-xs" style="color: #a5b4fc">Settings
+                    </li>
+                    <li class="my-2">
+                        <a href="backup_restore.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
+                            <span class="flex items-center gap-2">
+                                <div class="p-2 rounded-md" style="background-color: #3730a3;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                    </svg>
+                                </div>
+                                <p class="ml-2">Backup & Restore</p>
+                            </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </li>
                     <li class="my-2">
                         <a href="user_profile.php" class="tab flex items-center justify-between gap-2 rounded-md px-3 py-2 hover:bg-primary-600">
                             <span class="flex items-center gap-2">
@@ -300,44 +316,44 @@
 </aside>
 <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
 <script>
-    $(document).ready(function() {
-        const tabMenu = $(".tab-menu");
+$(document).ready(function() {
+    const tabMenu = $(".tab-menu");
 
-        let currentPath = window.location.pathname.split("/")[0];
-        currentPath = location.pathname == "/" ? "index.php" : location.pathname.substring(1);
-        currentPath = currentPath.substring(currentPath.lastIndexOf("/") + 1);
+    let currentPath = window.location.pathname.split("/")[0];
+    currentPath = location.pathname == "/" ? "index.php" : location.pathname.substring(1);
+    currentPath = currentPath.substring(currentPath.lastIndexOf("/") + 1);
 
-        $(".tab").each(function() {
+    $(".tab").each(function() {
 
-            if (currentPath === "/") {
-                currentPath = "index.php";
+        if (currentPath === "/") {
+            currentPath = "index.php";
+        }
+        if ($(this).attr("href") === currentPath) {
+            if ($(this).closest("ul").hasClass("submenu-container")) {
+                $(this).closest(".submenu-container").siblings("a").addClass("bg-primary-600 shadow");
+                $(this).closest("ul").toggleClass("open");
+                $(this).addClass("text-primary-300");
+                $(this).find("p").addClass("text-primary-300");
+
+            } else {
+                $(this).addClass("bg-primary-600 shadow");
+                $(this).closest("ul").toggleClass("open");
             }
-            if ($(this).attr("href") === currentPath) {
-                if ($(this).closest("ul").hasClass("submenu-container")) {
-                    $(this).closest(".submenu-container").siblings("a").addClass("bg-primary-600 shadow");
-                    $(this).closest("ul").toggleClass("open");
-                    $(this).addClass("text-primary-300");
-                    $(this).find("p").addClass("text-primary-300");
+        }
+    });
 
-                } else {
-                    $(this).addClass("bg-primary-600 shadow");
-                    $(this).closest("ul").toggleClass("open");
-                }
+    const tabSubMenuContainer = $(".submenu-container");
+    tabMenu.each(function() {
+        $(this).on("click", function(event) {
+            event.preventDefault();
+
+            if ($(this).siblings("ul").hasClass('open')) {
+                $(this).siblings("ul").removeClass("open").addClass("close");
+            } else {
+                $(this).siblings("ul").removeClass("close").addClass("open");
             }
         });
+    })
 
-        const tabSubMenuContainer = $(".submenu-container");
-        tabMenu.each(function() {
-            $(this).on("click", function(event) {
-                event.preventDefault();
-
-                if ($(this).siblings("ul").hasClass('open')) {
-                    $(this).siblings("ul").removeClass("open").addClass("close");
-                } else {
-                    $(this).siblings("ul").removeClass("close").addClass("open");
-                }
-            });
-        })
-
-    });
+});
 </script>
